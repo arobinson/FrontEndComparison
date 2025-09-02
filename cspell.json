@@ -3,7 +3,10 @@
   "ignorePaths": [],
   "dictionaryDefinitions": [],
   "dictionaries": [],
-  "words": ["Contentful"],
+  "words": [
+    "Contentful",
+    "solidjs"
+  ],
   "ignoreWords": [],
   "import": []
 }

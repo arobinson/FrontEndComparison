@@ -48,10 +48,16 @@ shared-types/
 
 **Components**:
 
-- `ProductListComponent`: 50×50+ table with all field components
-- `ProductDetailComponent`: Complex nested data display
-- `TextCellComponent`, `NumericCellComponent`, `ImageCellComponent`, etc.
+- `ProductListComponent`: 50×50+ table using shared field components
+- `ProductDetailComponent`: Complex nested data display using shared field components
+- **Shared field components**: `TextComponent`, `NumericComponent`, `ImageComponent`, `BooleanComponent`, `DateComponent` (reused in both list and detail views)
 - `LoadingComponent`, `ErrorComponent`
+
+**Angular-Specific Features**:
+
+- **Pipes**: `CurrencyPipe`, `DatePipe`, `DecimalPipe`, `PercentPipe` for data formatting
+- **Directives**: `HighlightDirective` (attribute), `TooltipDirective` (attribute), `LazyLoadDirective` for images
+- **Structural Directives**: Custom `*sortBy` directive for table sorting logic
 
 **Services**:
 
@@ -66,13 +72,20 @@ shared-types/
 - Concurrent rendering with `startTransition`
 - `useDeferredValue` for smooth interactions
 - Pure `useState`/`useEffect` only
+- **React Router v7**: Official routing library with React 19 support (client-side only)
 
 **Components**:
 
-- `ProductList`: Table with optimized rendering
-- `ProductDetail`: Complex data display  
-- Cell components: `TextCell`, `NumericCell`, `ImageCell`
+- `ProductList`: Table with optimized rendering using shared field components
+- `ProductDetail`: Complex data display using shared field components
+- **Shared field components**: `TextComponent`, `NumericComponent`, `ImageComponent`, `BooleanComponent`, `DateComponent` (reused in both list and detail views)
 - Loading/Error boundaries
+
+**React Equivalents**:
+
+- **Custom Hooks**: `useCurrency()`, `useDate()`, `useDecimal()`, `usePercent()` for data formatting (pipe equivalents)
+- **HOCs/Render Props**: `withHighlight()`, `withTooltip()`, `withLazyLoad()` for behavior enhancement (directive equivalents)
+- **Utility Functions**: `sortBy()` helper for table sorting logic
 
 **Hooks**:
 
@@ -87,13 +100,20 @@ shared-types/
 - Fine-grained reactivity
 - Svelte 5 snippets for reusable logic
 - Native stores for global state
+- **SvelteKit**: Official filesystem-based routing (client-side rendering mode)
 
 **Components**:
 
-- `ProductList.svelte`: Optimized table rendering
-- `ProductDetail.svelte`: Nested data display
-- Cell components with runes
+- `ProductList.svelte`: Optimized table rendering using shared field components
+- `ProductDetail.svelte`: Nested data display using shared field components
+- **Shared field components**: `TextComponent.svelte`, `NumericComponent.svelte`, `ImageComponent.svelte`, `BooleanComponent.svelte`, `DateComponent.svelte` (reused in both list and detail views)
 - Loading/error states
+
+**Svelte Equivalents**:
+
+- **Actions**: `highlight`, `tooltip`, `lazy-load` for behavior enhancement (directive equivalents)
+- **Stores/Derived**: Reactive data formatting with derived stores (pipe equivalents)
+- **Utility Functions**: `sortBy()` helper with reactive statements
 
 ### SolidJS (`/SolidFoodFacts/`)
 
@@ -103,12 +123,20 @@ shared-types/
 - Fine-grained reactivity (no Virtual DOM)
 - Suspense boundaries
 - Pure signal-based architecture
+- **@solidjs/router v0.15.3**: Official universal router (client-side mode)
 
 **Components**:
 
-- Functional components with JSX
-- `createResource` for API calls
-- Granular reactive updates
+- `ProductList`: Functional component with JSX using shared field components
+- `ProductDetail`: Complex data display using shared field components
+- **Shared field components**: `TextComponent`, `NumericComponent`, `ImageComponent`, `BooleanComponent`, `DateComponent` (reused in both list and detail views)
+- `createResource` for API calls with granular reactive updates
+
+**SolidJS Equivalents**:
+
+- **Directives**: `use:highlight`, `use:tooltip`, `use:lazyLoad` for behavior enhancement (directive equivalents)
+- **Computed Signals**: Reactive data formatting with `createMemo()` (pipe equivalents)  
+- **Utility Functions**: `sortBy()` helper with fine-grained reactivity
 
 ## Implementation Phases
 
@@ -161,13 +189,13 @@ shared-types/
 
 ### Test Scenarios
 
-1. **Initial Load**: 50 products × 50+ columns with filter headers rendered simultaneously
+1. **Initial Load**: 50 products × 50+ columns with filter headers rendered simultaneously (client-side)
 2. **Filter Application**: User types in text filter, tabs out (blur) → measure re-render time
 3. **Multiple Filters**: Apply filters across different column types → measure cumulative performance
 4. **Sort Operations**: Click column headers → measure sort + re-render time
-5. **Navigation**: List → Detail → List transitions with filter state preserved
+5. **Client Navigation**: List → Detail → List transitions with filter state preserved (no SSR)
 6. **Memory Usage**: Long-running sessions with repeated filtering operations
-7. **Bundle Analysis**: Size comparisons across frameworks
+7. **Bundle Analysis**: Size comparisons across frameworks (client bundles only)
 8. **Development Server Performance**: Startup time measurement across frameworks
 
 ### Metrics Collected
@@ -215,7 +243,7 @@ shared-types/
 ### List View (Primary Performance Test)
 
 - **50+ rows** of OpenFoodFacts products
-- **50+ columns** with diverse component types
+- **50+ columns** with diverse component types using **reusable field components**
 - **All rendered at once** (no virtual scrolling/pagination)
 - **Real API data** from OpenFoodFacts
 - **Header filter components** for each column with data-type-specific inputs:
@@ -225,13 +253,15 @@ shared-types/
   - Date pickers for timestamp columns (created_t, last_modified_t)
 - **Filter application on blur** (tab/click out of filter input) to measure re-render performance
 - **Interactive sorting** per column
+- **Component reuse**: Same `TextComponent`, `NumericComponent`, etc. used in table cells
 
 ### Detail View (Secondary Test)
 
-- **Complex nested data** display
-- **Arrays**: Ingredients, categories, packaging
-- **Objects**: Nutrition facts, eco-score data
-- **Images**: Multiple product photos
+- **Complex nested data** display using **the same reusable field components**
+- **Arrays**: Ingredients, categories, packaging (displayed with repeated field components)
+- **Objects**: Nutrition facts, eco-score data (using `NumericComponent`, `TextComponent`)
+- **Images**: Multiple product photos (using `ImageComponent`)
+- **Component reuse**: Same components as list view but in different layouts and contexts
 - **Navigation performance** testing
 
 ## Technical Constraints
@@ -239,6 +269,7 @@ shared-types/
 ### Framework Optimization Philosophy
 
 - **Maximum framework performance**: Each implementation optimized for that framework's strengths
+- **Client-side rendering only**: No SSR to focus on pure frontend framework performance
 - **No third-party state management** (NgRx, Redux, etc.) - use framework-native solutions
 - **No UI component libraries** (Material, Ant Design, etc.) - custom optimized components
 - **Framework-specific optimizations encouraged**: OnPush, memoization, fine-grained reactivity

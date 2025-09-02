@@ -46,6 +46,17 @@ export interface ProductViewModel {
   ingredients?: string;
   completeness?: number;
   uniqueScans?: number;
+  
+  // Single-value metrics for performance testing
+  totalScans?: number;
+  ingredientsCount?: number;
+  unknownIngredientsCount?: number;
+  additivesCount?: number;
+  ecoGrade?: string;
+  nutritionGrade?: string;
+  nutritionScoreValue?: number;
+  purchasePlaces?: string;
+  mainCategory?: string;
 }
 
 export interface NutritionViewModel {

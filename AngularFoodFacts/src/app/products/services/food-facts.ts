@@ -4,7 +4,6 @@ import {
   buildProductsByCategoryUrl,
   buildProductUrl,
   buildProductsSearchUrl,
-  transformDummyJsonToProductViewModel,
 } from 'shared-types';
 
 @Injectable({
@@ -17,21 +16,16 @@ export class FoodFacts {
   createProductsByCategoryResource(
     category: Signal<string>,
     page = signal(1),
-    pageSize = signal(20),
+    pageSize = signal(50),
   ) {
     return resource({
       loader: async () => {
         const url = buildProductsByCategoryUrl(category(), page(), pageSize());
         const response = await fetch(url);
-        const data = (await response.json()) as { products?: any[] };
+        const data = (await response.json()) as { products?: ProductViewModel[] };
 
-        let products: ProductViewModel[];
-        if (data?.products) {
-          products = data.products.map(transformDummyJsonToProductViewModel);
-        } else {
-          products = [];
-        }
-        return products;
+        // Local backend already returns transformed ProductViewModel objects
+        return data?.products || [];
       },
     });
   }
@@ -44,15 +38,13 @@ export class FoodFacts {
       loader: async () => {
         const url = buildProductUrl(code());
         const response = await fetch(url);
-        const data = await response.json();
-
-        let product: ProductViewModel | null;
-        if (data) {
-          product = transformDummyJsonToProductViewModel(data);
-        } else {
-          product = null;
+        
+        if (!response.ok) {
+          return null;
         }
-        return product;
+        
+        // Local backend already returns transformed ProductViewModel object
+        return (await response.json()) as ProductViewModel;
       },
     });
   }
@@ -63,21 +55,16 @@ export class FoodFacts {
   createProductsSearchResource(
     query: Signal<string>,
     page = signal(1),
-    pageSize = signal(20),
+    pageSize = signal(50),
   ) {
     return resource({
       loader: async () => {
         const url = buildProductsSearchUrl(query(), page(), pageSize());
         const response = await fetch(url);
-        const data = (await response.json()) as { products?: any[] };
+        const data = (await response.json()) as { products?: ProductViewModel[] };
 
-        let products: ProductViewModel[];
-        if (data?.products) {
-          products = data.products.map(transformDummyJsonToProductViewModel);
-        } else {
-          products = [];
-        }
-        return products;
+        // Local backend already returns transformed ProductViewModel objects
+        return data?.products || [];
       },
     });
   }

@@ -7,31 +7,107 @@
         <tr>
           <th>Code</th>
           <th>Product Name</th>
+          <th>Generic Name</th>
           <th>Brands</th>
           <th>Categories</th>
+          <th>Origins</th>
+          <th>Manufacturing Places</th>
+          <th>Stores</th>
+          <th>Countries</th>
+          <th>Labels</th>
+          <th>Packaging</th>
+          <th>Quantity</th>
+          <th>Serving Size</th>
           <th>Nutrition Score</th>
-          <th>Image</th>
+          <th>Nova Group</th>
+          <th>Eco Score</th>
+          <th>Allergens</th>
+          <th>Traces</th>
+          <th>Vegetarian</th>
+          <th>Vegan</th>
+          <th>Palm Oil Free</th>
+          <th>Energy (100g)</th>
+          <th>Energy (Serving)</th>
+          <th>Proteins (100g)</th>
+          <th>Carbs (100g)</th>
+          <th>Fat (100g)</th>
+          <th>Sugars (100g)</th>
+          <th>Fiber (100g)</th>
+          <th>Saturated Fat (100g)</th>
+          <th>Sodium (100g)</th>
+          <th>Salt (100g)</th>
+          <th>Cholesterol (100g)</th>
+          <th>Caffeine (100g)</th>
+          <th>Ingredients</th>
+          <th>Completeness</th>
+          <th>Unique Scans</th>
+          <th>Created At</th>
+          <th>Last Modified</th>
+          <th>Total Scans</th>
+          <th>Ingredients Count</th>
+          <th>Unknown Ingredients</th>
+          <th>Additives Count</th>
+          <th>Eco Grade</th>
+          <th>Nutrition Grade</th>
+          <th>Nutrition Score Value</th>
+          <th>Purchase Places</th>
+          <th>Main Category</th>
+          <th>Front Image Small</th>
+          <th>Front Image Display</th>
         </tr>
       </thead>
       <tbody>
         @for (product of productsResource.value()!; track product.code) {
           <tr>
-            <td>
-              <a [routerLink]="['/detail', product.code]" class="product-link">
-                {{ product.code }}
-              </a>
-            </td>
+            <td><a [routerLink]="['/detail', product.code]" class="product-link">{{ product.code }}</a></td>
             <td>{{ product.productName || 'N/A' }}</td>
+            <td>{{ product.genericName || 'N/A' }}</td>
             <td>{{ product.brands || 'N/A' }}</td>
             <td>{{ product.categories || 'N/A' }}</td>
+            <td>{{ product.origins || 'N/A' }}</td>
+            <td>{{ product.manufacturingPlaces || 'N/A' }}</td>
+            <td>{{ product.stores || 'N/A' }}</td>
+            <td>{{ product.countries || 'N/A' }}</td>
+            <td>{{ product.labels || 'N/A' }}</td>
+            <td>{{ product.packaging || 'N/A' }}</td>
+            <td>{{ product.quantity || 'N/A' }}</td>
+            <td>{{ product.servingSize || 'N/A' }}</td>
             <td>{{ product.nutritionScore || 'N/A' }}</td>
-            <td>
-              @if (product.images.frontImageSmall) {
-                <img [src]="product.images.frontImageSmall" alt="{{ product.productName }}" class="product-image">
-              } @else {
-                No image
-              }
-            </td>
+            <td>{{ product.novaGroup || 'N/A' }}</td>
+            <td>{{ product.ecoScore || 'N/A' }}</td>
+            <td>{{ product.allergens || 'N/A' }}</td>
+            <td>{{ product.traces || 'N/A' }}</td>
+            <td>{{ product.vegetarian ? 'Yes' : 'No' }}</td>
+            <td>{{ product.vegan ? 'Yes' : 'No' }}</td>
+            <td>{{ product.palmOilFree ? 'Yes' : 'No' }}</td>
+            <td>{{ product.nutrition.energyPer100g || 'N/A' }}</td>
+            <td>{{ product.nutrition.energyPerServing || 'N/A' }}</td>
+            <td>{{ product.nutrition.proteinsPer100g || 'N/A' }}</td>
+            <td>{{ product.nutrition.carbohydratesPer100g || 'N/A' }}</td>
+            <td>{{ product.nutrition.fatPer100g || 'N/A' }}</td>
+            <td>{{ product.nutrition.sugarsPer100g || 'N/A' }}</td>
+            <td>{{ product.nutrition.fiberPer100g || 'N/A' }}</td>
+            <td>{{ product.nutrition.saturatedFatPer100g || 'N/A' }}</td>
+            <td>{{ product.nutrition.sodiumPer100g || 'N/A' }}</td>
+            <td>{{ product.nutrition.saltPer100g || 'N/A' }}</td>
+            <td>{{ product.nutrition.cholesterolPer100g || 'N/A' }}</td>
+            <td>{{ product.nutrition.caffeinePer100g || 'N/A' }}</td>
+            <td>{{ product.ingredients || 'N/A' }}</td>
+            <td>{{ product.completeness || 'N/A' }}</td>
+            <td>{{ product.uniqueScans || 'N/A' }}</td>
+            <td>{{ product.createdAt ? (product.createdAt | date) : 'N/A' }}</td>
+            <td>{{ product.lastModifiedAt ? (product.lastModifiedAt | date) : 'N/A' }}</td>
+            <td>{{ product.totalScans || 'N/A' }}</td>
+            <td>{{ product.ingredientsCount || 'N/A' }}</td>
+            <td>{{ product.unknownIngredientsCount || 'N/A' }}</td>
+            <td>{{ product.additivesCount || 'N/A' }}</td>
+            <td>{{ product.ecoGrade || 'N/A' }}</td>
+            <td>{{ product.nutritionGrade || 'N/A' }}</td>
+            <td>{{ product.nutritionScoreValue || 'N/A' }}</td>
+            <td>{{ product.purchasePlaces || 'N/A' }}</td>
+            <td>{{ product.mainCategory || 'N/A' }}</td>
+            <td>@if (product.images.frontImageSmall) {<img [src]="product.images.frontImageSmall" alt="Front Small" class="product-image-small">} @else {N/A}</td>
+            <td>@if (product.images.frontImageDisplay) {<img [src]="product.images.frontImageDisplay" alt="Front Display" class="product-image-small">} @else {N/A}</td>
           </tr>
         }
       </tbody>

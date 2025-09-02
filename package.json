@@ -29,6 +29,8 @@
     "benchmark:dev-startup": "node performance-tests/dev-server-benchmark.js",
     "generate:charts": "node performance-tests/generate-charts.js",
     "generate:blog": "node performance-tests/generate-blog-report.js",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "lint": "pnpm -r lint",
     "clean": "pnpm -r clean && rm -rf node_modules"
   },

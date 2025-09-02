@@ -27,5 +27,6 @@
       "import": "./dist/utils/index.js",
       "types": "./dist/utils/index.d.ts"
     }
-  }
+  },
+  "license": "MIT"
 }

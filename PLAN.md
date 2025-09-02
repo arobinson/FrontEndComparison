@@ -21,16 +21,24 @@ shared-types/
 
 ### Shared Type Definitions (47 fields)
 
-- **Text fields** (12): product_name, brands, categories, etc.
-- **Numeric fields** (15): All nutriments, scores, quantities
-- **Image fields** (8): Front, ingredients, nutrition thumbnails  
-- **Boolean fields** (8): vegetarian, vegan, palm oil flags
-- **Date fields** (4): created_t, last_modified_t timestamps
+**View Model Classes**:
+
+- `ProductViewModel`: camelCase properties (productName, brands, categories, etc.)
+- `NutritionViewModel`: camelCase nutrition data (energyPer100g, proteinsPer100g, etc.)
+- `ImageViewModel`: camelCase image URLs (frontImageSmall, ingredientsImageDisplay, etc.)
+
+**Field Categories**:
+
+- **Text fields** (12): productName, brands, categories, etc. (camelCase)
+- **Numeric fields** (15): All nutriments, scores, quantities (camelCase)
+- **Image fields** (8): Front, ingredients, nutrition thumbnails (camelCase)
+- **Boolean fields** (8): vegetarian, vegan, palmOilFree flags (camelCase)
+- **Date fields** (4): createdAt, lastModifiedAt timestamps (camelCase)
 - **Field metadata**: Display names, formatters, sort functions
 
 ### Shared Utilities
 
-- **Data transformers**: API response → table row converters
+- **Data transformers**: API response → camelCase view model converters (product_name → productName)
 - **Field formatters**: Number formatting, date parsing, image URL builders
 - **API client**: Framework-agnostic OpenFoodFacts API client (pure TypeScript/fetch)
 - **Performance measurement**: Timing utilities, memory usage helpers
@@ -247,10 +255,10 @@ shared-types/
 - **All rendered at once** (no virtual scrolling/pagination)
 - **Real API data** from OpenFoodFacts
 - **Header filter components** for each column with data-type-specific inputs:
-  - Text fields for string columns (product_name, brands, etc.)
-  - Number range inputs for numeric columns (nutrition values, scores)
-  - Dropdown selects for boolean columns (vegetarian, vegan status)
-  - Date pickers for timestamp columns (created_t, last_modified_t)
+  - Text fields for string columns (productName, brands, etc.)
+  - Number range inputs for numeric columns (energyPer100g, proteinsPer100g, etc.)
+  - Dropdown selects for boolean columns (vegetarian, vegan, palmOilFree status)
+  - Date pickers for timestamp columns (createdAt, lastModifiedAt)
 - **Filter application on blur** (tab/click out of filter input) to measure re-render performance
 - **Interactive sorting** per column
 - **Component reuse**: Same `TextComponent`, `NumericComponent`, etc. used in table cells
@@ -258,8 +266,8 @@ shared-types/
 ### Detail View (Secondary Test)
 
 - **Complex nested data** display using **the same reusable field components**
-- **Arrays**: Ingredients, categories, packaging (displayed with repeated field components)
-- **Objects**: Nutrition facts, eco-score data (using `NumericComponent`, `TextComponent`)
+- **Arrays**: ingredients, categories, packagings (camelCase, displayed with repeated field components)
+- **Objects**: nutritionFacts, ecoScoreData (camelCase, using `NumericComponent`, `TextComponent`)
 - **Images**: Multiple product photos (using `ImageComponent`)
 - **Component reuse**: Same components as list view but in different layouts and contexts
 - **Navigation performance** testing

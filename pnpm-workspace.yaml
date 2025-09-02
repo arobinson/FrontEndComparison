@@ -1,0 +1,7 @@
+packages:
+  - 'shared-types'
+  - 'AngularFoodFacts'
+  - 'ReactFoodFacts'
+  - 'SvelteFoodFacts'
+  - 'SolidFoodFacts'
+  - 'performance-tests'

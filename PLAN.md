@@ -14,7 +14,7 @@ shared-types/
 ├── api.types.ts              # API request/response types  
 ├── field-config.ts           # Table column definitions & formatting rules
 ├── data-transformers.ts      # Raw API → display format converters
-├── mock-data.ts              # Consistent test datasets
+├── api-client.ts             # Framework-agnostic OpenFoodFacts API client (pure TypeScript)
 ├── performance-utils.ts      # Measurement utilities
 └── constants.ts              # URLs, pagination limits, etc.
 ```
@@ -32,7 +32,7 @@ shared-types/
 
 - **Data transformers**: API response → table row converters
 - **Field formatters**: Number formatting, date parsing, image URL builders
-- **Mock data generators**: Consistent 50-row test datasets
+- **API client**: Framework-agnostic OpenFoodFacts API client (pure TypeScript/fetch)
 - **Performance measurement**: Timing utilities, memory usage helpers
 
 ## Framework-Specific Implementations
@@ -116,7 +116,7 @@ shared-types/
 
 1. **Create shared-types package** with complete OpenFoodFacts interfaces
 2. **Establish field configuration** (47 fields categorized by component type)
-3. **Build data transformers** and mock data generators
+3. **Build data transformers** and framework-agnostic API client (pure fetch)
 4. **Set up performance testing framework** (Puppeteer scripts)
 
 ### Phase 2: Angular Implementation (Reference)
@@ -150,23 +150,51 @@ shared-types/
 
 ### Test Scenarios
 
-1. **Initial Load**: 50 products × 50+ columns rendered simultaneously
-2. **Sorting/Filtering**: Table manipulation performance  
-3. **Navigation**: List → Detail → List transitions
-4. **Memory Usage**: Long-running sessions with data updates
-5. **Bundle Analysis**: Size comparisons across frameworks
+1. **Initial Load**: 50 products × 50+ columns with filter headers rendered simultaneously
+2. **Filter Application**: User types in text filter, tabs out (blur) → measure re-render time
+3. **Multiple Filters**: Apply filters across different column types → measure cumulative performance
+4. **Sort Operations**: Click column headers → measure sort + re-render time
+5. **Navigation**: List → Detail → List transitions with filter state preserved
+6. **Memory Usage**: Long-running sessions with repeated filtering operations
+7. **Bundle Analysis**: Size comparisons across frameworks
+8. **Development Server Performance**: Startup time measurement across frameworks
 
 ### Metrics Collected
 
-- **Web Vitals**: FCP, LCP, CLS, INP
-- **Runtime Performance**: Rendering time, memory usage
-- **Bundle Size**: Initial load, code splitting effectiveness  
-- **Navigation Speed**: Route transition timing
+**Bundle Analysis**:
+
+- **Development builds**: File count, average file size, total bundle size
+- **Production builds**: File count, average file size, total bundle size, compression ratios
+- **Code splitting**: Chunk distribution and lazy loading effectiveness
+
+**Network Performance**:
+
+- **Request count**: Total HTTP requests during test scenarios
+- **Request timing**: Individual request durations and parallel loading
+- **Clock time**: Total application waiting time on network responses
+- **Data transfer**: Total bytes transferred (request + response payloads)
+
+**Rendering Performance**:
+
+- **Initial list render**: Time to display 50+ products × 50+ columns with filter headers
+- **Re-render performance**: List re-display time after filter applied (on blur events)
+- **Filter interaction**: Time between blur event and completed re-render
+- **Sort performance**: Re-render time for column sorting operations
+- **Detail navigation**: Time to navigate to and render individual product detail
+- **Return navigation**: Time to return and re-render list view from detail
+
+**Additional Performance Metrics**:
+
+- **Memory usage**: JavaScript heap size during operations (measurable via Puppeteer)
+- **Web Vitals**: First Contentful Paint (FCP), Largest Contentful Paint (LCP), Cumulative Layout Shift (CLS) (directly measurable)
+- **JavaScript execution time**: Pure JS parsing and execution timing (excludes network/rendering)
+- **Development server startup**: Time from `pnpm dev` command to server ready and serving requests
 
 ### Testing Infrastructure
 
-- **Puppeteer Scripts**: Automated performance measurement
-- **Consistent Environment**: Same hardware, network conditions
+- **Puppeteer Scripts**: Automated performance measurement with network timing separation
+- **Real API Data**: Live OpenFoodFacts API calls for realistic network conditions
+- **Consistent Environment**: Same hardware, network conditions, API endpoints
 - **Statistical Analysis**: Multiple runs with averaged results
 
 ## Application Features
@@ -177,7 +205,13 @@ shared-types/
 - **50+ columns** with diverse component types
 - **All rendered at once** (no virtual scrolling/pagination)
 - **Real API data** from OpenFoodFacts
-- **Interactive sorting/filtering**
+- **Header filter components** for each column with data-type-specific inputs:
+  - Text fields for string columns (product_name, brands, etc.)
+  - Number range inputs for numeric columns (nutrition values, scores)
+  - Dropdown selects for boolean columns (vegetarian, vegan status)
+  - Date pickers for timestamp columns (created_t, last_modified_t)
+- **Filter application on blur** (tab/click out of filter input) to measure re-render performance
+- **Interactive sorting** per column
 
 ### Detail View (Secondary Test)
 
@@ -198,10 +232,11 @@ shared-types/
 
 ### Data Consistency
 
-- **Identical API calls** across all implementations
-- **Same 50+ product dataset** for testing
+- **Identical API calls** using shared framework-agnostic client (pure fetch)
+- **Same 50+ product dataset** from live OpenFoodFacts API for testing
 - **Consistent field formatting** and display logic
 - **Shared TypeScript types** ensure data shape consistency
+- **No framework-specific APIs** in shared code (no Angular HttpClient, React hooks, etc.)
 
 ## Success Criteria
 

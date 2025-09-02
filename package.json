@@ -1,0 +1,66 @@
+{
+  "name": "frontend-framework-comparison",
+  "version": "1.0.0",
+  "description": "Performance and bundle size comparison across Angular, React, Svelte, and SolidJS frameworks",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@9.0.0",
+  "scripts": {
+    "install:all": "pnpm install",
+    "build:all": "pnpm -r build",
+    "build:angular": "pnpm --filter AngularFoodFacts build",
+    "build:react": "pnpm --filter ReactFoodFacts build",
+    "build:svelte": "pnpm --filter SvelteFoodFacts build",
+    "build:solid": "pnpm --filter SolidFoodFacts build",
+    "dev:angular": "pnpm --filter AngularFoodFacts dev",
+    "dev:react": "pnpm --filter ReactFoodFacts dev",
+    "dev:svelte": "pnpm --filter SvelteFoodFacts dev",
+    "dev:solid": "pnpm --filter SolidFoodFacts dev",
+    "test:all": "pnpm -r test",
+    "test:angular": "pnpm --filter AngularFoodFacts test",
+    "test:react": "pnpm --filter ReactFoodFacts test",
+    "test:svelte": "pnpm --filter SvelteFoodFacts test",
+    "test:solid": "pnpm --filter SolidFoodFacts test",
+    "performance:test": "node performance-tests/run-all.js",
+    "performance:angular": "node performance-tests/run-single.js --framework=angular",
+    "performance:react": "node performance-tests/run-single.js --framework=react",
+    "performance:svelte": "node performance-tests/run-single.js --framework=svelte",
+    "performance:solid": "node performance-tests/run-single.js --framework=solid",
+    "benchmark:dev-startup": "node performance-tests/dev-server-benchmark.js",
+    "lint": "pnpm -r lint",
+    "clean": "pnpm -r clean && rm -rf node_modules"
+  },
+  "workspaces": [
+    "shared-types",
+    "AngularFoodFacts",
+    "ReactFoodFacts",
+    "SvelteFoodFacts",
+    "SolidFoodFacts",
+    "performance-tests"
+  ],
+  "devDependencies": {
+    "puppeteer": "^21.0.0",
+    "typescript": "^5.3.0",
+    "@types/node": "^20.0.0",
+    "eslint": "^8.57.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "prettier": "^3.2.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "keywords": [
+    "frontend",
+    "framework",
+    "performance",
+    "benchmark",
+    "angular",
+    "react",
+    "svelte",
+    "solidjs"
+  ],
+  "author": "",
+  "license": "MIT"
+}

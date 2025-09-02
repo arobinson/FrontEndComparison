@@ -17,10 +17,44 @@ This repository contains functionally identical implementations of a food produc
 
 Each framework implementation includes:
 
-- **Product List Page**: Browse and search food products with filtering capabilities
+- **Product List Page**: Browse and search food products with 49 columns for performance testing
 - **Product Detail Page**: Detailed product information including nutritional data, ingredients, and images
 - **Navigation Performance**: Optimized routing between list and detail views
-- **OpenFoodFacts Integration**: Real-world API consumption and data handling
+- **OpenFoodFacts Integration**: Real-world product data with consistent dataset for fair comparison
+
+## Data Architecture
+
+### Local Backend for Performance Testing
+
+To ensure consistent and fair performance comparisons across all framework implementations, this project uses a local backend (`Backend/`) that serves cached OpenFoodFacts data:
+
+- **Consistent Dataset**: All frameworks use the same ~150 products to ensure identical testing conditions
+- **Cached Data**: Local JSON file (`shared-data/open-food-facts-products.json`) eliminates network variability
+- **Performance Optimized**: Removes API rate limiting and network latency from performance measurements
+- **Real Product Data**: Genuine OpenFoodFacts data, not mock/synthetic data
+
+### Backend Setup
+
+```bash
+cd Backend
+pnpm install
+pnpm start  # Runs on http://localhost:3001
+```
+
+The backend provides endpoints for:
+- `/api/products` - Paginated product listing with search and category filtering
+- `/api/products/:code` - Individual product details
+
+### Data Generation
+
+To refresh the cached dataset with latest OpenFoodFacts data:
+
+```bash
+cd Backend
+pnpm exec ts-node src/fetch-open-food-facts.ts
+```
+
+This fetches ~150 products across 8 categories with complete nutritional data and working image URLs.
 
 ## Performance Testing
 

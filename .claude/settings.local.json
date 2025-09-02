@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:world.openfoodfacts.org)",
+      "WebFetch(domain:openfoodfacts.github.io)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

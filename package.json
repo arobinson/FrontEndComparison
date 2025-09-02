@@ -27,6 +27,8 @@
     "performance:svelte": "node performance-tests/run-single.js --framework=svelte",
     "performance:solid": "node performance-tests/run-single.js --framework=solid",
     "benchmark:dev-startup": "node performance-tests/dev-server-benchmark.js",
+    "generate:charts": "node performance-tests/generate-charts.js",
+    "generate:blog": "node performance-tests/generate-blog-report.js",
     "lint": "pnpm -r lint",
     "clean": "pnpm -r clean && rm -rf node_modules"
   },

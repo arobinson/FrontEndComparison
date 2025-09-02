@@ -119,32 +119,43 @@ shared-types/
 3. **Build data transformers** and framework-agnostic API client (pure fetch)
 4. **Set up performance testing framework** (Puppeteer scripts)
 
-### Phase 2: Angular Implementation (Reference)
+### Phase 2: Angular Implementation (Lead Implementation)
 
-1. **Complete Angular app** with all 47 field types in table
+1. **Complete Angular app** with all 47 field types in table using best Angular practices
 2. **Implement product detail view** with complex nested data
-3. **Add performance measurement hooks**
-4. **Test with 50+ products × 50+ columns** rendering at once
-5. **Establish baseline metrics**
+3. **Optimize for Angular performance**: OnPush strategy, trackBy functions, pure pipes
+4. **Add performance measurement hooks**
+5. **Test with 50+ products × 50+ columns** rendering at once
+6. **Establish baseline metrics and testing methodology**
 
 ### Phase 3: React Implementation
 
-1. **Port Angular functionality** to React with modern features
-2. **Implement identical component structure**
-3. **Ensure exact feature parity**
-4. **Performance comparison vs Angular**
+1. **Port Angular functionality** to React with optimal React patterns
+2. **Optimize for React performance**: useMemo, useCallback, React.memo, virtualization if beneficial
+3. **Implement equivalent component structure** (not identical, but functionally equivalent)
+4. **Ensure exact feature parity** with maximum React performance
+5. **Performance comparison vs Angular**
 
 ### Phase 4: Svelte Implementation
 
-1. **Port to Svelte 5 with runes**
-2. **Leverage fine-grained reactivity**
-3. **Compare compiler optimizations**
+1. **Port to Svelte 5 with runes** and optimal Svelte patterns
+2. **Leverage fine-grained reactivity** and compiler optimizations for maximum performance
+3. **Optimize for Svelte**: Reactive statements, derived values, component composition
+4. **Compare compiler optimizations** vs runtime frameworks
 
 ### Phase 5: SolidJS Implementation
 
-1. **Port to SolidJS with signals**
-2. **Test fine-grained updates**
-3. **Final performance comparison**
+1. **Port to SolidJS with signals** and optimal SolidJS patterns
+2. **Optimize for SolidJS**: Fine-grained reactivity, minimal re-renders, signal composition
+3. **Test fine-grained updates** and compare signal performance
+4. **Final performance comparison**
+
+### Phase 6: Results and Analysis
+
+1. **Generate automated performance graphs** comparing all frameworks
+2. **Create comprehensive blog post** with charts and analysis
+3. **Document findings** and framework-specific optimization techniques
+4. **Publish results** for community benefit
 
 ## Performance Testing Strategy
 
@@ -196,6 +207,8 @@ shared-types/
 - **Real API Data**: Live OpenFoodFacts API calls for realistic network conditions
 - **Consistent Environment**: Same hardware, network conditions, API endpoints
 - **Statistical Analysis**: Multiple runs with averaged results
+- **Automated Charting**: Generate performance comparison graphs for blog publication
+- **Results Export**: JSON/CSV data export for further analysis
 
 ## Application Features
 
@@ -223,12 +236,14 @@ shared-types/
 
 ## Technical Constraints
 
-### Framework Purity
+### Framework Optimization Philosophy
 
-- **No third-party state management** (NgRx, Redux, etc.)
-- **No UI component libraries** (Material, Ant Design, etc.)
-- **Pure framework features only**
+- **Maximum framework performance**: Each implementation optimized for that framework's strengths
+- **No third-party state management** (NgRx, Redux, etc.) - use framework-native solutions
+- **No UI component libraries** (Material, Ant Design, etc.) - custom optimized components
+- **Framework-specific optimizations encouraged**: OnPush, memoization, fine-grained reactivity
 - **Latest/preview features** for best-case scenarios
+- **Performance over code similarity**: Functional equivalence, not structural similarity
 
 ### Data Consistency
 

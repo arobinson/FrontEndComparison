@@ -6,6 +6,25 @@ Build identical OpenFoodFacts applications across Angular, React, Svelte, and So
 
 ## Shared Components (TypeScript)
 
+### `/shared-styles/` Directory Structure
+
+```text
+shared-styles/
+├── variables.css             # CSS custom properties (colors, spacing, fonts)
+├── table-layout.css          # Table structure, sticky headers/footers, scrolling
+├── component-themes.css      # Consistent styling for buttons, inputs, badges
+├── typography.css            # Font families, sizes, weights
+└── utilities.css             # Common utility classes
+```
+
+**Table Layout Specifications**:
+
+- **Sticky header**: Column names and filter row always visible during scroll
+- **Sticky footer**: Pagination controls always visible at bottom
+- **Viewport-fit**: Table fills available viewport height
+- **Scrollable**: Both horizontal (columns) and vertical (rows) scrolling
+- **Reset filter button**: Positioned in table header area
+
 ### `/shared-types/` Directory Structure
 
 ```text
@@ -51,20 +70,54 @@ shared-types/
 
 - `resource()` API for data fetching
 - Zoneless change detection (already configured)
-- Control flow syntax (`@for`, `@if`)
+- Control flow syntax (`@for`, `@if`, `@defer`)
 - Signal-based reactivity throughout
+- `@defer` blocks with viewport triggers for lazy loading
 
 **Components**:
 
-- `ProductListComponent`: 50×50+ table using shared field components
-- `ProductDetailComponent`: Complex nested data display using shared field components
-- **Shared field components**: `TextComponent`, `NumericComponent`, `ImageComponent`, `BooleanComponent`, `DateComponent` (reused in both list and detail views)
+- `ProductListComponent`: 50×50+ table using diverse specialized components
+- `ProductDetailComponent`: Complex nested data display using same components
 - `LoadingComponent`, `ErrorComponent`
+
+**Total: 20 Unique Components** (10 display + 6 filter + 2 table + 2 navigation)
+
+**Display Components** (10 unique):
+
+- `progress-bar` - completeness percentage with visual bar (`@defer` on viewport)
+- `nutrition-grade-badge` - A/B/C/D/E colored badges (`@defer` on viewport)
+- `nova-dots` - 1-4 filled dots indicator (`@defer` on viewport)
+- `product-image` - small (list) vs large (detail) with loading states (`@defer` on viewport)
+- `simple-text` - names, brands with basic styling (shows full text)
+- `truncated-text-popover` - long text with truncation + popover on click (`@defer` on interaction)
+- `large-counter` - scan numbers with comma formatting
+- `decimal-units` - nutrition values with units (4.2g, 168 kcal)
+- `simple-quantity` - package sizes (33 cl, 1kg)
+- `help-tooltip` - question mark icon with explanatory text (`@defer` on hover)
+
+**Filter Input Components** (6 unique):
+
+- `range-slider` - completeness percentage filter (0-100%)
+- `grade-selector` - A/B/C/D/E checkbox/dropdown filter
+- `nova-filter` - 1-4 dot selection
+- `text-search` - brand/name/category search
+- `date-range-picker` - creation/modification date filters  
+- `number-range` - scan count, nutrition value ranges
+
+**Table Infrastructure Components** (2 unique):
+
+- `data-table` - main table container with sticky header, viewport-fit scrolling, column management
+- `table-paginator` - sticky footer pagination controls with page size options
+
+**Navigation Components** (2 unique):
+
+- `breadcrumb-nav` - simple navigation (List → Detail Product Name)
+- `action-button` - styled buttons (Refresh, Reset Filters, etc.)
 
 **Angular-Specific Features**:
 
-- **Pipes**: `CurrencyPipe`, `DatePipe`, `DecimalPipe`, `PercentPipe` for data formatting
-- **Directives**: `HighlightDirective` (attribute), `TooltipDirective` (attribute), `LazyLoadDirective` for images
+- **Pipes** (4): `numberWithCommas`, `relativeDate`, `absoluteDate`, `quantityUnit` for pure data formatting
+- **Directives** (2): `helpTooltip` (adds question mark icon), `expandableText` (click to expand/collapse behavior)
 - **Structural Directives**: Custom `*sortBy` directive for table sorting logic
 
 **Services**:

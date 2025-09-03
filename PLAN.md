@@ -61,7 +61,9 @@ shared-types/
 
 - **Data transformers**: API response → camelCase view model converters (product_name → productName)
 - **Field formatters**: Number formatting, date parsing, image URL builders
-- **API client**: Framework-agnostic OpenFoodFacts API client (pure TypeScript/fetch)
+- **API client**: Framework-agnostic API client with endpoints:
+  - Product data: OpenFoodFacts integration  
+  - Filter metadata: `/api/filter-options/*` endpoints
 - **Performance measurement**: Timing utilities, memory usage helpers
 
 ## Framework-Specific Implementations
@@ -82,7 +84,7 @@ shared-types/
 - `ProductDetailComponent`: Complex nested data display using same components
 - `LoadingComponent`, `ErrorComponent`
 
-**Total: 20 Unique Components** (10 display + 6 filter + 2 table + 2 navigation)
+**Total: 22 Unique Components** (10 display + 8 filter + 2 table + 2 navigation)
 
 **Display Components** (10 unique):
 
@@ -97,14 +99,35 @@ shared-types/
 - `simple-quantity` - package sizes (33 cl, 1kg)
 - `help-tooltip` - question mark icon with explanatory text (`@defer` on hover)
 
-**Filter Input Components** (6 unique):
+**Filter Input Components** (8 unique):
 
 - `range-slider` - completeness percentage filter (0-100%)
-- `grade-selector` - A/B/C/D/E checkbox/dropdown filter
-- `nova-filter` - 1-4 dot selection
-- `text-search` - brand/name/category search
-- `date-range-picker` - creation/modification date filters  
+- `grade-selector` - A/B/C/D/E multi-select checkboxes
+- `nova-filter` - 1-4 multi-select dots
+- `category-multiselect` - 8 main categories (beverages, dairy, snacks, etc.) with checkboxes
+- `manufacturing-multiselect` - ~45 manufacturing places with checkboxes  
+- `text-search` - countries/brands/stores/packaging search (contains matching)  
+- `date-range-picker` - creation/modification date filters
 - `number-range` - scan count, nutrition value ranges
+
+**Multi-select Data Sources** (≤25 options for good UX):
+
+- Categories: Fixed 8 options from metadata (beverages, dairy, snacks, etc.)  
+- Manufacturing places: Server endpoint `/api/filter-options/manufacturing-places` (~45 unique values)
+- Nutrition grades: Fixed A/B/C/D/E options (computed client-side)
+- Nova groups: Fixed 1/2/3/4 options (computed client-side)
+
+**Text Search Filters** (>50 options, too many for multi-select):
+
+- Countries: Contains search (~92 unique values)
+- Brands: Contains search (~104 unique values)  
+- Stores: Contains search (~68 unique values)
+- Packaging: Contains search (~102 unique values)
+
+**API Endpoints for Filter Metadata**:
+
+- `GET /api/filter-options/manufacturing-places` - Returns `{ places: string[] }` (~45 options)
+- Performance benefit: Only load manageable multi-select options from server
 
 **Table Infrastructure Components** (2 unique):
 

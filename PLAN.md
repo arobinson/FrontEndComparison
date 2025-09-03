@@ -10,12 +10,14 @@ Build identical OpenFoodFacts applications across Angular, React, Svelte, and So
 
 ```text
 shared-styles/
-├── variables.css             # CSS custom properties (colors, spacing, fonts)
-├── table-layout.css          # Table structure, sticky headers/footers, scrolling
-├── component-themes.css      # Consistent styling for buttons, inputs, badges
-├── typography.css            # Font families, sizes, weights
-└── utilities.css             # Common utility classes
+└── variables.css             # CSS custom properties only (colors, spacing, fonts, breakpoints)
 ```
+
+**CSS Strategy**:
+
+- **Shared**: Only CSS custom properties/variables for consistent theming
+- **Framework-specific**: Each framework implements component styles using their preferred approach
+- **Benefits**: Tests each framework's CSS handling (Angular component styles, React CSS modules, Svelte scoped styles, SolidJS styled components)
 
 **Table Layout Specifications**:
 

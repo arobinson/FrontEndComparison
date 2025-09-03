@@ -3,7 +3,14 @@
   "ignorePaths": [],
   "dictionaryDefinitions": [],
   "dictionaries": [],
-  "words": ["Contentful", "ecoscore", "nutriscore", "packagings", "solidjs"],
+  "words": [
+    "Contentful",
+    "ecoscore",
+    "nutriscore",
+    "packagings",
+    "solidjs",
+    "titlecase"
+  ],
   "ignoreWords": [],
   "import": []
 }

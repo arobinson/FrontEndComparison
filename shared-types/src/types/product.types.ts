@@ -1,82 +1,75 @@
 // OpenFoodFacts Product View Models with camelCase TypeScript conventions
 
 export interface ProductViewModel {
-  // Core identifiers
+  // Core identifiers (100% reliable)
   code: string;
-  productName?: string;
-  genericName?: string;
-  brands?: string;
+  productName: string;
+  categories: string;
+  countries: string;
   
-  // Categories and origins
-  categories?: string;
-  origins?: string;
-  manufacturingPlaces?: string;
-  stores?: string;
-  countries?: string;
-  
-  // Product details
-  labels?: string;
-  packaging?: string;
-  quantity?: string;
-  servingSize?: string;
-  
-  // Nutrition and health
-  nutritionScore?: number;
+  // Scores and grades (100% reliable)
+  ecoGrade: string;
+  nutritionGrade: string;
+  nutritionGrades: string;
   novaGroup?: number;
-  ecoScore?: number;
   
-  // Allergens and dietary
-  allergens?: string;
-  traces?: string;
-  vegetarian?: boolean;
-  vegan?: boolean;
-  palmOilFree?: boolean;
+  // Timestamps (100% reliable)
+  createdAt: Date;
+  lastModifiedAt: Date;
   
-  // Timestamps
-  createdAt?: Date;
-  lastModifiedAt?: Date;
+  // Metadata (100% reliable)
+  completeness: number;
+  totalScans: number;
+  uniqueScans: number;
   
-  // Images
+  // Images (98%+ reliable)
   images: ImageViewModel;
   
-  // Nutrition details
+  // Nutrition details (85%+ reliable fields only)
   nutrition: NutritionViewModel;
-  
-  // Additional data
-  ingredients?: string;
-  completeness?: number;
-  uniqueScans?: number;
-  
-  // Single-value metrics for performance testing
-  totalScans?: number;
-  ingredientsCount?: number;
-  unknownIngredientsCount?: number;
-  additivesCount?: number;
-  ecoGrade?: string;
-  nutritionGrade?: string;
-  nutritionScoreValue?: number;
-  purchasePlaces?: string;
-  mainCategory?: string;
 }
 
 export interface NutritionViewModel {
-  // Energy
+  // Energy values (85% reliable)
+  energy?: number;
+  energyKcal?: number;
   energyPer100g?: number;
-  energyPerServing?: number;
+  energyValue?: number;
+  energyKcalValueComputed?: number;
   
-  // Macro-nutrients
-  proteinsPer100g?: number;
+  // Macro-nutrients (85% reliable)
+  carbohydrates?: number;
   carbohydratesPer100g?: number;
-  fatPer100g?: number;
-  sugarsPer100g?: number;
-  fiberPer100g?: number;
-  saturatedFatPer100g?: number;
+  carbohydratesValue?: number;
   
-  // Minerals and others
-  sodiumPer100g?: number;
+  proteins?: number;
+  proteinsPer100g?: number;
+  proteinsValue?: number;
+  
+  fat?: number;
+  fatPer100g?: number;
+  fatValue?: number;
+  
+  // Sugars and other nutrients (80% reliable)
+  sugars?: number;
+  sugarsPer100g?: number;
+  sugarsValue?: number;
+  
+  saturatedFat?: number;
+  saturatedFatPer100g?: number;
+  saturatedFatValue?: number;
+  
+  salt?: number;
   saltPer100g?: number;
-  cholesterolPer100g?: number;
-  caffeinePer100g?: number;
+  saltValue?: number;
+  
+  sodium?: number;
+  sodiumPer100g?: number;
+  sodiumValue?: number;
+  
+  // Nutrition score
+  nutritionScoreFr?: number;
+  nutritionScoreFrPer100g?: number;
 }
 
 export interface ImageViewModel {
@@ -164,6 +157,10 @@ export interface RawProduct {
   ingredients_text?: string;
   completeness?: number;
   unique_scans_n?: number;
+  scans_n?: number;
+  ecoscore_grade?: string;
+  nutriscore_grade?: string;
+  nutrition_grades?: string;
   images?: any;
   nutriments?: any;
 }

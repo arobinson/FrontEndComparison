@@ -9,9 +9,9 @@
         <div class="info-section">
           <h3>Basic Information</h3>
           <p><strong>Code:</strong> {{ productResource.value()!.code }}</p>
-          <p><strong>Brands:</strong> {{ productResource.value()!.brands || 'N/A' }}</p>
           <p><strong>Categories:</strong> {{ productResource.value()!.categories || 'N/A' }}</p>
-          <p><strong>Origins:</strong> {{ productResource.value()!.origins || 'N/A' }}</p>
+          <p><strong>Countries:</strong> {{ productResource.value()!.countries || 'N/A' }}</p>
+          <p><strong>Completeness:</strong> {{ productResource.value()!.completeness }}%</p>
         </div>
         
         @if (productResource.value()!.images.frontImageDisplay) {
@@ -25,9 +25,10 @@
       
       <div class="nutrition-section">
         <h3>Nutrition & Health</h3>
-        <p><strong>Nutrition Score:</strong> {{ productResource.value()!.nutritionScore || 'N/A' }}</p>
+        <p><strong>Nutrition Grade:</strong> {{ productResource.value()!.nutritionGrade || 'N/A' }}</p>
         <p><strong>Nova Group:</strong> {{ productResource.value()!.novaGroup || 'N/A' }}</p>
-        <p><strong>Eco Score:</strong> {{ productResource.value()!.ecoScore || 'N/A' }}</p>
+        <p><strong>Eco Grade:</strong> {{ productResource.value()!.ecoGrade || 'N/A' }}</p>
+        <p><strong>Total Scans:</strong> {{ productResource.value()!.totalScans | number }}</p>
       </div>
     </div>
   } @else if (isLoading()) {

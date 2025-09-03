@@ -1,0 +1,134 @@
+<div class="data-table-container">
+  @if (hasData()) {
+    <div class="table-wrapper">
+      <table class="data-table">
+      <thead class="table-header">
+        <tr>
+          @for (column of columns(); track column) {
+            <th class="header-cell" scope="col">
+              @if (headerTemplate()) {
+                <ng-container
+                  *ngTemplateOutlet="
+                    headerTemplate();
+                    context: { $implicit: column, column: column }
+                  "
+                ></ng-container>
+              } @else {
+                {{ column }}
+              }
+            </th>
+          }
+        </tr>
+
+        @if (renderFilter()) {
+          <tr class="filter-row">
+            @for (column of columns(); track column) {
+              <th class="filter-cell" scope="col">
+                @if (filterTemplate()) {
+                  <ng-container
+                    *ngTemplateOutlet="
+                      filterTemplate();
+                      context: { $implicit: column, column: column }
+                    "
+                  ></ng-container>
+                }
+              </th>
+            }
+          </tr>
+        }
+      </thead>
+
+      <tbody class="table-body">
+        @for (row of value(); track $index) {
+          <tr class="data-row">
+            @for (column of columns(); track column) {
+              <td class="data-cell">
+                @if (dataTemplate()) {
+                  <ng-container
+                    *ngTemplateOutlet="
+                      dataTemplate();
+                      context: {
+                        $implicit: row[column],
+                        column: column,
+                        row: row,
+                        value: row[column],
+                      }
+                    "
+                  ></ng-container>
+                } @else {
+                  {{ row[column] }}
+                }
+              </td>
+            }
+          </tr>
+        }
+      </tbody>
+      </table>
+    </div>
+
+    <div class="table-paginator">
+      <div class="page-size-selector">
+        <label for="pageSize">Items per page:</label>
+        <select
+          id="pageSize"
+          [ngModel]="pageSize()"
+          [class.error]="!isValidPageSize()"
+          (ngModelChange)="onPageSizeChange(+$event)"
+        >
+          @for (size of pageSizes(); track size) {
+            <option [value]="size">{{ size }}</option>
+          }
+        </select>
+        @if (!isValidPageSize()) {
+          <span class="error-message">Invalid page size: {{ pageSize() }}</span>
+        }
+      </div>
+
+      <div class="pagination-controls">
+        <aff-button
+          [disabled]="page() === 0"
+          (clicked)="onFirstPage()"
+          size="sm"
+        >
+          First
+        </aff-button>
+
+        <aff-button
+          [disabled]="page() === 0"
+          (clicked)="onPreviousPage()"
+          size="sm"
+        >
+          Previous
+        </aff-button>
+
+        <span class="page-info">
+          Page {{ page() + 1 }} of {{ totalPages() }}
+        </span>
+
+        <aff-button
+          [disabled]="page() >= totalPages() - 1"
+          (clicked)="onNextPage()"
+          size="sm"
+        >
+          Next
+        </aff-button>
+
+        <aff-button
+          [disabled]="page() >= totalPages() - 1"
+          (clicked)="onLastPage()"
+          size="sm"
+        >
+          Last
+        </aff-button>
+      </div>
+    </div>
+  } @else {
+    <div class="empty-state">
+      @if (emptyTemplate()) {
+        <ng-container *ngTemplateOutlet="emptyTemplate()"></ng-container>
+      } @else {
+        <p class="empty-text">{{ emptyText() }}</p>
+      }
+    </div>
+  }
+</div>

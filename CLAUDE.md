@@ -34,6 +34,44 @@ cd AngularFoodFacts
 - **Generate component**: `pnpm exec ng generate component component-name`
 - **See available schematics**: `pnpm exec ng generate --help`
 
+## Backend Server
+
+**IMPORTANT**: This project includes a local Node.js backend server for performance testing.
+
+### Backend Location and Commands
+
+- **Source code**: `Backend/src/server.ts`
+- **Start server**: `cd Backend && pnpm run dev` (uses tsx with watch mode)
+- **API endpoint**: `http://localhost:3001/api`
+- **Data transformers**: Uses `shared-types` transformers for reliable field mapping
+
+### Backend Architecture
+
+The backend serves cached OpenFoodFacts data using our reliable field transformers:
+
+- Loads data from `../shared-data/open-food-facts-products.json`
+- Transforms using `transformOpenFoodFactsToProductViewModel` from shared-types
+- Provides REST API with filtering, search, and pagination
+- Returns only reliable fields (80%+ data completeness) for consistent table display
+
+### API Endpoints
+
+- `GET /api/products?category=food&limit=50&skip=0` - Get products by category
+- `GET /api/products/:code` - Get single product by barcode
+- `GET /api/categories` - Get available categories
+- `GET /health` - Health check
+
+**Never bypass the local backend** - it's essential for performance testing and provides fast, reliable data.
+
+### Package Manager
+
+**CRITICAL**: This project uses pnpm exclusively. 
+
+- **✅ ALWAYS use**: `pnpm`, `pnpm run`, `pnpm exec`
+- **❌ NEVER use**: `npm`, `npx`, `yarn` 
+- **Angular commands**: `pnpm exec ng [command]` (never `ng [command]` directly)
+- **All scripts**: Use `pnpm run [script]` or `pnpm -r [command]` for workspace operations
+
 ## Architecture
 
 ### Angular Configuration

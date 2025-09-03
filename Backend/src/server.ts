@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import { readFileSync } from 'fs';
 import { join } from 'path';
-import { transformOpenFoodFactsToProductViewModel, type OpenFoodFactsProduct } from 'shared-types';
+// No longer need transformers for mock data
 
 const app = express();
 const PORT = 3001;
@@ -11,21 +11,19 @@ const PORT = 3001;
 app.use(cors());
 app.use(express.json());
 
-// Load the Open Food Facts data
-let productsData: any;
+// Load the Mock data
+let productsData: any[];
 try {
-  const dataPath = join(process.cwd(), '..', 'shared-data', 'open-food-facts-products.json');
+  const dataPath = join(process.cwd(), '..', 'shared-data', 'MOCK_DATA.json');
   productsData = JSON.parse(readFileSync(dataPath, 'utf-8'));
-  console.log(`📊 Loaded ${productsData.products.length} products from Open Food Facts`);
+  console.log(`📊 Loaded ${productsData.length} mock products`);
 } catch (error) {
-  console.error('❌ Failed to load Open Food Facts data:', error);
+  console.error('❌ Failed to load Mock data:', error);
   process.exit(1);
 }
 
-// Transform all products to ProductViewModel format
-const transformedProducts = productsData.products.map((product: OpenFoodFactsProduct) => 
-  transformOpenFoodFactsToProductViewModel(product)
-);
+// Mock data is already in the correct flat format - no transformation needed
+const transformedProducts = productsData;
 
 // API Routes
 app.get('/api/products', (req, res) => {
@@ -45,7 +43,6 @@ app.get('/api/products', (req, res) => {
     const searchTerm = (search as string).toLowerCase();
     filteredProducts = filteredProducts.filter((product: any) => 
       product.productName?.toLowerCase().includes(searchTerm) ||
-      product.brands?.toLowerCase().includes(searchTerm) ||
       product.categories?.toLowerCase().includes(searchTerm)
     );
   }

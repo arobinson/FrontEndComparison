@@ -1,7 +1,7 @@
 import { Component, inject, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
-import { FoodFacts } from '../services/food-facts';
+import { FoodFacts } from '../food-facts';
 
 @Component({
   selector: 'aff-product-detail',

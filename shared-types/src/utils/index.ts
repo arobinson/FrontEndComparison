@@ -32,7 +32,6 @@ export function searchProducts(products: ProductViewModel[], query: string): Pro
   const searchTerm = query.toLowerCase();
   return products.filter(product => 
     product.productName?.toLowerCase().includes(searchTerm) ||
-    product.brands?.toLowerCase().includes(searchTerm) ||
     product.categories?.toLowerCase().includes(searchTerm)
   );
 }
@@ -69,29 +68,26 @@ export function transformDummyJsonToProductViewModel(dummyProduct: DummyJsonProd
   const stores = ['Walmart', 'Target', 'Whole Foods', 'Kroger', 'Safeway', 'Costco'];
   
   return {
+    // Core identifiers (required)
     code: String(dummyProduct.id),
     productName: dummyProduct.title,
-    genericName: `Generic ${dummyProduct.category}`,
-    brands: dummyProduct.brand,
     categories: dummyProduct.category,
-    origins: origins[seedRandom(seed + 3, 0, origins.length - 1)],
-    manufacturingPlaces: `${countries[seedRandom(seed + 4, 0, countries.length - 1)]} Factory`,
-    stores: stores[seedRandom(seed + 5, 0, stores.length - 1)],
     countries: countries[seedRandom(seed + 6, 0, countries.length - 1)],
-    labels: `Certified ${isVegan ? 'Vegan' : isVegetarian ? 'Vegetarian' : 'Quality'}`,
-    packaging: `${seedRandom(seed + 7, 100, 500)}g Box`,
-    quantity: `${seedRandom(seed + 8, 200, 1000)}g`,
-    servingSize: `${seedRandom(seed + 9, 20, 100)}g`,
-    nutritionScore: Math.floor(dummyProduct.rating),
-    novaGroup: seedRandom(seed + 10, 1, 4),
-    ecoScore: Math.floor(dummyProduct.rating * 20),
-    allergens: seedRandom(seed + 11, 0, 1) ? allergensList[seedRandom(seed + 12, 0, allergensList.length - 1)] : undefined,
-    traces: seedRandom(seed + 13, 0, 1) ? `May contain ${allergensList[seedRandom(seed + 14, 0, allergensList.length - 1)]}` : undefined,
-    vegetarian: isVegetarian,
-    vegan: isVegan,
-    palmOilFree: seedRandom(seed + 15, 0, 1) === 1,
+    
+    // Scores and grades (required)
+    ecoGrade: ['a', 'b', 'c', 'd', 'e'][seedRandom(seed + 10, 0, 4)],
+    nutritionGrade: ['a', 'b', 'c', 'd', 'e'][seedRandom(seed + 11, 0, 4)],
+    nutritionGrades: ['a', 'b', 'c', 'd', 'e'][seedRandom(seed + 12, 0, 4)],
+    novaGroup: seedRandom(seed + 13, 1, 4),
+    
+    // Timestamps (required)
     createdAt: new Date(2020 + seedRandom(seed + 16, 0, 4), seedRandom(seed + 17, 0, 11), seedRandom(seed + 18, 1, 28)),
     lastModifiedAt: new Date(2023 + seedRandom(seed + 19, 0, 1), seedRandom(seed + 20, 0, 11), seedRandom(seed + 21, 1, 28)),
+    
+    // Metadata (required)
+    completeness: seedRandom(seed + 49, 60, 100),
+    totalScans: seedRandom(seed + 50, 100, 10000),
+    uniqueScans: seedRandom(seed + 51, 50, 5000),
     images: {
       frontImageSmall: dummyProduct.thumbnail,
       frontImageDisplay: dummyProduct.images?.[0] || dummyProduct.thumbnail,
@@ -103,22 +99,46 @@ export function transformDummyJsonToProductViewModel(dummyProduct: DummyJsonProd
       packagingImageDisplay: dummyProduct.images?.[6]
     },
     nutrition: {
-      energyPer100g: seedRandom(seed + 22, 50, 500),
-      energyPerServing: seedRandom(seed + 23, 20, 200),
-      proteinsPer100g: seedRandom(seed + 24, 1, 30),
-      carbohydratesPer100g: seedRandom(seed + 25, 5, 80),
-      fatPer100g: seedRandom(seed + 26, 0, 40),
-      sugarsPer100g: seedRandom(seed + 27, 0, 30),
-      fiberPer100g: seedRandom(seed + 28, 0, 15),
-      saturatedFatPer100g: seedRandom(seed + 29, 0, 15),
-      sodiumPer100g: seedRandom(seed + 30, 0, 2000),
-      saltPer100g: seedRandom(seed + 31, 0, 5),
-      cholesterolPer100g: seedRandom(seed + 32, 0, 100),
-      caffeinePer100g: seedRandom(seed + 33, 0, 200)
-    },
-    ingredients: `Water, ${dummyProduct.category.toLowerCase()}, Natural flavors, Preservatives`,
-    completeness: seedRandom(seed + 34, 60, 100),
-    uniqueScans: seedRandom(seed + 35, 100, 10000)
+      // Energy values
+      energy: seedRandom(seed + 22, 200, 2500),
+      energyKcal: seedRandom(seed + 23, 50, 600),
+      energyPer100g: seedRandom(seed + 24, 50, 600),
+      energyValue: seedRandom(seed + 25, 50, 600),
+      
+      // Macro-nutrients
+      carbohydrates: seedRandom(seed + 26, 5, 80),
+      carbohydratesPer100g: seedRandom(seed + 27, 5, 80),
+      carbohydratesValue: seedRandom(seed + 28, 5, 80),
+      
+      proteins: seedRandom(seed + 29, 1, 30),
+      proteinsPer100g: seedRandom(seed + 30, 1, 30),
+      proteinsValue: seedRandom(seed + 31, 1, 30),
+      
+      fat: seedRandom(seed + 32, 0, 40),
+      fatPer100g: seedRandom(seed + 33, 0, 40),
+      fatValue: seedRandom(seed + 34, 0, 40),
+      
+      // Other nutrients
+      sugars: seedRandom(seed + 35, 0, 30),
+      sugarsPer100g: seedRandom(seed + 36, 0, 30),
+      sugarsValue: seedRandom(seed + 37, 0, 30),
+      
+      saturatedFat: seedRandom(seed + 38, 0, 15),
+      saturatedFatPer100g: seedRandom(seed + 39, 0, 15),
+      saturatedFatValue: seedRandom(seed + 40, 0, 15),
+      
+      salt: seedRandom(seed + 41, 0, 5),
+      saltPer100g: seedRandom(seed + 42, 0, 5),
+      saltValue: seedRandom(seed + 43, 0, 5),
+      
+      sodium: seedRandom(seed + 44, 0, 2000),
+      sodiumPer100g: seedRandom(seed + 45, 0, 2000),
+      sodiumValue: seedRandom(seed + 46, 0, 2000),
+      
+      // Nutrition score
+      nutritionScoreFr: seedRandom(seed + 47, 0, 40),
+      nutritionScoreFrPer100g: seedRandom(seed + 48, 0, 40)
+    }
   };
 }
 

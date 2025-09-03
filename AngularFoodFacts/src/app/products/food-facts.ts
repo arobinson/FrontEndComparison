@@ -24,7 +24,7 @@ export class FoodFacts {
         const response = await fetch(url);
         const data = (await response.json()) as { products?: ProductViewModel[] };
 
-        // Local backend already returns transformed ProductViewModel objects
+        // Local backend returns transformed ProductViewModel objects
         return data?.products || [];
       },
     });

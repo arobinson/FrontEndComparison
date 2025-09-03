@@ -2,59 +2,36 @@ import { ProductViewModel, NutritionViewModel, ImageViewModel, RawProduct } from
 
 /**
  * Transform raw OpenFoodFacts API response (snake_case) to camelCase view model
+ * Updated to match reliable fields from OpenFoodFacts API
  */
 export function transformToProductViewModel(raw: RawProduct): ProductViewModel {
   let result: ProductViewModel;
 
-  // Transform basic properties
-  const basicProps = {
+  result = {
+    // Core identifiers (required)
     code: raw.code,
-    productName: raw.product_name,
-    genericName: raw.generic_name,
-    brands: raw.brands,
-    categories: raw.categories,
-    origins: raw.origins,
-    manufacturingPlaces: raw.manufacturing_places,
-    stores: raw.stores,
-    countries: raw.countries,
-    labels: raw.labels,
-    packaging: raw.packaging,
-    quantity: raw.quantity,
-    servingSize: raw.serving_size,
-    nutritionScore: raw.nutrition_score_fr,
+    productName: raw.product_name || `Product ${raw.code}`,
+    categories: raw.categories || 'Unknown',
+    countries: raw.countries || 'Unknown',
+    
+    // Scores and grades (required) 
+    ecoGrade: raw.ecoscore_grade || 'unknown',
+    nutritionGrade: raw.nutriscore_grade || 'unknown', 
+    nutritionGrades: raw.nutrition_grades || 'unknown',
     novaGroup: raw.nova_group,
-    ecoScore: raw.ecoscore_score,
-    allergens: raw.allergens,
-    traces: raw.traces,
-    ingredients: raw.ingredients_text,
-    completeness: raw.completeness,
-    uniqueScans: raw.unique_scans_n
-  };
-
-  // Transform boolean fields
-  const booleanProps = {
-    vegetarian: parseBooleanString(raw.vegetarian),
-    vegan: parseBooleanString(raw.vegan),
-    palmOilFree: parseBooleanString(raw.palm_oil_free)
-  };
-
-  // Transform timestamps
-  const dateProps = {
-    createdAt: raw.created_t ? new Date(raw.created_t * 1000) : undefined,
-    lastModifiedAt: raw.last_modified_t ? new Date(raw.last_modified_t * 1000) : undefined
-  };
-
-  // Transform nested objects
-  const nestedProps = {
+    
+    // Timestamps (required)
+    createdAt: raw.created_t ? new Date(raw.created_t * 1000) : new Date(),
+    lastModifiedAt: raw.last_modified_t ? new Date(raw.last_modified_t * 1000) : new Date(),
+    
+    // Metadata (required)
+    completeness: raw.completeness ? Math.round(raw.completeness * 100) : 0,
+    totalScans: raw.scans_n || 0,
+    uniqueScans: raw.unique_scans_n || 0,
+    
+    // Nested objects
     images: transformToImageViewModel(raw.images),
     nutrition: transformToNutritionViewModel(raw.nutriments)
-  };
-
-  result = {
-    ...basicProps,
-    ...booleanProps,
-    ...dateProps,
-    ...nestedProps
   };
 
   return result;
@@ -62,6 +39,7 @@ export function transformToProductViewModel(raw: RawProduct): ProductViewModel {
 
 /**
  * Transform raw nutrition data to camelCase view model
+ * Updated to match reliable nutrition fields from OpenFoodFacts API
  */
 function transformToNutritionViewModel(rawNutriments: any): NutritionViewModel {
   let result: NutritionViewModel;
@@ -70,18 +48,46 @@ function transformToNutritionViewModel(rawNutriments: any): NutritionViewModel {
     result = {};
   } else {
     result = {
-      energyPer100g: rawNutriments['energy_100g'],
-      energyPerServing: rawNutriments['energy_serving'],
-      proteinsPer100g: rawNutriments['proteins_100g'],
+      // Energy values (85% reliable)
+      energy: rawNutriments['energy'],
+      energyKcal: rawNutriments['energy-kcal'],
+      energyPer100g: rawNutriments['energy-kcal_100g'] || rawNutriments['energy_100g'],
+      energyValue: rawNutriments['energy-kcal_value'] || rawNutriments['energy_value'],
+      energyKcalValueComputed: rawNutriments['energy-kcal_value_computed'],
+      
+      // Macro-nutrients (85% reliable)
+      carbohydrates: rawNutriments['carbohydrates'],
       carbohydratesPer100g: rawNutriments['carbohydrates_100g'],
+      carbohydratesValue: rawNutriments['carbohydrates_value'],
+      
+      proteins: rawNutriments['proteins'],
+      proteinsPer100g: rawNutriments['proteins_100g'],
+      proteinsValue: rawNutriments['proteins_value'],
+      
+      fat: rawNutriments['fat'],
       fatPer100g: rawNutriments['fat_100g'],
+      fatValue: rawNutriments['fat_value'],
+      
+      // Sugars and other nutrients (80% reliable)
+      sugars: rawNutriments['sugars'],
       sugarsPer100g: rawNutriments['sugars_100g'],
-      fiberPer100g: rawNutriments['fiber_100g'],
+      sugarsValue: rawNutriments['sugars_value'],
+      
+      saturatedFat: rawNutriments['saturated-fat'],
       saturatedFatPer100g: rawNutriments['saturated-fat_100g'],
-      sodiumPer100g: rawNutriments['sodium_100g'],
+      saturatedFatValue: rawNutriments['saturated-fat_value'],
+      
+      salt: rawNutriments['salt'],
       saltPer100g: rawNutriments['salt_100g'],
-      cholesterolPer100g: rawNutriments['cholesterol_100g'],
-      caffeinePer100g: rawNutriments['caffeine_100g']
+      saltValue: rawNutriments['salt_value'],
+      
+      sodium: rawNutriments['sodium'],
+      sodiumPer100g: rawNutriments['sodium_100g'],
+      sodiumValue: rawNutriments['sodium_value'],
+      
+      // Nutrition score
+      nutritionScoreFr: rawNutriments['nutrition-score-fr'],
+      nutritionScoreFrPer100g: rawNutriments['nutrition-score-fr_100g']
     };
   }
 

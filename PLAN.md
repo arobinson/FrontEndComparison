@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-Build identical OpenFoodFacts applications across Angular, React, Svelte, and SolidJS to compare performance and bundle sizes. Each app features a 50+ row × 50+ column table with diverse component types, plus detailed product views.
+Build identical ecommerce product table applications across Angular, React, Svelte, and SolidJS to compare performance and bundle sizes. Each app features a 200-product × 54-column table with 17+ diverse component types, plus detailed product views. Data is served from local mock JSON for consistent performance testing.
 
 ## Shared Components (TypeScript)
 
@@ -40,22 +40,109 @@ shared-types/
 └── constants.ts              # URLs, pagination limits, etc.
 ```
 
-### Shared Type Definitions (47 fields)
+### Mock Data Structure (54 fields)
 
-**View Model Classes**:
+**Flat Product Model** (snake_case from Mockaroo):
 
-- `ProductViewModel`: camelCase properties (productName, brands, categories, etc.)
-- `NutritionViewModel`: camelCase nutrition data (energyPer100g, proteinsPer100g, etc.)
-- `ImageViewModel`: camelCase image URLs (frontImageSmall, ingredientsImageDisplay, etc.)
+All product fields are at the root level for optimal table performance (`value[column]` access):
 
-**Field Categories**:
+**Core Product (8 fields)**: id, product_name, brand, description, category, sku, model_number, barcode
+**Contact (4 fields)**: first_name, last_name, supplier_email, supplier_phone  
+**Financial (6 fields)**: price, cost, wholesale_price, currency_code, tax_rate, discount_percent
+**Inventory (4 fields)**: stock_quantity, units_sold, reorder_level, warehouse_location
+**Quality (6 fields)**: quality_score, customer_rating, review_count, grade, safety_rating, eco_score
+**Dates (4 fields)**: created_date, last_updated, release_date, next_restock_date
+**Flags (6 fields)**: in_stock, is_featured, is_best_seller, requires_shipping, is_digital, has_warranty
+**Visual (3 fields)**: image_url, color, thumbnail_url
+**Geographic (4 fields)**: origin_country, manufacturer_country, product_language, shipping_zone
+**Technical (7 fields)**: supplier_tax_id, material, size, weight_kg, dimensions_cm, certification, warranty_months
+**Time (2 fields)**: shipping_departure_time, flight_duration_hours
 
-- **Text fields** (12): productName, brands, categories, etc. (camelCase)
-- **Numeric fields** (15): All nutriments, scores, quantities (camelCase)
-- **Image fields** (8): Front, ingredients, nutrition thumbnails (camelCase)
-- **Boolean fields** (8): vegetarian, vegan, palmOilFree flags (camelCase)
-- **Date fields** (4): createdAt, lastModifiedAt timestamps (camelCase)
-- **Field metadata**: Display names, formatters, sort functions
+## Data Table Component Types (17+ components)
+
+Each framework must implement these component types to showcase different rendering patterns:
+
+### 1. **product-link** (`id` field)
+- Links to product detail page: `/detail/{id}`
+- Framework-specific routing integration
+
+### 2. **simple-text** (brand, product_name, sku, etc.)  
+- Plain text display with overflow handling
+
+### 3. **truncated-text** (`description` field)
+- Long text with truncation + tooltip/expandable
+
+### 4. **full-name** (first_name + last_name combination)
+- Combines two fields: "John Doe" format
+- Tests template string composition
+
+### 5. **name-initials** (first_name + last_name initials)
+- Displays: "J.D." format  
+- Useful for compact display modes
+
+### 6. **email-masked** (`supplier_email`)  
+- Shows: "jo***@example.com" format
+- Privacy-friendly display
+
+### 7. **phone-formatted** (`supplier_phone`)
+- Formats: "(555) 123-4567" display
+- Regional formatting support
+
+### 8. **progress-bar** (quality_score, eco_score 0-100)
+- Visual progress bars with percentage text
+- Color-coded: red/yellow/green zones
+
+### 9. **grade-badge** (`grade` field A-F)
+- Colored badges: A=green, B=blue, C=yellow, D=orange, F=red
+- Typography and color theming
+
+### 10. **nova-dots** (`safety_rating` 1-4) 
+- Visual dots: ●●●○ (3 filled, 1 empty)
+- Interactive hover states
+
+### 11. **large-counter** (`units_sold`, `review_count`)
+- Formatted with commas: "1,234,567"
+- Abbreviations for large numbers: "1.2M"
+
+### 12. **decimal-units** (`price`, `cost`, `weight_kg`)
+- Currency/unit formatting: "$123.45", "5.2 kg"
+- Locale-aware number formatting  
+
+### 13. **currency-formatted** (wholesale_price + currency_code)
+- Combines amount + currency: "€156.78"
+- Multi-currency support
+
+### 14. **boolean-yesno** (in_stock, is_featured, etc.)
+- Displays: "Yes" / "No" with color coding
+- Icon alternatives: ✓/✗
+
+### 15. **color-chip** (`color` field)
+- Visual color swatches with names
+- Accessibility compliance
+
+### 16. **country-flag** (origin_country, manufacturer_country)
+- Country code → flag emoji + country name
+- "US 🇺🇸 United States" format
+
+### 17. **product-image** (`image_url`, `thumbnail_url`)
+- Lazy-loaded images with fallbacks
+- Loading states and error handling
+
+### 18. **time-display** (`shipping_departure_time`)
+- Time formatting: "2:30 PM" or "14:30"
+- Timezone considerations
+
+### 19. **calculated-arrival** (departure_time + flight_duration_hours)
+- Computed field: shows arrival time
+- Tests reactive calculations
+
+### 20. **absolute-date** (`created_date`, `release_date`)
+- Full date format: "March 15, 2024, 2:30 PM"
+- Localized date formatting
+
+### 21. **relative-date** (`last_updated`)  
+- Relative format: "2 days ago", "3 hours ago"
+- Auto-updating time display
 
 ### Shared Utilities
 

@@ -2,67 +2,67 @@
   @if (hasData()) {
     <div class="table-wrapper">
       <table class="data-table">
-      <thead class="table-header">
-        <tr>
-          @for (column of columns(); track column) {
-            <th class="header-cell" scope="col">
-              @if (headerTemplate()) {
-                <ng-container
-                  *ngTemplateOutlet="
-                    headerTemplate();
-                    context: { $implicit: column, column: column }
-                  "
-                ></ng-container>
-              } @else {
-                {{ column }}
-              }
-            </th>
-          }
-        </tr>
-
-        @if (renderFilter()) {
-          <tr class="filter-row">
+        <thead class="table-header">
+          <tr>
             @for (column of columns(); track column) {
-              <th class="filter-cell" scope="col">
-                @if (filterTemplate()) {
+              <th class="header-cell" scope="col">
+                @if (headerTemplate()) {
                   <ng-container
                     *ngTemplateOutlet="
-                      filterTemplate();
+                      headerTemplate();
                       context: { $implicit: column, column: column }
                     "
                   ></ng-container>
+                } @else {
+                  {{ column }}
                 }
               </th>
             }
           </tr>
-        }
-      </thead>
 
-      <tbody class="table-body">
-        @for (row of value(); track $index) {
-          <tr class="data-row">
-            @for (column of columns(); track column) {
-              <td class="data-cell">
-                @if (dataTemplate()) {
-                  <ng-container
-                    *ngTemplateOutlet="
-                      dataTemplate();
-                      context: {
-                        $implicit: row[column],
-                        column: column,
-                        row: row,
-                        value: row[column],
-                      }
-                    "
-                  ></ng-container>
-                } @else {
-                  {{ row[column] }}
-                }
-              </td>
-            }
-          </tr>
-        }
-      </tbody>
+          @if (renderFilter()) {
+            <tr class="filter-row">
+              @for (column of columns(); track column) {
+                <th class="filter-cell" scope="col">
+                  @if (filterTemplate()) {
+                    <ng-container
+                      *ngTemplateOutlet="
+                        filterTemplate();
+                        context: { $implicit: column, column: column }
+                      "
+                    ></ng-container>
+                  }
+                </th>
+              }
+            </tr>
+          }
+        </thead>
+
+        <tbody class="table-body">
+          @for (row of value(); track $index) {
+            <tr class="data-row">
+              @for (column of columns(); track column) {
+                <td class="data-cell">
+                  @if (dataTemplate()) {
+                    <ng-container
+                      *ngTemplateOutlet="
+                        dataTemplate();
+                        context: {
+                          $implicit: row[column],
+                          column: column,
+                          row: row,
+                          value: row[column],
+                        }
+                      "
+                    ></ng-container>
+                  } @else {
+                    {{ row[column] }}
+                  }
+                </td>
+              }
+            </tr>
+          }
+        </tbody>
       </table>
     </div>
 

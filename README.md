@@ -10,7 +10,7 @@ This repository contains functionally identical implementations of a food produc
 
 - **Angular** (`AngularFoodFacts/`) - Angular 20.x with zoneless change detection and standalone components
 - **React** - Coming soon
-- **Svelte** - Coming soon  
+- **Svelte** - Coming soon
 - **SolidJS** - Coming soon
 
 ## Application Features
@@ -42,6 +42,7 @@ pnpm start  # Runs on http://localhost:3001
 ```
 
 The backend provides endpoints for:
+
 - `/api/products` - Paginated product listing with search and category filtering
 - `/api/products/:code` - Individual product details
 
@@ -59,12 +60,14 @@ This fetches ~150 products across 8 categories with complete nutritional data an
 ## Performance Testing
 
 ### Metrics Measured
+
 - **Web Vitals**: First Contentful Paint (FCP), Largest Contentful Paint (LCP), Cumulative Layout Shift (CLS)
 - **Bundle Analysis**: JavaScript bundle sizes, code splitting effectiveness
 - **Runtime Performance**: Component rendering speed, memory usage, navigation timing
 - **Network Performance**: API request handling, image loading optimization
 
 ### Testing Methodology
+
 - **Puppeteer Automation**: Consistent performance measurement across all implementations
 - **Controlled Environment**: Same hardware, network conditions, and test scenarios
 - **Statistical Analysis**: Multiple test runs with averaged results for reliability
@@ -74,6 +77,7 @@ This fetches ~150 products across 8 categories with complete nutritional data an
 Navigate to any framework directory and follow its specific README for setup instructions.
 
 Example with Angular:
+
 ```bash
 cd AngularFoodFacts
 pnpm install

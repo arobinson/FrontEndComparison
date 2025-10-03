@@ -4,7 +4,7 @@ import { Component, input, computed } from '@angular/core';
   selector: 'aff-relative-date',
   imports: [],
   templateUrl: './relative-date.html',
-  styleUrl: './relative-date.css'
+  styleUrl: './relative-date.css',
 })
 export class RelativeDate {
   readonly value = input.required<string>();

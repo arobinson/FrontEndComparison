@@ -5,7 +5,7 @@ import { RouterOutlet } from '@angular/router';
   selector: 'aff-root',
   imports: [RouterOutlet],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrl: './app.css',
 })
 export class App {
   protected title = 'AngularFoodFacts';

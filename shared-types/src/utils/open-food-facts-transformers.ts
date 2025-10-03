@@ -9,17 +9,17 @@ export interface OpenFoodFactsProduct {
   nova_groups_tags: string[];
   nutriscore_grade: string;
   nutrition_grades: string;
-  
+
   // Basic info (80%+ reliable)
   product_name?: string;
-  
+
   // Metadata (100% reliable)
   created_t: number;
   last_modified_t: number;
   completeness: number;
   scans_n: number;
   unique_scans_n: number;
-  
+
   // Images (98%+ reliable)
   image_front_small_url?: string;
   image_front_url?: string;
@@ -29,39 +29,39 @@ export interface OpenFoodFactsProduct {
   // Nutrition data (85%+ reliable fields only)
   nutriments?: {
     // Energy values (85% reliable)
-    'energy'?: number;
+    energy?: number;
     'energy-kcal'?: number;
     'energy-kcal_100g'?: number;
     'energy-kcal_value'?: number;
     'energy-kcal_value_computed'?: number;
-    'energy_100g'?: number;
-    'energy_value'?: number;
-    
+    energy_100g?: number;
+    energy_value?: number;
+
     // Macronutrients (85% reliable)
-    'carbohydrates'?: number;
-    'carbohydrates_100g'?: number;
-    'carbohydrates_value'?: number;
-    'proteins'?: number;
-    'proteins_100g'?: number;
-    'proteins_value'?: number;
-    'fat'?: number;
-    'fat_100g'?: number;
-    'fat_value'?: number;
-    
+    carbohydrates?: number;
+    carbohydrates_100g?: number;
+    carbohydrates_value?: number;
+    proteins?: number;
+    proteins_100g?: number;
+    proteins_value?: number;
+    fat?: number;
+    fat_100g?: number;
+    fat_value?: number;
+
     // Sugar and other nutrients (80% reliable)
-    'sugars'?: number;
-    'sugars_100g'?: number;
-    'sugars_value'?: number;
+    sugars?: number;
+    sugars_100g?: number;
+    sugars_value?: number;
     'saturated-fat'?: number;
     'saturated-fat_100g'?: number;
     'saturated-fat_value'?: number;
-    'salt'?: number;
-    'salt_100g'?: number;
-    'salt_value'?: number;
-    'sodium'?: number;
-    'sodium_100g'?: number;
-    'sodium_value'?: number;
-    
+    salt?: number;
+    salt_100g?: number;
+    salt_value?: number;
+    sodium?: number;
+    sodium_100g?: number;
+    sodium_value?: number;
+
     // Nutrition score
     'nutrition-score-fr'?: number;
     'nutrition-score-fr_100g'?: number;
@@ -72,10 +72,10 @@ export function transformOpenFoodFactsToProductViewModel(offProduct: OpenFoodFac
   // Helper function to extract NOVA group from tags
   const extractNovaGroup = (novaTags?: string[]): number | undefined => {
     if (!novaTags || !Array.isArray(novaTags)) return undefined;
-    
-    const novaTag = novaTags.find(tag => tag.match(/^en:\d-/));
+
+    const novaTag = novaTags.find((tag) => tag.match(/^en:\d-/));
     if (!novaTag) return undefined;
-    
+
     const match = novaTag.match(/^en:(\d)-/);
     return match ? parseInt(match[1]) : undefined;
   };
@@ -94,7 +94,7 @@ export function transformOpenFoodFactsToProductViewModel(offProduct: OpenFoodFac
     try {
       const images = offProduct.images;
       if (!images?.selected?.front) return undefined;
-      
+
       // Try common languages
       const languages = ['en', 'fr', 'es', 'de'];
       for (const lang of languages) {
@@ -102,7 +102,7 @@ export function transformOpenFoodFactsToProductViewModel(offProduct: OpenFoodFac
         if (imgData?.imgid) {
           const baseUrl = 'https://images.openfoodfacts.org/images/products';
           const code = offProduct.code;
-          
+
           // Format EAN-13 barcode: 6111035000430 -> 611/103/500/0430
           let formattedCode;
           if (code.length === 13) {
@@ -113,7 +113,7 @@ export function transformOpenFoodFactsToProductViewModel(offProduct: OpenFoodFac
             const groups = code.match(/.{1,3}/g) || [code];
             formattedCode = groups.join('/');
           }
-          
+
           const imageSize = size === 'small' ? '200' : '400';
           return `${baseUrl}/${formattedCode}/front_${lang}.${imgData.imgid}.${imageSize}.jpg`;
         }
@@ -121,7 +121,7 @@ export function transformOpenFoodFactsToProductViewModel(offProduct: OpenFoodFac
     } catch {
       // Ignore errors
     }
-    
+
     return undefined;
   };
 
@@ -131,26 +131,26 @@ export function transformOpenFoodFactsToProductViewModel(offProduct: OpenFoodFac
     productName: offProduct.product_name || `Product ${offProduct.code}`,
     categories: offProduct.categories,
     countries: offProduct.countries,
-    
+
     // Scores and grades (100% reliable)
     ecoGrade: offProduct.ecoscore_grade,
     nutritionGrade: offProduct.nutriscore_grade,
     nutritionGrades: offProduct.nutrition_grades,
     novaGroup: extractNovaGroup(offProduct.nova_groups_tags),
-    
-    // Metadata (100% reliable) 
+
+    // Metadata (100% reliable)
     createdAt: new Date(offProduct.created_t * 1000),
     lastModifiedAt: new Date(offProduct.last_modified_t * 1000),
     completeness: Math.round(offProduct.completeness * 100),
     totalScans: offProduct.scans_n,
     uniqueScans: offProduct.unique_scans_n,
-    
+
     // Images (98%+ reliable)
     images: {
       frontImageSmall: offProduct.image_front_small_url || offProduct.image_small_url,
       frontImageDisplay: offProduct.image_front_url || offProduct.image_url
     },
-    
+
     // Nutrition data (only 85%+ reliable fields)
     nutrition: {
       // Energy values (85% reliable)
@@ -159,37 +159,37 @@ export function transformOpenFoodFactsToProductViewModel(offProduct: OpenFoodFac
       energyPer100g: offProduct.nutriments?.['energy-kcal_100g'] || offProduct.nutriments?.energy_100g,
       energyValue: offProduct.nutriments?.['energy-kcal_value'] || offProduct.nutriments?.energy_value,
       energyKcalValueComputed: offProduct.nutriments?.['energy-kcal_value_computed'],
-      
+
       // Macronutrients (85% reliable)
       carbohydrates: offProduct.nutriments?.carbohydrates,
       carbohydratesPer100g: offProduct.nutriments?.carbohydrates_100g,
       carbohydratesValue: offProduct.nutriments?.carbohydrates_value,
-      
+
       proteins: offProduct.nutriments?.proteins,
       proteinsPer100g: offProduct.nutriments?.proteins_100g,
       proteinsValue: offProduct.nutriments?.proteins_value,
-      
+
       fat: offProduct.nutriments?.fat,
       fatPer100g: offProduct.nutriments?.fat_100g,
       fatValue: offProduct.nutriments?.fat_value,
-      
+
       // Sugars and other nutrients (80% reliable)
       sugars: offProduct.nutriments?.sugars,
       sugarsPer100g: offProduct.nutriments?.sugars_100g,
       sugarsValue: offProduct.nutriments?.sugars_value,
-      
+
       saturatedFat: offProduct.nutriments?.['saturated-fat'],
       saturatedFatPer100g: offProduct.nutriments?.['saturated-fat_100g'],
       saturatedFatValue: offProduct.nutriments?.['saturated-fat_value'],
-      
+
       salt: offProduct.nutriments?.salt,
       saltPer100g: offProduct.nutriments?.salt_100g,
       saltValue: offProduct.nutriments?.salt_value,
-      
+
       sodium: offProduct.nutriments?.sodium,
       sodiumPer100g: offProduct.nutriments?.sodium_100g,
       sodiumValue: offProduct.nutriments?.sodium_value,
-      
+
       // Nutrition score
       nutritionScoreFr: offProduct.nutriments?.['nutrition-score-fr'],
       nutritionScoreFrPer100g: offProduct.nutriments?.['nutrition-score-fr_100g']

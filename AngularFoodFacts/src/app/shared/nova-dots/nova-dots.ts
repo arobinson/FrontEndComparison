@@ -4,7 +4,7 @@ import { Component, input, computed } from '@angular/core';
   selector: 'aff-nova-dots',
   imports: [],
   templateUrl: './nova-dots.html',
-  styleUrl: './nova-dots.css'
+  styleUrl: './nova-dots.css',
 })
 export class NovaDots {
   readonly value = input.required<number>();

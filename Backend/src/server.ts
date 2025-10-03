@@ -28,30 +28,29 @@ const transformedProducts = productsData;
 // API Routes
 app.get('/api/products', (req, res) => {
   const { category, limit = '50', skip = '0', search } = req.query;
-  
+
   let filteredProducts = transformedProducts;
-  
+
   // Filter by category
   if (category && category !== 'all') {
-    filteredProducts = filteredProducts.filter((product: any) => 
+    filteredProducts = filteredProducts.filter((product: any) =>
       product.categories?.toLowerCase().includes((category as string).toLowerCase())
     );
   }
-  
+
   // Search filter
   if (search) {
     const searchTerm = (search as string).toLowerCase();
-    filteredProducts = filteredProducts.filter((product: any) => 
-      product.productName?.toLowerCase().includes(searchTerm) ||
-      product.categories?.toLowerCase().includes(searchTerm)
+    filteredProducts = filteredProducts.filter(
+      (product: any) => product.productName?.toLowerCase().includes(searchTerm) || product.categories?.toLowerCase().includes(searchTerm)
     );
   }
-  
+
   // Pagination
   const skipNum = parseInt(skip as string);
   const limitNum = parseInt(limit as string);
   const paginatedProducts = filteredProducts.slice(skipNum, skipNum + limitNum);
-  
+
   res.json({
     products: paginatedProducts,
     total: filteredProducts.length,
@@ -64,7 +63,7 @@ app.get('/api/products', (req, res) => {
 app.get('/api/products/:code', (req, res) => {
   const { code } = req.params;
   const product = transformedProducts.find((p: any) => p.code === code);
-  
+
   if (product) {
     res.json(product);
   } else {
@@ -74,20 +73,22 @@ app.get('/api/products/:code', (req, res) => {
 
 // Get available categories
 app.get('/api/categories', (req, res) => {
-  const categories = Array.from(new Set(
-    transformedProducts
-      .map((p: any) => p.categories)
-      .filter(Boolean)
-      .flatMap((cats: string) => cats.split(',').map(c => c.trim()))
-  )).sort();
-  
+  const categories = Array.from(
+    new Set(
+      transformedProducts
+        .map((p: any) => p.categories)
+        .filter(Boolean)
+        .flatMap((cats: string) => cats.split(',').map((c) => c.trim()))
+    )
+  ).sort();
+
   res.json({ categories });
 });
 
 // Health check
 app.get('/health', (req, res) => {
-  res.json({ 
-    status: 'ok', 
+  res.json({
+    status: 'ok',
     products: transformedProducts.length,
     source: 'Open Food Facts'
   });

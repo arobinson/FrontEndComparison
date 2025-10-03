@@ -1,34 +1,57 @@
 <div class="product-detail-container">
   <button (click)="navigateToList()" class="back-button">← Back to List</button>
-  
+
   @if (hasData()) {
     <div class="product-detail">
-      <h1>{{ productResource.value()!.productName || 'Unknown Product' }}</h1>
-      
+      <h1>{{ productResource.value()!.productName || "Unknown Product" }}</h1>
+
       <div class="product-info">
         <div class="info-section">
           <h3>Basic Information</h3>
           <p><strong>Code:</strong> {{ productResource.value()!.code }}</p>
-          <p><strong>Categories:</strong> {{ productResource.value()!.categories || 'N/A' }}</p>
-          <p><strong>Countries:</strong> {{ productResource.value()!.countries || 'N/A' }}</p>
-          <p><strong>Completeness:</strong> {{ productResource.value()!.completeness }}%</p>
+          <p>
+            <strong>Categories:</strong>
+            {{ productResource.value()!.categories || "N/A" }}
+          </p>
+          <p>
+            <strong>Countries:</strong>
+            {{ productResource.value()!.countries || "N/A" }}
+          </p>
+          <p>
+            <strong>Completeness:</strong>
+            {{ productResource.value()!.completeness }}%
+          </p>
         </div>
-        
+
         @if (productResource.value()!.images.frontImageDisplay) {
           <div class="image-section">
-            <img [src]="productResource.value()!.images.frontImageDisplay" 
-                 [alt]="productResource.value()!.productName" 
-                 class="product-image">
+            <img
+              [src]="productResource.value()!.images.frontImageDisplay"
+              [alt]="productResource.value()!.productName"
+              class="product-image"
+            />
           </div>
         }
       </div>
-      
+
       <div class="nutrition-section">
         <h3>Nutrition & Health</h3>
-        <p><strong>Nutrition Grade:</strong> {{ productResource.value()!.nutritionGrade || 'N/A' }}</p>
-        <p><strong>Nova Group:</strong> {{ productResource.value()!.novaGroup || 'N/A' }}</p>
-        <p><strong>Eco Grade:</strong> {{ productResource.value()!.ecoGrade || 'N/A' }}</p>
-        <p><strong>Total Scans:</strong> {{ productResource.value()!.totalScans | number }}</p>
+        <p>
+          <strong>Nutrition Grade:</strong>
+          {{ productResource.value()!.nutritionGrade || "N/A" }}
+        </p>
+        <p>
+          <strong>Nova Group:</strong>
+          {{ productResource.value()!.novaGroup || "N/A" }}
+        </p>
+        <p>
+          <strong>Eco Grade:</strong>
+          {{ productResource.value()!.ecoGrade || "N/A" }}
+        </p>
+        <p>
+          <strong>Total Scans:</strong>
+          {{ productResource.value()!.totalScans | number }}
+        </p>
       </div>
     </div>
   } @else if (isLoading()) {

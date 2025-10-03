@@ -4,7 +4,7 @@ import { Component, input, computed } from '@angular/core';
   selector: 'aff-absolute-date',
   imports: [],
   templateUrl: './absolute-date.html',
-  styleUrl: './absolute-date.css'
+  styleUrl: './absolute-date.css',
 })
 export class AbsoluteDate {
   readonly value = input.required<string>();
@@ -19,7 +19,7 @@ export class AbsoluteDate {
       result = date.toLocaleDateString('en-US', {
         year: 'numeric',
         month: 'short',
-        day: 'numeric'
+        day: 'numeric',
       });
     }
     return result;

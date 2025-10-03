@@ -4,7 +4,7 @@ import { Component, input, signal } from '@angular/core';
   selector: 'aff-truncated-text',
   imports: [],
   templateUrl: './truncated-text.html',
-  styleUrl: './truncated-text.css'
+  styleUrl: './truncated-text.css',
 })
 export class TruncatedText {
   readonly value = input.required<string>();
@@ -13,7 +13,7 @@ export class TruncatedText {
   readonly isExpanded = signal(false);
 
   toggleExpanded() {
-    this.isExpanded.update(val => !val);
+    this.isExpanded.update((val) => !val);
   }
 
   shouldTruncate(): boolean {

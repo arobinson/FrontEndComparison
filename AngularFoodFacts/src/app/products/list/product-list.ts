@@ -18,41 +18,54 @@ import { RelativeDate } from '../../shared/relative-date/relative-date';
 @Component({
   selector: 'aff-product-list',
   imports: [
-    CommonModule, RouterModule, DataTable, ProductLink, ProgressBar, GradeBadge,
-    NovaDots, TruncatedText, LargeCounter, BooleanYesno, ProductImage,
-    DecimalUnits, AbsoluteDate, RelativeDate
+    CommonModule,
+    RouterModule,
+    DataTable,
+    ProductLink,
+    ProgressBar,
+    GradeBadge,
+    NovaDots,
+    TruncatedText,
+    LargeCounter,
+    BooleanYesno,
+    ProductImage,
+    DecimalUnits,
+    AbsoluteDate,
+    RelativeDate,
   ],
   templateUrl: './product-list.html',
-  styleUrl: './product-list.css'
+  styleUrl: './product-list.css',
 })
 export class ProductList {
   readonly #foodFacts = inject(FoodFacts);
-  
+
   readonly category = signal('all');
-  readonly productsResource = this.#foodFacts.createProductsByCategoryResource(this.category);
-  
+  readonly productsResource = this.#foodFacts.createProductsByCategoryResource(
+    this.category,
+  );
+
   // #region Pagination State
-  
+
   /**
    * Current page for pagination (0-based)
    */
   readonly currentPage = signal(0);
-  
+
   /**
    * Items per page
    */
   readonly pageSize = signal(50);
-  
+
   // #endregion
-  
+
   // #region Column Configuration
-  
+
   /**
    * Data types for different component rendering
    */
   readonly dataTypes = {
     'simple-text': 'simple-text',
-    'truncated-text': 'truncated-text', 
+    'truncated-text': 'truncated-text',
     'progress-bar': 'progress-bar',
     'grade-badge': 'grade-badge',
     'nova-dots': 'nova-dots',
@@ -63,23 +76,68 @@ export class ProductList {
     'relative-date': 'relative-date',
     'boolean-yesno': 'boolean-yesno',
     'product-image': 'product-image',
-    'product-link': 'product-link'
+    'product-link': 'product-link',
   } as const;
-  
+
   /**
    * All available columns from mock data (54 columns total)
    * For now, displaying all as simple text - will implement component types incrementally
    */
   readonly allColumns = [
-    'id', 'product_name', 'brand', 'description', 'category', 'sku', 'model_number', 'barcode',
-    'first_name', 'last_name', 'supplier_email', 'supplier_phone', 'price', 'cost', 'wholesale_price',
-    'currency_code', 'tax_rate', 'discount_percent', 'stock_quantity', 'units_sold', 'reorder_level',
-    'warehouse_location', 'quality_score', 'customer_rating', 'review_count', 'grade', 'safety_rating',
-    'eco_score', 'created_date', 'last_updated', 'release_date', 'next_restock_date', 'in_stock',
-    'is_featured', 'is_best_seller', 'requires_shipping', 'is_digital', 'has_warranty', 'image_url',
-    'color', 'thumbnail_url', 'origin_country', 'manufacturer_country', 'product_language', 'shipping_zone',
-    'supplier_tax_id', 'material', 'size', 'weight_kg', 'dimensions_cm', 'certification', 'warranty_months',
-    'shipping_departure_time', 'flight_duration_hours'
+    'id',
+    'product_name',
+    'brand',
+    'description',
+    'category',
+    'sku',
+    'model_number',
+    'barcode',
+    'first_name',
+    'last_name',
+    'supplier_email',
+    'supplier_phone',
+    'price',
+    'cost',
+    'wholesale_price',
+    'currency_code',
+    'tax_rate',
+    'discount_percent',
+    'stock_quantity',
+    'units_sold',
+    'reorder_level',
+    'warehouse_location',
+    'quality_score',
+    'customer_rating',
+    'review_count',
+    'grade',
+    'safety_rating',
+    'eco_score',
+    'created_date',
+    'last_updated',
+    'release_date',
+    'next_restock_date',
+    'in_stock',
+    'is_featured',
+    'is_best_seller',
+    'requires_shipping',
+    'is_digital',
+    'has_warranty',
+    'image_url',
+    'color',
+    'thumbnail_url',
+    'origin_country',
+    'manufacturer_country',
+    'product_language',
+    'shipping_zone',
+    'supplier_tax_id',
+    'material',
+    'size',
+    'weight_kg',
+    'dimensions_cm',
+    'certification',
+    'warranty_months',
+    'shipping_departure_time',
+    'flight_duration_hours',
   ];
 
   /**
@@ -88,49 +146,81 @@ export class ProductList {
    */
   readonly columnDataTypes: Record<string, string> = {
     // Product link for ID
-    'id': this.dataTypes['product-link'],
+    id: this.dataTypes['product-link'],
     // Progress bars for scores
-    'quality_score': this.dataTypes['progress-bar'],
-    'eco_score': this.dataTypes['progress-bar'],
+    quality_score: this.dataTypes['progress-bar'],
+    eco_score: this.dataTypes['progress-bar'],
     // Grade badge
-    'grade': this.dataTypes['grade-badge'],
+    grade: this.dataTypes['grade-badge'],
     // Nova dots for safety rating
-    'safety_rating': this.dataTypes['nova-dots'],
+    safety_rating: this.dataTypes['nova-dots'],
     // Truncated text for description
-    'description': this.dataTypes['truncated-text'],
+    description: this.dataTypes['truncated-text'],
     // Large counters
-    'units_sold': this.dataTypes['large-counter'],
-    'review_count': this.dataTypes['large-counter'],
+    units_sold: this.dataTypes['large-counter'],
+    review_count: this.dataTypes['large-counter'],
     // Boolean yes/no
-    'in_stock': this.dataTypes['boolean-yesno'],
-    'is_featured': this.dataTypes['boolean-yesno'],
-    'is_best_seller': this.dataTypes['boolean-yesno'],
-    'requires_shipping': this.dataTypes['boolean-yesno'],
-    'is_digital': this.dataTypes['boolean-yesno'],
-    'has_warranty': this.dataTypes['boolean-yesno'],
+    in_stock: this.dataTypes['boolean-yesno'],
+    is_featured: this.dataTypes['boolean-yesno'],
+    is_best_seller: this.dataTypes['boolean-yesno'],
+    requires_shipping: this.dataTypes['boolean-yesno'],
+    is_digital: this.dataTypes['boolean-yesno'],
+    has_warranty: this.dataTypes['boolean-yesno'],
     // Product images
-    'image_url': this.dataTypes['product-image'],
-    'thumbnail_url': this.dataTypes['product-image'],
+    image_url: this.dataTypes['product-image'],
+    thumbnail_url: this.dataTypes['product-image'],
     // Decimal units
-    'price': this.dataTypes['decimal-units'],
-    'cost': this.dataTypes['decimal-units'],
-    'wholesale_price': this.dataTypes['decimal-units'],
-    'weight_kg': this.dataTypes['decimal-units'],
+    price: this.dataTypes['decimal-units'],
+    cost: this.dataTypes['decimal-units'],
+    wholesale_price: this.dataTypes['decimal-units'],
+    weight_kg: this.dataTypes['decimal-units'],
     // Absolute dates
-    'created_date': this.dataTypes['absolute-date'],
-    'release_date': this.dataTypes['absolute-date'],
-    'next_restock_date': this.dataTypes['absolute-date'],
+    created_date: this.dataTypes['absolute-date'],
+    release_date: this.dataTypes['absolute-date'],
+    next_restock_date: this.dataTypes['absolute-date'],
     // Relative date
-    'last_updated': this.dataTypes['relative-date'],
+    last_updated: this.dataTypes['relative-date'],
     // Rest as simple text
-    ...Object.fromEntries(this.allColumns.filter(col => !['id', 'quality_score', 'eco_score', 'grade', 'safety_rating', 'description', 'units_sold', 'review_count', 'in_stock', 'is_featured', 'is_best_seller', 'requires_shipping', 'is_digital', 'has_warranty', 'image_url', 'thumbnail_url', 'price', 'cost', 'wholesale_price', 'weight_kg', 'created_date', 'release_date', 'next_restock_date', 'last_updated'].includes(col)).map(col => [col, this.dataTypes['simple-text']]))
+    ...Object.fromEntries(
+      this.allColumns
+        .filter(
+          (col) =>
+            ![
+              'id',
+              'quality_score',
+              'eco_score',
+              'grade',
+              'safety_rating',
+              'description',
+              'units_sold',
+              'review_count',
+              'in_stock',
+              'is_featured',
+              'is_best_seller',
+              'requires_shipping',
+              'is_digital',
+              'has_warranty',
+              'image_url',
+              'thumbnail_url',
+              'price',
+              'cost',
+              'wholesale_price',
+              'weight_kg',
+              'created_date',
+              'release_date',
+              'next_restock_date',
+              'last_updated',
+            ].includes(col),
+        )
+        .map((col) => [col, this.dataTypes['simple-text']]),
+    ),
   };
-  
+
   /**
    * Column names for the data table (all 54 columns)
    */
   readonly columns = this.allColumns;
-  
+
   /**
    * Get data type for a specific column
    */
@@ -143,60 +233,60 @@ export class ProductList {
    */
   getColumnTitle(column: string): string {
     const specialCases: Record<string, string> = {
-      'id': 'ID',
-      'product_name': 'Product Name',
-      'brand': 'Brand',
-      'description': 'Description',
-      'category': 'Category',
-      'sku': 'SKU',
-      'model_number': 'Model Number',
-      'barcode': 'Barcode',
-      'first_name': 'First Name',
-      'last_name': 'Last Name',
-      'supplier_email': 'Supplier Email',
-      'supplier_phone': 'Supplier Phone',
-      'price': 'Price',
-      'cost': 'Cost',
-      'wholesale_price': 'Wholesale Price',
-      'currency_code': 'Currency',
-      'tax_rate': 'Tax Rate',
-      'discount_percent': 'Discount %',
-      'stock_quantity': 'Stock',
-      'units_sold': 'Units Sold',
-      'reorder_level': 'Reorder Level',
-      'warehouse_location': 'Warehouse',
-      'quality_score': 'Quality Score',
-      'customer_rating': 'Rating',
-      'review_count': 'Reviews',
-      'grade': 'Grade',
-      'safety_rating': 'Safety Rating',
-      'eco_score': 'Eco Score',
-      'created_date': 'Created',
-      'last_updated': 'Last Updated',
-      'release_date': 'Released',
-      'next_restock_date': 'Next Restock',
-      'in_stock': 'In Stock',
-      'is_featured': 'Featured',
-      'is_best_seller': 'Best Seller',
-      'requires_shipping': 'Requires Shipping',
-      'is_digital': 'Digital',
-      'has_warranty': 'Has Warranty',
-      'image_url': 'Image',
-      'color': 'Color',
-      'thumbnail_url': 'Thumbnail',
-      'origin_country': 'Origin Country',
-      'manufacturer_country': 'Manufacturer Country',
-      'product_language': 'Language',
-      'shipping_zone': 'Shipping Zone',
-      'supplier_tax_id': 'Tax ID',
-      'material': 'Material',
-      'size': 'Size',
-      'weight_kg': 'Weight (kg)',
-      'dimensions_cm': 'Dimensions (cm)',
-      'certification': 'Certification',
-      'warranty_months': 'Warranty (months)',
-      'shipping_departure_time': 'Departure Time',
-      'flight_duration_hours': 'Flight Duration (hrs)'
+      id: 'ID',
+      product_name: 'Product Name',
+      brand: 'Brand',
+      description: 'Description',
+      category: 'Category',
+      sku: 'SKU',
+      model_number: 'Model Number',
+      barcode: 'Barcode',
+      first_name: 'First Name',
+      last_name: 'Last Name',
+      supplier_email: 'Supplier Email',
+      supplier_phone: 'Supplier Phone',
+      price: 'Price',
+      cost: 'Cost',
+      wholesale_price: 'Wholesale Price',
+      currency_code: 'Currency',
+      tax_rate: 'Tax Rate',
+      discount_percent: 'Discount %',
+      stock_quantity: 'Stock',
+      units_sold: 'Units Sold',
+      reorder_level: 'Reorder Level',
+      warehouse_location: 'Warehouse',
+      quality_score: 'Quality Score',
+      customer_rating: 'Rating',
+      review_count: 'Reviews',
+      grade: 'Grade',
+      safety_rating: 'Safety Rating',
+      eco_score: 'Eco Score',
+      created_date: 'Created',
+      last_updated: 'Last Updated',
+      release_date: 'Released',
+      next_restock_date: 'Next Restock',
+      in_stock: 'In Stock',
+      is_featured: 'Featured',
+      is_best_seller: 'Best Seller',
+      requires_shipping: 'Requires Shipping',
+      is_digital: 'Digital',
+      has_warranty: 'Has Warranty',
+      image_url: 'Image',
+      color: 'Color',
+      thumbnail_url: 'Thumbnail',
+      origin_country: 'Origin Country',
+      manufacturer_country: 'Manufacturer Country',
+      product_language: 'Language',
+      shipping_zone: 'Shipping Zone',
+      supplier_tax_id: 'Tax ID',
+      material: 'Material',
+      size: 'Size',
+      weight_kg: 'Weight (kg)',
+      dimensions_cm: 'Dimensions (cm)',
+      certification: 'Certification',
+      warranty_months: 'Warranty (months)',
+      shipping_departure_time: 'Departure Time',
+      flight_duration_hours: 'Flight Duration (hrs)',
     };
 
     return specialCases[column] || this.#camelCaseToTitle(column);
@@ -211,18 +301,22 @@ export class ProductList {
       .replace(/^./, (char) => char.toUpperCase())
       .trim();
   }
-  
+
   // #endregion
-  
+
   // #region Computed Values
-  
-  readonly isLoading = computed(() => this.productsResource.status() === 'loading');
+
+  readonly isLoading = computed(
+    () => this.productsResource.status() === 'loading',
+  );
   readonly isError = computed(() => this.productsResource.status() === 'error');
   readonly hasData = computed(() => {
     const value = this.productsResource.value();
-    return this.productsResource.status() === 'resolved' && value && value.length > 0;
+    return (
+      this.productsResource.status() === 'resolved' && value && value.length > 0
+    );
   });
-  
+
   /**
    * Current page data for the table
    */
@@ -231,7 +325,7 @@ export class ProductList {
     const startIndex = this.currentPage() * this.pageSize();
     return allData.slice(startIndex, startIndex + this.pageSize());
   });
-  
+
   /**
    * Total number of pages
    */
@@ -239,11 +333,11 @@ export class ProductList {
     const allData = this.productsResource.value() || [];
     return Math.ceil(allData.length / this.pageSize());
   });
-  
+
   // #endregion
-  
+
   // #region Event Handlers
-  
+
   /**
    * Handle page changes from the data table
    * @param newPage New page number
@@ -251,15 +345,15 @@ export class ProductList {
   onPageChange(newPage: number) {
     this.currentPage.set(newPage);
   }
-  
+
   /**
-   * Handle page size changes from the data table  
+   * Handle page size changes from the data table
    * @param newPageSize New page size
    */
   onPageSizeChange(newPageSize: number) {
     this.pageSize.set(newPageSize);
     this.currentPage.set(0); // Reset to first page
   }
-  
+
   // #endregion
 }

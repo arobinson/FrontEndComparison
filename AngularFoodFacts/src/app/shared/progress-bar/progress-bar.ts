@@ -4,7 +4,7 @@ import { Component, input, computed } from '@angular/core';
   selector: 'aff-progress-bar',
   imports: [],
   templateUrl: './progress-bar.html',
-  styleUrl: './progress-bar.css'
+  styleUrl: './progress-bar.css',
 })
 export class ProgressBar {
   readonly value = input.required<number>();

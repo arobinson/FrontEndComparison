@@ -1,6 +1,6 @@
 <div class="product-list-container">
   <h1>Products</h1>
-  
+
   @if (hasData()) {
     <aff-data-table
       [columns]="columns"
@@ -8,53 +8,52 @@
       [totalPages]="totalPages()"
       [(page)]="currentPage"
       [(pageSize)]="pageSize"
-      [pageSizes]="[10, 25, 50]">
-      
+      [pageSizes]="[10, 25, 50]"
+    >
       <ng-template #header let-column>
         <strong>{{ getColumnTitle(column) }}</strong>
       </ng-template>
-      
+
       <ng-template #data let-value let-column="column" let-row="row">
         @switch (getColumnDataType(column)) {
-          @case ('product-link') {
+          @case ("product-link") {
             <aff-product-link [value]="value" />
           }
-          @case ('progress-bar') {
+          @case ("progress-bar") {
             <aff-progress-bar [value]="value" />
           }
-          @case ('grade-badge') {
+          @case ("grade-badge") {
             <aff-grade-badge [value]="value" />
           }
-          @case ('nova-dots') {
+          @case ("nova-dots") {
             <aff-nova-dots [value]="value" />
           }
-          @case ('truncated-text') {
+          @case ("truncated-text") {
             <aff-truncated-text [value]="value" />
           }
-          @case ('large-counter') {
+          @case ("large-counter") {
             <aff-large-counter [value]="value" />
           }
-          @case ('boolean-yesno') {
+          @case ("boolean-yesno") {
             <aff-boolean-yesno [value]="value" />
           }
-          @case ('product-image') {
+          @case ("product-image") {
             <aff-product-image [value]="value" />
           }
-          @case ('decimal-units') {
+          @case ("decimal-units") {
             <aff-decimal-units [value]="value" />
           }
-          @case ('absolute-date') {
+          @case ("absolute-date") {
             <aff-absolute-date [value]="value" />
           }
-          @case ('relative-date') {
+          @case ("relative-date") {
             <aff-relative-date [value]="value" />
           }
           @default {
-            {{ value || '' }}
+            {{ value || "" }}
           }
         }
       </ng-template>
-      
     </aff-data-table>
   } @else if (isLoading()) {
     <p>Loading products...</p>

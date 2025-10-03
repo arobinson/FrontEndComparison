@@ -65,10 +65,10 @@ The backend serves cached OpenFoodFacts data using our reliable field transforme
 
 ### Package Manager
 
-**CRITICAL**: This project uses pnpm exclusively. 
+**CRITICAL**: This project uses pnpm exclusively.
 
 - **✅ ALWAYS use**: `pnpm`, `pnpm run`, `pnpm exec`
-- **❌ NEVER use**: `npm`, `npx`, `yarn` 
+- **❌ NEVER use**: `npm`, `npx`, `yarn`
 - **Angular commands**: `pnpm exec ng [command]` (never `ng [command]` directly)
 - **All scripts**: Use `pnpm run [script]` or `pnpm -r [command]` for workspace operations
 

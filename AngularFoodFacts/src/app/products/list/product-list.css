@@ -47,12 +47,30 @@
   min-width: 20px;
 }
 
-.grade-a { background: var(--success-color, #28a745); color: white; }
-.grade-b { background: var(--info-color, #17a2b8); color: white; }
-.grade-c { background: var(--warning-color, #ffc107); color: black; }
-.grade-d { background: var(--warning-dark, #fd7e14); color: white; }
-.grade-e { background: var(--danger-color, #dc3545); color: white; }
-.grade-unknown { background: var(--muted-color, #6c757d); color: white; }
+.grade-a {
+  background: var(--success-color, #28a745);
+  color: white;
+}
+.grade-b {
+  background: var(--info-color, #17a2b8);
+  color: white;
+}
+.grade-c {
+  background: var(--warning-color, #ffc107);
+  color: black;
+}
+.grade-d {
+  background: var(--warning-dark, #fd7e14);
+  color: white;
+}
+.grade-e {
+  background: var(--danger-color, #dc3545);
+  color: white;
+}
+.grade-unknown {
+  background: var(--muted-color, #6c757d);
+  color: white;
+}
 
 .nova-dots {
   display: inline-flex;

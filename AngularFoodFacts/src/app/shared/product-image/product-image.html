@@ -5,7 +5,8 @@
       [alt]="'Product image'"
       (load)="onImageLoad()"
       (error)="onImageError()"
-      [class.loaded]="imageLoaded()" />
+      [class.loaded]="imageLoaded()"
+    />
   } @else {
     <div class="image-placeholder">No image</div>
   }

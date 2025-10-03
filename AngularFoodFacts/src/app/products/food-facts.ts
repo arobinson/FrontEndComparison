@@ -22,7 +22,9 @@ export class FoodFacts {
       loader: async () => {
         const url = buildProductsByCategoryUrl(category(), page(), pageSize());
         const response = await fetch(url);
-        const data = (await response.json()) as { products?: ProductViewModel[] };
+        const data = (await response.json()) as {
+          products?: ProductViewModel[];
+        };
 
         // Local backend returns transformed ProductViewModel objects
         return data?.products || [];
@@ -38,11 +40,11 @@ export class FoodFacts {
       loader: async () => {
         const url = buildProductUrl(code());
         const response = await fetch(url);
-        
+
         if (!response.ok) {
           return null;
         }
-        
+
         // Local backend already returns transformed ProductViewModel object
         return (await response.json()) as ProductViewModel;
       },
@@ -61,7 +63,9 @@ export class FoodFacts {
       loader: async () => {
         const url = buildProductsSearchUrl(query(), page(), pageSize());
         const response = await fetch(url);
-        const data = (await response.json()) as { products?: ProductViewModel[] };
+        const data = (await response.json()) as {
+          products?: ProductViewModel[];
+        };
 
         // Local backend already returns transformed ProductViewModel objects
         return data?.products || [];

@@ -4,7 +4,7 @@ import { Component, input, computed } from '@angular/core';
   selector: 'aff-large-counter',
   imports: [],
   templateUrl: './large-counter.html',
-  styleUrl: './large-counter.css'
+  styleUrl: './large-counter.css',
 })
 export class LargeCounter {
   readonly value = input.required<number>();

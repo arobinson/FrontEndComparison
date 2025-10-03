@@ -4,7 +4,7 @@ import { Component, input, signal } from '@angular/core';
   selector: 'aff-product-image',
   imports: [],
   templateUrl: './product-image.html',
-  styleUrl: './product-image.css'
+  styleUrl: './product-image.css',
 })
 export class ProductImage {
   readonly value = input.required<string>();

@@ -6,25 +6,25 @@ export interface ProductViewModel {
   productName: string;
   categories: string;
   countries: string;
-  
+
   // Scores and grades (100% reliable)
   ecoGrade: string;
   nutritionGrade: string;
   nutritionGrades: string;
   novaGroup?: number;
-  
+
   // Timestamps (100% reliable)
   createdAt: Date;
   lastModifiedAt: Date;
-  
+
   // Metadata (100% reliable)
   completeness: number;
   totalScans: number;
   uniqueScans: number;
-  
+
   // Images (98%+ reliable)
   images: ImageViewModel;
-  
+
   // Nutrition details (85%+ reliable fields only)
   nutrition: NutritionViewModel;
 }
@@ -36,37 +36,37 @@ export interface NutritionViewModel {
   energyPer100g?: number;
   energyValue?: number;
   energyKcalValueComputed?: number;
-  
+
   // Macro-nutrients (85% reliable)
   carbohydrates?: number;
   carbohydratesPer100g?: number;
   carbohydratesValue?: number;
-  
+
   proteins?: number;
   proteinsPer100g?: number;
   proteinsValue?: number;
-  
+
   fat?: number;
   fatPer100g?: number;
   fatValue?: number;
-  
+
   // Sugars and other nutrients (80% reliable)
   sugars?: number;
   sugarsPer100g?: number;
   sugarsValue?: number;
-  
+
   saturatedFat?: number;
   saturatedFatPer100g?: number;
   saturatedFatValue?: number;
-  
+
   salt?: number;
   saltPer100g?: number;
   saltValue?: number;
-  
+
   sodium?: number;
   sodiumPer100g?: number;
   sodiumValue?: number;
-  
+
   // Nutrition score
   nutritionScoreFr?: number;
   nutritionScoreFrPer100g?: number;

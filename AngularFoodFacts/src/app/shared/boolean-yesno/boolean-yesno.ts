@@ -4,7 +4,7 @@ import { Component, input, computed } from '@angular/core';
   selector: 'aff-boolean-yesno',
   imports: [],
   templateUrl: './boolean-yesno.html',
-  styleUrl: './boolean-yesno.css'
+  styleUrl: './boolean-yesno.css',
 })
 export class BooleanYesno {
   readonly value = input.required<boolean>();

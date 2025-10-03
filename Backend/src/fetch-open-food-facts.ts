@@ -52,16 +52,16 @@ interface OpenFoodFactsProduct {
   nutriments?: {
     'energy-kcal_100g'?: number;
     'energy-kcal_serving'?: number;
-    'proteins_100g'?: number;
-    'carbohydrates_100g'?: number;
-    'fat_100g'?: number;
-    'sugars_100g'?: number;
-    'fiber_100g'?: number;
+    proteins_100g?: number;
+    carbohydrates_100g?: number;
+    fat_100g?: number;
+    sugars_100g?: number;
+    fiber_100g?: number;
     'saturated-fat_100g'?: number;
-    'sodium_100g'?: number;
-    'salt_100g'?: number;
-    'cholesterol_100g'?: number;
-    'caffeine_100g'?: number;
+    sodium_100g?: number;
+    salt_100g?: number;
+    cholesterol_100g?: number;
+    caffeine_100g?: number;
   };
 }
 
@@ -73,38 +73,29 @@ interface OpenFoodFactsResponse {
   page_count: number;
 }
 
-const categories = [
-  'beverages',
-  'dairy',
-  'snacks', 
-  'breakfast-cereals',
-  'chocolate',
-  'bread',
-  'fruits',
-  'vegetables'
-];
+const categories = ['beverages', 'dairy', 'snacks', 'breakfast-cereals', 'chocolate', 'bread', 'fruits', 'vegetables'];
 
-const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 async function fetchCategoryProducts(category: string, pageSize = 25): Promise<OpenFoodFactsProduct[]> {
   try {
     console.log(`Fetching ${pageSize} products from category: ${category}`);
-    
+
     const url = `https://world.openfoodfacts.org/category/${category}.json?page_size=${pageSize}&page=1&fields=code,product_name,generic_name,brands,categories,origins,manufacturing_places,stores,countries,labels,packaging,quantity,serving_size,nutrition_score_fr,nova_group,ecoscore_score,allergens,traces,vegetarian,vegan,palm_oil_free,created_t,last_modified_t,ingredients_text,completeness,unique_scans_n,scans_n,ingredients_n,unknown_ingredients_n,additives_n,nutrient_levels,ecoscore_grade,nutriscore_grade,languages_codes,editors_tags,states,images,image_front_url,image_front_small_url,nutriments`;
-    
+
     const response = await fetch(url, {
       headers: {
         'User-Agent': 'FrontEndComparison/1.0 (performance-testing@example.com)'
       }
     });
-    
+
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-    
+
     const data: OpenFoodFactsResponse = await response.json();
     console.log(`✅ Fetched ${data.products?.length || 0} products from ${category}`);
-    
+
     return data.products || [];
   } catch (error) {
     console.error(`❌ Error fetching ${category}:`, error);
@@ -114,32 +105,28 @@ async function fetchCategoryProducts(category: string, pageSize = 25): Promise<O
 
 async function main() {
   console.log('🚀 Starting OpenFoodFacts data fetch...\n');
-  
+
   const allProducts: OpenFoodFactsProduct[] = [];
-  
+
   for (const category of categories) {
     const products = await fetchCategoryProducts(category, 20); // ~20 per category = ~160 total
     allProducts.push(...products);
-    
+
     // Be nice to their API - wait 1 second between requests
     await sleep(1000);
   }
-  
+
   console.log(`\n📊 Total products fetched: ${allProducts.length}`);
-  
+
   // Filter out products without essential data
-  const validProducts = allProducts.filter(p => 
-    p.code && 
-    p.product_name && 
-    p.product_name.trim().length > 0
-  );
-  
+  const validProducts = allProducts.filter((p) => p.code && p.product_name && p.product_name.trim().length > 0);
+
   console.log(`📊 Valid products after filtering: ${validProducts.length}`);
-  
+
   // Enrich products with individual API calls to get proper image URLs
   console.log(`\n📸 Enriching products with image URLs...`);
   const enrichedProducts: OpenFoodFactsProduct[] = [];
-  
+
   for (let i = 0; i < validProducts.length; i++) {
     const product = validProducts[i];
     try {
@@ -149,7 +136,7 @@ async function main() {
           'User-Agent': 'FrontEndComparison/1.0 (performance-testing@example.com)'
         }
       });
-      
+
       if (response.ok) {
         const data = await response.json();
         if (data.product) {
@@ -164,12 +151,12 @@ async function main() {
       } else {
         enrichedProducts.push(product);
       }
-      
+
       // Progress indicator
       if ((i + 1) % 10 === 0) {
         console.log(`  📸 Processed ${i + 1}/${validProducts.length} products`);
       }
-      
+
       // Be nice to their API - wait 100ms between requests
       await sleep(100);
     } catch (error) {
@@ -177,12 +164,12 @@ async function main() {
       enrichedProducts.push(product);
     }
   }
-  
+
   console.log(`📸 Image enrichment complete: ${enrichedProducts.length} products processed`);
 
   // Save to shared data directory
   const dataPath = join(process.cwd(), '..', 'shared-data', 'open-food-facts-products.json');
-  
+
   const exportData = {
     metadata: {
       fetchedAt: new Date().toISOString(),
@@ -192,21 +179,24 @@ async function main() {
     },
     products: enrichedProducts
   };
-  
+
   writeFileSync(dataPath, JSON.stringify(exportData, null, 2));
   console.log(`✅ Data saved to: ${dataPath}`);
   console.log(`📁 File size: ${(JSON.stringify(exportData).length / 1024 / 1024).toFixed(2)} MB`);
-  
+
   // Print category breakdown
   console.log('\n📈 Category breakdown:');
-  const categoryCount = enrichedProducts.reduce((acc, product) => {
-    const category = product.categories?.split(',')[0]?.trim() || 'Unknown';
-    acc[category] = (acc[category] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>);
-  
+  const categoryCount = enrichedProducts.reduce(
+    (acc, product) => {
+      const category = product.categories?.split(',')[0]?.trim() || 'Unknown';
+      acc[category] = (acc[category] || 0) + 1;
+      return acc;
+    },
+    {} as Record<string, number>
+  );
+
   Object.entries(categoryCount)
-    .sort(([,a], [,b]) => b - a)
+    .sort(([, a], [, b]) => b - a)
     .forEach(([category, count]) => {
       console.log(`  ${category}: ${count} products`);
     });

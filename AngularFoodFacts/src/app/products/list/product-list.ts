@@ -360,7 +360,9 @@ export class ProductList {
   readonly hasData = computed(() => {
     const value = this.productsResource.value();
     return (
-      this.productsResource.status() === 'resolved' && value && value.products.length > 0
+      this.productsResource.status() === 'resolved' &&
+      value &&
+      value.products.length > 0
     );
   });
 

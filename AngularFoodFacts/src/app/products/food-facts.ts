@@ -19,7 +19,11 @@ export class FoodFacts {
     pageSize: Signal<number>,
   ) {
     return resource({
-      params: () => ({ category: category(), page: page(), pageSize: pageSize() }),
+      params: () => ({
+        category: category(),
+        page: page(),
+        pageSize: pageSize(),
+      }),
       loader: async ({ params }) => {
         const url = buildProductsByCategoryUrl(
           params.category,

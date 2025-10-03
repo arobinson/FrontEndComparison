@@ -19,8 +19,13 @@ export class FoodFacts {
     pageSize: Signal<number>,
   ) {
     return resource({
-      loader: async () => {
-        const url = buildProductsByCategoryUrl(category(), page(), pageSize());
+      params: () => ({ category: category(), page: page(), pageSize: pageSize() }),
+      loader: async ({ params }) => {
+        const url = buildProductsByCategoryUrl(
+          params.category,
+          params.page,
+          params.pageSize,
+        );
         const response = await fetch(url);
         const data = (await response.json()) as {
           products?: ProductViewModel[];

@@ -1,0 +1,8 @@
+<div class="truncated-text">
+  <span class="text-content">{{ getDisplayText() }}</span>
+  @if (shouldTruncate()) {
+    <button class="toggle-button" (click)="toggleExpanded()" type="button">
+      {{ isExpanded() ? 'Show less' : 'Show more' }}
+    </button>
+  }
+</div>

@@ -1,0 +1,12 @@
+<div class="product-image" [class]="size()">
+  @if (!imageError()) {
+    <img
+      [src]="value()"
+      [alt]="'Product image'"
+      (load)="onImageLoad()"
+      (error)="onImageError()"
+      [class.loaded]="imageLoaded()" />
+  } @else {
+    <div class="image-placeholder">No image</div>
+  }
+</div>

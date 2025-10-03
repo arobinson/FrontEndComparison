@@ -7,10 +7,21 @@ import { ProductLink } from '../../shared/product-link/product-link';
 import { ProgressBar } from '../../shared/progress-bar/progress-bar';
 import { GradeBadge } from '../../shared/grade-badge/grade-badge';
 import { NovaDots } from '../../shared/nova-dots/nova-dots';
+import { TruncatedText } from '../../shared/truncated-text/truncated-text';
+import { LargeCounter } from '../../shared/large-counter/large-counter';
+import { BooleanYesno } from '../../shared/boolean-yesno/boolean-yesno';
+import { ProductImage } from '../../shared/product-image/product-image';
+import { DecimalUnits } from '../../shared/decimal-units/decimal-units';
+import { AbsoluteDate } from '../../shared/absolute-date/absolute-date';
+import { RelativeDate } from '../../shared/relative-date/relative-date';
 
 @Component({
   selector: 'aff-product-list',
-  imports: [CommonModule, RouterModule, DataTable, ProductLink, ProgressBar, GradeBadge, NovaDots],
+  imports: [
+    CommonModule, RouterModule, DataTable, ProductLink, ProgressBar, GradeBadge,
+    NovaDots, TruncatedText, LargeCounter, BooleanYesno, ProductImage,
+    DecimalUnits, AbsoluteDate, RelativeDate
+  ],
   templateUrl: './product-list.html',
   styleUrl: './product-list.css'
 })
@@ -85,8 +96,34 @@ export class ProductList {
     'grade': this.dataTypes['grade-badge'],
     // Nova dots for safety rating
     'safety_rating': this.dataTypes['nova-dots'],
-    // Rest as simple text for now
-    ...Object.fromEntries(this.allColumns.filter(col => !['id', 'quality_score', 'eco_score', 'grade', 'safety_rating'].includes(col)).map(col => [col, this.dataTypes['simple-text']]))
+    // Truncated text for description
+    'description': this.dataTypes['truncated-text'],
+    // Large counters
+    'units_sold': this.dataTypes['large-counter'],
+    'review_count': this.dataTypes['large-counter'],
+    // Boolean yes/no
+    'in_stock': this.dataTypes['boolean-yesno'],
+    'is_featured': this.dataTypes['boolean-yesno'],
+    'is_best_seller': this.dataTypes['boolean-yesno'],
+    'requires_shipping': this.dataTypes['boolean-yesno'],
+    'is_digital': this.dataTypes['boolean-yesno'],
+    'has_warranty': this.dataTypes['boolean-yesno'],
+    // Product images
+    'image_url': this.dataTypes['product-image'],
+    'thumbnail_url': this.dataTypes['product-image'],
+    // Decimal units
+    'price': this.dataTypes['decimal-units'],
+    'cost': this.dataTypes['decimal-units'],
+    'wholesale_price': this.dataTypes['decimal-units'],
+    'weight_kg': this.dataTypes['decimal-units'],
+    // Absolute dates
+    'created_date': this.dataTypes['absolute-date'],
+    'release_date': this.dataTypes['absolute-date'],
+    'next_restock_date': this.dataTypes['absolute-date'],
+    // Relative date
+    'last_updated': this.dataTypes['relative-date'],
+    // Rest as simple text
+    ...Object.fromEntries(this.allColumns.filter(col => !['id', 'quality_score', 'eco_score', 'grade', 'safety_rating', 'description', 'units_sold', 'review_count', 'in_stock', 'is_featured', 'is_best_seller', 'requires_shipping', 'is_digital', 'has_warranty', 'image_url', 'thumbnail_url', 'price', 'cost', 'wholesale_price', 'weight_kg', 'created_date', 'release_date', 'next_restock_date', 'last_updated'].includes(col)).map(col => [col, this.dataTypes['simple-text']]))
   };
   
   /**

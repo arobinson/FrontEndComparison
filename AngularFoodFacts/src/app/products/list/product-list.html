@@ -28,6 +28,27 @@
           @case ('nova-dots') {
             <aff-nova-dots [value]="value" />
           }
+          @case ('truncated-text') {
+            <aff-truncated-text [value]="value" />
+          }
+          @case ('large-counter') {
+            <aff-large-counter [value]="value" />
+          }
+          @case ('boolean-yesno') {
+            <aff-boolean-yesno [value]="value" />
+          }
+          @case ('product-image') {
+            <aff-product-image [value]="value" />
+          }
+          @case ('decimal-units') {
+            <aff-decimal-units [value]="value" />
+          }
+          @case ('absolute-date') {
+            <aff-absolute-date [value]="value" />
+          }
+          @case ('relative-date') {
+            <aff-relative-date [value]="value" />
+          }
           @default {
             {{ value || '' }}
           }

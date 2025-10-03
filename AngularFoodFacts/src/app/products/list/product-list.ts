@@ -14,6 +14,9 @@ import { ProductImage } from '../../shared/product-image/product-image';
 import { DecimalUnits } from '../../shared/decimal-units/decimal-units';
 import { AbsoluteDate } from '../../shared/absolute-date/absolute-date';
 import { RelativeDate } from '../../shared/relative-date/relative-date';
+import { TextSearch } from '../../shared/filters/text-search/text-search';
+import { RangeSlider } from '../../shared/filters/range-slider/range-slider';
+import { MultiSelect } from '../../shared/filters/multi-select/multi-select';
 
 @Component({
   selector: 'aff-product-list',
@@ -32,6 +35,9 @@ import { RelativeDate } from '../../shared/relative-date/relative-date';
     DecimalUnits,
     AbsoluteDate,
     RelativeDate,
+    TextSearch,
+    RangeSlider,
+    MultiSelect,
   ],
   templateUrl: './product-list.html',
   styleUrl: './product-list.css',
@@ -304,6 +310,31 @@ export class ProductList {
 
   // #endregion
 
+  // #region Filter State
+
+  readonly filters = signal<Record<string, any>>({});
+
+  /**
+   * Update filter for a specific column
+   */
+  updateFilter(column: string, value: any) {
+    this.filters.update(current => ({
+      ...current,
+      [column]: value
+    }));
+    this.currentPage.set(0); // Reset to first page when filtering
+  }
+
+  /**
+   * Reset all filters
+   */
+  resetFilters() {
+    this.filters.set({});
+    this.currentPage.set(0);
+  }
+
+  // #endregion
+
   // #region Computed Values
 
   readonly isLoading = computed(
@@ -318,20 +349,65 @@ export class ProductList {
   });
 
   /**
+   * Filtered data based on active filters
+   */
+  readonly filteredData = computed(() => {
+    const allData = this.productsResource.value() || [];
+    const activeFilters = this.filters();
+
+    let result = allData;
+    if (Object.keys(activeFilters).length > 0) {
+      result = allData.filter(product => {
+        let matches = true;
+        for (const [column, filterValue] of Object.entries(activeFilters)) {
+          if (!filterValue) continue;
+
+          const productValue = (product as any)[column];
+
+          // Text search
+          if (typeof filterValue === 'string') {
+            if (!productValue?.toString().toLowerCase().includes(filterValue.toLowerCase())) {
+              matches = false;
+            }
+          }
+          // Range filter
+          else if (filterValue.min !== undefined || filterValue.max !== undefined) {
+            const numValue = Number(productValue);
+            if (filterValue.min !== undefined && numValue < filterValue.min) {
+              matches = false;
+            }
+            if (filterValue.max !== undefined && numValue > filterValue.max) {
+              matches = false;
+            }
+          }
+          // Multi-select
+          else if (Array.isArray(filterValue)) {
+            if (filterValue.length > 0 && !filterValue.includes(productValue)) {
+              matches = false;
+            }
+          }
+        }
+        return matches;
+      });
+    }
+    return result;
+  });
+
+  /**
    * Current page data for the table
    */
   readonly currentPageData = computed(() => {
-    const allData = this.productsResource.value() || [];
+    const data = this.filteredData();
     const startIndex = this.currentPage() * this.pageSize();
-    return allData.slice(startIndex, startIndex + this.pageSize());
+    return data.slice(startIndex, startIndex + this.pageSize());
   });
 
   /**
    * Total number of pages
    */
   readonly totalPages = computed(() => {
-    const allData = this.productsResource.value() || [];
-    return Math.ceil(allData.length / this.pageSize());
+    const data = this.filteredData();
+    return Math.ceil(data.length / this.pageSize());
   });
 
   // #endregion

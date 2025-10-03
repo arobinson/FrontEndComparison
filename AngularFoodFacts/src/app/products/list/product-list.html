@@ -1,5 +1,10 @@
 <div class="product-list-container">
-  <h1>Products</h1>
+  <div class="header-row">
+    <h1>Products</h1>
+    <button class="reset-button" (click)="resetFilters()" type="button">
+      Reset Filters
+    </button>
+  </div>
 
   @if (hasData()) {
     <aff-data-table
@@ -9,9 +14,33 @@
       [(page)]="currentPage"
       [(pageSize)]="pageSize"
       [pageSizes]="[10, 25, 50]"
+      [renderFilter]="true"
     >
       <ng-template #header let-column>
         <strong>{{ getColumnTitle(column) }}</strong>
+      </ng-template>
+
+      <ng-template #filter let-column>
+        @switch (getColumnDataType(column)) {
+          @case ("progress-bar") {
+            <aff-range-slider [min]="0" [max]="100" (valueChange)="updateFilter(column, $event)" />
+          }
+          @case ("grade-badge") {
+            <aff-multi-select [options]="['A', 'B', 'C', 'D', 'F']" (valueChange)="updateFilter(column, $event)" />
+          }
+          @case ("nova-dots") {
+            <aff-multi-select [options]="['1', '2', '3', '4']" (valueChange)="updateFilter(column, $event)" />
+          }
+          @case ("large-counter") {
+            <aff-range-slider (valueChange)="updateFilter(column, $event)" />
+          }
+          @case ("boolean-yesno") {
+            <aff-multi-select [options]="['true', 'false']" (valueChange)="updateFilter(column, $event)" />
+          }
+          @default {
+            <aff-text-search (valueChange)="updateFilter(column, $event)" />
+          }
+        }
       </ng-template>
 
       <ng-template #data let-value let-column="column" let-row="row">

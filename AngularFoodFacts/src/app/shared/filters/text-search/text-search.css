@@ -1,10 +1,11 @@
 .text-search-input {
   width: 100%;
-  padding: 4px 8px;
+  padding: 0.25rem 0.375rem;
   border: 1px solid var(--color-border, #ddd);
   border-radius: 4px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-family: inherit;
+  box-sizing: border-box;
 }
 
 .text-search-input:focus {

@@ -7,7 +7,7 @@ import { Component, input, output, signal } from '@angular/core';
   styleUrl: './text-search.css'
 })
 export class TextSearch {
-  readonly placeholder = input<string>('Search...');
+  readonly placeholder = input<string>('Search');
   readonly valueChange = output<string>();
 
   readonly searchValue = signal('');

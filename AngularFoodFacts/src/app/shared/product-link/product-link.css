@@ -1,0 +1,14 @@
+.product-link {
+  color: var(--color-primary, #0066cc);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.product-link:hover {
+  text-decoration: underline;
+  color: var(--color-primary-dark, #004499);
+}
+
+.product-link:visited {
+  color: var(--color-primary-visited, #551a8b);
+}

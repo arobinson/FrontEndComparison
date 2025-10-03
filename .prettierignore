@@ -1,0 +1,9 @@
+**/*.d.ts
+**/*.ejs
+**/*.min.js
+**/*.py
+**/dist/**
+**/node_modules/**
+/.vscode/cspell.json
+/.vscode/settings.json
+pnpm-lock.yaml

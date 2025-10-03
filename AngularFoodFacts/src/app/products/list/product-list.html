@@ -15,8 +15,23 @@
       </ng-template>
       
       <ng-template #data let-value let-column="column" let-row="row">
-        <!-- For now, display all values as simple text -->
-        {{ value || '' }}
+        @switch (getColumnDataType(column)) {
+          @case ('product-link') {
+            <aff-product-link [value]="value" />
+          }
+          @case ('progress-bar') {
+            <aff-progress-bar [value]="value" />
+          }
+          @case ('grade-badge') {
+            <aff-grade-badge [value]="value" />
+          }
+          @case ('nova-dots') {
+            <aff-nova-dots [value]="value" />
+          }
+          @default {
+            {{ value || '' }}
+          }
+        }
       </ng-template>
       
     </aff-data-table>

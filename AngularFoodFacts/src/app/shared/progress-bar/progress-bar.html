@@ -1,0 +1,6 @@
+<div class="progress-bar-container">
+  <div class="progress-bar" [class]="colorClass()">
+    <div class="progress-fill" [style.width.%]="percentage()"></div>
+  </div>
+  <span class="progress-text">{{ percentage() }}%</span>
+</div>

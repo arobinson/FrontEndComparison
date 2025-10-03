@@ -3,10 +3,14 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FoodFacts } from '../food-facts';
 import { DataTable } from '../../shared/data-table/data-table';
+import { ProductLink } from '../../shared/product-link/product-link';
+import { ProgressBar } from '../../shared/progress-bar/progress-bar';
+import { GradeBadge } from '../../shared/grade-badge/grade-badge';
+import { NovaDots } from '../../shared/nova-dots/nova-dots';
 
 @Component({
   selector: 'aff-product-list',
-  imports: [CommonModule, RouterModule, DataTable],
+  imports: [CommonModule, RouterModule, DataTable, ProductLink, ProgressBar, GradeBadge, NovaDots],
   templateUrl: './product-list.html',
   styleUrl: './product-list.css'
 })
@@ -72,8 +76,17 @@ export class ProductList {
    * Starting with all as simple-text, will implement specific components incrementally
    */
   readonly columnDataTypes: Record<string, string> = {
-    // Temporary: all columns as simple text for initial testing
-    ...Object.fromEntries(this.allColumns.map(col => [col, this.dataTypes['simple-text']]))
+    // Product link for ID
+    'id': this.dataTypes['product-link'],
+    // Progress bars for scores
+    'quality_score': this.dataTypes['progress-bar'],
+    'eco_score': this.dataTypes['progress-bar'],
+    // Grade badge
+    'grade': this.dataTypes['grade-badge'],
+    // Nova dots for safety rating
+    'safety_rating': this.dataTypes['nova-dots'],
+    // Rest as simple text for now
+    ...Object.fromEntries(this.allColumns.filter(col => !['id', 'quality_score', 'eco_score', 'grade', 'safety_rating'].includes(col)).map(col => [col, this.dataTypes['simple-text']]))
   };
   
   /**

@@ -1,0 +1,22 @@
+<div class="multi-select">
+  <button class="select-toggle" (click)="toggleDropdown()" type="button">
+    <span>{{ getDisplayText() }}</span>
+    <span class="arrow">▼</span>
+  </button>
+  
+  @if (isOpen()) {
+    <div class="dropdown">
+      @for (option of options(); track option) {
+        <label class="option">
+          <input
+            type="checkbox"
+            [checked]="isSelected(option)"
+            (change)="toggleOption(option)"
+          />
+          <span>{{ option }}</span>
+        </label>
+      }
+    </div>
+  }
+</div>
+

@@ -1,0 +1,24 @@
+<div class="range-slider">
+  <input
+    type="number"
+    class="range-input"
+    [min]="min()"
+    [max]="max()"
+    [value]="minValue()"
+    (input)="onMinChange($event)"
+    (blur)="onBlur()"
+    placeholder="Min"
+  />
+  <span class="range-separator">-</span>
+  <input
+    type="number"
+    class="range-input"
+    [min]="min()"
+    [max]="max()"
+    [value]="maxValue()"
+    (input)="onMaxChange($event)"
+    (blur)="onBlur()"
+    placeholder="Max"
+  />
+</div>
+

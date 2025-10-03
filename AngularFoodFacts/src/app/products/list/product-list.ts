@@ -48,14 +48,11 @@ export class ProductList {
   readonly #foodFacts = inject(FoodFacts);
 
   readonly category = signal('all');
-  readonly productsResource = this.#foodFacts.createProductsByCategoryResource(
-    this.category,
-  );
 
   // #region Pagination State
 
   /**
-   * Current page for pagination (0-based)
+   * Current page for pagination (0-based for UI, 1-based for API)
    */
   readonly currentPage = signal(0);
 
@@ -63,6 +60,17 @@ export class ProductList {
    * Items per page
    */
   readonly pageSize = signal(50);
+
+  /**
+   * API page (1-based) computed from currentPage (0-based)
+   */
+  readonly apiPage = computed(() => this.currentPage() + 1);
+
+  readonly productsResource = this.#foodFacts.createProductsByCategoryResource(
+    this.category,
+    this.apiPage,
+    this.pageSize,
+  );
 
   // #endregion
 
@@ -352,15 +360,16 @@ export class ProductList {
   readonly hasData = computed(() => {
     const value = this.productsResource.value();
     return (
-      this.productsResource.status() === 'resolved' && value && value.length > 0
+      this.productsResource.status() === 'resolved' && value && value.products.length > 0
     );
   });
 
   /**
-   * Filtered data based on active filters
+   * Filtered data based on active filters (filters current page only)
    */
   readonly filteredData = computed(() => {
-    const allData = this.productsResource.value() || [];
+    const response = this.productsResource.value();
+    const allData = response?.products || [];
     const activeFilters = this.filters();
 
     let result = allData;
@@ -420,20 +429,19 @@ export class ProductList {
   });
 
   /**
-   * Current page data for the table
+   * Current page data for the table (filtered current page)
    */
   readonly currentPageData = computed(() => {
-    const data = this.filteredData();
-    const startIndex = this.currentPage() * this.pageSize();
-    return data.slice(startIndex, startIndex + this.pageSize());
+    return this.filteredData();
   });
 
   /**
-   * Total number of pages
+   * Total number of pages from server
    */
   readonly totalPages = computed(() => {
-    const data = this.filteredData();
-    return Math.ceil(data.length / this.pageSize());
+    const response = this.productsResource.value();
+    const total = response?.total || 0;
+    return Math.ceil(total / this.pageSize());
   });
 
   // #endregion

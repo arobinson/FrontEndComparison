@@ -7,17 +7,6 @@ export const API_BASE_URL = 'http://localhost:3001/api';
 export * from './transformers.js';
 export * from './open-food-facts-transformers.js';
 
-// Local Open Food Facts data
-export async function loadLocalOpenFoodFactsData(): Promise<ProductViewModel[]> {
-  try {
-    // In browser environment, we'll need to fetch from a local server or static file
-    // For now, return empty array - this will be implemented when we add a local server
-    return [];
-  } catch {
-    return [];
-  }
-}
-
 export function filterProductsByCategory(products: ProductViewModel[], category?: string): ProductViewModel[] {
   if (!category || category === 'all') return products;
 
@@ -56,13 +45,7 @@ export function transformDummyJsonToProductViewModel(dummyProduct: DummyJsonProd
   };
 
   const seed = dummyProduct.id;
-  const isVegetarian = seedRandom(seed + 1, 0, 1) === 1;
-  const isVegan = isVegetarian && seedRandom(seed + 2, 0, 1) === 1;
-
   const countries = ['France', 'Germany', 'Spain', 'Italy', 'USA', 'Canada', 'Japan', 'Brazil'];
-  const origins = ['Organic Farm Valley', 'Mountain Springs', 'Coastal Farms', 'Prairie Fields', 'Highland Orchards'];
-  const allergensList = ['Gluten', 'Dairy', 'Nuts', 'Soy', 'Eggs', 'Fish', 'Shellfish', 'Sesame'];
-  const stores = ['Walmart', 'Target', 'Whole Foods', 'Kroger', 'Safeway', 'Costco'];
 
   return {
     // Core identifiers (required)

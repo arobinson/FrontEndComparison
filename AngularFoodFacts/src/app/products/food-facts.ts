@@ -15,8 +15,8 @@ export class FoodFacts {
    */
   createProductsByCategoryResource(
     category: Signal<string>,
-    page = signal(1),
-    pageSize = signal(50),
+    page: Signal<number>,
+    pageSize: Signal<number>,
   ) {
     return resource({
       loader: async () => {
@@ -24,10 +24,14 @@ export class FoodFacts {
         const response = await fetch(url);
         const data = (await response.json()) as {
           products?: ProductViewModel[];
+          total?: number;
         };
 
-        // Local backend returns transformed ProductViewModel objects
-        return data?.products || [];
+        // Local backend returns transformed ProductViewModel objects and total count
+        return {
+          products: data?.products || [],
+          total: data?.total || 0,
+        };
       },
     });
   }

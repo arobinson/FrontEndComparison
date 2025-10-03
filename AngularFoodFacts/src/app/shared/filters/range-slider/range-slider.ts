@@ -4,7 +4,7 @@ import { Component, input, output, signal, effect } from '@angular/core';
   selector: 'aff-range-slider',
   imports: [],
   templateUrl: './range-slider.html',
-  styleUrl: './range-slider.css'
+  styleUrl: './range-slider.css',
 })
 export class RangeSlider {
   readonly min = input<number>(0);

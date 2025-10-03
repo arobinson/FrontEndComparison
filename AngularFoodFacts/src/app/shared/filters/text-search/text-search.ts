@@ -4,7 +4,7 @@ import { Component, input, output, signal, effect } from '@angular/core';
   selector: 'aff-text-search',
   imports: [],
   templateUrl: './text-search.html',
-  styleUrl: './text-search.css'
+  styleUrl: './text-search.css',
 })
 export class TextSearch {
   readonly placeholder = input<string>('Search');

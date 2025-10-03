@@ -4,8 +4,6 @@ import { Component } from '@angular/core';
   selector: 'aff-number-range',
   imports: [],
   templateUrl: './number-range.html',
-  styleUrl: './number-range.css'
+  styleUrl: './number-range.css',
 })
-export class NumberRange {
-
-}
+export class NumberRange {}

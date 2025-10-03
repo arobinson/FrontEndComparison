@@ -4,8 +4,6 @@ import { Component } from '@angular/core';
   selector: 'aff-date-range',
   imports: [],
   templateUrl: './date-range.html',
-  styleUrl: './date-range.css'
+  styleUrl: './date-range.css',
 })
-export class DateRange {
-
-}
+export class DateRange {}

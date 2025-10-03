@@ -4,7 +4,7 @@ import { Component, input, computed } from '@angular/core';
   selector: 'aff-time-format',
   imports: [],
   templateUrl: './time-format.html',
-  styleUrl: './time-format.css'
+  styleUrl: './time-format.css',
 })
 export class TimeFormat {
   readonly value = input.required<string>();

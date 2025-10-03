@@ -1,11 +1,20 @@
-import { Component, input, output, signal, effect, ElementRef, inject, computed } from '@angular/core';
+import {
+  Component,
+  input,
+  output,
+  signal,
+  effect,
+  ElementRef,
+  inject,
+  computed,
+} from '@angular/core';
 import { ClickOutsideService } from '../../services/click-outside.service';
 
 @Component({
   selector: 'aff-multi-select',
   imports: [],
   templateUrl: './multi-select.html',
-  styleUrl: './multi-select.css'
+  styleUrl: './multi-select.css',
 })
 export class MultiSelect {
   readonly options = input.required<string[]>();
@@ -55,13 +64,14 @@ export class MultiSelect {
   toggleDropdown() {
     const willBeOpen = !this.isOpen();
     if (willBeOpen) {
-      this.#lastClickWhenOpened = this.#clickOutsideService.lastClickedElement();
+      this.#lastClickWhenOpened =
+        this.#clickOutsideService.lastClickedElement();
     }
     this.isOpen.set(willBeOpen);
   }
 
   toggleOption(option: string) {
-    this.selectedValues.update(current => {
+    this.selectedValues.update((current) => {
       const newSet = new Set(current);
       if (newSet.has(option)) {
         newSet.delete(option);

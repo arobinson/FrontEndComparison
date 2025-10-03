@@ -325,9 +325,9 @@ export class ProductList {
    * Update filter for a specific column
    */
   updateFilter(column: string, value: any) {
-    this.filters.update(current => ({
+    this.filters.update((current) => ({
       ...current,
-      [column]: value
+      [column]: value,
     }));
     this.currentPage.set(0); // Reset to first page when filtering
   }
@@ -338,7 +338,7 @@ export class ProductList {
   resetFilters() {
     this.filters.set({});
     this.currentPage.set(0);
-    this.filterResetTrigger.update(val => val + 1);
+    this.filterResetTrigger.update((val) => val + 1);
   }
 
   // #endregion
@@ -365,7 +365,7 @@ export class ProductList {
 
     let result = allData;
     if (Object.keys(activeFilters).length > 0) {
-      result = allData.filter(product => {
+      result = allData.filter((product) => {
         let matches = true;
         for (const [column, filterValue] of Object.entries(activeFilters)) {
           if (!filterValue) continue;
@@ -374,12 +374,20 @@ export class ProductList {
 
           // Text search
           if (typeof filterValue === 'string') {
-            if (!productValue?.toString().toLowerCase().includes(filterValue.toLowerCase())) {
+            if (
+              !productValue
+                ?.toString()
+                .toLowerCase()
+                .includes(filterValue.toLowerCase())
+            ) {
               matches = false;
             }
           }
           // Range filter
-          else if (filterValue.min !== undefined || filterValue.max !== undefined) {
+          else if (
+            filterValue.min !== undefined ||
+            filterValue.max !== undefined
+          ) {
             const numValue = Number(productValue);
             if (filterValue.min !== undefined && numValue < filterValue.min) {
               matches = false;
@@ -393,7 +401,9 @@ export class ProductList {
             if (filterValue.length > 0) {
               // Handle boolean yes/no filters
               if (typeof productValue === 'boolean') {
-                const boolStrings = filterValue.map(v => v === 'Yes' ? true : v === 'No' ? false : v);
+                const boolStrings = filterValue.map((v) =>
+                  v === 'Yes' ? true : v === 'No' ? false : v,
+                );
                 if (!boolStrings.includes(productValue)) {
                   matches = false;
                 }

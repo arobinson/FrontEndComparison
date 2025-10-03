@@ -23,25 +23,48 @@
       <ng-template #filter let-column>
         @switch (getColumnDataType(column)) {
           @case ("progress-bar") {
-            <aff-range-slider [min]="0" [max]="100" [resetTrigger]="filterResetTrigger()" (valueChange)="updateFilter(column, $event)" />
+            <aff-range-slider
+              [min]="0"
+              [max]="100"
+              [resetTrigger]="filterResetTrigger()"
+              (valueChange)="updateFilter(column, $event)"
+            />
           }
           @case ("grade-badge") {
-            <aff-multi-select [options]="['A', 'B', 'C', 'D', 'F']" [resetTrigger]="filterResetTrigger()" (valueChange)="updateFilter(column, $event)" />
+            <aff-multi-select
+              [options]="['A', 'B', 'C', 'D', 'F']"
+              [resetTrigger]="filterResetTrigger()"
+              (valueChange)="updateFilter(column, $event)"
+            />
           }
           @case ("nova-dots") {
-            <aff-multi-select [options]="['1', '2', '3', '4']" [resetTrigger]="filterResetTrigger()" (valueChange)="updateFilter(column, $event)" />
+            <aff-multi-select
+              [options]="['1', '2', '3', '4']"
+              [resetTrigger]="filterResetTrigger()"
+              (valueChange)="updateFilter(column, $event)"
+            />
           }
           @case ("large-counter") {
-            <aff-range-slider [resetTrigger]="filterResetTrigger()" (valueChange)="updateFilter(column, $event)" />
+            <aff-range-slider
+              [resetTrigger]="filterResetTrigger()"
+              (valueChange)="updateFilter(column, $event)"
+            />
           }
           @case ("boolean-yesno") {
-            <aff-multi-select [options]="['Yes', 'No']" [resetTrigger]="filterResetTrigger()" (valueChange)="updateFilter(column, $event)" />
+            <aff-multi-select
+              [options]="['Yes', 'No']"
+              [resetTrigger]="filterResetTrigger()"
+              (valueChange)="updateFilter(column, $event)"
+            />
           }
           @case ("product-image") {
             <!-- No filter for images -->
           }
           @default {
-            <aff-text-search [resetTrigger]="filterResetTrigger()" (valueChange)="updateFilter(column, $event)" />
+            <aff-text-search
+              [resetTrigger]="filterResetTrigger()"
+              (valueChange)="updateFilter(column, $event)"
+            />
           }
         }
       </ng-template>

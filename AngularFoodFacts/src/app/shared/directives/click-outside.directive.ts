@@ -1,4 +1,11 @@
-import { Directive, ElementRef, output, effect, inject, computed } from '@angular/core';
+import {
+  Directive,
+  ElementRef,
+  output,
+  effect,
+  inject,
+  computed,
+} from '@angular/core';
 import { ClickOutsideService } from '../services/click-outside.service';
 
 @Directive({

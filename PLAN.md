@@ -145,10 +145,10 @@ Each framework must implement these component types to showcase different render
 - Lazy-loaded images with fallbacks
 - Loading states and error handling
 
-### 18. **time-display** (`shipping_departure_time`)
+### 18. **time-format** (`shipping_departure_time`)
 
-- Time formatting: "2:30 PM" or "14:30"
-- Timezone considerations
+- Time formatting: "2:30 PM" or "14:30" based on locale
+- Uses `Intl.DateTimeFormat` for locale-aware display
 
 ### 19. **calculated-arrival** (departure_time + flight_duration_hours)
 
@@ -374,6 +374,10 @@ Each framework must implement these component types to showcase different render
    - Automatic data filtering (text search, range, multi-select)
    - Reset Filters button
    - Filters integrated per column type
+   - Image columns excluded from filtering (no filter rendered)
+7. **Time formatting component**:
+   - `time-format` - Displays 24-hour time strings in locale-aware format (AM/PM when appropriate)
+   - Applied to `shipping_departure_time` column
 
 🚧 **In Progress:**
 

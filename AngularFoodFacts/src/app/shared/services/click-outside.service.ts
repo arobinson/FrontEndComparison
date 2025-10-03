@@ -8,7 +8,9 @@ export class ClickOutsideService {
 
   constructor() {
     this.#ngZone.runOutsideAngular(() => {
-      document.addEventListener('click', this.#boundHandleClick, { capture: true });
+      document.addEventListener('click', this.#boundHandleClick, {
+        capture: true,
+      });
     });
 
     inject(DestroyRef).onDestroy(() => {

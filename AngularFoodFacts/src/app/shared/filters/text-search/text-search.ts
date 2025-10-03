@@ -1,4 +1,4 @@
-import { Component, input, output, signal } from '@angular/core';
+import { Component, input, output, signal, effect } from '@angular/core';
 
 @Component({
   selector: 'aff-text-search',
@@ -8,9 +8,21 @@ import { Component, input, output, signal } from '@angular/core';
 })
 export class TextSearch {
   readonly placeholder = input<string>('Search');
+  readonly resetTrigger = input<number>(0);
   readonly valueChange = output<string>();
 
   readonly searchValue = signal('');
+
+  constructor() {
+    effect(() => {
+      this.resetTrigger();
+      this.clear();
+    });
+  }
+
+  clear() {
+    this.searchValue.set('');
+  }
 
   onInput(event: Event) {
     const target = event.target as HTMLInputElement;

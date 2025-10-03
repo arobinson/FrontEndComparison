@@ -313,6 +313,7 @@ export class ProductList {
   // #region Filter State
 
   readonly filters = signal<Record<string, any>>({});
+  readonly filterResetTrigger = signal(0);
 
   /**
    * Update filter for a specific column
@@ -331,6 +332,7 @@ export class ProductList {
   resetFilters() {
     this.filters.set({});
     this.currentPage.set(0);
+    this.filterResetTrigger.update(val => val + 1);
   }
 
   // #endregion
@@ -382,8 +384,16 @@ export class ProductList {
           }
           // Multi-select
           else if (Array.isArray(filterValue)) {
-            if (filterValue.length > 0 && !filterValue.includes(productValue)) {
-              matches = false;
+            if (filterValue.length > 0) {
+              // Handle boolean yes/no filters
+              if (typeof productValue === 'boolean') {
+                const boolStrings = filterValue.map(v => v === 'Yes' ? true : v === 'No' ? false : v);
+                if (!boolStrings.includes(productValue)) {
+                  matches = false;
+                }
+              } else if (!filterValue.includes(productValue)) {
+                matches = false;
+              }
             }
           }
         }

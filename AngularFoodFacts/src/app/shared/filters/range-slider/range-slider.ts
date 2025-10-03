@@ -1,4 +1,4 @@
-import { Component, input, output, signal } from '@angular/core';
+import { Component, input, output, signal, effect } from '@angular/core';
 
 @Component({
   selector: 'aff-range-slider',
@@ -9,22 +9,53 @@ import { Component, input, output, signal } from '@angular/core';
 export class RangeSlider {
   readonly min = input<number>(0);
   readonly max = input<number>(100);
+  readonly resetTrigger = input<number>(0);
   readonly valueChange = output<{ min: number; max: number }>();
 
-  readonly minValue = signal(0);
-  readonly maxValue = signal(100);
+  readonly minValue = signal<number | undefined>(undefined);
+  readonly maxValue = signal<number | undefined>(undefined);
+
+  constructor() {
+    effect(() => {
+      this.resetTrigger();
+      this.clear();
+    });
+  }
+
+  clear() {
+    this.minValue.set(undefined);
+    this.maxValue.set(undefined);
+  }
 
   onMinChange(event: Event) {
     const target = event.target as HTMLInputElement;
-    this.minValue.set(Number(target.value));
+    const value = target.value === '' ? undefined : Number(target.value);
+    this.minValue.set(value);
   }
 
   onMaxChange(event: Event) {
     const target = event.target as HTMLInputElement;
-    this.maxValue.set(Number(target.value));
+    const value = target.value === '' ? undefined : Number(target.value);
+    this.maxValue.set(value);
   }
 
   onBlur() {
-    this.valueChange.emit({ min: this.minValue(), max: this.maxValue() });
+    const minVal = this.minValue();
+    const maxVal = this.maxValue();
+
+    let result: { min?: number; max?: number };
+    if (minVal !== undefined || maxVal !== undefined) {
+      result = {};
+      if (minVal !== undefined) {
+        result.min = minVal;
+      }
+      if (maxVal !== undefined) {
+        result.max = maxVal;
+      }
+    } else {
+      result = {};
+    }
+
+    this.valueChange.emit(result as { min: number; max: number });
   }
 }

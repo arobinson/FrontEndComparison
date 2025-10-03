@@ -3,7 +3,7 @@
     <span>{{ getDisplayText() }}</span>
     <span class="arrow">▼</span>
   </button>
-  
+
   @if (isOpen()) {
     <div class="dropdown">
       @for (option of options(); track option) {

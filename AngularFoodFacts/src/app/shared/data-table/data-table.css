@@ -38,7 +38,6 @@
   vertical-align: middle;
   font-size: var(--font-size-sm, 0.875rem);
   white-space: nowrap;
-  overflow: hidden;
   text-overflow: ellipsis;
 }
 
@@ -77,10 +76,16 @@
   background: var(--filter-bg, #fafafa);
   padding: 0.25rem 0.5rem;
   min-width: 80px;
+  overflow: visible;
 }
 
 .data-cell {
   background: var(--surface-color, #fff);
+  overflow: hidden;
+}
+
+.header-cell {
+  overflow: hidden;
 }
 
 .data-row:hover .data-cell {

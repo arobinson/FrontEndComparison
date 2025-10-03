@@ -1,4 +1,5 @@
-import { Component, input, output, signal } from '@angular/core';
+import { Component, input, output, signal, effect, ElementRef, inject, computed } from '@angular/core';
+import { ClickOutsideService } from '../../services/click-outside.service';
 
 @Component({
   selector: 'aff-multi-select',
@@ -9,13 +10,54 @@ import { Component, input, output, signal } from '@angular/core';
 export class MultiSelect {
   readonly options = input.required<string[]>();
   readonly placeholder = input<string>('Select...');
+  readonly resetTrigger = input<number>(0);
   readonly valueChange = output<string[]>();
 
   readonly selectedValues = signal<Set<string>>(new Set());
   readonly isOpen = signal(false);
 
+  readonly #elementRef = inject(ElementRef);
+  readonly #clickOutsideService = inject(ClickOutsideService);
+  #lastClickWhenOpened: EventTarget | null = null;
+
+  readonly #clickedOutside = computed(() => {
+    const target = this.#clickOutsideService.lastClickedElement();
+    let result: boolean;
+    if (!target || !this.isOpen()) {
+      result = false;
+    } else if (target === this.#lastClickWhenOpened) {
+      // Ignore the click that opened the dropdown
+      result = false;
+    } else {
+      const clickedInside = this.#elementRef.nativeElement.contains(target);
+      result = !clickedInside;
+    }
+    return result;
+  });
+
+  constructor() {
+    effect(() => {
+      this.resetTrigger();
+      this.clear();
+    });
+
+    effect(() => {
+      if (this.#clickedOutside()) {
+        this.isOpen.set(false);
+      }
+    });
+  }
+
+  clear() {
+    this.selectedValues.set(new Set());
+  }
+
   toggleDropdown() {
-    this.isOpen.update(val => !val);
+    const willBeOpen = !this.isOpen();
+    if (willBeOpen) {
+      this.#lastClickWhenOpened = this.#clickOutsideService.lastClickedElement();
+    }
+    this.isOpen.set(willBeOpen);
   }
 
   toggleOption(option: string) {

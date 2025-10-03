@@ -24,7 +24,8 @@ export class TruncatedText {
     const text = this.value() || '';
     let result: string;
     if (this.shouldTruncate() && !this.isExpanded()) {
-      result = text.substring(0, this.maxLength()) + '...';
+      // Subtract 3 for the "..." so total length doesn't exceed maxLength
+      result = text.substring(0, this.maxLength() - 3) + '...';
     } else {
       result = text;
     }

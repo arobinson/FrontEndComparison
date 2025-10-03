@@ -413,7 +413,11 @@ export class ProductList {
               // Handle boolean yes/no filters
               if (typeof productValue === 'boolean') {
                 const boolStrings = filterValue.map((v) =>
-                  v === 'Yes' ? true : v === 'No' ? false : v,
+                  (() => {
+                    if (v === 'Yes') return true;
+                    if (v === 'No') return false;
+                    return v;
+                  })(),
                 );
                 if (!boolStrings.includes(productValue)) {
                   matches = false;

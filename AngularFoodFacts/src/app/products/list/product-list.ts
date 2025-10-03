@@ -14,6 +14,7 @@ import { ProductImage } from '../../shared/product-image/product-image';
 import { DecimalUnits } from '../../shared/decimal-units/decimal-units';
 import { AbsoluteDate } from '../../shared/absolute-date/absolute-date';
 import { RelativeDate } from '../../shared/relative-date/relative-date';
+import { TimeFormat } from '../../shared/time-format/time-format';
 import { TextSearch } from '../../shared/filters/text-search/text-search';
 import { RangeSlider } from '../../shared/filters/range-slider/range-slider';
 import { MultiSelect } from '../../shared/filters/multi-select/multi-select';
@@ -35,6 +36,7 @@ import { MultiSelect } from '../../shared/filters/multi-select/multi-select';
     DecimalUnits,
     AbsoluteDate,
     RelativeDate,
+    TimeFormat,
     TextSearch,
     RangeSlider,
     MultiSelect,
@@ -80,6 +82,7 @@ export class ProductList {
     'simple-quantity': 'simple-quantity',
     'absolute-date': 'absolute-date',
     'relative-date': 'relative-date',
+    'time-format': 'time-format',
     'boolean-yesno': 'boolean-yesno',
     'product-image': 'product-image',
     'product-link': 'product-link',
@@ -186,6 +189,8 @@ export class ProductList {
     next_restock_date: this.dataTypes['absolute-date'],
     // Relative date
     last_updated: this.dataTypes['relative-date'],
+    // Time format
+    shipping_departure_time: this.dataTypes['time-format'],
     // Rest as simple text
     ...Object.fromEntries(
       this.allColumns
@@ -216,6 +221,7 @@ export class ProductList {
               'release_date',
               'next_restock_date',
               'last_updated',
+              'shipping_departure_time',
             ].includes(col),
         )
         .map((col) => [col, this.dataTypes['simple-text']]),

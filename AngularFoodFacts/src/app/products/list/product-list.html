@@ -37,6 +37,9 @@
           @case ("boolean-yesno") {
             <aff-multi-select [options]="['Yes', 'No']" [resetTrigger]="filterResetTrigger()" (valueChange)="updateFilter(column, $event)" />
           }
+          @case ("product-image") {
+            <!-- No filter for images -->
+          }
           @default {
             <aff-text-search [resetTrigger]="filterResetTrigger()" (valueChange)="updateFilter(column, $event)" />
           }
@@ -77,6 +80,9 @@
           }
           @case ("relative-date") {
             <aff-relative-date [value]="value" />
+          }
+          @case ("time-format") {
+            <aff-time-format [value]="value" />
           }
           @default {
             {{ value || "" }}

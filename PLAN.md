@@ -346,9 +346,10 @@ Each framework must implement these component types to showcase different render
 ✅ **Completed:**
 
 1. Backend server with mock data (54 fields, `/shared-data/MOCK_DATA.json`)
+   - Seed-based image URLs for consistent data across reloads (performance testing)
 2. Basic Angular app structure with `ProductList` component
 3. Data loading via `resource()` API with signals
-4. **All 11 display components implemented:**
+4. **All 12 display components implemented:**
    - `product-link` - ID field with routing to detail pages
    - `progress-bar` - Visual bars for quality_score, eco_score (0-100%)
    - `grade-badge` - Color-coded badges for grade field (A-F)
@@ -360,8 +361,8 @@ Each framework must implement these component types to showcase different render
    - `decimal-units` - Price, cost, weight with units
    - `absolute-date` - Formatted dates (created, release, restock)
    - `relative-date` - Relative time for last_updated
+   - `star-rating` - 5-star display for customer_rating with half-star support
 5. All 54 columns displayed in table with appropriate component types
-   ✅ **Completed (continued):**
 6. **Filtering System**:
    - `text-search` filter - Text input with blur/enter events
    - `range-slider` filter - Min/max number range inputs
@@ -371,28 +372,29 @@ Each framework must implement these component types to showcase different render
    - Reset Filters button
    - Filters integrated per column type
    - Image columns excluded from filtering (no filter rendered)
-
 7. **Time formatting component**:
    - `time-format` - Displays 24-hour time strings in locale-aware format (AM/PM when appropriate)
    - Applied to `shipping_departure_time` column
-     ✅ **Completed (continued):**
 8. **Pagination System**:
    - Fixed resource to use `params` property for reactive data fetching
    - Server-side pagination (50 records per page from backend)
    - Client-side filtering on current page data
    - Page size selector (10, 25, 50 items per page)
    - Pagination automatically re-fetches when page or pageSize changes
-
-🚧 **In Progress:**
-
-- List view complete, ready to start product detail view
+9. **Product Detail View**:
+   - Comprehensive display of all 54 fields organized into logical sections
+   - Routing from list view to detail view with product code
+   - Uses same shared components as list view (component reuse)
+   - Sections: Basic Info, Quality & Ratings, Statistics, Pricing, Inventory, Geographic, Supplier, Features, Shipping
+   - Proper scrolling with adequate bottom padding
+   - Navigation back to list view
 
 📋 **Remaining:**
 
-1. Implement product detail view with complex nested data
+1. **Implement column sorting** - Add click handlers to column headers to sort table data
 2. Optimize for Angular performance: OnPush strategy, trackBy functions, pure pipes
-3. Add performance measurement hooks
-4. Establish baseline metrics and testing methodology
+3. Performance testing infrastructure (COMPLETED - see performance-tests directory)
+4. Run baseline performance measurements on Angular implementation
 
 ### Phase 3: React Implementation
 
@@ -425,56 +427,209 @@ Each framework must implement these component types to showcase different render
 
 ## Performance Testing Strategy
 
+### Test Methodology
+
+**Repetitions**: Each test scenario runs **5 times** per framework, using median value to eliminate noise from system background processes. (Note: 17 repetitions caused resource exhaustion; 5 provides sufficient statistical data for blog analysis while preventing browser crashes)
+
+**Output Format**:
+
+- **Raw data**: CSV/JSON export with all measurements for spreadsheet analysis
+- **Blog format**: Narrative findings with supporting charts (comparison bar charts, line graphs)
+- **Charts**: Framework comparison visualizations using Chart.js or similar
+
 ### Test Scenarios
 
-1. **Initial Load**: 50 products × 50+ columns with filter headers rendered simultaneously (client-side)
-2. **Filter Application**: User types in text filter, tabs out (blur) → measure re-render time
-3. **Multiple Filters**: Apply filters across different column types → measure cumulative performance
-4. **Sort Operations**: Click column headers → measure sort + re-render time
-5. **Client Navigation**: List → Detail → List transitions with filter state preserved (no SSR)
-6. **Memory Usage**: Long-running sessions with repeated filtering operations
-7. **Bundle Analysis**: Size comparisons across frameworks (client bundles only)
-8. **Development Server Performance**: Startup time measurement across frameworks
+#### 1. Initial Page Load (Cold Start)
+
+**Action**: Navigate to application root, wait for list view to fully render
+
+**Measurements**:
+
+- Time to First Contentful Paint (FCP)
+- Time to Largest Contentful Paint (LCP)
+- Time to Interactive (TTI)
+- Total Blocking Time (TBT)
+- Cumulative Layout Shift (CLS)
+- Initial JavaScript heap size
+- Network: Request count, total bytes transferred, total request duration
+
+**Trigger**: Puppeteer navigation with `waitUntil: 'networkidle0'`
+
+#### 2. Filter Application (Partial Match)
+
+**Action**: Type text in product_name filter to match 2-5 products on current page, blur input
+
+**Measurements**:
+
+- Time from blur event to re-render complete (using MutationObserver on table body)
+- JavaScript execution time during filter
+- Memory delta (heap size before/after)
+- Number of DOM nodes updated
+
+**Trigger**: Puppeteer keyboard input + blur event, measure until table stabilizes
+
+#### 3. Clear Filters
+
+**Action**: Click "Reset Filters" button after filter applied
+
+**Measurements**:
+
+- Time from click to full table re-render (all 50 rows restored)
+- JavaScript execution time
+- Memory delta
+
+**Trigger**: Puppeteer click on reset button, measure until table returns to initial state
+
+#### 4. Expand/Collapse Long Description
+
+**Action**: Click "Show more" link in truncated description field, then "Show less"
+
+**Measurements**:
+
+- Time from click to text expansion complete (expand)
+- Time from click to text collapse complete (collapse)
+- Layout shift impact (CLS delta)
+
+**Trigger**: Puppeteer click on first visible "Show more" link
+
+#### 5. Sort Column
+
+**Action**: Click column header to sort by that column
+
+**Measurements**:
+
+- Time from click to re-ordered table render complete
+- JavaScript execution time for sort operation
+- Memory delta
+
+**Trigger**: Puppeteer click on sortable column header (e.g., product_name)
+
+#### 6. Navigate to Detail View
+
+**Action**: Click product link in first row, wait for detail page render
+
+**Measurements**:
+
+- Navigation time (click to route change)
+- Detail page render time (route change to LCP)
+- Memory delta
+- Network requests for detail page
+
+**Trigger**: Puppeteer click on product link, measure until detail page stable
+
+#### 7. Navigate Back to List
+
+**Action**: Click back button/link from detail view, return to list
+
+**Measurements**:
+
+- Navigation time
+- List re-render time (if not cached)
+- Memory delta
+
+**Trigger**: Puppeteer click on back navigation
+
+#### 8. Pagination
+
+**Action**: Click "Next page" button, wait for new data to load and render
+
+**Measurements**:
+
+- Time from click to new page fully rendered
+- Network request duration (API call for new page)
+- Render time (data received to table updated)
+- Memory delta
+
+**Trigger**: Puppeteer click on next page button
 
 ### Metrics Collected
 
-**Bundle Analysis**:
+#### Build & Bundle Analysis (One-time per Framework)
 
-- **Development builds**: File count, average file size, total bundle size
-- **Production builds**: File count, average file size, total bundle size, compression ratios
-- **Code splitting**: Chunk distribution and lazy loading effectiveness
+**Development Build**:
 
-**Network Performance**:
+- Build time (pnpm exec ng build --configuration development, full process start to exit)
+- File count
+- Total bundle size (uncompressed)
+- Largest file size
 
-- **Request count**: Total HTTP requests during test scenarios
-- **Request timing**: Individual request durations and parallel loading
-- **Clock time**: Total application waiting time on network responses
-- **Data transfer**: Total bytes transferred (request + response payloads)
+**Production Build**:
 
-**Rendering Performance**:
+- Build time (pnpm exec ng build, full process start to exit)
+- File count
+- Total bundle size (uncompressed)
+- Total bundle size (gzipped)
+- Chunk distribution (main, vendor, lazy chunks)
+- Compression ratio
 
-- **Initial list render**: Time to display 50+ products × 50+ columns with filter headers
-- **Re-render performance**: List re-display time after filter applied (on blur events)
-- **Filter interaction**: Time between blur event and completed re-render
-- **Sort performance**: Re-render time for column sorting operations
-- **Detail navigation**: Time to navigate to and render individual product detail
-- **Return navigation**: Time to return and re-render list view from detail
+**Note**: Build time measurements use complete process execution (start to exit), not watch mode, for precise timing
 
-**Additional Performance Metrics**:
+**Tools**: File system analysis, build tool output parsing
 
-- **Memory usage**: JavaScript heap size during operations (measurable via Puppeteer)
-- **Web Vitals**: First Contentful Paint (FCP), Largest Contentful Paint (LCP), Cumulative Layout Shift (CLS) (directly measurable)
-- **JavaScript execution time**: Pure JS parsing and execution timing (excludes network/rendering)
-- **Development server startup**: Time from `pnpm dev` command to server ready and serving requests
+#### Runtime Performance Metrics (Per Test Scenario)
+
+**Web Vitals** (using PerformanceObserver API):
+
+- First Contentful Paint (FCP) - time to first DOM content render
+- Largest Contentful Paint (LCP) - time to largest content element render
+- Cumulative Layout Shift (CLS) - visual stability score
+- Time to Interactive (TTI) - time until page fully interactive
+- Total Blocking Time (TBT) - sum of blocking time for long tasks
+- First Input Delay (FID) - responsiveness to first user interaction
+
+**Custom Timing Metrics** (using Performance.mark/measure):
+
+- Filter operation duration (blur → table update complete)
+- Sort operation duration (click → re-ordered table render)
+- Expand/collapse duration (click → text state change)
+- Navigation duration (click → new route rendered)
+- Pagination duration (click → new page rendered)
+
+**Memory Metrics** (using Chrome DevTools Protocol):
+
+- Initial heap size (after page load)
+- Heap size after each operation
+- Memory delta per operation
+- Garbage collection frequency/duration
+
+**Network Metrics** (using Puppeteer Network API):
+
+- Total requests count
+- Total bytes transferred (request + response)
+- Total network duration (parallel requests)
+- Largest request size
+- API response times
 
 ### Testing Infrastructure
 
-- **Puppeteer Scripts**: Automated performance measurement with network timing separation
-- **Real API Data**: Live OpenFoodFacts API calls for realistic network conditions
-- **Consistent Environment**: Same hardware, network conditions, API endpoints
-- **Statistical Analysis**: Multiple runs with averaged results
-- **Automated Charting**: Generate performance comparison graphs for blog publication
-- **Results Export**: JSON/CSV data export for further analysis
+**Tools**:
+
+- **Puppeteer**: Browser automation, network interception, CDP access
+- **Lighthouse CI**: Automated Web Vitals measurement
+- **Performance Observer API**: Runtime performance metrics
+- **Chrome DevTools Protocol**: Memory profiling
+- **Custom scripts**: CSV/JSON export, chart generation
+
+**Environment Consistency**:
+
+- Same machine (CPU, RAM, OS)
+- Same browser version (Chrome/Chromium)
+- Same network conditions (localhost backend, no throttling)
+- Same data set (seeded mock data)
+- Same viewport size (1920x1080)
+
+**Data Export**:
+
+- **CSV format**: All raw measurements with run number, framework, scenario, metric name, value
+- **JSON format**: Structured test results for programmatic chart generation
+- **Summary stats**: Median, mean, min, max, standard deviation per metric
+
+**Visualization** (for blog article):
+
+- Bar charts: Framework comparison per metric
+- Line graphs: Performance trends across scenarios
+- Memory graphs: Heap size over operation sequence
+- Bundle size pie charts: Chunk distribution comparison
 
 ## Application Features
 

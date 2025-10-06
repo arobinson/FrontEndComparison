@@ -4,15 +4,21 @@
   "description": "Puppeteer-based performance testing for framework comparison",
   "type": "module",
   "scripts": {
-    "test": "node run-all.js",
-    "test:single": "node run-single.js"
+    "build": "tsc",
+    "test": "pnpm build && node dist/index.js",
+    "test:dev": "tsc && node dist/index.js",
+    "test:initial": "tsc && node dist/test-initial-only.js",
+    "dry-run": "tsc && node dist/dry-run.js",
+    "debug:filter": "tsc && node dist/debug-filter.js",
+    "test:filter:headed": "tsc && node dist/test-filter-headed.js"
   },
   "dependencies": {
-    "puppeteer": "^21.0.0",
     "shared-types": "workspace:*"
   },
   "devDependencies": {
+    "@playwright/test": "^1.56.0",
     "@types/node": "^20.0.0",
+    "playwright": "^1.56.0",
     "typescript": "^5.3.0"
   },
   "license": "MIT"

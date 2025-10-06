@@ -9,6 +9,10 @@ import { TruncatedText } from '../../shared/truncated-text/truncated-text';
 import { LargeCounter } from '../../shared/large-counter/large-counter';
 import { AbsoluteDate } from '../../shared/absolute-date/absolute-date';
 import { RelativeDate } from '../../shared/relative-date/relative-date';
+import { BooleanYesno } from '../../shared/boolean-yesno/boolean-yesno';
+import { DecimalUnits } from '../../shared/decimal-units/decimal-units';
+import { TimeFormat } from '../../shared/time-format/time-format';
+import { StarRating } from '../../shared/star-rating/star-rating';
 
 @Component({
   selector: 'aff-product-detail',
@@ -21,6 +25,10 @@ import { RelativeDate } from '../../shared/relative-date/relative-date';
     LargeCounter,
     AbsoluteDate,
     RelativeDate,
+    BooleanYesno,
+    DecimalUnits,
+    TimeFormat,
+    StarRating,
   ],
   templateUrl: './product-detail.html',
   styleUrl: './product-detail.css',

@@ -76,7 +76,9 @@
 
             @if (product.weightKg) {
               <dt>Weight</dt>
-              <dd>{{ product.weightKg }} kg</dd>
+              <dd>
+                <aff-decimal-units [value]="product.weightKg" [unit]="'kg'" />
+              </dd>
             }
 
             @if (product.dimensionsCm) {
@@ -125,7 +127,7 @@
               @if (product.ecoScore) {
                 <div class="score-item">
                   <span class="score-label">Eco Score</span>
-                  <span class="score-value">{{ product.ecoScore }}</span>
+                  <aff-progress-bar [value]="product.ecoScore" />
                 </div>
               }
             </div>
@@ -153,7 +155,9 @@
 
               @if (product.customerRating) {
                 <dt>Customer Rating</dt>
-                <dd>{{ product.customerRating }} / 5</dd>
+                <dd>
+                  <aff-star-rating [value]="product.customerRating" />
+                </dd>
               }
             </dl>
           </div>
@@ -166,27 +170,37 @@
             <dl class="info-list">
               @if (product.price) {
                 <dt>Price</dt>
-                <dd>{{ product.price }} {{ product.currencyCode || "" }}</dd>
+                <dd>
+                  <aff-decimal-units [value]="product.price" [unit]="product.currencyCode || ''" />
+                </dd>
               }
 
               @if (product.cost) {
                 <dt>Cost</dt>
-                <dd>{{ product.cost }} {{ product.currencyCode || "" }}</dd>
+                <dd>
+                  <aff-decimal-units [value]="product.cost" [unit]="product.currencyCode || ''" />
+                </dd>
               }
 
               @if (product.wholesalePrice) {
                 <dt>Wholesale Price</dt>
-                <dd>{{ product.wholesalePrice }} {{ product.currencyCode || "" }}</dd>
+                <dd>
+                  <aff-decimal-units [value]="product.wholesalePrice" [unit]="product.currencyCode || ''" />
+                </dd>
               }
 
               @if (product.taxRate !== undefined) {
                 <dt>Tax Rate</dt>
-                <dd>{{ product.taxRate }}%</dd>
+                <dd>
+                  <aff-decimal-units [value]="product.taxRate" [unit]="'%'" />
+                </dd>
               }
 
               @if (product.discountPercent !== undefined) {
                 <dt>Discount</dt>
-                <dd>{{ product.discountPercent }}%</dd>
+                <dd>
+                  <aff-decimal-units [value]="product.discountPercent" [unit]="'%'" />
+                </dd>
               }
             </dl>
           </div>
@@ -199,12 +213,16 @@
             <dl class="info-list">
               @if (product.stockQuantity !== undefined) {
                 <dt>Stock Quantity</dt>
-                <dd>{{ product.stockQuantity }}</dd>
+                <dd>
+                  <aff-decimal-units [value]="product.stockQuantity" />
+                </dd>
               }
 
               @if (product.reorderLevel !== undefined) {
                 <dt>Reorder Level</dt>
-                <dd>{{ product.reorderLevel }}</dd>
+                <dd>
+                  <aff-decimal-units [value]="product.reorderLevel" />
+                </dd>
               }
 
               @if (product.warehouseLocation) {
@@ -214,7 +232,9 @@
 
               @if (product.inStock !== undefined) {
                 <dt>In Stock</dt>
-                <dd>{{ product.inStock ? "Yes" : "No" }}</dd>
+                <dd>
+                  <aff-boolean-yesno [value]="product.inStock" />
+                </dd>
               }
 
               @if (nextRestockDate()) {
@@ -290,32 +310,44 @@
             <dl class="info-list">
               @if (product.isFeatured !== undefined) {
                 <dt>Featured</dt>
-                <dd>{{ product.isFeatured ? "Yes" : "No" }}</dd>
+                <dd>
+                  <aff-boolean-yesno [value]="product.isFeatured" />
+                </dd>
               }
 
               @if (product.isBestSeller !== undefined) {
                 <dt>Best Seller</dt>
-                <dd>{{ product.isBestSeller ? "Yes" : "No" }}</dd>
+                <dd>
+                  <aff-boolean-yesno [value]="product.isBestSeller" />
+                </dd>
               }
 
               @if (product.requiresShipping !== undefined) {
                 <dt>Requires Shipping</dt>
-                <dd>{{ product.requiresShipping ? "Yes" : "No" }}</dd>
+                <dd>
+                  <aff-boolean-yesno [value]="product.requiresShipping" />
+                </dd>
               }
 
               @if (product.isDigital !== undefined) {
                 <dt>Digital Product</dt>
-                <dd>{{ product.isDigital ? "Yes" : "No" }}</dd>
+                <dd>
+                  <aff-boolean-yesno [value]="product.isDigital" />
+                </dd>
               }
 
               @if (product.hasWarranty !== undefined) {
                 <dt>Has Warranty</dt>
-                <dd>{{ product.hasWarranty ? "Yes" : "No" }}</dd>
+                <dd>
+                  <aff-boolean-yesno [value]="product.hasWarranty" />
+                </dd>
               }
 
               @if (product.warrantyMonths !== undefined) {
                 <dt>Warranty Period</dt>
-                <dd>{{ product.warrantyMonths }} months</dd>
+                <dd>
+                  <aff-decimal-units [value]="product.warrantyMonths" [unit]="'months'" />
+                </dd>
               }
 
               @if (product.certification) {
@@ -333,12 +365,16 @@
             <dl class="info-list">
               @if (product.shippingDepartureTime) {
                 <dt>Departure Time</dt>
-                <dd>{{ product.shippingDepartureTime }}</dd>
+                <dd>
+                  <aff-time-format [value]="product.shippingDepartureTime" />
+                </dd>
               }
 
               @if (product.flightDurationHours !== undefined) {
                 <dt>Flight Duration</dt>
-                <dd>{{ product.flightDurationHours }} hours</dd>
+                <dd>
+                  <aff-decimal-units [value]="product.flightDurationHours" [unit]="'hours'" />
+                </dd>
               }
             </dl>
           </div>

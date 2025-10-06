@@ -1,0 +1,12 @@
+<div class="star-rating">
+  @for (star of stars().full; track $index) {
+    <span class="star full">★</span>
+  }
+  @for (star of stars().half; track $index) {
+    <span class="star half">★</span>
+  }
+  @for (star of stars().empty; track $index) {
+    <span class="star empty">☆</span>
+  }
+  <span class="rating-value">{{ value() }}</span>
+</div>

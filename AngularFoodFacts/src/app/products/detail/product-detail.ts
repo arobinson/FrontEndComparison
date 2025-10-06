@@ -1,11 +1,27 @@
 import { Component, inject, computed, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
-import { FoodFacts } from '../food-facts';
+import { FoodFacts, ProductViewModel } from '../food-facts';
+import { ProgressBar } from '../../shared/progress-bar/progress-bar';
+import { GradeBadge } from '../../shared/grade-badge/grade-badge';
+import { NovaDots } from '../../shared/nova-dots/nova-dots';
+import { ProductImage } from '../../shared/product-image/product-image';
+import { TruncatedText } from '../../shared/truncated-text/truncated-text';
+import { LargeCounter } from '../../shared/large-counter/large-counter';
+import { AbsoluteDate } from '../../shared/absolute-date/absolute-date';
+import { RelativeDate } from '../../shared/relative-date/relative-date';
 
 @Component({
   selector: 'aff-product-detail',
-  imports: [CommonModule],
+  imports: [
+    ProgressBar,
+    GradeBadge,
+    NovaDots,
+    ProductImage,
+    TruncatedText,
+    LargeCounter,
+    AbsoluteDate,
+    RelativeDate,
+  ],
   templateUrl: './product-detail.html',
   styleUrl: './product-detail.css',
 })
@@ -26,6 +42,50 @@ export class ProductDetail {
       this.productResource.status() === 'resolved' &&
       this.productResource.value(),
   );
+
+  readonly createdDate = computed(() => {
+    let result: string;
+    const date = this.productResource.value()?.createdDate;
+    if (date) {
+      result = date.toISOString();
+    } else {
+      result = '';
+    }
+    return result;
+  });
+
+  readonly lastModifiedDate = computed(() => {
+    let result: string;
+    const date = this.productResource.value()?.lastUpdated;
+    if (date) {
+      result = date.toISOString();
+    } else {
+      result = '';
+    }
+    return result;
+  });
+
+  readonly releaseDate = computed(() => {
+    let result: string;
+    const date = this.productResource.value()?.releaseDate;
+    if (date) {
+      result = date.toISOString();
+    } else {
+      result = '';
+    }
+    return result;
+  });
+
+  readonly nextRestockDate = computed(() => {
+    let result: string;
+    const date = this.productResource.value()?.nextRestockDate;
+    if (date) {
+      result = date.toISOString();
+    } else {
+      result = '';
+    }
+    return result;
+  });
 
   navigateToList(): void {
     this.#router.navigate(['/list']);

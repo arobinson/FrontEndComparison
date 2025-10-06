@@ -1,64 +1,361 @@
 <div class="product-detail-container">
   <button (click)="navigateToList()" class="back-button">← Back to List</button>
 
-  @if (hasData()) {
+  @if (hasData() && productResource.value(); as product) {
     <div class="product-detail">
-      <h1>{{ productResource.value()!.productName || "Unknown Product" }}</h1>
+      <div class="header-section">
+        <h1>{{ product.productName || "Unknown Product" }}</h1>
+        <div class="header-meta">
+          <span class="product-code">Code: {{ product.code }}</span>
+          @if (product.qualityScore) {
+            <aff-progress-bar [value]="product.qualityScore" />
+          }
+        </div>
+      </div>
 
-      <div class="product-info">
+      <div class="content-grid">
+        <!-- Image Gallery Section -->
+        @if (product.imageUrl) {
+          <div class="image-gallery">
+            <h2>Product Images</h2>
+            <div class="main-image">
+              <aff-product-image [value]="product.imageUrl" [size]="'large'" />
+            </div>
+          </div>
+        }
+
+        <!-- Basic Information Section -->
         <div class="info-section">
-          <h3>Basic Information</h3>
-          <p><strong>Code:</strong> {{ productResource.value()!.code }}</p>
-          <p>
-            <strong>Categories:</strong>
-            {{ productResource.value()!.categories || "N/A" }}
-          </p>
-          <p>
-            <strong>Countries:</strong>
-            {{ productResource.value()!.countries || "N/A" }}
-          </p>
-          <p>
-            <strong>Completeness:</strong>
-            {{ productResource.value()!.completeness }}%
-          </p>
+          <h2>Basic Information</h2>
+          <dl class="info-list">
+            <dt>Product Name</dt>
+            <dd>{{ product.productName || "N/A" }}</dd>
+
+            <dt>Brand</dt>
+            <dd>{{ product.brand || "N/A" }}</dd>
+
+            <dt>Category</dt>
+            <dd>{{ product.category || "N/A" }}</dd>
+
+            @if (product.description) {
+              <dt>Description</dt>
+              <dd>
+                <aff-truncated-text [value]="product.description" />
+              </dd>
+            }
+
+            @if (product.sku) {
+              <dt>SKU</dt>
+              <dd>{{ product.sku }}</dd>
+            }
+
+            @if (product.modelNumber) {
+              <dt>Model Number</dt>
+              <dd>{{ product.modelNumber }}</dd>
+            }
+
+            @if (product.barcode) {
+              <dt>Barcode</dt>
+              <dd>{{ product.barcode }}</dd>
+            }
+
+            @if (product.color) {
+              <dt>Color</dt>
+              <dd>{{ product.color }}</dd>
+            }
+
+            @if (product.material) {
+              <dt>Material</dt>
+              <dd>{{ product.material }}</dd>
+            }
+
+            @if (product.size) {
+              <dt>Size</dt>
+              <dd>{{ product.size }}</dd>
+            }
+
+            @if (product.weightKg) {
+              <dt>Weight</dt>
+              <dd>{{ product.weightKg }} kg</dd>
+            }
+
+            @if (product.dimensionsCm) {
+              <dt>Dimensions</dt>
+              <dd>{{ product.dimensionsCm }}</dd>
+            }
+
+            <dt>Created</dt>
+            <dd>
+              <aff-absolute-date [value]="createdDate()" />
+            </dd>
+
+            <dt>Last Updated</dt>
+            <dd>
+              <aff-relative-date [value]="lastModifiedDate()" />
+            </dd>
+
+            @if (releaseDate()) {
+              <dt>Release Date</dt>
+              <dd>
+                <aff-absolute-date [value]="releaseDate()" />
+              </dd>
+            }
+          </dl>
         </div>
 
-        @if (productResource.value()!.images.frontImageDisplay) {
-          <div class="image-section">
-            <img
-              [src]="productResource.value()!.images.frontImageDisplay"
-              [alt]="productResource.value()!.productName"
-              class="product-image"
-            />
+        <!-- Quality & Ratings Section -->
+        @if (product.grade || product.safetyRating || product.customerRating || product.ecoScore) {
+          <div class="health-section">
+            <h2>Quality & Ratings</h2>
+            <div class="score-grid">
+              @if (product.grade) {
+                <div class="score-item">
+                  <span class="score-label">Grade</span>
+                  <aff-grade-badge [value]="product.grade" />
+                </div>
+              }
+
+              @if (product.safetyRating) {
+                <div class="score-item">
+                  <span class="score-label">Safety Rating</span>
+                  <aff-nova-dots [value]="product.safetyRating" />
+                </div>
+              }
+
+              @if (product.ecoScore) {
+                <div class="score-item">
+                  <span class="score-label">Eco Score</span>
+                  <span class="score-value">{{ product.ecoScore }}</span>
+                </div>
+              }
+            </div>
+          </div>
+        }
+
+        <!-- Statistics Section -->
+        @if (product.unitsSold || product.reviewCount) {
+          <div class="stats-section">
+            <h2>Statistics</h2>
+            <dl class="info-list">
+              @if (product.unitsSold) {
+                <dt>Units Sold</dt>
+                <dd>
+                  <aff-large-counter [value]="product.unitsSold" />
+                </dd>
+              }
+
+              @if (product.reviewCount) {
+                <dt>Review Count</dt>
+                <dd>
+                  <aff-large-counter [value]="product.reviewCount" />
+                </dd>
+              }
+
+              @if (product.customerRating) {
+                <dt>Customer Rating</dt>
+                <dd>{{ product.customerRating }} / 5</dd>
+              }
+            </dl>
+          </div>
+        }
+
+        <!-- Pricing & Financial Section -->
+        @if (product.price || product.cost || product.wholesalePrice) {
+          <div class="pricing-section">
+            <h2>Pricing & Financial</h2>
+            <dl class="info-list">
+              @if (product.price) {
+                <dt>Price</dt>
+                <dd>{{ product.price }} {{ product.currencyCode || "" }}</dd>
+              }
+
+              @if (product.cost) {
+                <dt>Cost</dt>
+                <dd>{{ product.cost }} {{ product.currencyCode || "" }}</dd>
+              }
+
+              @if (product.wholesalePrice) {
+                <dt>Wholesale Price</dt>
+                <dd>{{ product.wholesalePrice }} {{ product.currencyCode || "" }}</dd>
+              }
+
+              @if (product.taxRate !== undefined) {
+                <dt>Tax Rate</dt>
+                <dd>{{ product.taxRate }}%</dd>
+              }
+
+              @if (product.discountPercent !== undefined) {
+                <dt>Discount</dt>
+                <dd>{{ product.discountPercent }}%</dd>
+              }
+            </dl>
+          </div>
+        }
+
+        <!-- Inventory Section -->
+        @if (product.stockQuantity !== undefined || product.warehouseLocation || product.reorderLevel !== undefined) {
+          <div class="inventory-section">
+            <h2>Inventory</h2>
+            <dl class="info-list">
+              @if (product.stockQuantity !== undefined) {
+                <dt>Stock Quantity</dt>
+                <dd>{{ product.stockQuantity }}</dd>
+              }
+
+              @if (product.reorderLevel !== undefined) {
+                <dt>Reorder Level</dt>
+                <dd>{{ product.reorderLevel }}</dd>
+              }
+
+              @if (product.warehouseLocation) {
+                <dt>Warehouse Location</dt>
+                <dd>{{ product.warehouseLocation }}</dd>
+              }
+
+              @if (product.inStock !== undefined) {
+                <dt>In Stock</dt>
+                <dd>{{ product.inStock ? "Yes" : "No" }}</dd>
+              }
+
+              @if (nextRestockDate()) {
+                <dt>Next Restock</dt>
+                <dd>
+                  <aff-absolute-date [value]="nextRestockDate()" />
+                </dd>
+              }
+            </dl>
+          </div>
+        }
+
+        <!-- Geographic Section -->
+        @if (product.originCountry || product.manufacturerCountry || product.shippingZone) {
+          <div class="geographic-section">
+            <h2>Geographic Information</h2>
+            <dl class="info-list">
+              @if (product.originCountry) {
+                <dt>Origin Country</dt>
+                <dd>{{ product.originCountry }}</dd>
+              }
+
+              @if (product.manufacturerCountry) {
+                <dt>Manufacturer Country</dt>
+                <dd>{{ product.manufacturerCountry }}</dd>
+              }
+
+              @if (product.shippingZone) {
+                <dt>Shipping Zone</dt>
+                <dd>{{ product.shippingZone }}</dd>
+              }
+
+              @if (product.productLanguage) {
+                <dt>Product Language</dt>
+                <dd>{{ product.productLanguage }}</dd>
+              }
+            </dl>
+          </div>
+        }
+
+        <!-- Supplier Contact Section -->
+        @if (product.firstName || product.lastName || product.supplierEmail || product.supplierPhone) {
+          <div class="supplier-section">
+            <h2>Supplier Contact</h2>
+            <dl class="info-list">
+              @if (product.firstName || product.lastName) {
+                <dt>Contact Name</dt>
+                <dd>{{ product.firstName }} {{ product.lastName }}</dd>
+              }
+
+              @if (product.supplierEmail) {
+                <dt>Email</dt>
+                <dd>{{ product.supplierEmail }}</dd>
+              }
+
+              @if (product.supplierPhone) {
+                <dt>Phone</dt>
+                <dd>{{ product.supplierPhone }}</dd>
+              }
+
+              @if (product.supplierTaxId) {
+                <dt>Tax ID</dt>
+                <dd>{{ product.supplierTaxId }}</dd>
+              }
+            </dl>
+          </div>
+        }
+
+        <!-- Product Features Section -->
+        @if (product.isFeatured || product.isBestSeller || product.requiresShipping || product.isDigital || product.hasWarranty) {
+          <div class="features-section">
+            <h2>Product Features</h2>
+            <dl class="info-list">
+              @if (product.isFeatured !== undefined) {
+                <dt>Featured</dt>
+                <dd>{{ product.isFeatured ? "Yes" : "No" }}</dd>
+              }
+
+              @if (product.isBestSeller !== undefined) {
+                <dt>Best Seller</dt>
+                <dd>{{ product.isBestSeller ? "Yes" : "No" }}</dd>
+              }
+
+              @if (product.requiresShipping !== undefined) {
+                <dt>Requires Shipping</dt>
+                <dd>{{ product.requiresShipping ? "Yes" : "No" }}</dd>
+              }
+
+              @if (product.isDigital !== undefined) {
+                <dt>Digital Product</dt>
+                <dd>{{ product.isDigital ? "Yes" : "No" }}</dd>
+              }
+
+              @if (product.hasWarranty !== undefined) {
+                <dt>Has Warranty</dt>
+                <dd>{{ product.hasWarranty ? "Yes" : "No" }}</dd>
+              }
+
+              @if (product.warrantyMonths !== undefined) {
+                <dt>Warranty Period</dt>
+                <dd>{{ product.warrantyMonths }} months</dd>
+              }
+
+              @if (product.certification) {
+                <dt>Certification</dt>
+                <dd>{{ product.certification }}</dd>
+              }
+            </dl>
+          </div>
+        }
+
+        <!-- Shipping Section -->
+        @if (product.shippingDepartureTime || product.flightDurationHours !== undefined) {
+          <div class="shipping-section">
+            <h2>Shipping Information</h2>
+            <dl class="info-list">
+              @if (product.shippingDepartureTime) {
+                <dt>Departure Time</dt>
+                <dd>{{ product.shippingDepartureTime }}</dd>
+              }
+
+              @if (product.flightDurationHours !== undefined) {
+                <dt>Flight Duration</dt>
+                <dd>{{ product.flightDurationHours }} hours</dd>
+              }
+            </dl>
           </div>
         }
       </div>
-
-      <div class="nutrition-section">
-        <h3>Nutrition & Health</h3>
-        <p>
-          <strong>Nutrition Grade:</strong>
-          {{ productResource.value()!.nutritionGrade || "N/A" }}
-        </p>
-        <p>
-          <strong>Nova Group:</strong>
-          {{ productResource.value()!.novaGroup || "N/A" }}
-        </p>
-        <p>
-          <strong>Eco Grade:</strong>
-          {{ productResource.value()!.ecoGrade || "N/A" }}
-        </p>
-        <p>
-          <strong>Total Scans:</strong>
-          {{ productResource.value()!.totalScans | number }}
-        </p>
-      </div>
     </div>
   } @else if (isLoading()) {
-    <p>Loading product...</p>
+    <div class="loading-state">
+      <p>Loading product...</p>
+    </div>
   } @else if (isError()) {
-    <p>Error loading product: {{ productResource.error() }}</p>
+    <div class="error-state">
+      <p>Error loading product: {{ productResource.error() }}</p>
+    </div>
   } @else {
-    <p>Product not found.</p>
+    <div class="not-found-state">
+      <p>Product not found.</p>
+    </div>
   }
 </div>

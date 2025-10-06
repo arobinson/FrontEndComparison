@@ -2,7 +2,6 @@ import express from 'express';
 import cors from 'cors';
 import { readFileSync } from 'fs';
 import { join } from 'path';
-// No longer need transformers for mock data
 
 const app = express();
 const PORT = 3001;
@@ -22,19 +21,16 @@ try {
   process.exit(1);
 }
 
-// Mock data is already in the correct flat format - no transformation needed
-const transformedProducts = productsData;
-
 // API Routes
 app.get('/api/products', (req, res) => {
   const { category, limit = '50', skip = '0', search } = req.query;
 
-  let filteredProducts = transformedProducts;
+  let filteredProducts = productsData;
 
   // Filter by category
   if (category && category !== 'all') {
     filteredProducts = filteredProducts.filter((product: any) =>
-      product.categories?.toLowerCase().includes((category as string).toLowerCase())
+      product.category?.toLowerCase().includes((category as string).toLowerCase())
     );
   }
 
@@ -42,7 +38,7 @@ app.get('/api/products', (req, res) => {
   if (search) {
     const searchTerm = (search as string).toLowerCase();
     filteredProducts = filteredProducts.filter(
-      (product: any) => product.productName?.toLowerCase().includes(searchTerm) || product.categories?.toLowerCase().includes(searchTerm)
+      (product: any) => product.product_name?.toLowerCase().includes(searchTerm) || product.category?.toLowerCase().includes(searchTerm)
     );
   }
 
@@ -59,10 +55,10 @@ app.get('/api/products', (req, res) => {
   });
 });
 
-// Get single product by code
-app.get('/api/products/:code', (req, res) => {
-  const { code } = req.params;
-  const product = transformedProducts.find((p: any) => p.code === code);
+// Get single product by id
+app.get('/api/products/:id', (req, res) => {
+  const { id } = req.params;
+  const product = productsData.find((p: any) => String(p.id) === id);
 
   if (product) {
     res.json(product);
@@ -75,10 +71,9 @@ app.get('/api/products/:code', (req, res) => {
 app.get('/api/categories', (req, res) => {
   const categories = Array.from(
     new Set(
-      transformedProducts
-        .map((p: any) => p.categories)
+      productsData
+        .map((p: any) => p.category)
         .filter(Boolean)
-        .flatMap((cats: string) => cats.split(',').map((c) => c.trim()))
     )
   ).sort();
 
@@ -89,17 +84,17 @@ app.get('/api/categories', (req, res) => {
 app.get('/health', (req, res) => {
   res.json({
     status: 'ok',
-    products: transformedProducts.length,
-    source: 'Open Food Facts'
+    products: productsData.length,
+    source: 'Mock Data'
   });
 });
 
 app.listen(PORT, () => {
   console.log(`🚀 Backend server running on http://localhost:${PORT}`);
-  console.log(`📊 Serving ${transformedProducts.length} Open Food Facts products`);
+  console.log(`📊 Serving ${productsData.length} mock products`);
   console.log(`🔗 API endpoints:`);
-  console.log(`   GET /api/products?category=beverages&limit=50&skip=0`);
-  console.log(`   GET /api/products/:code`);
+  console.log(`   GET /api/products?category=all&limit=50&skip=0`);
+  console.log(`   GET /api/products/:id`);
   console.log(`   GET /api/categories`);
   console.log(`   GET /health`);
 });

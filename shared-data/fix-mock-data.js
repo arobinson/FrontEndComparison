@@ -5,9 +5,9 @@ const data = JSON.parse(fs.readFileSync('MOCK_DATA.json', 'utf8'));
 
 const fixedData = data.map((product) => ({
   ...product,
-  // Fix image URLs
-  image_url: `https://picsum.photos/200/200?random=${product.id}`,
-  thumbnail_url: `https://picsum.photos/100/100?random=${product.id + 1000}`,
+  // Fix image URLs - use seed parameter for consistent images
+  image_url: `https://picsum.photos/seed/${product.id}/200/200`,
+  thumbnail_url: `https://picsum.photos/seed/${product.id + 1000}/100/100`,
 
   // Fix null fields with reasonable defaults
   sku:

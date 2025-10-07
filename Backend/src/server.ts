@@ -1,7 +1,8 @@
 import express from 'express';
 import cors from 'cors';
-import { readFileSync } from 'fs';
+import { readFileSync, existsSync } from 'fs';
 import { join } from 'path';
+import sharp from 'sharp';
 
 const app = express();
 const PORT = 3001;
@@ -47,6 +48,11 @@ app.get('/api/products', (req, res) => {
   const limitNum = parseInt(limit as string);
   const paginatedProducts = filteredProducts.slice(skipNum, skipNum + limitNum);
 
+  // Add cache headers for performance testing
+  // Cache for 5 minutes (300 seconds) to allow browser caching during pagination tests
+  res.setHeader('Cache-Control', 'public, max-age=300');
+  res.setHeader('ETag', `"products-${category}-${skip}-${limit}"`);
+
   res.json({
     products: paginatedProducts,
     total: filteredProducts.length,
@@ -61,6 +67,9 @@ app.get('/api/products/:id', (req, res) => {
   const product = productsData.find((p: any) => String(p.id) === id);
 
   if (product) {
+    // Add cache headers for product detail pages
+    res.setHeader('Cache-Control', 'public, max-age=300');
+    res.setHeader('ETag', `"product-${id}"`);
     res.json(product);
   } else {
     res.status(404).json({ error: 'Product not found' });
@@ -80,6 +89,56 @@ app.get('/api/categories', (req, res) => {
   res.json({ categories });
 });
 
+// Serve product images with caching and optional thumbnail resizing
+app.get('/images/:filename', async (req, res) => {
+  const { filename } = req.params;
+  const { size } = req.query; // Optional: thumbnail, small, medium, large
+
+  const imagePath = join(process.cwd(), 'public', 'images', filename);
+
+  if (!existsSync(imagePath)) {
+    res.status(404).json({ error: 'Image not found' });
+    return;
+  }
+
+  try {
+    // Set aggressive caching headers for images
+    res.setHeader('Cache-Control', 'public, max-age=31536000, immutable'); // 1 year
+    res.setHeader('ETag', `"${filename}-${size || 'full'}"`);
+    res.setHeader('Content-Type', 'image/jpeg');
+
+    let imageBuffer: Buffer;
+
+    if (size === 'thumbnail') {
+      // 80x80 thumbnails for table view
+      imageBuffer = await sharp(imagePath)
+        .resize(80, 80, { fit: 'cover' })
+        .jpeg({ quality: 80 })
+        .toBuffer();
+    } else if (size === 'small') {
+      // 200x200 for small displays
+      imageBuffer = await sharp(imagePath)
+        .resize(200, 200, { fit: 'cover' })
+        .jpeg({ quality: 85 })
+        .toBuffer();
+    } else if (size === 'medium') {
+      // 400x400 for detail views
+      imageBuffer = await sharp(imagePath)
+        .resize(400, 400, { fit: 'cover' })
+        .jpeg({ quality: 90 })
+        .toBuffer();
+    } else {
+      // Full size (original 400x400 from download)
+      imageBuffer = readFileSync(imagePath);
+    }
+
+    res.send(imageBuffer);
+  } catch (error) {
+    console.error('Error processing image:', error);
+    res.status(500).json({ error: 'Failed to process image' });
+  }
+});
+
 // Health check
 app.get('/health', (req, res) => {
   res.json({
@@ -92,9 +151,11 @@ app.get('/health', (req, res) => {
 app.listen(PORT, () => {
   console.log(`🚀 Backend server running on http://localhost:${PORT}`);
   console.log(`📊 Serving ${productsData.length} mock products`);
+  console.log(`🖼️  Serving 50 cached product images`);
   console.log(`🔗 API endpoints:`);
   console.log(`   GET /api/products?category=all&limit=50&skip=0`);
   console.log(`   GET /api/products/:id`);
   console.log(`   GET /api/categories`);
+  console.log(`   GET /images/:filename?size=thumbnail|small|medium`);
   console.log(`   GET /health`);
 });

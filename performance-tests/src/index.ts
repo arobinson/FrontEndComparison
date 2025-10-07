@@ -38,6 +38,7 @@ async function main(): Promise<void> {
     scenarios.navigateToDetailScenario,
     scenarios.navigateBackScenario,
     scenarios.paginationScenario,
+    scenarios.paginationCycleScenario,
   ];
 
   console.log('='.repeat(80));

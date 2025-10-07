@@ -347,6 +347,9 @@ Each framework must implement these component types to showcase different render
 
 1. Backend server with mock data (54 fields, `/shared-data/MOCK_DATA.json`)
    - Seed-based image URLs for consistent data across reloads (performance testing)
+   - **HTTP caching enabled**: `Cache-Control: public, max-age=300` + ETags for pagination requests
+   - Allows browser to cache API responses during pagination cycle tests (1→2→3→2→1)
+   - Measures client-side rendering performance without network latency on cached requests
 2. Basic Angular app structure with `ProductList` component
 3. Data loading via `resource()` API with signals
 4. **All 12 display components implemented:**
@@ -529,7 +532,7 @@ Each framework must implement these component types to showcase different render
 
 **Trigger**: Puppeteer click on back navigation
 
-#### 8. Pagination
+#### 8. Pagination (Single Page)
 
 **Action**: Click "Next page" button, wait for new data to load and render
 
@@ -540,7 +543,25 @@ Each framework must implement these component types to showcase different render
 - Render time (data received to table updated)
 - Memory delta
 
-**Trigger**: Puppeteer click on next page button
+**Trigger**: Playwright click on next page button
+
+#### 9. Pagination Cycle (Multi-Page Navigation)
+
+**Action**: Navigate through pages in sequence: 1→2→3→2→1, measuring cumulative performance
+
+**Measurements**:
+
+- Total cycle time (all 4 transitions)
+- Average transition time per page change
+- Min/max transition times
+- Total API requests (should be 4, one per page change)
+- Total network bytes transferred
+- Memory delta (heap growth after full cycle)
+- Per-transition timing (individual 1→2, 2→3, 3→2, 2→1)
+
+**Important**: Backend serves responses with `Cache-Control: public, max-age=300` headers, allowing browser caching. When navigating back (3→2→1), the browser should use cached responses, measuring **pure client-side rendering performance** without network latency. This isolates framework rendering efficiency from network performance.
+
+**Trigger**: Playwright clicks on page number buttons in sequence
 
 ### Metrics Collected
 
@@ -556,15 +577,23 @@ Each framework must implement these component types to showcase different render
 **Production Build**:
 
 - Build time (pnpm exec ng build, full process start to exit)
-- File count
+- File count (JS and CSS files only)
 - Total bundle size (uncompressed)
 - Total bundle size (gzipped)
-- Chunk distribution (main, vendor, lazy chunks)
-- Compression ratio
+- **Chunk categorization**:
+  - Initial chunks (main, polyfills, styles) - loaded on first page visit
+  - Lazy chunks (product-list, product-detail) - loaded on demand
+  - Vendor chunks (framework and library code)
+- **Size breakdown**:
+  - JavaScript size vs CSS size
+  - Initial vs lazy vs vendor distribution
+  - Per-file sizes (both raw and gzipped)
+- Compression ratio (gzipped / raw)
+- Per-chunk gzipped sizes
 
 **Note**: Build time measurements use complete process execution (start to exit), not watch mode, for precise timing
 
-**Tools**: File system analysis, build tool output parsing
+**Tools**: File system analysis with gzip compression, build output directory traversal
 
 #### Runtime Performance Metrics (Per Test Scenario)
 
@@ -592,11 +621,11 @@ Each framework must implement these component types to showcase different render
 - Memory delta per operation
 - Garbage collection frequency/duration
 
-**Network Metrics** (using Puppeteer Network API):
+**Network Metrics** (using Playwright Network API):
 
 - Total requests count
 - Total bytes transferred (request + response)
-- Total network duration (parallel requests)
+- Total network duration (wall-clock time: earliest start to latest end)
 - Largest request size
 - API response times
 

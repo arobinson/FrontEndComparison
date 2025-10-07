@@ -12,7 +12,7 @@ export const navigateBackScenario: TestScenario = {
 
     // Navigate to list
     await page.goto(baseUrl, { waitUntil: 'networkidle' });
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise((resolve) => setTimeout(resolve, 500));
 
     // Navigate to detail
     await page.evaluate(() => {
@@ -23,7 +23,7 @@ export const navigateBackScenario: TestScenario = {
     });
 
     await page.waitForLoadState('networkidle');
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise((resolve) => setTimeout(resolve, 500));
 
     const memoryBefore = await getMemoryMetrics(page);
 
@@ -33,7 +33,7 @@ export const navigateBackScenario: TestScenario = {
     await page.goBack({ waitUntil: 'networkidle' });
 
     const navigationEnd = Date.now();
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise((resolve) => setTimeout(resolve, 500));
 
     const totalTime = navigationEnd - navigationStart;
     measurements.push({ name: 'total_back_navigation_time', value: totalTime, unit: 'ms' });
@@ -45,8 +45,8 @@ export const navigateBackScenario: TestScenario = {
     result = {
       scenarioName: 'navigate-back-to-list',
       framework,
-      measurements,
+      measurements
     };
     return result;
-  },
+  }
 };

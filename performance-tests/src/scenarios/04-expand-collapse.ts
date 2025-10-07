@@ -12,13 +12,13 @@ export const expandCollapseScenario: TestScenario = {
 
     // Navigate to the list page
     await page.goto(baseUrl, { waitUntil: 'networkidle' });
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise((resolve) => setTimeout(resolve, 500));
 
     // Find the first "Show more" link in description column
     const showMoreLink = await page.evaluate(() => {
       // Look for a button or link with "Show more" text
       const links = Array.from(document.querySelectorAll('button, a'));
-      const showMore = links.find(el => {
+      const showMore = links.find((el) => {
         const text = el.textContent?.trim().toLowerCase() || '';
         return text.includes('show more') || text.includes('more');
       });
@@ -30,7 +30,7 @@ export const expandCollapseScenario: TestScenario = {
       // Return selector info
       return {
         tag: showMore.tagName,
-        text: showMore.textContent?.trim(),
+        text: showMore.textContent?.trim()
       };
     });
 
@@ -50,7 +50,7 @@ export const expandCollapseScenario: TestScenario = {
     // Click show more
     await page.evaluate(() => {
       const links = Array.from(document.querySelectorAll('button, a'));
-      const showMore = links.find(el => {
+      const showMore = links.find((el) => {
         const text = el.textContent?.trim().toLowerCase() || '';
         return text.includes('show more') || text.includes('more');
       });
@@ -60,7 +60,7 @@ export const expandCollapseScenario: TestScenario = {
     });
 
     // Wait for text to expand
-    await new Promise(resolve => setTimeout(resolve, 100));
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
     const expandEnd = Date.now();
     await performanceMark(page, 'expand-end');
@@ -81,7 +81,7 @@ export const expandCollapseScenario: TestScenario = {
     measurements.push({ name: 'expand_cls_delta', value: clsDeltaExpand, unit: 'score' });
 
     // Now test collapse operation
-    await new Promise(resolve => setTimeout(resolve, 200));
+    await new Promise((resolve) => setTimeout(resolve, 200));
 
     await performanceMark(page, 'collapse-start');
     const collapseStart = Date.now();
@@ -89,7 +89,7 @@ export const expandCollapseScenario: TestScenario = {
     // Click show less
     await page.evaluate(() => {
       const links = Array.from(document.querySelectorAll('button, a'));
-      const showLess = links.find(el => {
+      const showLess = links.find((el) => {
         const text = el.textContent?.trim().toLowerCase() || '';
         return text.includes('show less') || text.includes('less');
       });
@@ -98,7 +98,7 @@ export const expandCollapseScenario: TestScenario = {
       }
     });
 
-    await new Promise(resolve => setTimeout(resolve, 100));
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
     const collapseEnd = Date.now();
     await performanceMark(page, 'collapse-end');
@@ -121,8 +121,8 @@ export const expandCollapseScenario: TestScenario = {
     result = {
       scenarioName: 'expand-collapse-description',
       framework,
-      measurements,
+      measurements
     };
     return result;
-  },
+  }
 };

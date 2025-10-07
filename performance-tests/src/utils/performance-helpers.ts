@@ -13,7 +13,7 @@ export async function injectPerformanceObservers(page: Page): Promise<void> {
       lcp: 0,
       cls: 0,
       fid: 0,
-      measurements: [],
+      measurements: []
     };
 
     // FCP - First Contentful Paint
@@ -69,7 +69,7 @@ export async function getWebVitals(page: Page): Promise<Partial<WebVitals>> {
     fcp: vitals.fcp || 0,
     lcp: vitals.lcp || 0,
     cls: vitals.cls || 0,
-    fid: vitals.fid || undefined,
+    fid: vitals.fid || undefined
   };
 }
 
@@ -106,7 +106,7 @@ export async function getInteractivityMetrics(page: Page): Promise<{ tti: number
  */
 export async function getMemoryMetrics(page: Page): Promise<MemoryMetrics> {
   // Small delay to allow any pending GC to complete
-  await new Promise(resolve => setTimeout(resolve, 100));
+  await new Promise((resolve) => setTimeout(resolve, 100));
 
   const client = await page.context().newCDPSession(page);
 
@@ -116,7 +116,7 @@ export async function getMemoryMetrics(page: Page): Promise<MemoryMetrics> {
       return {
         usedHeapSize: (performance as any).memory.usedJSHeapSize,
         totalHeapSize: (performance as any).memory.totalJSHeapSize,
-        heapLimit: (performance as any).memory.jsHeapSizeLimit,
+        heapLimit: (performance as any).memory.jsHeapSizeLimit
       };
     }
     return null;
@@ -129,13 +129,13 @@ export async function getMemoryMetrics(page: Page): Promise<MemoryMetrics> {
     result = {
       heapSize: heapStats.totalHeapSize,
       usedHeapSize: heapStats.usedHeapSize,
-      heapLimit: heapStats.heapLimit,
+      heapLimit: heapStats.heapLimit
     };
   } else {
     result = {
       heapSize: 0,
       usedHeapSize: 0,
-      heapLimit: 0,
+      heapLimit: 0
     };
   }
   return result;
@@ -153,12 +153,7 @@ export async function performanceMark(page: Page, markName: string): Promise<voi
 /**
  * Measure performance between two marks
  */
-export async function performanceMeasure(
-  page: Page,
-  measureName: string,
-  startMark: string,
-  endMark: string
-): Promise<number> {
+export async function performanceMeasure(page: Page, measureName: string, startMark: string, endMark: string): Promise<number> {
   const duration: number = await page.evaluate(
     ({ name, start, end }: { name: string; start: string; end: string }) => {
       performance.measure(name, start, end);
@@ -174,11 +169,7 @@ export async function performanceMeasure(
 /**
  * Wait for a specific condition with timeout
  */
-export async function waitForCondition(
-  page: Page,
-  condition: () => Promise<boolean>,
-  timeout: number = 5000
-): Promise<boolean> {
+export async function waitForCondition(page: Page, condition: () => Promise<boolean>, timeout: number = 5000): Promise<boolean> {
   let result: boolean;
   const startTime = Date.now();
 
@@ -191,7 +182,7 @@ export async function waitForCondition(
       if (isConditionMet) {
         conditionResult = true;
       } else {
-        await new Promise(resolve => setTimeout(resolve, 100));
+        await new Promise((resolve) => setTimeout(resolve, 100));
         conditionResult = await checkCondition();
       }
     }

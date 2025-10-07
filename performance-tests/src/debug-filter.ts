@@ -5,11 +5,7 @@ async function debugFilter() {
 
   const browser = await puppeteer.launch({
     headless: true, // Keep headless for now
-    args: [
-      '--no-sandbox',
-      '--disable-setuid-sandbox',
-      '--window-size=1920,1080',
-    ],
+    args: ['--no-sandbox', '--disable-setuid-sandbox', '--window-size=1920,1080']
   });
 
   const page = await browser.newPage();
@@ -20,7 +16,7 @@ async function debugFilter() {
     await page.goto('http://localhost:4200', { waitUntil: 'networkidle0' });
     console.log('✅ Navigation complete');
 
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
     console.log('📍 Step 2: Find all text inputs...');
     const filterInputs = await page.$$('thead input[type="text"]');
@@ -93,9 +89,8 @@ async function debugFilter() {
 
     console.log('\n🎉 Test completed successfully!');
 
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise((resolve) => setTimeout(resolve, 2000));
     await browser.close();
-
   } catch (error) {
     console.error('❌ Error:', error);
     await browser.close();

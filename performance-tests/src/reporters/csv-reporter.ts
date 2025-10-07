@@ -1,10 +1,7 @@
 import { writeFile } from 'fs/promises';
 import { TestRun, AggregatedResults } from '../types.js';
 
-export async function exportRawDataToCSV(
-  runs: TestRun[],
-  outputPath: string
-): Promise<void> {
+export async function exportRawDataToCSV(runs: TestRun[], outputPath: string): Promise<void> {
   const headers = ['run_number', 'framework', 'scenario', 'timestamp', 'metric_name', 'value', 'unit'];
   const rows: string[] = [headers.join(',')];
 
@@ -17,7 +14,7 @@ export async function exportRawDataToCSV(
         escapeCSV(run.timestamp),
         escapeCSV(measurement.name),
         measurement.value.toString(),
-        escapeCSV(measurement.unit),
+        escapeCSV(measurement.unit)
       ];
       rows.push(row.join(','));
     }
@@ -28,22 +25,8 @@ export async function exportRawDataToCSV(
   console.log(`\nRaw data exported to: ${outputPath}`);
 }
 
-export async function exportAggregatedToCSV(
-  aggregated: AggregatedResults[],
-  outputPath: string
-): Promise<void> {
-  const headers = [
-    'framework',
-    'scenario',
-    'metric_name',
-    'median',
-    'mean',
-    'min',
-    'max',
-    'std_dev',
-    'total_runs',
-    'discarded_runs',
-  ];
+export async function exportAggregatedToCSV(aggregated: AggregatedResults[], outputPath: string): Promise<void> {
+  const headers = ['framework', 'scenario', 'metric_name', 'median', 'mean', 'min', 'max', 'std_dev', 'total_runs', 'discarded_runs'];
   const rows: string[] = [headers.join(',')];
 
   for (const result of aggregated) {
@@ -60,7 +43,7 @@ export async function exportAggregatedToCSV(
         result.max[metricName].toString(),
         result.stdDev[metricName].toString(),
         result.totalRuns.toString(),
-        result.discardedRuns.join(';'),
+        result.discardedRuns.join(';')
       ];
       rows.push(row.join(','));
     }

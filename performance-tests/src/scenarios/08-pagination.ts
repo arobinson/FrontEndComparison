@@ -12,14 +12,14 @@ export const paginationScenario: TestScenario = {
     const measurements: Measurement[] = [];
 
     await page.goto(baseUrl, { waitUntil: 'networkidle' });
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise((resolve) => setTimeout(resolve, 500));
 
     const memoryBefore = await getMemoryMetrics(page);
 
     // Find the next page button
     const nextButton = await page.evaluate(() => {
       const buttons = Array.from(document.querySelectorAll('button'));
-      const next = buttons.find(btn => {
+      const next = buttons.find((btn) => {
         const text = btn.textContent?.trim().toLowerCase() || '';
         return text.includes('next') || text.includes('>') || text === '2';
       });
@@ -41,7 +41,7 @@ export const paginationScenario: TestScenario = {
     // Click next page
     await page.evaluate(() => {
       const buttons = Array.from(document.querySelectorAll('button'));
-      const next = buttons.find(btn => {
+      const next = buttons.find((btn) => {
         const text = btn.textContent?.trim().toLowerCase() || '';
         return text.includes('next') || text.includes('>') || text === '2';
       });
@@ -53,7 +53,7 @@ export const paginationScenario: TestScenario = {
 
     // Wait for new page data to load and render
     await page.evaluate(() => {
-      return new Promise<void>(resolve => {
+      return new Promise<void>((resolve) => {
         const tbody = document.querySelector('tbody');
         if (!tbody) {
           resolve();
@@ -112,8 +112,8 @@ export const paginationScenario: TestScenario = {
     result = {
       scenarioName: 'pagination',
       framework,
-      measurements,
+      measurements
     };
     return result;
-  },
+  }
 };

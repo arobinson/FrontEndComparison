@@ -1,10 +1,5 @@
 import { TestScenario, TestContext, ScenarioResult, Measurement } from '../types.js';
-import {
-  getWebVitals,
-  getInteractivityMetrics,
-  getMemoryMetrics,
-  waitForNetworkIdle,
-} from '../utils/performance-helpers.js';
+import { getWebVitals, getInteractivityMetrics, getMemoryMetrics, waitForNetworkIdle } from '../utils/performance-helpers.js';
 import { NetworkTracker } from '../utils/network-tracker.js';
 
 export const initialLoadScenario: TestScenario = {
@@ -26,7 +21,7 @@ export const initialLoadScenario: TestScenario = {
     const navigationEnd = Date.now();
 
     // Wait a bit more to ensure all metrics are collected
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise((resolve) => setTimeout(resolve, 500));
 
     // Collect Web Vitals
     const webVitals = await getWebVitals(page);
@@ -42,10 +37,7 @@ export const initialLoadScenario: TestScenario = {
 
     // Collect interactivity metrics
     const interactivity = await getInteractivityMetrics(page);
-    measurements.push(
-      { name: 'tti', value: interactivity.tti, unit: 'ms' },
-      { name: 'tbt', value: interactivity.tbt, unit: 'ms' }
-    );
+    measurements.push({ name: 'tti', value: interactivity.tti, unit: 'ms' }, { name: 'tbt', value: interactivity.tbt, unit: 'ms' });
 
     // Collect memory metrics
     const memory = await getMemoryMetrics(page);
@@ -65,9 +57,7 @@ export const initialLoadScenario: TestScenario = {
     );
 
     if (network.apiResponseTimes.length > 0) {
-      const avgApiTime =
-        network.apiResponseTimes.reduce((sum, time) => sum + time, 0) /
-        network.apiResponseTimes.length;
+      const avgApiTime = network.apiResponseTimes.reduce((sum, time) => sum + time, 0) / network.apiResponseTimes.length;
       measurements.push({ name: 'avg_api_response_time', value: avgApiTime, unit: 'ms' });
     }
 
@@ -78,8 +68,8 @@ export const initialLoadScenario: TestScenario = {
     result = {
       scenarioName: 'initial-page-load',
       framework,
-      measurements,
+      measurements
     };
     return result;
-  },
+  }
 };

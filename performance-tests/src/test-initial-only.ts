@@ -14,22 +14,20 @@ async function main(): Promise<void> {
         name: 'Angular',
         baseUrl: 'http://localhost:4200',
         buildCommand: 'pnpm exec ng build',
-        buildOutputDir: join(process.cwd(), '../AngularFoodFacts/dist/angular-food-facts/browser'),
-      },
+        buildOutputDir: join(process.cwd(), '../AngularFoodFacts/dist/AngularFoodFacts/browser')
+      }
     ],
     repetitions: 17,
     discardOutliers: true,
     outputDir: join(process.cwd(), 'results'),
     viewportWidth: 1920,
-    viewportHeight: 1080,
+    viewportHeight: 1080
   };
 
   await mkdir(config.outputDir, { recursive: true });
 
   // Test ONLY initial-page-load scenario
-  const testScenarios = [
-    scenarios.initialLoadScenario,
-  ];
+  const testScenarios = [scenarios.initialLoadScenario];
 
   console.log('='.repeat(80));
   console.log('Testing Initial Page Load Only (17 repetitions)');
@@ -70,10 +68,10 @@ async function main(): Promise<void> {
       config: {
         repetitions: config.repetitions,
         viewportWidth: config.viewportWidth,
-        viewportHeight: config.viewportHeight,
+        viewportHeight: config.viewportHeight
       },
       rawRuns: Array.from(allRuns.values()).flat(),
-      aggregated,
+      aggregated
     };
 
     await exportToJSON(fullResults, join(config.outputDir, `initial-only-${timestamp}.json`));
@@ -98,7 +96,7 @@ async function main(): Promise<void> {
   }
 }
 
-main().catch(error => {
+main().catch((error) => {
   console.error('Fatal error:', error);
   process.exit(1);
 });

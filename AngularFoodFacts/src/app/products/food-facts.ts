@@ -178,33 +178,46 @@ function transformMockDataToViewModel(product: RawProduct): ProductViewModel {
   if (product.wholesale_price) result.wholesalePrice = product.wholesale_price;
   if (product.currency_code) result.currencyCode = product.currency_code;
   if (product.tax_rate !== undefined) result.taxRate = product.tax_rate;
-  if (product.discount_percent !== undefined) result.discountPercent = product.discount_percent;
+  if (product.discount_percent !== undefined)
+    result.discountPercent = product.discount_percent;
 
   // Inventory
-  if (product.stock_quantity !== undefined) result.stockQuantity = product.stock_quantity;
+  if (product.stock_quantity !== undefined)
+    result.stockQuantity = product.stock_quantity;
   if (product.units_sold !== undefined) result.unitsSold = product.units_sold;
-  if (product.reorder_level !== undefined) result.reorderLevel = product.reorder_level;
-  if (product.warehouse_location) result.warehouseLocation = product.warehouse_location;
+  if (product.reorder_level !== undefined)
+    result.reorderLevel = product.reorder_level;
+  if (product.warehouse_location)
+    result.warehouseLocation = product.warehouse_location;
 
   // Quality
-  if (product.quality_score !== undefined) result.qualityScore = product.quality_score;
-  if (product.customer_rating !== undefined) result.customerRating = product.customer_rating;
-  if (product.review_count !== undefined) result.reviewCount = product.review_count;
+  if (product.quality_score !== undefined)
+    result.qualityScore = product.quality_score;
+  if (product.customer_rating !== undefined)
+    result.customerRating = product.customer_rating;
+  if (product.review_count !== undefined)
+    result.reviewCount = product.review_count;
   if (product.grade) result.grade = product.grade;
-  if (product.safety_rating !== undefined) result.safetyRating = product.safety_rating;
+  if (product.safety_rating !== undefined)
+    result.safetyRating = product.safety_rating;
   if (product.eco_score !== undefined) result.ecoScore = product.eco_score;
 
   // Dates
   if (product.release_date) result.releaseDate = new Date(product.release_date);
-  if (product.next_restock_date) result.nextRestockDate = new Date(product.next_restock_date);
+  if (product.next_restock_date)
+    result.nextRestockDate = new Date(product.next_restock_date);
 
   // Flags
   if (product.in_stock !== undefined) result.inStock = product.in_stock;
-  if (product.is_featured !== undefined) result.isFeatured = product.is_featured;
-  if (product.is_best_seller !== undefined) result.isBestSeller = product.is_best_seller;
-  if (product.requires_shipping !== undefined) result.requiresShipping = product.requires_shipping;
+  if (product.is_featured !== undefined)
+    result.isFeatured = product.is_featured;
+  if (product.is_best_seller !== undefined)
+    result.isBestSeller = product.is_best_seller;
+  if (product.requires_shipping !== undefined)
+    result.requiresShipping = product.requires_shipping;
   if (product.is_digital !== undefined) result.isDigital = product.is_digital;
-  if (product.has_warranty !== undefined) result.hasWarranty = product.has_warranty;
+  if (product.has_warranty !== undefined)
+    result.hasWarranty = product.has_warranty;
 
   // Visual
   if (product.image_url) result.imageUrl = product.image_url;
@@ -213,8 +226,10 @@ function transformMockDataToViewModel(product: RawProduct): ProductViewModel {
 
   // Geographic
   if (product.origin_country) result.originCountry = product.origin_country;
-  if (product.manufacturer_country) result.manufacturerCountry = product.manufacturer_country;
-  if (product.product_language) result.productLanguage = product.product_language;
+  if (product.manufacturer_country)
+    result.manufacturerCountry = product.manufacturer_country;
+  if (product.product_language)
+    result.productLanguage = product.product_language;
   if (product.shipping_zone) result.shippingZone = product.shipping_zone;
 
   // Technical
@@ -224,11 +239,14 @@ function transformMockDataToViewModel(product: RawProduct): ProductViewModel {
   if (product.weight_kg !== undefined) result.weightKg = product.weight_kg;
   if (product.dimensions_cm) result.dimensionsCm = product.dimensions_cm;
   if (product.certification) result.certification = product.certification;
-  if (product.warranty_months !== undefined) result.warrantyMonths = product.warranty_months;
+  if (product.warranty_months !== undefined)
+    result.warrantyMonths = product.warranty_months;
 
   // Time
-  if (product.shipping_departure_time) result.shippingDepartureTime = product.shipping_departure_time;
-  if (product.flight_duration_hours !== undefined) result.flightDurationHours = product.flight_duration_hours;
+  if (product.shipping_departure_time)
+    result.shippingDepartureTime = product.shipping_departure_time;
+  if (product.flight_duration_hours !== undefined)
+    result.flightDurationHours = product.flight_duration_hours;
 
   return result;
 }

@@ -75,7 +75,10 @@ export class ProductList {
   /**
    * Previous data to show while loading new page
    */
-  readonly previousData = signal<{ products: ProductViewModel[]; total: number } | null>(null);
+  readonly previousData = signal<{
+    products: ProductViewModel[];
+    total: number;
+  } | null>(null);
 
   constructor() {
     // Update previousData whenever we get new resolved data

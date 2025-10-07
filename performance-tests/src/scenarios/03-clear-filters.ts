@@ -12,7 +12,7 @@ export const clearFiltersScenario: TestScenario = {
 
     // Navigate to the list page
     await page.goto(baseUrl, { waitUntil: 'networkidle' });
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise((resolve) => setTimeout(resolve, 500));
 
     // First apply a filter (use Product Name column - second text input)
     const filterInput = page.locator('thead input[type="text"]').nth(1);
@@ -28,7 +28,7 @@ export const clearFiltersScenario: TestScenario = {
         productNameInput.blur();
       }
     });
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise((resolve) => setTimeout(resolve, 500));
 
     // Get memory before clear
     const memoryBefore = await getMemoryMetrics(page);
@@ -45,7 +45,7 @@ export const clearFiltersScenario: TestScenario = {
 
     // Wait for table to restore all rows
     await page.evaluate(() => {
-      return new Promise<void>(resolve => {
+      return new Promise<void>((resolve) => {
         const tbody = document.querySelector('tbody');
         if (!tbody) {
           resolve();
@@ -97,8 +97,8 @@ export const clearFiltersScenario: TestScenario = {
     result = {
       scenarioName: 'clear-filters',
       framework,
-      measurements,
+      measurements
     };
     return result;
-  },
+  }
 };

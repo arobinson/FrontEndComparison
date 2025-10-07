@@ -9,10 +9,7 @@ import { BuildMetrics } from '../types.js';
 const execAsync = promisify(exec);
 const gzipAsync = promisify(gzip);
 
-export async function measureBuildTime(
-  buildCommand: string,
-  cwd: string
-): Promise<number> {
+export async function measureBuildTime(buildCommand: string, cwd: string): Promise<number> {
   let result: number;
   const startTime = Date.now();
 
@@ -28,9 +25,7 @@ export async function measureBuildTime(
   return result;
 }
 
-export async function analyzeBundleSize(
-  outputDir: string
-): Promise<Omit<BuildMetrics, 'buildTime'> & { detailed?: any }> {
+export async function analyzeBundleSize(outputDir: string): Promise<Omit<BuildMetrics, 'buildTime'> & { detailed?: any }> {
   let result: Omit<BuildMetrics, 'buildTime'> & { detailed?: any };
   const files = await getAllFiles(outputDir);
 
@@ -146,9 +141,9 @@ export async function analyzeBundleSize(
       cssFileCount,
       initialChunkCount,
       lazyChunkCount,
-      compressionRatio: totalSize > 0 ? (totalGzippedSize / totalSize) : 0,
-      chunkDistributionGzip,
-    },
+      compressionRatio: totalSize > 0 ? totalGzippedSize / totalSize : 0,
+      chunkDistributionGzip
+    }
   };
   return result;
 }
@@ -191,7 +186,7 @@ export async function runBuildAnalysis(
 
   result = {
     buildTime,
-    ...bundleMetrics,
+    ...bundleMetrics
   };
 
   console.log(`Total files: ${result.fileCount}`);
@@ -199,9 +194,15 @@ export async function runBuildAnalysis(
   console.log(`Gzipped size: ${(result.gzippedSize! / 1024).toFixed(2)} KB`);
   console.log(`Compression ratio: ${((result as any).detailed.compressionRatio * 100).toFixed(1)}%`);
   console.log(`\nBreakdown:`);
-  console.log(`  Initial: ${((result as any).detailed.initialSize / 1024).toFixed(2)} KB (gzip: ${((result as any).detailed.initialGzipSize / 1024).toFixed(2)} KB)`);
-  console.log(`  Lazy: ${((result as any).detailed.lazySize / 1024).toFixed(2)} KB (gzip: ${((result as any).detailed.lazyGzipSize / 1024).toFixed(2)} KB)`);
-  console.log(`  Vendor: ${((result as any).detailed.vendorSize / 1024).toFixed(2)} KB (gzip: ${((result as any).detailed.vendorGzipSize / 1024).toFixed(2)} KB)`);
+  console.log(
+    `  Initial: ${((result as any).detailed.initialSize / 1024).toFixed(2)} KB (gzip: ${((result as any).detailed.initialGzipSize / 1024).toFixed(2)} KB)`
+  );
+  console.log(
+    `  Lazy: ${((result as any).detailed.lazySize / 1024).toFixed(2)} KB (gzip: ${((result as any).detailed.lazyGzipSize / 1024).toFixed(2)} KB)`
+  );
+  console.log(
+    `  Vendor: ${((result as any).detailed.vendorSize / 1024).toFixed(2)} KB (gzip: ${((result as any).detailed.vendorGzipSize / 1024).toFixed(2)} KB)`
+  );
   console.log(`  JS: ${((result as any).detailed.jsSize / 1024).toFixed(2)} KB (${(result as any).detailed.jsFileCount} files)`);
   console.log(`  CSS: ${((result as any).detailed.cssSize / 1024).toFixed(2)} KB (${(result as any).detailed.cssFileCount} files)`);
 

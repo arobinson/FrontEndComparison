@@ -61,7 +61,7 @@ export function aggregateResults(runs: TestRun[]): AggregatedResults {
     mean,
     min,
     max,
-    stdDev,
+    stdDev
   };
   return result;
 }
@@ -116,7 +116,7 @@ function calculateStdDev(values: number[]): number {
     result = 0;
   } else {
     const avg = calculateMean(values);
-    const squaredDiffs = values.map(value => Math.pow(value - avg, 2));
+    const squaredDiffs = values.map((value) => Math.pow(value - avg, 2));
     const variance = calculateMean(squaredDiffs);
     result = Math.sqrt(variance);
   }

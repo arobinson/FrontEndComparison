@@ -14,11 +14,7 @@ export class TestRunner {
   async initialize(): Promise<void> {
     this.#browser = await chromium.launch({
       headless: true,
-      args: [
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-dev-shm-usage',
-      ],
+      args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
     });
   }
 
@@ -35,10 +31,7 @@ export class TestRunner {
     await this.initialize();
   }
 
-  async runScenario(
-    framework: FrameworkConfig,
-    scenario: TestScenario
-  ): Promise<TestRun[]> {
+  async runScenario(framework: FrameworkConfig, scenario: TestScenario): Promise<TestRun[]> {
     let result: TestRun[];
     if (!this.#browser) {
       throw new Error('Test runner not initialized. Call initialize() first.');
@@ -55,7 +48,7 @@ export class TestRunner {
       const page = await this.#browser.newPage();
       await page.setViewportSize({
         width: this.#config.viewportWidth,
-        height: this.#config.viewportHeight,
+        height: this.#config.viewportHeight
       });
 
       // Inject performance observers before navigation
@@ -67,7 +60,7 @@ export class TestRunner {
       const context: TestContext = {
         page,
         baseUrl: framework.baseUrl,
-        framework: framework.name,
+        framework: framework.name
       };
 
       try {
@@ -79,7 +72,7 @@ export class TestRunner {
           framework: framework.name,
           scenario: scenario.name,
           timestamp: new Date().toISOString(),
-          measurements: scenarioResult.measurements,
+          measurements: scenarioResult.measurements
         };
 
         runs.push(testRun);
@@ -98,17 +91,14 @@ export class TestRunner {
       }
 
       // Small delay between runs to let system stabilize
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
     }
 
     result = runs;
     return result;
   }
 
-  async runAllScenarios(
-    framework: FrameworkConfig,
-    scenarios: TestScenario[]
-  ): Promise<TestRun[]> {
+  async runAllScenarios(framework: FrameworkConfig, scenarios: TestScenario[]): Promise<TestRun[]> {
     let result: TestRun[];
     const allRuns: TestRun[] = [];
 
@@ -128,9 +118,7 @@ export class TestRunner {
     return result;
   }
 
-  async runAllFrameworks(
-    scenarios: TestScenario[]
-  ): Promise<Map<string, TestRun[]>> {
+  async runAllFrameworks(scenarios: TestScenario[]): Promise<Map<string, TestRun[]>> {
     let result: Map<string, TestRun[]>;
     const resultsByFramework = new Map<string, TestRun[]>();
 

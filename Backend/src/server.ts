@@ -78,13 +78,7 @@ app.get('/api/products/:id', (req, res) => {
 
 // Get available categories
 app.get('/api/categories', (req, res) => {
-  const categories = Array.from(
-    new Set(
-      productsData
-        .map((p: any) => p.category)
-        .filter(Boolean)
-    )
-  ).sort();
+  const categories = Array.from(new Set(productsData.map((p: any) => p.category).filter(Boolean))).sort();
 
   res.json({ categories });
 });
@@ -111,22 +105,13 @@ app.get('/images/:filename', async (req, res) => {
 
     if (size === 'thumbnail') {
       // 80x80 thumbnails for table view
-      imageBuffer = await sharp(imagePath)
-        .resize(80, 80, { fit: 'cover' })
-        .jpeg({ quality: 80 })
-        .toBuffer();
+      imageBuffer = await sharp(imagePath).resize(80, 80, { fit: 'cover' }).jpeg({ quality: 80 }).toBuffer();
     } else if (size === 'small') {
       // 200x200 for small displays
-      imageBuffer = await sharp(imagePath)
-        .resize(200, 200, { fit: 'cover' })
-        .jpeg({ quality: 85 })
-        .toBuffer();
+      imageBuffer = await sharp(imagePath).resize(200, 200, { fit: 'cover' }).jpeg({ quality: 85 }).toBuffer();
     } else if (size === 'medium') {
       // 400x400 for detail views
-      imageBuffer = await sharp(imagePath)
-        .resize(400, 400, { fit: 'cover' })
-        .jpeg({ quality: 90 })
-        .toBuffer();
+      imageBuffer = await sharp(imagePath).resize(400, 400, { fit: 'cover' }).jpeg({ quality: 90 }).toBuffer();
     } else {
       // Full size (original 400x400 from download)
       imageBuffer = readFileSync(imagePath);

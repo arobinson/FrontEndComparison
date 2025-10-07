@@ -106,7 +106,12 @@
         </div>
 
         <!-- Quality & Ratings Section -->
-        @if (product.grade || product.safetyRating || product.customerRating || product.ecoScore) {
+        @if (
+          product.grade ||
+          product.safetyRating ||
+          product.customerRating ||
+          product.ecoScore
+        ) {
           <div class="health-section">
             <h2>Quality & Ratings</h2>
             <div class="score-grid">
@@ -171,21 +176,30 @@
               @if (product.price) {
                 <dt>Price</dt>
                 <dd>
-                  <aff-decimal-units [value]="product.price" [unit]="product.currencyCode || ''" />
+                  <aff-decimal-units
+                    [value]="product.price"
+                    [unit]="product.currencyCode || ''"
+                  />
                 </dd>
               }
 
               @if (product.cost) {
                 <dt>Cost</dt>
                 <dd>
-                  <aff-decimal-units [value]="product.cost" [unit]="product.currencyCode || ''" />
+                  <aff-decimal-units
+                    [value]="product.cost"
+                    [unit]="product.currencyCode || ''"
+                  />
                 </dd>
               }
 
               @if (product.wholesalePrice) {
                 <dt>Wholesale Price</dt>
                 <dd>
-                  <aff-decimal-units [value]="product.wholesalePrice" [unit]="product.currencyCode || ''" />
+                  <aff-decimal-units
+                    [value]="product.wholesalePrice"
+                    [unit]="product.currencyCode || ''"
+                  />
                 </dd>
               }
 
@@ -199,7 +213,10 @@
               @if (product.discountPercent !== undefined) {
                 <dt>Discount</dt>
                 <dd>
-                  <aff-decimal-units [value]="product.discountPercent" [unit]="'%'" />
+                  <aff-decimal-units
+                    [value]="product.discountPercent"
+                    [unit]="'%'"
+                  />
                 </dd>
               }
             </dl>
@@ -207,7 +224,11 @@
         }
 
         <!-- Inventory Section -->
-        @if (product.stockQuantity !== undefined || product.warehouseLocation || product.reorderLevel !== undefined) {
+        @if (
+          product.stockQuantity !== undefined ||
+          product.warehouseLocation ||
+          product.reorderLevel !== undefined
+        ) {
           <div class="inventory-section">
             <h2>Inventory</h2>
             <dl class="info-list">
@@ -248,7 +269,11 @@
         }
 
         <!-- Geographic Section -->
-        @if (product.originCountry || product.manufacturerCountry || product.shippingZone) {
+        @if (
+          product.originCountry ||
+          product.manufacturerCountry ||
+          product.shippingZone
+        ) {
           <div class="geographic-section">
             <h2>Geographic Information</h2>
             <dl class="info-list">
@@ -276,7 +301,12 @@
         }
 
         <!-- Supplier Contact Section -->
-        @if (product.firstName || product.lastName || product.supplierEmail || product.supplierPhone) {
+        @if (
+          product.firstName ||
+          product.lastName ||
+          product.supplierEmail ||
+          product.supplierPhone
+        ) {
           <div class="supplier-section">
             <h2>Supplier Contact</h2>
             <dl class="info-list">
@@ -304,7 +334,13 @@
         }
 
         <!-- Product Features Section -->
-        @if (product.isFeatured || product.isBestSeller || product.requiresShipping || product.isDigital || product.hasWarranty) {
+        @if (
+          product.isFeatured ||
+          product.isBestSeller ||
+          product.requiresShipping ||
+          product.isDigital ||
+          product.hasWarranty
+        ) {
           <div class="features-section">
             <h2>Product Features</h2>
             <dl class="info-list">
@@ -346,7 +382,10 @@
               @if (product.warrantyMonths !== undefined) {
                 <dt>Warranty Period</dt>
                 <dd>
-                  <aff-decimal-units [value]="product.warrantyMonths" [unit]="'months'" />
+                  <aff-decimal-units
+                    [value]="product.warrantyMonths"
+                    [unit]="'months'"
+                  />
                 </dd>
               }
 
@@ -359,7 +398,10 @@
         }
 
         <!-- Shipping Section -->
-        @if (product.shippingDepartureTime || product.flightDurationHours !== undefined) {
+        @if (
+          product.shippingDepartureTime ||
+          product.flightDurationHours !== undefined
+        ) {
           <div class="shipping-section">
             <h2>Shipping Information</h2>
             <dl class="info-list">
@@ -373,7 +415,10 @@
               @if (product.flightDurationHours !== undefined) {
                 <dt>Flight Duration</dt>
                 <dd>
-                  <aff-decimal-units [value]="product.flightDurationHours" [unit]="'hours'" />
+                  <aff-decimal-units
+                    [value]="product.flightDurationHours"
+                    [unit]="'hours'"
+                  />
                 </dd>
               }
             </dl>

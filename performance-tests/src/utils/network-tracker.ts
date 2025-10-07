@@ -39,17 +39,14 @@ export class NetworkTracker {
 
   getMetrics(): NetworkMetrics {
     let result: NetworkMetrics;
-    const totalBytes = this.#requests.reduce(
-      (sum, req) => sum + req.requestSize + req.responseSize,
-      0
-    );
+    const totalBytes = this.#requests.reduce((sum, req) => sum + req.requestSize + req.responseSize, 0);
 
     // Calculate wall-clock duration (earliest start to latest end)
     // This represents actual time spent waiting on network, accounting for parallel requests
     let totalDuration = 0;
     if (this.#requests.length > 0) {
-      const earliestStart = Math.min(...this.#requests.map(req => req.startTime));
-      const latestEnd = Math.max(...this.#requests.map(req => req.endTime));
+      const earliestStart = Math.min(...this.#requests.map((req) => req.startTime));
+      const latestEnd = Math.max(...this.#requests.map((req) => req.endTime));
       totalDuration = latestEnd - earliestStart;
     }
 
@@ -58,16 +55,14 @@ export class NetworkTracker {
       return totalSize > max ? totalSize : max;
     }, 0);
 
-    const apiResponseTimes = this.#requests
-      .filter(req => req.url.includes('/api/'))
-      .map(req => req.endTime - req.startTime);
+    const apiResponseTimes = this.#requests.filter((req) => req.url.includes('/api/')).map((req) => req.endTime - req.startTime);
 
     result = {
       requestCount: this.#requests.length,
       totalBytes,
       totalDuration,
       largestRequestSize,
-      apiResponseTimes,
+      apiResponseTimes
     };
     return result;
   }
@@ -111,7 +106,7 @@ export class NetworkTracker {
       endTime,
       requestSize,
       responseSize,
-      statusCode: response.status(),
+      statusCode: response.status()
     });
   };
 

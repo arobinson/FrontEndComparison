@@ -12,7 +12,7 @@ export const navigateToDetailScenario: TestScenario = {
     const measurements: Measurement[] = [];
 
     await page.goto(baseUrl, { waitUntil: 'networkidle' });
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise((resolve) => setTimeout(resolve, 500));
 
     const memoryBefore = await getMemoryMetrics(page);
 
@@ -34,7 +34,7 @@ export const navigateToDetailScenario: TestScenario = {
     await page.waitForLoadState('networkidle');
     const navigationEnd = Date.now();
 
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise((resolve) => setTimeout(resolve, 500));
 
     // Collect metrics
     const webVitals = await getWebVitals(page);
@@ -61,8 +61,8 @@ export const navigateToDetailScenario: TestScenario = {
     result = {
       scenarioName: 'navigate-to-detail',
       framework,
-      measurements,
+      measurements
     };
     return result;
-  },
+  }
 };

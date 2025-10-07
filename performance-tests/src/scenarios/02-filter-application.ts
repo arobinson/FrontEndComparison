@@ -12,7 +12,7 @@ export const filterApplicationScenario: TestScenario = {
 
     // Navigate to the list page
     await page.goto(baseUrl, { waitUntil: 'networkidle' });
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise((resolve) => setTimeout(resolve, 500));
 
     // Wait for table to be visible
     await page.waitForSelector('table', { state: 'visible' });
@@ -44,7 +44,7 @@ export const filterApplicationScenario: TestScenario = {
 
     // Wait for table to update using MutationObserver
     await page.evaluate(() => {
-      return new Promise<void>(resolve => {
+      return new Promise<void>((resolve) => {
         const tbody = document.querySelector('tbody');
         if (!tbody) {
           resolve();
@@ -98,7 +98,7 @@ export const filterApplicationScenario: TestScenario = {
     // Get JavaScript execution time
     const jsExecutionTime = await page.evaluate(() => {
       const entries = performance.getEntriesByType('measure');
-      const filterMeasure = entries.find(e => e.name === 'filter-operation');
+      const filterMeasure = entries.find((e) => e.name === 'filter-operation');
       return filterMeasure ? filterMeasure.duration : 0;
     });
     measurements.push({ name: 'js_execution_time', value: jsExecutionTime, unit: 'ms' });
@@ -106,8 +106,8 @@ export const filterApplicationScenario: TestScenario = {
     result = {
       scenarioName: 'filter-application',
       framework,
-      measurements,
+      measurements
     };
     return result;
-  },
+  }
 };

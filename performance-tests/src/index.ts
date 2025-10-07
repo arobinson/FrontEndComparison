@@ -15,14 +15,14 @@ async function main(): Promise<void> {
         name: 'Angular',
         baseUrl: 'http://localhost:4200',
         buildCommand: 'pnpm exec ng build',
-        buildOutputDir: join(process.cwd(), '../AngularFoodFacts/dist/angular-food-facts/browser'),
-      },
+        buildOutputDir: join(process.cwd(), '../AngularFoodFacts/dist/AngularFoodFacts/browser')
+      }
     ],
     repetitions: 5, // Reduced from 17 to prevent resource exhaustion
     discardOutliers: false, // No outlier trimming with only 5 runs
     outputDir: join(process.cwd(), 'results'),
     viewportWidth: 1920,
-    viewportHeight: 1080,
+    viewportHeight: 1080
   };
 
   // Create output directory
@@ -38,7 +38,7 @@ async function main(): Promise<void> {
     scenarios.navigateToDetailScenario,
     scenarios.navigateBackScenario,
     scenarios.paginationScenario,
-    scenarios.paginationCycleScenario,
+    scenarios.paginationCycleScenario
   ];
 
   console.log('='.repeat(80));
@@ -47,7 +47,7 @@ async function main(): Promise<void> {
   console.log(`\nConfiguration:`);
   console.log(`  Repetitions: ${config.repetitions}`);
   console.log(`  Viewport: ${config.viewportWidth}x${config.viewportHeight}`);
-  console.log(`  Frameworks: ${config.frameworks.map(f => f.name).join(', ')}`);
+  console.log(`  Frameworks: ${config.frameworks.map((f) => f.name).join(', ')}`);
   console.log(`  Scenarios: ${testScenarios.length}`);
   console.log(`  Output: ${config.outputDir}`);
 
@@ -88,12 +88,7 @@ async function main(): Promise<void> {
     const buildMetrics: Record<string, any> = {};
     for (const framework of config.frameworks) {
       const frameworkDir = join(process.cwd(), `../${framework.name}FoodFacts`);
-      const metrics = await runBuildAnalysis(
-        framework.name,
-        framework.buildCommand,
-        framework.buildOutputDir,
-        frameworkDir
-      );
+      const metrics = await runBuildAnalysis(framework.name, framework.buildCommand, framework.buildOutputDir, frameworkDir);
       buildMetrics[framework.name] = metrics;
     }
 
@@ -109,11 +104,11 @@ async function main(): Promise<void> {
       config: {
         repetitions: config.repetitions,
         viewportWidth: config.viewportWidth,
-        viewportHeight: config.viewportHeight,
+        viewportHeight: config.viewportHeight
       },
       rawRuns: Array.from(allRuns.values()).flat(),
       aggregated,
-      buildMetrics,
+      buildMetrics
     };
 
     // Export to various formats
@@ -129,7 +124,7 @@ async function main(): Promise<void> {
   }
 }
 
-main().catch(error => {
+main().catch((error) => {
   console.error('Fatal error:', error);
   process.exit(1);
 });

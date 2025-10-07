@@ -19,7 +19,7 @@
 }
 
 .star.half::after {
-  content: '☆';
+  content: "☆";
   position: absolute;
   left: 0;
   color: #e0e0e0;

@@ -11,7 +11,7 @@ export const sortColumnScenario: TestScenario = {
     const measurements: Measurement[] = [];
 
     await page.goto(baseUrl, { waitUntil: 'networkidle' });
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise((resolve) => setTimeout(resolve, 500));
 
     const memoryBefore = await getMemoryMetrics(page);
 
@@ -25,7 +25,7 @@ export const sortColumnScenario: TestScenario = {
 
     // Wait for table to re-render
     await page.evaluate(() => {
-      return new Promise<void>(resolve => {
+      return new Promise<void>((resolve) => {
         const tbody = document.querySelector('tbody');
         if (!tbody) {
           resolve();
@@ -68,8 +68,8 @@ export const sortColumnScenario: TestScenario = {
     result = {
       scenarioName: 'sort-column',
       framework,
-      measurements,
+      measurements
     };
     return result;
-  },
+  }
 };

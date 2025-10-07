@@ -12,7 +12,7 @@ export const paginationCycleScenario: TestScenario = {
     const measurements: Measurement[] = [];
 
     await page.goto(baseUrl, { waitUntil: 'networkidle' });
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise((resolve) => setTimeout(resolve, 500));
 
     const memoryBefore = await getMemoryMetrics(page);
 
@@ -36,7 +36,7 @@ export const paginationCycleScenario: TestScenario = {
       // Click the page number button
       await page.evaluate((pageNum: number) => {
         const buttons = Array.from(document.querySelectorAll('button'));
-        const pageButton = buttons.find(btn => {
+        const pageButton = buttons.find((btn) => {
           const text = btn.textContent?.trim() || '';
           return text === String(pageNum);
         });
@@ -46,33 +46,9 @@ export const paginationCycleScenario: TestScenario = {
         }
       }, targetPage);
 
-      // Wait for table to update
-      await page.evaluate(() => {
-        return new Promise<void>(resolve => {
-          const tbody = document.querySelector('tbody');
-          if (!tbody) {
-            resolve();
-            return;
-          }
-
-          let timeoutId: NodeJS.Timeout;
-          const observer = new MutationObserver(() => {
-            clearTimeout(timeoutId);
-            timeoutId = setTimeout(() => {
-              observer.disconnect();
-              resolve();
-            }, 200);
-          });
-
-          observer.observe(tbody, { childList: true, subtree: true });
-
-          // Increased timeout to 10 seconds to ensure we capture full transition times
-          setTimeout(() => {
-            observer.disconnect();
-            resolve();
-          }, 10000);
-        });
-      });
+      // Wait for loading indicator to appear and then disappear
+      await page.waitForSelector('.loading-indicator', { timeout: 1000 }).catch(() => {});
+      await page.waitForSelector('.loading-indicator', { state: 'hidden', timeout: 10000 }).catch(() => {});
 
       const pageEnd = Date.now();
       await performanceMark(page, `page-${i}-end`);
@@ -134,8 +110,8 @@ export const paginationCycleScenario: TestScenario = {
     result = {
       scenarioName: 'pagination-cycle',
       framework,
-      measurements,
+      measurements
     };
     return result;
-  },
+  }
 };

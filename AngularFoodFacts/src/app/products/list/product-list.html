@@ -6,7 +6,12 @@
     </button>
   </div>
 
-  @if (hasData()) {
+  @if (isLoading() && !hasData()) {
+    <p>Loading products...</p>
+  } @else if (hasData()) {
+    @if (isLoading()) {
+      <div class="loading-indicator">⏳ Loading...</div>
+    }
     <aff-data-table
       [columns]="columns"
       [value]="currentPageData()"
@@ -113,8 +118,6 @@
         }
       </ng-template>
     </aff-data-table>
-  } @else if (isLoading()) {
-    <p>Loading products...</p>
   } @else if (isError()) {
     <p>Error loading products: {{ productsResource.error() }}</p>
   } @else {

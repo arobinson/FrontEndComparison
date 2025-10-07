@@ -1,7 +1,7 @@
-import { Component, inject, signal, computed } from '@angular/core';
+import { Component, inject, signal, computed, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { FoodFacts } from '../food-facts';
+import { FoodFacts, ProductViewModel } from '../food-facts';
 import { DataTable } from '../../shared/data-table/data-table';
 import { ProductLink } from '../../shared/product-link/product-link';
 import { ProgressBar } from '../../shared/progress-bar/progress-bar';
@@ -71,6 +71,22 @@ export class ProductList {
     this.apiPage,
     this.pageSize,
   );
+
+  /**
+   * Previous data to show while loading new page
+   */
+  readonly previousData = signal<{ products: ProductViewModel[]; total: number } | null>(null);
+
+  constructor() {
+    // Update previousData whenever we get new resolved data
+    effect(() => {
+      const status = this.productsResource.status();
+      const value = this.productsResource.value();
+      if (status === 'resolved' && value) {
+        this.previousData.set(value);
+      }
+    });
+  }
 
   // #endregion
 
@@ -356,20 +372,32 @@ export class ProductList {
     () => this.productsResource.status() === 'loading',
   );
   readonly isError = computed(() => this.productsResource.status() === 'error');
+
+  /**
+   * Current data or previous data if loading
+   */
+  readonly displayData = computed(() => {
+    const current = this.productsResource.value();
+    const previous = this.previousData();
+    let result;
+    if (current) {
+      result = current;
+    } else {
+      result = previous;
+    }
+    return result;
+  });
+
   readonly hasData = computed(() => {
-    const value = this.productsResource.value();
-    return (
-      this.productsResource.status() === 'resolved' &&
-      value &&
-      value.products.length > 0
-    );
+    const data = this.displayData();
+    return data && data.products.length > 0;
   });
 
   /**
    * Filtered data based on active filters (filters current page only)
    */
   readonly filteredData = computed(() => {
-    const response = this.productsResource.value();
+    const response = this.displayData();
     const allData = response?.products || [];
     const activeFilters = this.filters();
 
@@ -444,7 +472,7 @@ export class ProductList {
    * Total number of pages from server
    */
   readonly totalPages = computed(() => {
-    const response = this.productsResource.value();
+    const response = this.displayData();
     const total = response?.total || 0;
     return Math.ceil(total / this.pageSize());
   });

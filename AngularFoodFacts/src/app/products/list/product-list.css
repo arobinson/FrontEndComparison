@@ -15,6 +15,16 @@
   flex-shrink: 0;
 }
 
+.loading-indicator {
+  padding: 0.5rem 1rem;
+  background-color: #f0f8ff;
+  border-left: 4px solid #0066cc;
+  margin-bottom: 1rem;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #333;
+}
+
 .product-list-container h1 {
   color: #333;
   margin: 0;

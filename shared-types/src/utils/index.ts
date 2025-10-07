@@ -6,6 +6,7 @@ export const API_BASE_URL = 'http://localhost:3001/api';
 // Re-export transformers
 export * from './transformers.js';
 export * from './open-food-facts-transformers.js';
+export * from './mock-data-transformers.js';
 
 export function filterProductsByCategory(products: ProductViewModel[], category?: string): ProductViewModel[] {
   if (!category || category === 'all') return products;

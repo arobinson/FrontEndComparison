@@ -1,11 +1,11 @@
-import { useMemo } from 'react';
+import { useMemo, memo } from 'react';
 import './ProgressBar.css';
 
 interface ProgressBarProps {
   value: number;
 }
 
-export const ProgressBar = ({ value }: ProgressBarProps) => {
+export const ProgressBar = memo(({ value }: ProgressBarProps) => {
   const percentage = useMemo(() => {
     let result: number;
     if (value < 0) {
@@ -38,4 +38,6 @@ export const ProgressBar = ({ value }: ProgressBarProps) => {
       <span className="progress-text">{percentage}%</span>
     </div>
   );
-};
+});
+
+ProgressBar.displayName = 'ProgressBar';

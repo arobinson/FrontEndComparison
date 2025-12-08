@@ -29,3 +29,6 @@ yarn-error.log*
 
 # AI
 /.claude/settings.local.json
+
+# Build output
+/shared-types/dist/

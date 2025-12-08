@@ -7,7 +7,7 @@
   box-sizing: border-box;
 }
 
-.header-row {
+.page-header-row {
   display: flex;
   justify-content: space-between;
   align-items: center;

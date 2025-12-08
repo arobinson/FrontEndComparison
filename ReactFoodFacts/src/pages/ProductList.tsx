@@ -1,52 +1,85 @@
 import { useState, useMemo, useCallback } from 'react';
 import { useProducts } from '../hooks/useProducts';
-import { allColumns } from '../config/columnConfig';
+import { allColumns, getColumnConfig } from '../config/columnConfig';
+import { DataTable, TextSearch, RangeSlider, MultiSelect } from '../components/shared';
 import { CellRenderer } from '../components/table/CellRenderer';
 import './ProductList.css';
 import type { MockProductViewModel } from 'shared-types';
 
+type FilterValue = string | { min?: number; max?: number } | string[];
+
 const ProductList = () => {
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(50);
-  const [filters, setFilters] = useState<Partial<Record<keyof MockProductViewModel, string>>>({});
+  const [filters, setFilters] = useState<Record<string, FilterValue>>({});
+  const [filterResetTrigger, setFilterResetTrigger] = useState(0);
 
   const { products, total, loading, error } = useProducts({
     category: 'all',
-    page,
+    page: page + 1,
     pageSize
   });
 
   const filteredProducts = useMemo(() => {
     let result = products;
 
-    (Object.entries(filters) as [keyof MockProductViewModel, string][]).forEach(([key, filterValue]) => {
-      if (filterValue) {
-        result = result.filter((product) => {
-          const value = product[key];
-          const valueStr = String(value ?? '').toLowerCase();
-          const filterStr = filterValue.toLowerCase();
-          return valueStr.includes(filterStr);
-        });
-      }
+    Object.entries(filters).forEach(([column, filterValue]) => {
+      if (!filterValue) return;
+
+      result = result.filter((product) => {
+        const productValue = (product as Record<string, any>)[column];
+
+        // Text search
+        if (typeof filterValue === 'string') {
+          return productValue
+            ?.toString()
+            .toLowerCase()
+            .includes(filterValue.toLowerCase());
+        }
+        // Range filter
+        if (typeof filterValue === 'object' && !Array.isArray(filterValue)) {
+          const numValue = Number(productValue);
+          if (filterValue.min !== undefined && numValue < filterValue.min) {
+            return false;
+          }
+          if (filterValue.max !== undefined && numValue > filterValue.max) {
+            return false;
+          }
+          return true;
+        }
+        // Multi-select
+        if (Array.isArray(filterValue)) {
+          if (filterValue.length === 0) return true;
+          // Handle boolean yes/no filters
+          if (typeof productValue === 'boolean') {
+            const boolStrings = filterValue.map((v) => {
+              if (v === 'Yes') return true;
+              if (v === 'No') return false;
+              return v;
+            });
+            return boolStrings.includes(productValue);
+          }
+          return filterValue.includes(productValue);
+        }
+        return true;
+      });
     });
 
     return result;
   }, [products, filters]);
 
-  const handleFilterChange = useCallback((columnKey: keyof MockProductViewModel, value: string) => {
-    setFilters((prev) => {
-      const updated = { ...prev };
-      if (value) {
-        updated[columnKey] = value;
-      } else {
-        delete updated[columnKey];
-      }
-      return updated;
-    });
+  const updateFilter = useCallback((column: string, value: FilterValue) => {
+    setFilters((current) => ({
+      ...current,
+      [column]: value,
+    }));
+    setPage(0);
   }, []);
 
-  const handleResetFilters = useCallback(() => {
+  const resetFilters = useCallback(() => {
     setFilters({});
+    setPage(0);
+    setFilterResetTrigger((val) => val + 1);
   }, []);
 
   const handlePageChange = useCallback((newPage: number) => {
@@ -55,120 +88,128 @@ const ProductList = () => {
 
   const handlePageSizeChange = useCallback((newSize: number) => {
     setPageSize(newSize);
-    setPage(1);
+    setPage(0);
   }, []);
 
   const totalPages = Math.ceil(total / pageSize);
+  const columns = allColumns.map((col) => col.key);
+
+  const getColumnDataType = (column: string): string => {
+    return getColumnConfig(column as keyof MockProductViewModel)?.type ?? 'simple-text';
+  };
+
+  const getColumnTitle = (column: string): string => {
+    return getColumnConfig(column as keyof MockProductViewModel)?.label ?? column;
+  };
+
+  const renderHeader = useCallback((column: string) => {
+    return <strong>{getColumnTitle(column)}</strong>;
+  }, []);
+
+  const renderFilterCell = useCallback((column: string) => {
+    const dataType = getColumnDataType(column);
+
+    switch (dataType) {
+      case 'progress-bar':
+        return (
+          <RangeSlider
+            min={0}
+            max={100}
+            resetTrigger={filterResetTrigger}
+            onValueChange={(value) => updateFilter(column, value)}
+          />
+        );
+      case 'grade-badge':
+        return (
+          <MultiSelect
+            options={['A', 'B', 'C', 'D', 'F']}
+            resetTrigger={filterResetTrigger}
+            onValueChange={(value) => updateFilter(column, value)}
+          />
+        );
+      case 'nova-dots':
+        return (
+          <MultiSelect
+            options={['1', '2', '3', '4']}
+            resetTrigger={filterResetTrigger}
+            onValueChange={(value) => updateFilter(column, value)}
+          />
+        );
+      case 'large-counter':
+        return (
+          <RangeSlider
+            resetTrigger={filterResetTrigger}
+            onValueChange={(value) => updateFilter(column, value)}
+          />
+        );
+      case 'boolean-yesno':
+        return (
+          <MultiSelect
+            options={['Yes', 'No']}
+            resetTrigger={filterResetTrigger}
+            onValueChange={(value) => updateFilter(column, value)}
+          />
+        );
+      case 'product-image':
+        return null;
+      default:
+        return (
+          <TextSearch
+            resetTrigger={filterResetTrigger}
+            onValueChange={(value) => updateFilter(column, value)}
+          />
+        );
+    }
+  }, [filterResetTrigger, updateFilter]);
+
+  const renderCell = useCallback((value: any, column: string, row: Record<string, any>) => {
+    const columnConfig = allColumns.find((col) => col.key === column);
+    if (!columnConfig) return value ?? '';
+    return <CellRenderer column={columnConfig} row={row} />;
+  }, []);
 
   let content;
-  if (loading) {
-    content = <div className="loading">Loading products...</div>;
+  if (loading && products.length === 0) {
+    content = <p>Loading products...</p>;
   } else if (error) {
-    content = <div className="error">Error: {error}</div>;
-  } else {
+    content = <p>Error loading products: {error}</p>;
+  } else if (products.length > 0) {
     content = (
       <>
-        <div className="table-header">
-          <h1>Products</h1>
-          <div className="table-info">
-            <button onClick={handleResetFilters} className="reset-filters-btn">
-              Reset Filters
-            </button>
-          </div>
-        </div>
-
-        <div className="table-container">
-          <table className="product-table">
-            <thead>
-              <tr>
-                {allColumns.map((column) => (
-                  <th key={column.key}>{column.label}</th>
-                ))}
-              </tr>
-              <tr className="filter-row">
-                {allColumns.map((column) => {
-                  let filterCell;
-                  if (!column.filterable) {
-                    filterCell = <td key={column.key}></td>;
-                  } else {
-                    filterCell = (
-                      <td key={column.key}>
-                        <input
-                          type="text"
-                          className="filter-input"
-                          value={filters[column.key] ?? ''}
-                          onChange={(e) => {
-                            handleFilterChange(column.key, e.target.value);
-                          }}
-                          onBlur={(e) => {
-                            handleFilterChange(column.key, e.target.value);
-                          }}
-                          placeholder={`Filter ${column.label}...`}
-                        />
-                      </td>
-                    );
-                  }
-                  return filterCell;
-                })}
-              </tr>
-            </thead>
-            <tbody>
-              {filteredProducts.map((product) => (
-                <tr key={product.code}>
-                  {allColumns.map((column) => (
-                    <td key={column.key}>
-                      <CellRenderer column={column} row={product} />
-                    </td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        <div className="pagination">
-          <div className="pagination-controls">
-            <button
-              onClick={() => {
-                handlePageChange(page - 1);
-              }}
-              disabled={page <= 1}
-            >
-              Previous
-            </button>
-            <span className="page-info">
-              Page {page} of {totalPages}
-            </span>
-            <button
-              onClick={() => {
-                handlePageChange(page + 1);
-              }}
-              disabled={page >= totalPages}
-            >
-              Next
-            </button>
-          </div>
-          <div className="page-size-selector">
-            <label>
-              Items per page:
-              <select
-                value={pageSize}
-                onChange={(e) => {
-                  handlePageSizeChange(Number(e.target.value));
-                }}
-              >
-                <option value={10}>10</option>
-                <option value={25}>25</option>
-                <option value={50}>50</option>
-              </select>
-            </label>
-          </div>
-        </div>
+        {loading && (
+          <div className="loading-indicator">⏳ Loading...</div>
+        )}
+        <DataTable
+          columns={columns}
+          value={filteredProducts}
+          totalPages={totalPages}
+          page={page}
+          pageSize={pageSize}
+          pageSizes={[10, 25, 50]}
+          showFilterRow={true}
+          onPageChange={handlePageChange}
+          onPageSizeChange={handlePageSizeChange}
+          renderHeader={renderHeader}
+          renderFilterCell={renderFilterCell}
+          renderCell={renderCell}
+        />
       </>
     );
+  } else {
+    content = <p>No products found.</p>;
   }
 
-  return <div className="product-list-page">{content}</div>;
+  return (
+    <div className="product-list-container">
+      <div className="page-header-row">
+        <h1>Products</h1>
+        <button className="reset-button" onClick={resetFilters} type="button">
+          Reset Filters
+        </button>
+      </div>
+      {content}
+    </div>
+  );
 };
 
 export default ProductList;

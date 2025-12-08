@@ -3,22 +3,23 @@ import { useProducts } from '../hooks/useProducts';
 import { allColumns } from '../config/columnConfig';
 import { CellRenderer } from '../components/table/CellRenderer';
 import './ProductList.css';
+import type { MockProductViewModel } from 'shared-types';
 
 const ProductList = () => {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(50);
-  const [filters, setFilters] = useState<Record<string, string>>({});
+  const [filters, setFilters] = useState<Partial<Record<keyof MockProductViewModel, string>>>({});
 
   const { products, total, loading, error } = useProducts({
     category: 'all',
     page,
-    pageSize,
+    pageSize
   });
 
   const filteredProducts = useMemo(() => {
     let result = products;
 
-    Object.entries(filters).forEach(([key, filterValue]) => {
+    (Object.entries(filters) as [keyof MockProductViewModel, string][]).forEach(([key, filterValue]) => {
       if (filterValue) {
         result = result.filter((product) => {
           const value = product[key];
@@ -32,7 +33,7 @@ const ProductList = () => {
     return result;
   }, [products, filters]);
 
-  const handleFilterChange = useCallback((columnKey: string, value: string) => {
+  const handleFilterChange = useCallback((columnKey: keyof MockProductViewModel, value: string) => {
     setFilters((prev) => {
       const updated = { ...prev };
       if (value) {
@@ -68,11 +69,8 @@ const ProductList = () => {
     content = (
       <>
         <div className="table-header">
-          <h1>Product List (React)</h1>
+          <h1>Products</h1>
           <div className="table-info">
-            <span>
-              Showing {filteredProducts.length} of {total} products
-            </span>
             <button onClick={handleResetFilters} className="reset-filters-btn">
               Reset Filters
             </button>
@@ -116,7 +114,7 @@ const ProductList = () => {
             </thead>
             <tbody>
               {filteredProducts.map((product) => (
-                <tr key={product.id}>
+                <tr key={product.code}>
                   {allColumns.map((column) => (
                     <td key={column.key}>
                       <CellRenderer column={column} row={product} />
@@ -130,13 +128,23 @@ const ProductList = () => {
 
         <div className="pagination">
           <div className="pagination-controls">
-            <button onClick={() => { handlePageChange(page - 1); }} disabled={page <= 1}>
+            <button
+              onClick={() => {
+                handlePageChange(page - 1);
+              }}
+              disabled={page <= 1}
+            >
               Previous
             </button>
             <span className="page-info">
               Page {page} of {totalPages}
             </span>
-            <button onClick={() => { handlePageChange(page + 1); }} disabled={page >= totalPages}>
+            <button
+              onClick={() => {
+                handlePageChange(page + 1);
+              }}
+              disabled={page >= totalPages}
+            >
               Next
             </button>
           </div>

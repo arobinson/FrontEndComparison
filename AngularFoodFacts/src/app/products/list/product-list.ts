@@ -1,6 +1,7 @@
 import { Component, inject, signal, computed, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { allColumns, ColumnConfig, getColumnConfig } from 'shared-types';
 import { FoodFacts, ProductViewModel } from '../food-facts';
 import { DataTable } from '../../shared/data-table/data-table';
 import { ProductLink } from '../../shared/product-link/product-link';
@@ -93,251 +94,30 @@ export class ProductList {
 
   // #endregion
 
-  // #region Column Configuration
+  // #region Column Configuration (from shared-types)
 
   /**
-   * Data types for different component rendering
+   * Column configuration from shared-types
    */
-  readonly dataTypes = {
-    'simple-text': 'simple-text',
-    'truncated-text': 'truncated-text',
-    'progress-bar': 'progress-bar',
-    'grade-badge': 'grade-badge',
-    'nova-dots': 'nova-dots',
-    'large-counter': 'large-counter',
-    'decimal-units': 'decimal-units',
-    'simple-quantity': 'simple-quantity',
-    'absolute-date': 'absolute-date',
-    'relative-date': 'relative-date',
-    'time-format': 'time-format',
-    'boolean-yesno': 'boolean-yesno',
-    'product-image': 'product-image',
-    'product-link': 'product-link',
-  } as const;
+  readonly columnConfig: ColumnConfig[] = allColumns;
 
   /**
-   * All available columns from ProductViewModel (54 columns total, camelCase)
+   * Column keys for the data table
    */
-  readonly allColumns = [
-    'code',
-    'productName',
-    'brand',
-    'description',
-    'category',
-    'sku',
-    'modelNumber',
-    'barcode',
-    'firstName',
-    'lastName',
-    'supplierEmail',
-    'supplierPhone',
-    'price',
-    'cost',
-    'wholesalePrice',
-    'currencyCode',
-    'taxRate',
-    'discountPercent',
-    'stockQuantity',
-    'unitsSold',
-    'reorderLevel',
-    'warehouseLocation',
-    'qualityScore',
-    'customerRating',
-    'reviewCount',
-    'grade',
-    'safetyRating',
-    'ecoScore',
-    'createdDate',
-    'lastUpdated',
-    'releaseDate',
-    'nextRestockDate',
-    'inStock',
-    'isFeatured',
-    'isBestSeller',
-    'requiresShipping',
-    'isDigital',
-    'hasWarranty',
-    'imageUrl',
-    'color',
-    'thumbnailUrl',
-    'originCountry',
-    'manufacturerCountry',
-    'productLanguage',
-    'shippingZone',
-    'supplierTaxId',
-    'material',
-    'size',
-    'weightKg',
-    'dimensionsCm',
-    'certification',
-    'warrantyMonths',
-    'shippingDepartureTime',
-    'flightDurationHours',
-  ];
-
-  /**
-   * Mapping of column names to their data types for component selection
-   * Starting with all as simple-text, will implement specific components incrementally
-   */
-  readonly columnDataTypes: Record<string, string> = {
-    // Product link for code (ID)
-    code: this.dataTypes['product-link'],
-    // Progress bars for scores
-    qualityScore: this.dataTypes['progress-bar'],
-    ecoScore: this.dataTypes['progress-bar'],
-    // Grade badge
-    grade: this.dataTypes['grade-badge'],
-    // Nova dots for safety rating
-    safetyRating: this.dataTypes['nova-dots'],
-    // Truncated text for description
-    description: this.dataTypes['truncated-text'],
-    // Large counters
-    unitsSold: this.dataTypes['large-counter'],
-    reviewCount: this.dataTypes['large-counter'],
-    // Boolean yes/no
-    inStock: this.dataTypes['boolean-yesno'],
-    isFeatured: this.dataTypes['boolean-yesno'],
-    isBestSeller: this.dataTypes['boolean-yesno'],
-    requiresShipping: this.dataTypes['boolean-yesno'],
-    isDigital: this.dataTypes['boolean-yesno'],
-    hasWarranty: this.dataTypes['boolean-yesno'],
-    // Product images
-    imageUrl: this.dataTypes['product-image'],
-    thumbnailUrl: this.dataTypes['product-image'],
-    // Decimal units
-    price: this.dataTypes['decimal-units'],
-    cost: this.dataTypes['decimal-units'],
-    wholesalePrice: this.dataTypes['decimal-units'],
-    weightKg: this.dataTypes['decimal-units'],
-    // Absolute dates
-    createdDate: this.dataTypes['absolute-date'],
-    releaseDate: this.dataTypes['absolute-date'],
-    nextRestockDate: this.dataTypes['absolute-date'],
-    // Relative date
-    lastUpdated: this.dataTypes['relative-date'],
-    // Time format
-    shippingDepartureTime: this.dataTypes['time-format'],
-    // Rest as simple text
-    ...Object.fromEntries(
-      this.allColumns
-        .filter(
-          (col) =>
-            ![
-              'code',
-              'qualityScore',
-              'ecoScore',
-              'grade',
-              'safetyRating',
-              'description',
-              'unitsSold',
-              'reviewCount',
-              'inStock',
-              'isFeatured',
-              'isBestSeller',
-              'requiresShipping',
-              'isDigital',
-              'hasWarranty',
-              'imageUrl',
-              'thumbnailUrl',
-              'price',
-              'cost',
-              'wholesalePrice',
-              'weightKg',
-              'createdDate',
-              'releaseDate',
-              'nextRestockDate',
-              'lastUpdated',
-              'shippingDepartureTime',
-            ].includes(col),
-        )
-        .map((col) => [col, this.dataTypes['simple-text']]),
-    ),
-  };
-
-  /**
-   * Column names for the data table (all 54 columns)
-   */
-  readonly columns = this.allColumns;
+  readonly columns = allColumns.map((col) => col.key);
 
   /**
    * Get data type for a specific column
    */
   getColumnDataType(column: string): string {
-    return this.columnDataTypes[column] || this.dataTypes['simple-text'];
+    return getColumnConfig(column as keyof ProductViewModel)?.type ?? 'simple-text';
   }
 
   /**
-   * Convert camelCase column names to human-readable titles
+   * Get label for a specific column
    */
   getColumnTitle(column: string): string {
-    const specialCases: Record<string, string> = {
-      id: 'ID',
-      product_name: 'Product Name',
-      brand: 'Brand',
-      description: 'Description',
-      category: 'Category',
-      sku: 'SKU',
-      model_number: 'Model Number',
-      barcode: 'Barcode',
-      first_name: 'First Name',
-      last_name: 'Last Name',
-      supplier_email: 'Supplier Email',
-      supplier_phone: 'Supplier Phone',
-      price: 'Price',
-      cost: 'Cost',
-      wholesale_price: 'Wholesale Price',
-      currency_code: 'Currency',
-      tax_rate: 'Tax Rate',
-      discount_percent: 'Discount %',
-      stock_quantity: 'Stock',
-      units_sold: 'Units Sold',
-      reorder_level: 'Reorder Level',
-      warehouse_location: 'Warehouse',
-      quality_score: 'Quality Score',
-      customer_rating: 'Rating',
-      review_count: 'Reviews',
-      grade: 'Grade',
-      safety_rating: 'Safety Rating',
-      eco_score: 'Eco Score',
-      created_date: 'Created',
-      last_updated: 'Last Updated',
-      release_date: 'Released',
-      next_restock_date: 'Next Restock',
-      in_stock: 'In Stock',
-      is_featured: 'Featured',
-      is_best_seller: 'Best Seller',
-      requires_shipping: 'Requires Shipping',
-      is_digital: 'Digital',
-      has_warranty: 'Has Warranty',
-      image_url: 'Image',
-      color: 'Color',
-      thumbnail_url: 'Thumbnail',
-      origin_country: 'Origin Country',
-      manufacturer_country: 'Manufacturer Country',
-      product_language: 'Language',
-      shipping_zone: 'Shipping Zone',
-      supplier_tax_id: 'Tax ID',
-      material: 'Material',
-      size: 'Size',
-      weight_kg: 'Weight (kg)',
-      dimensions_cm: 'Dimensions (cm)',
-      certification: 'Certification',
-      warranty_months: 'Warranty (months)',
-      shipping_departure_time: 'Departure Time',
-      flight_duration_hours: 'Flight Duration (hrs)',
-    };
-
-    return specialCases[column] || this.#camelCaseToTitle(column);
-  }
-
-  /**
-   * Convert camelCase to Title Case as fallback
-   */
-  #camelCaseToTitle(str: string): string {
-    return str
-      .replace(/([A-Z])/g, ' $1')
-      .replace(/^./, (char) => char.toUpperCase())
-      .trim();
+    return getColumnConfig(column as keyof ProductViewModel)?.label ?? column;
   }
 
   // #endregion

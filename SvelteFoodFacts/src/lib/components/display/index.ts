@@ -9,3 +9,5 @@ export { default as DecimalUnits } from './DecimalUnits.svelte';
 export { default as ColorPill } from './ColorPill.svelte';
 export { default as RelativeDate } from './RelativeDate.svelte';
 export { default as TimeFormat } from './TimeFormat.svelte';
+export { default as TruncatedText } from './TruncatedText.svelte';
+export { default as StarRating } from './StarRating.svelte';

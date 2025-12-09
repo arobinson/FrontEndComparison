@@ -61,24 +61,25 @@
   .range-slider {
     display: flex;
     align-items: center;
-    gap: 0.25rem;
+    gap: 4px;
   }
 
   .range-input {
     width: 60px;
-    padding: 0.25rem;
-    font-size: 0.75rem;
-    border: 1px solid #d1d5db;
-    border-radius: 0.25rem;
-    text-align: center;
+    padding: 4px 6px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 13px;
+    font-family: inherit;
+    box-sizing: border-box;
   }
 
   .range-input:focus {
     outline: none;
-    border-color: #3b82f6;
+    border-color: #0066cc;
   }
 
   .separator {
-    color: #6b7280;
+    color: #999;
   }
 </style>

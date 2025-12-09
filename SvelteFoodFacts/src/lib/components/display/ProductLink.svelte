@@ -10,11 +10,16 @@
 
 <style>
   .product-link {
-    color: #2563eb;
+    color: #0066cc;
     text-decoration: none;
+    font-weight: 500;
   }
 
   .product-link:hover {
-    text-decoration: underline;
+    color: #004499;
+  }
+
+  .product-link:visited {
+    color: #551a8b;
   }
 </style>

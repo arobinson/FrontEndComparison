@@ -4,7 +4,7 @@
   let {
     disabled = false,
     size = 'md',
-    variant = 'primary',
+    variant = 'secondary',
     onclick,
     children,
   }: {
@@ -31,57 +31,74 @@
     align-items: center;
     justify-content: center;
     font-weight: 500;
-    border-radius: 0.375rem;
-    border: 1px solid transparent;
+    border-radius: 4px;
+    border: 1px solid #e0e0e0;
+    background: #fff;
+    color: #333;
     cursor: pointer;
-    transition: all 0.15s ease-in-out;
+    transition: all 0.2s ease;
+    font-family: inherit;
+    line-height: 1;
+  }
+
+  .btn:focus {
+    outline: 2px solid #007bff;
+    outline-offset: 2px;
   }
 
   .btn:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+    pointer-events: none;
   }
 
   .btn-sm {
-    padding: 0.25rem 0.5rem;
-    font-size: 0.75rem;
+    padding: 4px 8px;
+    font-size: 14px;
+    min-height: 28px;
   }
 
   .btn-md {
-    padding: 0.5rem 1rem;
-    font-size: 0.875rem;
+    padding: 8px 12px;
+    font-size: 16px;
+    min-height: 36px;
   }
 
   .btn-lg {
-    padding: 0.75rem 1.5rem;
-    font-size: 1rem;
+    padding: 12px 16px;
+    font-size: 18px;
+    min-height: 44px;
   }
 
   .btn-primary {
-    background-color: #3b82f6;
-    color: white;
+    background: #007bff;
+    color: #fff;
+    border-color: #007bff;
   }
 
   .btn-primary:hover:not(:disabled) {
-    background-color: #2563eb;
+    background: #0056b3;
+    border-color: #0056b3;
   }
 
   .btn-secondary {
-    background-color: #6b7280;
-    color: white;
+    background: #fff;
+    color: #333;
+    border-color: #e0e0e0;
   }
 
   .btn-secondary:hover:not(:disabled) {
-    background-color: #4b5563;
+    background: #f8f9fa;
+    border-color: #007bff;
   }
 
   .btn-outline {
-    background-color: transparent;
-    border-color: #d1d5db;
-    color: #374151;
+    background: transparent;
+    color: #007bff;
+    border: none;
   }
 
   .btn-outline:hover:not(:disabled) {
-    background-color: #f3f4f6;
+    background: #f8f9fa;
   }
 </style>

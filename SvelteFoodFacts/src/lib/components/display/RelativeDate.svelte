@@ -29,6 +29,6 @@
 
 <style>
   .relative-date {
-    color: #6b7280;
+    color: #333;
   }
 </style>

@@ -1,6 +1,6 @@
 <script lang="ts">
   let {
-    placeholder = 'Search...',
+    placeholder = 'Search',
     resetTrigger = 0,
     onValueChange,
   }: {
@@ -36,15 +36,21 @@
 <style>
   .text-search {
     width: 100%;
-    padding: 0.375rem 0.5rem;
-    font-size: 0.75rem;
-    border: 1px solid #d1d5db;
-    border-radius: 0.25rem;
+    padding: 0.25rem 0.375rem;
+    font-size: 0.8125rem;
+    font-family: inherit;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
   }
 
   .text-search:focus {
     outline: none;
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 1px #3b82f6;
+    border-color: #0066cc;
+    box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.1);
+  }
+
+  .text-search::placeholder {
+    color: #999;
   }
 </style>

@@ -19,7 +19,8 @@
 
 <style>
   .large-counter {
-    font-weight: 600;
+    font-weight: 500;
     font-variant-numeric: tabular-nums;
+    color: #333;
   }
 </style>

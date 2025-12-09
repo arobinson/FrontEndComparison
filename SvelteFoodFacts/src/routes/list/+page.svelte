@@ -34,7 +34,7 @@
   async function loadProducts() {
     try {
       productsState = 'loading';
-      const result = await productService.getProductsByCategory('food', currentPage + 1, pageSize);
+      const result = await productService.getProductsByCategory('all', currentPage + 1, pageSize);
       products = result.products;
       totalProducts = result.total;
       productsState = 'loaded';
@@ -44,13 +44,17 @@
     }
   }
 
-  onMount(() => {
-    loadProducts();
-  });
+  // Track page/pageSize for refetching
+  let lastPage = $state(-1);
+  let lastPageSize = $state(-1);
 
-  // Re-fetch when page or pageSize changes
   $effect(() => {
-    if (productsState !== 'initial') {
+    const pageChanged = currentPage !== lastPage;
+    const pageSizeChanged = pageSize !== lastPageSize;
+
+    if (pageChanged || pageSizeChanged) {
+      lastPage = currentPage;
+      lastPageSize = pageSize;
       loadProducts();
     }
   });
@@ -147,44 +151,58 @@
 
 <style>
   .product-list-container {
-    padding: 1rem;
-    max-width: 100%;
-    overflow-x: auto;
+    padding: 1.25rem;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-sizing: border-box;
   }
 
   .page-header-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1rem;
+    margin-bottom: 1.25rem;
+    flex-shrink: 0;
   }
 
   .page-header-row h1 {
+    color: #333;
     margin: 0;
-    font-size: 1.5rem;
   }
 
   .reset-button {
-    padding: 0.5rem 1rem;
-    background-color: #6b7280;
+    padding: 8px 16px;
+    background-color: #0066cc;
     color: white;
     border: none;
-    border-radius: 0.375rem;
+    border-radius: 4px;
     cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
   }
 
   .reset-button:hover {
-    background-color: #4b5563;
+    background-color: #004499;
+  }
+
+  .reset-button:active {
+    transform: translateY(1px);
   }
 
   .loading-indicator {
-    text-align: center;
-    padding: 2rem;
-    color: #6b7280;
+    padding: 0.5rem 1rem;
+    background-color: #f0f8ff;
+    border-left: 4px solid #0066cc;
+    margin-bottom: 1rem;
+    border-radius: 4px;
+    font-size: 14px;
+    color: #333;
   }
 
   .error-message {
-    color: #ef4444;
+    color: #dc3545;
     padding: 1rem;
   }
 </style>

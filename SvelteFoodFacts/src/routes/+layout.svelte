@@ -8,8 +8,23 @@
 {@render children()}
 
 <style>
-  :global(body) {
+  :global(*) {
     margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  :global(html),
+  :global(body) {
+    height: 100%;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+  }
+
+  :global(body) {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.5;
+    color: #333;
   }
 </style>

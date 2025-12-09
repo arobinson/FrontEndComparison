@@ -25,19 +25,25 @@
 
 <style>
   .nova-dots {
-    display: flex;
+    display: inline-flex;
+    gap: 4px;
     align-items: center;
-    gap: 0.25rem;
   }
 
   .dot {
-    width: 0.5rem;
-    height: 0.5rem;
+    width: 12px;
+    height: 12px;
     border-radius: 50%;
-    background-color: #e5e7eb;
+    border: 2px solid #0066cc;
+    background-color: transparent;
+    transition: background-color 0.2s ease;
   }
 
   .dot.filled {
-    background-color: #f97316;
+    background-color: #0066cc;
+  }
+
+  .dot:hover {
+    transform: scale(1.1);
   }
 </style>

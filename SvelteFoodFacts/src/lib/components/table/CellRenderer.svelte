@@ -1,5 +1,4 @@
 <script lang="ts">
-  import type { MockProductViewModel } from 'shared-types';
   import type { ColumnDataType } from 'shared-types';
   import {
     ProductLink,
@@ -13,6 +12,8 @@
     ColorPill,
     RelativeDate,
     TimeFormat,
+    TruncatedText,
+    StarRating,
   } from '$lib/components/display';
 
   let {
@@ -25,7 +26,7 @@
     value: any;
     dataType: ColumnDataType;
     column: string;
-    row: MockProductViewModel;
+    row: Record<string, any>;
     unit?: string;
   } = $props();
 </script>
@@ -53,19 +54,11 @@
 {:else if dataType === 'time-format'}
   <TimeFormat {value} />
 {:else if dataType === 'absolute-date'}
-  {value ? new Date(value).toLocaleDateString() : ''}
+  {value ? new Date(value).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : ''}
 {:else if dataType === 'truncated-text'}
-  <span class="truncated" title={value}>{value ?? ''}</span>
+  <TruncatedText {value} />
+{:else if dataType === 'star-rating'}
+  <StarRating {value} />
 {:else}
   {value ?? ''}
 {/if}
-
-<style>
-  .truncated {
-    max-width: 200px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    display: block;
-  }
-</style>

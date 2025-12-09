@@ -3,19 +3,25 @@
 </script>
 
 {#if value}
-  <span class="yes">Yes</span>
+  <span class="boolean-yesno yes">Yes</span>
 {:else}
-  <span class="no">No</span>
+  <span class="boolean-yesno no">No</span>
 {/if}
 
 <style>
-  .yes {
-    color: #22c55e;
+  .boolean-yesno {
     font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+
+  .yes {
+    color: #4caf50;
+    background-color: #e8f5e9;
   }
 
   .no {
-    color: #ef4444;
-    font-weight: 500;
+    color: #666;
+    background-color: #f5f5f5;
   }
 </style>

@@ -5,28 +5,22 @@ interface AbsoluteDateProps {
 }
 
 export const AbsoluteDate = memo(({ value }: AbsoluteDateProps) => {
-  const formatted = useMemo(() => {
-    let result;
+  const formattedDate = useMemo(() => {
+    let result: string;
     if (!value) {
-      result = '—';
+      result = '';
     } else {
       const date = new Date(value);
-      if (isNaN(date.getTime())) {
-        result = '—';
-      } else {
-        result = new Intl.DateTimeFormat('en-US', {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-          hour: 'numeric',
-          minute: 'numeric',
-        }).format(date);
-      }
+      result = date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+      });
     }
     return result;
   }, [value]);
 
-  return <span className="absolute-date">{formatted}</span>;
+  return <span className="absolute-date">{formattedDate}</span>;
 });
 
 AbsoluteDate.displayName = 'AbsoluteDate';

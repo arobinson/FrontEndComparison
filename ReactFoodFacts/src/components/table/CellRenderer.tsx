@@ -1,7 +1,6 @@
 import { memo } from 'react';
 import type { ColumnConfig } from '../../config/columnConfig';
 import {
-  SimpleText,
   TruncatedText,
   ProgressBar,
   GradeBadge,
@@ -15,6 +14,7 @@ import {
   ProductImage,
   ProductLink,
   StarRating,
+  ColorPill,
 } from '../display';
 
 interface CellRendererProps {
@@ -29,7 +29,7 @@ export const CellRenderer = memo(({ column, row }: CellRendererProps) => {
   if (column.type === 'product-link') {
     cell = <ProductLink code={String(row.code)} label={String(value ?? row.code)} />;
   } else if (column.type === 'simple-text') {
-    cell = <SimpleText value={value} />;
+    cell = value ?? '';
   } else if (column.type === 'truncated-text') {
     cell = <TruncatedText value={value} />;
   } else if (column.type === 'progress-bar') {
@@ -51,11 +51,13 @@ export const CellRenderer = memo(({ column, row }: CellRendererProps) => {
   } else if (column.type === 'boolean-yesno') {
     cell = <BooleanYesNo value={value} />;
   } else if (column.type === 'product-image') {
-    cell = <ProductImage url={value} alt={row.productName ?? 'Product'} />;
+    cell = <ProductImage value={value} />;
   } else if (column.type === 'star-rating') {
-    cell = <StarRating rating={value} />;
+    cell = <StarRating value={value} />;
+  } else if (column.type === 'color-pill') {
+    cell = <ColorPill value={value} />;
   } else {
-    cell = <SimpleText value={value} />;
+    cell = value ?? '';
   }
 
   return cell;

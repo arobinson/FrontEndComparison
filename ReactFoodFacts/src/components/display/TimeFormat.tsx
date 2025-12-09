@@ -6,29 +6,23 @@ interface TimeFormatProps {
 
 export const TimeFormat = memo(({ value }: TimeFormatProps) => {
   const formatted = useMemo(() => {
-    let result;
+    let result: string;
     if (!value) {
-      result = '—';
+      result = '';
     } else {
-      const timeMatch = value.match(/^(\d{2}):(\d{2})(?::(\d{2}))?$/);
-      if (!timeMatch) {
-        result = '—';
-      } else {
-        const hours = parseInt(timeMatch[1], 10);
-        const minutes = timeMatch[2];
-        const date = new Date();
-        date.setHours(hours, parseInt(minutes, 10), 0, 0);
+      const [hours, minutes] = value.split(':').map(Number);
+      const date = new Date();
+      date.setHours(hours, minutes, 0, 0);
 
-        result = new Intl.DateTimeFormat('en-US', {
-          hour: 'numeric',
-          minute: '2-digit',
-        }).format(date);
-      }
+      result = new Intl.DateTimeFormat(undefined, {
+        hour: 'numeric',
+        minute: '2-digit',
+      }).format(date);
     }
     return result;
   }, [value]);
 
-  return <span className="time-format">{formatted}</span>;
+  return <>{formatted}</>;
 });
 
 TimeFormat.displayName = 'TimeFormat';

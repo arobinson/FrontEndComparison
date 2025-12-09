@@ -1,44 +1,38 @@
 import { memo, useState, useCallback } from 'react';
+import './ProductImage.css';
 
 interface ProductImageProps {
-  url: string | null | undefined;
-  alt: string;
-  size?: 'thumbnail' | 'small' | 'medium';
+  value: string;
+  size?: 'small' | 'large';
 }
 
-export const ProductImage = memo(({ url, alt, size = 'thumbnail' }: ProductImageProps) => {
-  const [isLoading, setIsLoading] = useState(true);
-  const [hasError, setHasError] = useState(false);
+export const ProductImage = memo(({ value, size = 'small' }: ProductImageProps) => {
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
-  const handleLoad = useCallback(() => {
-    setIsLoading(false);
+  const onImageLoad = useCallback(() => {
+    setImageLoaded(true);
   }, []);
 
-  const handleError = useCallback(() => {
-    setIsLoading(false);
-    setHasError(true);
+  const onImageError = useCallback(() => {
+    setImageError(true);
   }, []);
 
-  let content;
-  if (!url || hasError) {
-    content = <span className="product-image-fallback">No image</span>;
-  } else {
-    content = (
-      <>
-        {isLoading && <span className="product-image-loading">Loading...</span>}
+  return (
+    <div className={`product-image ${size}`}>
+      {!imageError ? (
         <img
-          src={url}
-          alt={alt}
-          className={`product-image product-image-${size}`}
-          onLoad={handleLoad}
-          onError={handleError}
-          style={{ display: isLoading ? 'none' : 'block' }}
+          src={value}
+          alt="Product image"
+          onLoad={onImageLoad}
+          onError={onImageError}
+          className={imageLoaded ? 'loaded' : ''}
         />
-      </>
-    );
-  }
-
-  return <div className="product-image-container">{content}</div>;
+      ) : (
+        <div className="image-placeholder">No image</div>
+      )}
+    </div>
+  );
 });
 
 ProductImage.displayName = 'ProductImage';

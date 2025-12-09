@@ -1,6 +1,5 @@
 export { ProgressBar } from './ProgressBar';
 export { ProductLink } from './ProductLink';
-export { SimpleText } from './SimpleText';
 export { TruncatedText } from './TruncatedText';
 export { GradeBadge } from './GradeBadge';
 export { NovaDots } from './NovaDots';
@@ -12,3 +11,4 @@ export { AbsoluteDate } from './AbsoluteDate';
 export { RelativeDate } from './RelativeDate';
 export { StarRating } from './StarRating';
 export { TimeFormat } from './TimeFormat';
+export { ColorPill } from './ColorPill';

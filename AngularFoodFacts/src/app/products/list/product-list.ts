@@ -16,6 +16,7 @@ import { DecimalUnits } from '../../shared/decimal-units/decimal-units';
 import { AbsoluteDate } from '../../shared/absolute-date/absolute-date';
 import { RelativeDate } from '../../shared/relative-date/relative-date';
 import { TimeFormat } from '../../shared/time-format/time-format';
+import { ColorPill } from '../../shared/color-pill/color-pill';
 import { TextSearch } from '../../shared/filters/text-search/text-search';
 import { RangeSlider } from '../../shared/filters/range-slider/range-slider';
 import { MultiSelect } from '../../shared/filters/multi-select/multi-select';
@@ -38,6 +39,7 @@ import { MultiSelect } from '../../shared/filters/multi-select/multi-select';
     AbsoluteDate,
     RelativeDate,
     TimeFormat,
+    ColorPill,
     TextSearch,
     RangeSlider,
     MultiSelect,
@@ -118,6 +120,13 @@ export class ProductList {
    */
   getColumnTitle(column: string): string {
     return getColumnConfig(column as keyof ProductViewModel)?.label ?? column;
+  }
+
+  /**
+   * Get unit for a specific column (for decimal-units type)
+   */
+  getColumnUnit(column: string): string {
+    return getColumnConfig(column as keyof ProductViewModel)?.unit ?? '';
   }
 
   // #endregion

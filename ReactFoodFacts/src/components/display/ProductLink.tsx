@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { memo } from 'react';
+import './ProductLink.css';
 
 interface ProductLinkProps {
   code: string;

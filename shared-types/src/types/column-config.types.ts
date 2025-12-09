@@ -14,7 +14,8 @@ export type ColumnDataType =
   | 'boolean-yesno'
   | 'product-image'
   | 'product-link'
-  | 'star-rating';
+  | 'star-rating'
+  | 'color-pill';
 
 export interface ColumnConfig {
   key: keyof MockProductViewModel;
@@ -67,9 +68,8 @@ export const allColumns: ColumnConfig[] = [
   { key: 'requiresShipping', label: 'Requires Shipping', type: 'boolean-yesno', filterable: true, sortable: true },
   { key: 'isDigital', label: 'Digital', type: 'boolean-yesno', filterable: true, sortable: true },
   { key: 'hasWarranty', label: 'Has Warranty', type: 'boolean-yesno', filterable: true, sortable: true },
-  { key: 'imageUrl', label: 'Image', type: 'product-image', filterable: false, sortable: false },
-  { key: 'color', label: 'Color', type: 'simple-text', filterable: true, sortable: true },
-  { key: 'thumbnailUrl', label: 'Thumbnail', type: 'product-image', filterable: false, sortable: false },
+  { key: 'thumbnailUrl', label: 'Image', type: 'product-image', filterable: false, sortable: false },
+  { key: 'color', label: 'Color', type: 'color-pill', filterable: true, sortable: true },
   { key: 'originCountry', label: 'Origin Country', type: 'simple-text', filterable: true, sortable: true },
   { key: 'manufacturerCountry', label: 'Manufacturer Country', type: 'simple-text', filterable: true, sortable: true },
   { key: 'productLanguage', label: 'Language', type: 'simple-text', filterable: true, sortable: true },

@@ -1,53 +1,36 @@
-import { memo, useState, useEffect, useMemo } from 'react';
+import { memo, useMemo } from 'react';
 
 interface RelativeDateProps {
   value: string | null | undefined;
 }
 
 export const RelativeDate = memo(({ value }: RelativeDateProps) => {
-  const [_, setUpdateTrigger] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setUpdateTrigger((prev) => prev + 1);
-    }, 60000);
-
-    return () => {
-      clearInterval(interval);
-    };
-  }, []);
-
-  const formatted = useMemo(() => {
-    let result;
+  const relativeTime = useMemo(() => {
+    let result: string;
     if (!value) {
-      result = '—';
+      result = '';
     } else {
       const date = new Date(value);
-      if (isNaN(date.getTime())) {
-        result = '—';
-      } else {
-        const now = Date.now();
-        const diff = now - date.getTime();
-        const seconds = Math.floor(diff / 1000);
-        const minutes = Math.floor(seconds / 60);
-        const hours = Math.floor(minutes / 60);
-        const days = Math.floor(hours / 24);
+      const now = new Date();
+      const diffMs = now.getTime() - date.getTime();
+      const diffMins = Math.floor(diffMs / 60000);
+      const diffHours = Math.floor(diffMs / 3600000);
+      const diffDays = Math.floor(diffMs / 86400000);
 
-        if (days > 0) {
-          result = days === 1 ? '1 day ago' : `${days} days ago`;
-        } else if (hours > 0) {
-          result = hours === 1 ? '1 hour ago' : `${hours} hours ago`;
-        } else if (minutes > 0) {
-          result = minutes === 1 ? '1 minute ago' : `${minutes} minutes ago`;
-        } else {
-          result = 'just now';
-        }
+      if (diffMins < 1) {
+        result = 'just now';
+      } else if (diffMins < 60) {
+        result = `${diffMins} min${diffMins > 1 ? 's' : ''} ago`;
+      } else if (diffHours < 24) {
+        result = `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+      } else {
+        result = `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
       }
     }
     return result;
   }, [value]);
 
-  return <span className="relative-date">{formatted}</span>;
+  return <span className="relative-date">{relativeTime}</span>;
 });
 
 RelativeDate.displayName = 'RelativeDate';

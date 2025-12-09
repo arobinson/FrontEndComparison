@@ -1,36 +1,33 @@
 import { memo, useMemo } from 'react';
+import './GradeBadge.css';
 
 interface GradeBadgeProps {
   grade: string | null | undefined;
 }
 
 export const GradeBadge = memo(({ grade }: GradeBadgeProps) => {
-  const badgeClass = useMemo(() => {
-    let result;
-    if (!grade) {
-      result = 'grade-badge grade-unknown';
+  const gradeClass = useMemo(() => {
+    const gradeUpper = grade?.toUpperCase();
+    let result: string;
+    if (gradeUpper === 'A') {
+      result = 'grade-a';
+    } else if (gradeUpper === 'B') {
+      result = 'grade-b';
+    } else if (gradeUpper === 'C') {
+      result = 'grade-c';
+    } else if (gradeUpper === 'D') {
+      result = 'grade-d';
+    } else if (gradeUpper === 'F') {
+      result = 'grade-f';
     } else {
-      const gradeUpper = grade.toUpperCase();
-      if (gradeUpper === 'A') {
-        result = 'grade-badge grade-a';
-      } else if (gradeUpper === 'B') {
-        result = 'grade-badge grade-b';
-      } else if (gradeUpper === 'C') {
-        result = 'grade-badge grade-c';
-      } else if (gradeUpper === 'D') {
-        result = 'grade-badge grade-d';
-      } else if (gradeUpper === 'F') {
-        result = 'grade-badge grade-f';
-      } else {
-        result = 'grade-badge grade-unknown';
-      }
+      result = 'grade-unknown';
     }
     return result;
   }, [grade]);
 
   return (
-    <span className={badgeClass}>
-      {grade?.toUpperCase() ?? '—'}
+    <span className={`grade-badge ${gradeClass}`}>
+      {` ${grade} `}
     </span>
   );
 });

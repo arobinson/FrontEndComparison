@@ -1,4 +1,5 @@
 import { memo, useMemo } from 'react';
+import './LargeCounter.css';
 
 interface LargeCounterProps {
   value: number | null | undefined;
@@ -6,13 +7,13 @@ interface LargeCounterProps {
 
 export const LargeCounter = memo(({ value }: LargeCounterProps) => {
   const formattedValue = useMemo(() => {
-    let result;
+    let result: string;
     if (value === null || value === undefined) {
-      result = '—';
+      result = '0';
     } else if (value >= 1000000) {
       result = (value / 1000000).toFixed(1) + 'M';
     } else if (value >= 1000) {
-      result = value.toLocaleString();
+      result = value.toLocaleString('en-US');
     } else {
       result = value.toString();
     }

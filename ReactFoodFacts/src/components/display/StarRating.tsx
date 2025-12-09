@@ -1,38 +1,39 @@
 import { memo, useMemo } from 'react';
+import './StarRating.css';
 
 interface StarRatingProps {
-  rating: number | null | undefined;
+  value: number | null | undefined;
   maxStars?: number;
 }
 
-export const StarRating = memo(({ rating, maxStars = 5 }: StarRatingProps) => {
+export const StarRating = memo(({ value, maxStars = 5 }: StarRatingProps) => {
   const stars = useMemo(() => {
-    const validRating = rating && rating >= 0 && rating <= maxStars ? rating : 0;
-    const fullStars = Math.floor(validRating);
-    const hasHalfStar = validRating % 1 >= 0.5;
-    const result = [];
+    const rating = value ?? 0;
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 >= 0.5;
+    const emptyStars = maxStars - fullStars - (hasHalfStar ? 1 : 0);
 
-    for (let i = 1; i <= maxStars; i++) {
-      let star;
-      if (i <= fullStars) {
-        star = '★';
-      } else if (i === fullStars + 1 && hasHalfStar) {
-        star = '⯨';
-      } else {
-        star = '☆';
-      }
+    return {
+      full: Array(fullStars).fill(0),
+      half: hasHalfStar ? [0] : [],
+      empty: Array(emptyStars).fill(0),
+    };
+  }, [value, maxStars]);
 
-      result.push(
-        <span key={i} className="star">
-          {star}
-        </span>
-      );
-    }
-
-    return result;
-  }, [rating, maxStars]);
-
-  return <div className="star-rating">{stars}</div>;
+  return (
+    <div className="star-rating">
+      {stars.full.map((_, i) => (
+        <span key={`full-${i}`} className="star full">★</span>
+      ))}
+      {stars.half.map((_, i) => (
+        <span key={`half-${i}`} className="star half">★</span>
+      ))}
+      {stars.empty.map((_, i) => (
+        <span key={`empty-${i}`} className="star empty">☆</span>
+      ))}
+      <span className="rating-value">{value}</span>
+    </div>
+  );
 });
 
 StarRating.displayName = 'StarRating';

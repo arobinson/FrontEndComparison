@@ -1,0 +1,5 @@
+.large-counter {
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+  color: var(--color-text-primary, #333);
+}

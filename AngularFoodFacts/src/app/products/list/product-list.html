@@ -101,7 +101,7 @@
             <aff-product-image [value]="value" />
           }
           @case ("decimal-units") {
-            <aff-decimal-units [value]="value" />
+            <aff-decimal-units [value]="value" [unit]="getColumnUnit(column)" />
           }
           @case ("absolute-date") {
             <aff-absolute-date [value]="value" />
@@ -111,6 +111,9 @@
           }
           @case ("time-format") {
             <aff-time-format [value]="value" />
+          }
+          @case ("color-pill") {
+            <aff-color-pill [value]="value" />
           }
           @default {
             {{ value || "" }}

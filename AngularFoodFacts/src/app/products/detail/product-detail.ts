@@ -13,6 +13,7 @@ import { BooleanYesno } from '../../shared/boolean-yesno/boolean-yesno';
 import { DecimalUnits } from '../../shared/decimal-units/decimal-units';
 import { TimeFormat } from '../../shared/time-format/time-format';
 import { StarRating } from '../../shared/star-rating/star-rating';
+import { ColorPill } from '../../shared/color-pill/color-pill';
 
 @Component({
   selector: 'aff-product-detail',
@@ -29,6 +30,7 @@ import { StarRating } from '../../shared/star-rating/star-rating';
     DecimalUnits,
     TimeFormat,
     StarRating,
+    ColorPill,
   ],
   templateUrl: './product-detail.html',
   styleUrl: './product-detail.css',

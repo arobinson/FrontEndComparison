@@ -49,6 +49,12 @@ export class DataTable {
    */
   readonly pageSizes = input<number[]>([10, 25, 50]);
 
+  /**
+   * Property name to use for tracking rows (improves change detection performance)
+   * If not provided, falls back to index-based tracking
+   */
+  readonly trackBy = input<string>();
+
   // #endregion
 
   // #region Two-way Bound Signals
@@ -107,6 +113,18 @@ export class DataTable {
     const allowedSizes = this.pageSizes();
     return allowedSizes.includes(pageSize);
   });
+
+  /**
+   * Get the track value for a row
+   * Uses the trackBy property if provided, otherwise falls back to index
+   */
+  getRowTrackValue(row: any, index: number): any {
+    const trackByProp = this.trackBy();
+    if (trackByProp && row[trackByProp] !== undefined) {
+      return row[trackByProp];
+    }
+    return index;
+  }
 
   // #endregion
 

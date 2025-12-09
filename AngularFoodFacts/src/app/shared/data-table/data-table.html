@@ -39,7 +39,7 @@
         </thead>
 
         <tbody class="table-body">
-          @for (row of value(); track $index) {
+          @for (row of value(); track getRowTrackValue(row, $index)) {
             <tr class="data-row">
               @for (column of columns(); track column) {
                 <td class="data-cell">

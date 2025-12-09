@@ -11,7 +11,9 @@
     "test:pagination-cycle": "tsc && node dist/test-pagination-cycle.js",
     "dry-run": "tsc && node dist/dry-run.js",
     "debug:filter": "tsc && node dist/debug-filter.js",
-    "test:filter:headed": "tsc && node dist/test-filter-headed.js"
+    "test:filter:headed": "tsc && node dist/test-filter-headed.js",
+    "test:navigation": "tsc && node dist/test-navigation-only.js",
+    "test:trace": "tsc && node dist/test-trace-navigation.js"
   },
   "dependencies": {
     "shared-types": "workspace:*"

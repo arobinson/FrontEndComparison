@@ -11,7 +11,9 @@ export const navigateToDetailScenario: TestScenario = {
     const { page, baseUrl, framework } = context;
     const measurements: Measurement[] = [];
 
+    // Navigate to list and wait for table to render
     await page.goto(baseUrl, { waitUntil: 'networkidle' });
+    await page.waitForSelector('tbody tr', { timeout: 30000 });
     await new Promise((resolve) => setTimeout(resolve, 500));
 
     const memoryBefore = await getMemoryMetrics(page);
@@ -30,8 +32,12 @@ export const navigateToDetailScenario: TestScenario = {
       }
     });
 
-    // Wait for navigation to complete
+    // Wait for detail page content to actually render
+    // Look for the product detail container and the product name (h1)
+    await page.waitForSelector('.product-detail, .product-detail-container', { timeout: 30000 });
+    await page.waitForSelector('.header-section h1', { timeout: 30000 });
     await page.waitForLoadState('networkidle');
+
     const navigationEnd = Date.now();
 
     await new Promise((resolve) => setTimeout(resolve, 500));

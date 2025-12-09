@@ -10,8 +10,9 @@ export const navigateBackScenario: TestScenario = {
     const { page, baseUrl, framework } = context;
     const measurements: Measurement[] = [];
 
-    // Navigate to list
+    // Navigate to list and wait for table to render
     await page.goto(baseUrl, { waitUntil: 'networkidle' });
+    await page.waitForSelector('tbody tr', { timeout: 30000 });
     await new Promise((resolve) => setTimeout(resolve, 500));
 
     // Navigate to detail
@@ -22,21 +23,37 @@ export const navigateBackScenario: TestScenario = {
       }
     });
 
+    // Wait for detail page to load (look for back button or product detail container)
+    await page.waitForSelector('.back-button, .product-detail', { timeout: 30000 });
     await page.waitForLoadState('networkidle');
     await new Promise((resolve) => setTimeout(resolve, 500));
 
     const memoryBefore = await getMemoryMetrics(page);
 
-    // Navigate back
+    // Navigate back and measure until table rows are rendered
     const navigationStart = Date.now();
 
-    await page.goBack({ waitUntil: 'networkidle' });
+    // Click back button instead of browser back for more realistic SPA behavior
+    await page.click('.back-button');
+
+    // Wait for the table to actually render with data
+    await page.waitForSelector('tbody tr', { timeout: 30000 });
+
+    // Also wait for a reasonable number of rows to ensure rendering is complete
+    await page.waitForFunction(
+      () => document.querySelectorAll('tbody tr').length >= 10,
+      { timeout: 30000 }
+    );
 
     const navigationEnd = Date.now();
     await new Promise((resolve) => setTimeout(resolve, 500));
 
     const totalTime = navigationEnd - navigationStart;
     measurements.push({ name: 'total_back_navigation_time', value: totalTime, unit: 'ms' });
+
+    // Count actual rendered rows
+    const rowCount = await page.evaluate(() => document.querySelectorAll('tbody tr').length);
+    measurements.push({ name: 'rendered_row_count', value: rowCount, unit: 'count' });
 
     const memoryAfter = await getMemoryMetrics(page);
     const memoryDelta = memoryAfter.usedHeapSize - memoryBefore.usedHeapSize;

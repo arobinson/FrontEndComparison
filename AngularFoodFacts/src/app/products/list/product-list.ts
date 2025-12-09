@@ -1,5 +1,5 @@
 import { Component, inject, signal, computed, effect } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { RouterModule } from '@angular/router';
 import { allColumns, ColumnConfig, getColumnConfig } from 'shared-types';
 import { FoodFacts, ProductViewModel } from '../food-facts';
@@ -24,7 +24,6 @@ import { MultiSelect } from '../../shared/filters/multi-select/multi-select';
 @Component({
   selector: 'aff-product-list',
   imports: [
-    CommonModule,
     RouterModule,
     DataTable,
     ProductLink,
@@ -42,8 +41,8 @@ import { MultiSelect } from '../../shared/filters/multi-select/multi-select';
     ColorPill,
     TextSearch,
     RangeSlider,
-    MultiSelect,
-  ],
+    MultiSelect
+],
   templateUrl: './product-list.html',
   styleUrl: './product-list.css',
 })

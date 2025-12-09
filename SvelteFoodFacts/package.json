@@ -1,0 +1,23 @@
+{
+  "name": "svelte-food-facts",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "build:perf": "vite build --config vite.config.perf.ts",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "shared-types": "workspace:*"
+  },
+  "devDependencies": {
+    "@sveltejs/adapter-static": "^3.0.8",
+    "@sveltejs/kit": "^2.21.0",
+    "@sveltejs/vite-plugin-svelte": "^5.1.0",
+    "svelte": "^5.33.0",
+    "typescript": "~5.9.3",
+    "vite": "^6.3.0"
+  }
+}

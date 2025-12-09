@@ -13,9 +13,15 @@ async function main(): Promise<void> {
     frameworks: [
       {
         name: 'Angular',
-        baseUrl: 'http://localhost:4200',
-        buildCommand: 'pnpm exec ng build',
-        buildOutputDir: join(process.cwd(), '../AngularFoodFacts/dist/AngularFoodFacts/browser')
+        baseUrl: 'http://localhost:8888/angular',
+        buildCommand: 'pnpm run build:perf',
+        buildOutputDir: join(process.cwd(), '../perf-dist/angular')
+      },
+      {
+        name: 'React',
+        baseUrl: 'http://localhost:8888/react',
+        buildCommand: 'pnpm run build:perf',
+        buildOutputDir: join(process.cwd(), '../perf-dist/react')
       }
     ],
     repetitions: 5, // Reduced from 17 to prevent resource exhaustion

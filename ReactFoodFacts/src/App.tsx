@@ -2,9 +2,13 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import ProductList from './pages/ProductList';
 import ProductDetail from './pages/ProductDetail';
 
+// Get basename from Vite's BASE_URL (set via vite config's `base` option)
+// Remove trailing slash for react-router compatibility
+const basename = import.meta.env.BASE_URL.replace(/\/$/, '') || '/';
+
 const App = () => {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={basename}>
       <Routes>
         <Route path="/" element={<Navigate to="/list" replace />} />
         <Route path="/list" element={<ProductList />} />

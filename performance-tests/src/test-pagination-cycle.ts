@@ -6,22 +6,13 @@ import { aggregateResults } from './utils/statistics.js';
 import { mkdir } from 'fs/promises';
 import { join } from 'path';
 import { paginationCycleScenario } from './scenarios/09-pagination-cycle.js';
+import { allFrameworks, defaultTestConfig } from './config/frameworks.js';
 
 async function main(): Promise<void> {
   const config: TestConfig = {
-    frameworks: [
-      {
-        name: 'Angular',
-        baseUrl: 'http://localhost:4200',
-        buildCommand: 'pnpm exec ng build',
-        buildOutputDir: join(process.cwd(), '../AngularFoodFacts/dist/AngularFoodFacts/browser')
-      }
-    ],
-    repetitions: 1,
-    discardOutliers: false,
-    outputDir: join(process.cwd(), 'results'),
-    viewportWidth: 1920,
-    viewportHeight: 1080
+    frameworks: allFrameworks,
+    ...defaultTestConfig,
+    repetitions: 1
   };
 
   await mkdir(config.outputDir, { recursive: true });

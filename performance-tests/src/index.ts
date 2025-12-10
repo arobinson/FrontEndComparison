@@ -7,28 +7,12 @@ import { exportToJSON, FullTestResults } from './reporters/json-reporter.js';
 import { mkdir } from 'fs/promises';
 import { join } from 'path';
 import * as scenarios from './scenarios/index.js';
+import { allFrameworks, defaultTestConfig } from './config/frameworks.js';
 
 async function main(): Promise<void> {
   const config: TestConfig = {
-    frameworks: [
-      {
-        name: 'Angular',
-        baseUrl: 'http://localhost:8888/angular',
-        buildCommand: 'pnpm run build:perf',
-        buildOutputDir: join(process.cwd(), '../perf-dist/angular')
-      },
-      {
-        name: 'React',
-        baseUrl: 'http://localhost:8888/react',
-        buildCommand: 'pnpm run build:perf',
-        buildOutputDir: join(process.cwd(), '../perf-dist/react')
-      }
-    ],
-    repetitions: 5, // Reduced from 17 to prevent resource exhaustion
-    discardOutliers: false, // No outlier trimming with only 5 runs
-    outputDir: join(process.cwd(), 'results'),
-    viewportWidth: 1920,
-    viewportHeight: 1080
+    frameworks: allFrameworks,
+    ...defaultTestConfig
   };
 
   // Create output directory

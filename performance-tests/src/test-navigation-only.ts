@@ -1,36 +1,14 @@
 import { TestRunner } from './test-runner.js';
 import { TestConfig } from './types.js';
 import { mkdir } from 'fs/promises';
-import { join } from 'path';
 import * as scenarios from './scenarios/index.js';
+import { allFrameworks, defaultTestConfig } from './config/frameworks.js';
 
 async function main(): Promise<void> {
   const config: TestConfig = {
-    frameworks: [
-      {
-        name: 'Angular',
-        baseUrl: 'http://localhost:8888/angular',
-        buildCommand: 'pnpm run build:perf',
-        buildOutputDir: join(process.cwd(), '../perf-dist/angular')
-      },
-      {
-        name: 'React',
-        baseUrl: 'http://localhost:8888/react',
-        buildCommand: 'pnpm run build:perf',
-        buildOutputDir: join(process.cwd(), '../perf-dist/react')
-      },
-      {
-        name: 'Svelte',
-        baseUrl: 'http://localhost:8888/svelte',
-        buildCommand: 'pnpm run build:perf',
-        buildOutputDir: join(process.cwd(), '../perf-dist/svelte')
-      }
-    ],
-    repetitions: 3, // Quick test
-    discardOutliers: false,
-    outputDir: join(process.cwd(), 'results'),
-    viewportWidth: 1920,
-    viewportHeight: 1080
+    frameworks: allFrameworks,
+    ...defaultTestConfig,
+    repetitions: 3 // Quick test
   };
 
   await mkdir(config.outputDir, { recursive: true });

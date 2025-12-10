@@ -18,6 +18,12 @@ async function main(): Promise<void> {
         baseUrl: 'http://localhost:8888/react',
         buildCommand: 'pnpm run build:perf',
         buildOutputDir: join(process.cwd(), '../perf-dist/react')
+      },
+      {
+        name: 'Svelte',
+        baseUrl: 'http://localhost:8888/svelte',
+        buildCommand: 'pnpm run build:perf',
+        buildOutputDir: join(process.cwd(), '../perf-dist/svelte')
       }
     ],
     repetitions: 3, // Quick test

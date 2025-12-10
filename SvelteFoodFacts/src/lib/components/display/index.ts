@@ -1,3 +1,4 @@
+export { default as AbsoluteDate } from './AbsoluteDate.svelte';
 export { default as ProductLink } from './ProductLink.svelte';
 export { default as ProgressBar } from './ProgressBar.svelte';
 export { default as GradeBadge } from './GradeBadge.svelte';

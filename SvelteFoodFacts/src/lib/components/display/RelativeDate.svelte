@@ -1,7 +1,7 @@
 <script lang="ts">
   let { value }: { value: string } = $props();
 
-  let relativeTime = $derived(() => {
+  let relativeTime = $derived.by(() => {
     if (!value) {
       return '';
     }
@@ -25,7 +25,7 @@
   });
 </script>
 
-<span class="relative-date">{relativeTime()}</span>
+<span class="relative-date">{relativeTime}</span>
 
 <style>
   .relative-date {

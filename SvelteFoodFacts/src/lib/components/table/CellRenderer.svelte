@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { ColumnDataType } from 'shared-types';
   import {
+    AbsoluteDate,
     ProductLink,
     ProgressBar,
     GradeBadge,
@@ -54,7 +55,7 @@
 {:else if dataType === 'time-format'}
   <TimeFormat {value} />
 {:else if dataType === 'absolute-date'}
-  {value ? new Date(value).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : ''}
+  <AbsoluteDate {value} />
 {:else if dataType === 'truncated-text'}
   <TruncatedText {value} />
 {:else if dataType === 'star-rating'}

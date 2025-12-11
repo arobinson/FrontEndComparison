@@ -12,10 +12,12 @@
     "build:react": "pnpm --filter ReactFoodFacts build",
     "build:svelte": "pnpm --filter SvelteFoodFacts build",
     "build:solid": "pnpm --filter SolidFoodFacts build",
+    "build:lit": "pnpm --filter LitFoodFacts build",
     "dev:angular": "pnpm --filter AngularFoodFacts dev",
     "dev:react": "pnpm --filter ReactFoodFacts dev",
     "dev:svelte": "pnpm --filter SvelteFoodFacts dev",
     "dev:solid": "pnpm --filter SolidFoodFacts dev",
+    "dev:lit": "pnpm --filter LitFoodFacts dev",
     "test:all": "pnpm -r test",
     "test:angular": "pnpm --filter AngularFoodFacts test",
     "test:react": "pnpm --filter ReactFoodFacts test",
@@ -26,10 +28,11 @@
     "performance:react": "node performance-tests/run-single.js --framework=react",
     "performance:svelte": "node performance-tests/run-single.js --framework=svelte",
     "performance:solid": "node performance-tests/run-single.js --framework=solid",
+    "performance:lit": "node performance-tests/run-single.js --framework=lit",
     "benchmark:dev-startup": "node performance-tests/dev-server-benchmark.js",
     "generate:charts": "node performance-tests/generate-charts.js",
     "generate:blog": "node performance-tests/generate-blog-report.js",
-    "perf:build": "rm -rf perf-dist && mkdir perf-dist && cp perf-serve.json perf-dist/serve.json && pnpm --filter angular-food-facts build:perf && pnpm --filter react-food-facts build:perf && pnpm --filter svelte-food-facts build:perf && pnpm --filter solid-food-facts build:perf",
+    "perf:build": "rm -rf perf-dist && mkdir perf-dist && cp perf-serve.json perf-dist/serve.json && pnpm --filter angular-food-facts build:perf && pnpm --filter react-food-facts build:perf && pnpm --filter svelte-food-facts build:perf && pnpm --filter solid-food-facts build:perf && pnpm --filter lit-food-facts build:perf",
     "perf:serve": "serve perf-dist -l 8888",
     "perf:build:serve": "pnpm run perf:build && pnpm run perf:serve",
     "format": "prettier --write .",
@@ -43,6 +46,7 @@
     "ReactFoodFacts",
     "SvelteFoodFacts",
     "SolidFoodFacts",
+    "LitFoodFacts",
     "performance-tests"
   ],
   "devDependencies": {
@@ -67,7 +71,8 @@
     "angular",
     "react",
     "svelte",
-    "solidjs"
+    "solidjs",
+    "lit"
   ],
   "author": "",
   "license": "MIT"

@@ -5,4 +5,5 @@ packages:
   - 'ReactFoodFacts'
   - 'SvelteFoodFacts'
   - 'SolidFoodFacts'
+  - 'LitFoodFacts'
   - 'performance-tests'

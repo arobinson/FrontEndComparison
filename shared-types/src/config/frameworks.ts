@@ -10,6 +10,7 @@ export const FRAMEWORKS: FrameworkConfig[] = [
   { id: 'react', name: 'React', devPort: 3002, color: '#61dafb' },
   { id: 'svelte', name: 'Svelte', devPort: 3003, color: '#ff3e00' },
   { id: 'solid', name: 'Solid', devPort: 3004, color: '#2c4f7c' },
+  { id: 'lit', name: 'Lit', devPort: 3006, color: '#325cff' },
 ];
 
 export const PERF_SERVER_PORT = 8888;

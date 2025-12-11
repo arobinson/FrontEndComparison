@@ -29,6 +29,12 @@ export const allFrameworks: FrameworkConfig[] = [
     baseUrl: 'http://localhost:8888/solid',
     buildCommand: 'pnpm run build:perf',
     buildOutputDir: join(process.cwd(), '../perf-dist/solid')
+  },
+  {
+    name: 'Lit',
+    baseUrl: 'http://localhost:8888/lit',
+    buildCommand: 'pnpm run build:perf',
+    buildOutputDir: join(process.cwd(), '../perf-dist/lit')
   }
 ];
 

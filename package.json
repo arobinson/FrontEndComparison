@@ -29,7 +29,7 @@
     "benchmark:dev-startup": "node performance-tests/dev-server-benchmark.js",
     "generate:charts": "node performance-tests/generate-charts.js",
     "generate:blog": "node performance-tests/generate-blog-report.js",
-    "perf:build": "rm -rf perf-dist && pnpm --filter angular-food-facts build:perf && pnpm --filter react-food-facts build:perf && pnpm --filter svelte-food-facts build:perf && pnpm --filter solid-food-facts build:perf",
+    "perf:build": "rm -rf perf-dist && mkdir perf-dist && cp perf-serve.json perf-dist/serve.json && pnpm --filter angular-food-facts build:perf && pnpm --filter react-food-facts build:perf && pnpm --filter svelte-food-facts build:perf && pnpm --filter solid-food-facts build:perf",
     "perf:serve": "serve perf-dist -l 8888",
     "perf:build:serve": "pnpm run perf:build && pnpm run perf:serve",
     "format": "prettier --write .",

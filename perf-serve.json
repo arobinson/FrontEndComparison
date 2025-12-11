@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    { "source": "/angular/**", "destination": "/angular/index.html" },
+    { "source": "/react/**", "destination": "/react/index.html" },
+    { "source": "/svelte/**", "destination": "/svelte/index.html" },
+    { "source": "/solid/**", "destination": "/solid/index.html" }
+  ]
+}

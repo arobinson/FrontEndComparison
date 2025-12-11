@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite dev",
     "build": "vite build",
-    "build:perf": "vite build --config vite.config.perf.ts",
+    "build:perf": "vite build && cp -r build ../perf-dist/svelte",
     "preview": "vite preview"
   },
   "dependencies": {

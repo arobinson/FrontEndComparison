@@ -7,7 +7,7 @@
   </div>
 
   @if (isLoading() && !hasData()) {
-    <p>Loading products...</p>
+    <div class="loading-indicator">⏳ Loading products...</div>
   } @else if (hasData()) {
     @if (isLoading()) {
       <div class="loading-indicator">⏳ Loading...</div>

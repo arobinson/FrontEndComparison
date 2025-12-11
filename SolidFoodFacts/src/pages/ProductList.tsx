@@ -160,7 +160,7 @@ export default function ProductList() {
       </div>
 
       <Show when={productsState() === 'loading'}>
-        <div class="loading-indicator">Loading...</div>
+        <div class="loading-indicator">⏳ Loading...</div>
       </Show>
 
       <Show when={productsState() === 'loaded' && products()?.length}>

@@ -81,7 +81,7 @@
   </div>
 
   {#if productsState === 'loading'}
-    <div class="loading-indicator">Loading...</div>
+    <div class="loading-indicator">⏳ Loading...</div>
   {:else if productsState === 'loaded' && products?.length}
     <DataTable
       columns={columnKeys}

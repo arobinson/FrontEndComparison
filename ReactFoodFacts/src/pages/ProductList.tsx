@@ -170,7 +170,7 @@ const ProductList = () => {
 
   let content;
   if (loading && products.length === 0) {
-    content = <p>Loading products...</p>;
+    content = <div className="loading-indicator">⏳ Loading products...</div>;
   } else if (error) {
     content = <p>Error loading products: {error}</p>;
   } else if (products.length > 0) {

@@ -1,10 +1,11 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
+  import FrameworkHeader from '$lib/components/shared/FrameworkHeader/FrameworkHeader.svelte';
 
   let { children }: { children: Snippet } = $props();
 </script>
 
-<!-- This layout wraps all pages. Add global nav/footer here if needed -->
+<FrameworkHeader />
 {@render children()}
 
 <style>

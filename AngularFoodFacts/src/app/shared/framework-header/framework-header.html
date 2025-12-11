@@ -1,0 +1,15 @@
+<header class="framework-header">
+  <span class="current-framework">{{ currentFrameworkName }}</span>
+  <nav class="framework-nav">
+    @for (framework of frameworks; track framework.id) {
+      <a
+        [href]="getUrl(framework.id)"
+        class="framework-link"
+        [class.active]="framework.id === currentFramework"
+        [style.--framework-color]="framework.color"
+      >
+        {{ framework.name }}
+      </a>
+    }
+  </nav>
+</header>

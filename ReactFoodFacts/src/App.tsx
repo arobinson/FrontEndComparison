@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import FrameworkHeader from './components/shared/FrameworkHeader';
 import ProductList from './pages/ProductList';
 import ProductDetail from './pages/ProductDetail';
 
@@ -9,6 +10,7 @@ const basename = import.meta.env.BASE_URL.replace(/\/$/, '') || '/';
 const App = () => {
   return (
     <BrowserRouter basename={basename}>
+      <FrameworkHeader />
       <Routes>
         <Route path="/" element={<Navigate to="/list" replace />} />
         <Route path="/list" element={<ProductList />} />

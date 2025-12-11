@@ -1,0 +1,24 @@
+.range-slider {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.range-input {
+  width: 60px;
+  padding: 4px 6px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 13px;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.range-input:focus {
+  outline: none;
+  border-color: #0066cc;
+}
+
+.separator {
+  color: #999;
+}

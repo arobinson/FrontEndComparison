@@ -1,5 +1,11 @@
 import { TestScenario, TestContext, ScenarioResult, Measurement } from '../types.js';
 import { getMemoryMetrics } from '../utils/performance-helpers.js';
+import {
+  clickInShadow,
+  waitForSelectorInShadow,
+  waitForCountInShadow,
+  getCountInShadow
+} from '../utils/shadow-dom-helpers.js';
 
 export const navigateBackScenario: TestScenario = {
   name: 'navigate-back-to-list',
@@ -15,16 +21,11 @@ export const navigateBackScenario: TestScenario = {
     await page.waitForSelector('tbody tr', { timeout: 30000 });
     await new Promise((resolve) => setTimeout(resolve, 500));
 
-    // Navigate to detail
-    await page.evaluate(() => {
-      const firstProductLink = document.querySelector('tbody tr:first-child td:first-child a');
-      if (firstProductLink) {
-        (firstProductLink as HTMLElement).click();
-      }
-    });
+    // Navigate to detail (handles shadow DOM)
+    await clickInShadow(page, 'tbody tr:first-child td:first-child a');
 
-    // Wait for detail page to load (look for back button or product detail container)
-    await page.waitForSelector('.back-button, .product-detail', { timeout: 30000 });
+    // Wait for detail page to load (handles shadow DOM)
+    await waitForSelectorInShadow(page, '.back-button, .product-detail, .product-detail-container', { timeout: 30000 });
     await page.waitForLoadState('networkidle');
     await new Promise((resolve) => setTimeout(resolve, 500));
 
@@ -33,17 +34,14 @@ export const navigateBackScenario: TestScenario = {
     // Navigate back and measure until table rows are rendered
     const navigationStart = Date.now();
 
-    // Click back button instead of browser back for more realistic SPA behavior
-    await page.click('.back-button');
+    // Click back button (handles shadow DOM)
+    await clickInShadow(page, '.back-button');
 
-    // Wait for the table to actually render with data
-    await page.waitForSelector('tbody tr', { timeout: 30000 });
+    // Wait for the table to render with data (handles shadow DOM)
+    await waitForSelectorInShadow(page, 'tbody tr', { timeout: 30000 });
 
-    // Also wait for a reasonable number of rows to ensure rendering is complete
-    await page.waitForFunction(
-      () => document.querySelectorAll('tbody tr').length >= 10,
-      { timeout: 30000 }
-    );
+    // Wait for a reasonable number of rows to ensure rendering is complete
+    await waitForCountInShadow(page, 'tbody tr', 10, { timeout: 30000 });
 
     const navigationEnd = Date.now();
     await new Promise((resolve) => setTimeout(resolve, 500));
@@ -51,8 +49,8 @@ export const navigateBackScenario: TestScenario = {
     const totalTime = navigationEnd - navigationStart;
     measurements.push({ name: 'total_back_navigation_time', value: totalTime, unit: 'ms' });
 
-    // Count actual rendered rows
-    const rowCount = await page.evaluate(() => document.querySelectorAll('tbody tr').length);
+    // Count actual rendered rows (handles shadow DOM)
+    const rowCount = await getCountInShadow(page, 'tbody tr');
     measurements.push({ name: 'rendered_row_count', value: rowCount, unit: 'count' });
 
     const memoryAfter = await getMemoryMetrics(page);

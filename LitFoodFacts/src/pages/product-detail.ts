@@ -1,4 +1,4 @@
-import { LitElement, html } from 'lit';
+import { LitElement, html, css } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import type { MockProductViewModel } from 'shared-types';
 import { productService } from '../services/productService.js';
@@ -17,14 +17,8 @@ function toISOString(value: Date | string | number | undefined): string {
 
 @customElement('product-detail')
 export class ProductDetail extends LitElement {
-  // Disable shadow DOM for test selector compatibility
-  createRenderRoot() {
-    return this;
-  }
-
-  // Static styles won't work without shadow DOM, so we use a style tag in render
-  private static styleContent = `
-    product-detail {
+  static styles = css`
+    :host {
       display: block;
       max-width: 1200px;
       margin: 0 auto;
@@ -211,8 +205,6 @@ export class ProductDetail extends LitElement {
 
   connectedCallback() {
     super.connectedCallback();
-    // Add class to host element for test selector compatibility
-    this.classList.add('product-detail-container');
     if (this.code) {
       this.loadProduct();
     }
@@ -257,7 +249,6 @@ export class ProductDetail extends LitElement {
 
   render() {
     return html`
-      <style>${ProductDetail.styleContent}</style>
       <button @click=${this.navigateToList} class="back-button">← Back to List</button>
 
       ${this.loadingState === 'loaded' && this.product ? html`

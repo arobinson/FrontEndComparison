@@ -1,6 +1,7 @@
 import { TestScenario, TestContext, ScenarioResult, Measurement } from '../types.js';
 import { getWebVitals, getMemoryMetrics } from '../utils/performance-helpers.js';
 import { NetworkTracker } from '../utils/network-tracker.js';
+import { clickInShadow, waitForSelectorInShadow } from '../utils/shadow-dom-helpers.js';
 
 export const navigateToDetailScenario: TestScenario = {
   name: 'navigate-to-detail',
@@ -22,20 +23,27 @@ export const navigateToDetailScenario: TestScenario = {
     const networkTracker = new NetworkTracker(page);
     networkTracker.start();
 
-    // Click first product link
+    // Click first product link (handles both light DOM and shadow DOM)
     const navigationStart = Date.now();
+    await clickInShadow(page, 'tbody tr:first-child td:first-child a');
 
-    await page.evaluate(() => {
-      const firstProductLink = document.querySelector('tbody tr:first-child td:first-child a');
-      if (firstProductLink) {
-        (firstProductLink as HTMLElement).click();
+    // Wait for detail page content to render (handles shadow DOM)
+    await waitForSelectorInShadow(page, '.product-detail, .product-detail-container, product-detail', { timeout: 30000 });
+
+    // Wait for h1 to appear with content (indicating data loaded)
+    await page.waitForFunction(() => {
+      function checkForH1(root: Document | ShadowRoot | Element): boolean {
+        const h1 = root.querySelector('.header-section h1, h1');
+        if (h1 && h1.textContent && h1.textContent.trim().length > 0) return true;
+        const elements = Array.from(root.querySelectorAll('*'));
+        for (let i = 0; i < elements.length; i++) {
+          const el = elements[i];
+          if (el.shadowRoot && checkForH1(el.shadowRoot)) return true;
+        }
+        return false;
       }
-    });
-
-    // Wait for detail page content to actually render
-    // Look for the product detail container and the product name (h1)
-    await page.waitForSelector('.product-detail, .product-detail-container', { timeout: 30000 });
-    await page.waitForSelector('.header-section h1', { timeout: 30000 });
+      return checkForH1(document);
+    }, { timeout: 30000 });
     await page.waitForLoadState('networkidle');
 
     const navigationEnd = Date.now();

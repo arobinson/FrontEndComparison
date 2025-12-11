@@ -11,10 +11,15 @@
     onValueChange?: (value: { min: number; max: number }) => void;
   } = $props();
 
-  let minValue = $state(min);
-  let maxValue = $state(max);
+  let minValue = $state(0);
+  let maxValue = $state(100);
 
-  // Reset when trigger changes
+  // Sync with props and handle reset
+  $effect(() => {
+    minValue = min;
+    maxValue = max;
+  });
+
   $effect(() => {
     if (resetTrigger) {
       minValue = min;

@@ -23,6 +23,12 @@ export const allFrameworks: FrameworkConfig[] = [
     baseUrl: 'http://localhost:8888/svelte',
     buildCommand: 'pnpm run build:perf',
     buildOutputDir: join(process.cwd(), '../perf-dist/svelte')
+  },
+  {
+    name: 'Solid',
+    baseUrl: 'http://localhost:8888/solid',
+    buildCommand: 'pnpm run build:perf',
+    buildOutputDir: join(process.cwd(), '../perf-dist/solid')
   }
 ];
 

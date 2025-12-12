@@ -1,7 +1,7 @@
 import { createSignal, createEffect, createMemo, Show } from 'solid-js';
 import { useParams, useNavigate } from '@solidjs/router';
 import type { MockProductViewModel } from 'shared-types';
-import { productService } from '../services/productService';
+import { productService, type AdjacentProducts } from '../services/productService';
 
 import ProgressBar from '../components/display/ProgressBar';
 import ProductImage from '../components/display/ProductImage';
@@ -37,27 +37,60 @@ export default function ProductDetail() {
   const [product, setProduct] = createSignal<MockProductViewModel | null>(null);
   const [loadingState, setLoadingState] = createSignal<'loading' | 'error' | 'loaded'>('loading');
   const [errorMessage, setErrorMessage] = createSignal('');
+  const [adjacent, setAdjacent] = createSignal<AdjacentProducts | null>(null);
 
-  const createdDateStr = createMemo(() => product()?.createdDate ? toISOString(product()!.createdDate) : '');
-  const lastUpdatedStr = createMemo(() => product()?.lastUpdated ? toISOString(product()!.lastUpdated) : '');
-  const releaseDateStr = createMemo(() => product()?.releaseDate ? toISOString(product()!.releaseDate) : '');
-  const nextRestockDateStr = createMemo(() => product()?.nextRestockDate ? toISOString(product()!.nextRestockDate) : '');
+  // Keep previous product during loading to prevent component destruction
+  const [previousProduct, setPreviousProduct] = createSignal<MockProductViewModel | null>(null);
+  const displayProduct = createMemo(() => product() ?? previousProduct());
+
+  // Navigation state
+  const hasPrevious = createMemo(() => adjacent()?.previousId != null);
+  const hasNext = createMemo(() => adjacent()?.nextId != null);
+  const positionInfo = createMemo(() => {
+    const adj = adjacent();
+    return adj ? `${adj.currentIndex} of ${adj.total}` : '';
+  });
+
+  const createdDateStr = createMemo(() => displayProduct()?.createdDate ? toISOString(displayProduct()!.createdDate) : '');
+  const lastUpdatedStr = createMemo(() => displayProduct()?.lastUpdated ? toISOString(displayProduct()!.lastUpdated) : '');
+  const releaseDateStr = createMemo(() => displayProduct()?.releaseDate ? toISOString(displayProduct()!.releaseDate) : '');
+  const nextRestockDateStr = createMemo(() => displayProduct()?.nextRestockDate ? toISOString(displayProduct()!.nextRestockDate) : '');
 
   function navigateToList() {
     navigate('/list');
   }
 
+  function navigateToPrevious() {
+    const adj = adjacent();
+    if (adj?.previousId) {
+      navigate(`/detail/${adj.previousId}`);
+    }
+  }
+
+  function navigateToNext() {
+    const adj = adjacent();
+    if (adj?.nextId) {
+      navigate(`/detail/${adj.nextId}`);
+    }
+  }
+
   async function loadProduct(code: string) {
     setLoadingState('loading');
     try {
-      const result = await productService.getProduct(code);
-      if (result) {
-        setProduct(result);
+      const [productResult, adjacentResult] = await Promise.all([
+        productService.getProduct(code),
+        productService.getAdjacentProducts(code),
+      ]);
+
+      if (productResult) {
+        setProduct(productResult);
+        setPreviousProduct(productResult);
         setLoadingState('loaded');
       } else {
         setLoadingState('error');
         setErrorMessage('Product not found');
       }
+      setAdjacent(adjacentResult);
     } catch (e) {
       setLoadingState('error');
       setErrorMessage(e instanceof Error ? e.message : 'Unknown error');
@@ -73,27 +106,45 @@ export default function ProductDetail() {
 
   return (
     <div class="product-detail-container">
-      <button onClick={navigateToList} class="back-button">← Back to List</button>
+      <div class="navigation-bar">
+        <button onClick={navigateToList} class="back-button">← Back to List</button>
+        <div class="product-navigation">
+          <button onClick={navigateToPrevious} disabled={!hasPrevious()} class="nav-button">
+            ← Previous
+          </button>
+          <span class="position-info">{positionInfo()}</span>
+          <button onClick={navigateToNext} disabled={!hasNext()} class="nav-button">
+            Next →
+          </button>
+        </div>
+      </div>
 
-      <Show when={loadingState() === 'loaded' && product()}>
-        <div class="product-detail">
-          <div class="header-section">
-            <h1>{product()!.productName || 'Unknown Product'}</h1>
-            <div class="header-meta">
-              <span class="product-code">Code: {product()!.code}</span>
-              <Show when={product()!.qualityScore}>
-                <ProgressBar value={product()!.qualityScore!} />
-              </Show>
-            </div>
+      <div class="detail-area">
+        <Show when={loadingState() === 'loading'}>
+          <div class="loading-overlay">
+            <span class="loading-indicator">⏳ Loading...</span>
           </div>
+        </Show>
+
+        <Show when={displayProduct()}>
+          <div class="product-detail">
+            <div class="header-section">
+              <h1>{displayProduct()!.productName || 'Unknown Product'}</h1>
+              <div class="header-meta">
+                <span class="product-code">Code: {displayProduct()!.code}</span>
+                <Show when={displayProduct()!.qualityScore}>
+                  <ProgressBar value={displayProduct()!.qualityScore!} />
+                </Show>
+              </div>
+            </div>
 
           <div class="content-grid">
             {/* Image Gallery Section */}
-            <Show when={product()!.imageUrl}>
+            <Show when={displayProduct()!.imageUrl}>
               <div class="image-gallery">
                 <h2>Product Images</h2>
                 <div class="main-image">
-                  <ProductImage value={product()!.imageUrl!} size="large" />
+                  <ProductImage value={displayProduct()!.imageUrl!} size="large" />
                 </div>
               </div>
             </Show>
@@ -103,63 +154,63 @@ export default function ProductDetail() {
               <h2>Basic Information</h2>
               <dl class="info-list">
                 <dt>Product Name</dt>
-                <dd>{product()!.productName || 'N/A'}</dd>
+                <dd>{displayProduct()!.productName || 'N/A'}</dd>
 
                 <dt>Brand</dt>
-                <dd>{product()!.brand || 'N/A'}</dd>
+                <dd>{displayProduct()!.brand || 'N/A'}</dd>
 
                 <dt>Category</dt>
-                <dd>{product()!.category || 'N/A'}</dd>
+                <dd>{displayProduct()!.category || 'N/A'}</dd>
 
-                <Show when={product()!.description}>
+                <Show when={displayProduct()!.description}>
                   <dt>Description</dt>
                   <dd>
-                    <TruncatedText value={product()!.description!} />
+                    <TruncatedText value={displayProduct()!.description!} />
                   </dd>
                 </Show>
 
-                <Show when={product()!.sku}>
+                <Show when={displayProduct()!.sku}>
                   <dt>SKU</dt>
-                  <dd>{product()!.sku}</dd>
+                  <dd>{displayProduct()!.sku}</dd>
                 </Show>
 
-                <Show when={product()!.modelNumber}>
+                <Show when={displayProduct()!.modelNumber}>
                   <dt>Model Number</dt>
-                  <dd>{product()!.modelNumber}</dd>
+                  <dd>{displayProduct()!.modelNumber}</dd>
                 </Show>
 
-                <Show when={product()!.barcode}>
+                <Show when={displayProduct()!.barcode}>
                   <dt>Barcode</dt>
-                  <dd>{product()!.barcode}</dd>
+                  <dd>{displayProduct()!.barcode}</dd>
                 </Show>
 
-                <Show when={product()!.color}>
+                <Show when={displayProduct()!.color}>
                   <dt>Color</dt>
                   <dd>
-                    <ColorPill value={product()!.color!} />
+                    <ColorPill value={displayProduct()!.color!} />
                   </dd>
                 </Show>
 
-                <Show when={product()!.material}>
+                <Show when={displayProduct()!.material}>
                   <dt>Material</dt>
-                  <dd>{product()!.material}</dd>
+                  <dd>{displayProduct()!.material}</dd>
                 </Show>
 
-                <Show when={product()!.size}>
+                <Show when={displayProduct()!.size}>
                   <dt>Size</dt>
-                  <dd>{product()!.size}</dd>
+                  <dd>{displayProduct()!.size}</dd>
                 </Show>
 
-                <Show when={product()!.weightKg}>
+                <Show when={displayProduct()!.weightKg}>
                   <dt>Weight</dt>
                   <dd>
-                    <DecimalUnits value={product()!.weightKg!} unit="kg" />
+                    <DecimalUnits value={displayProduct()!.weightKg!} unit="kg" />
                   </dd>
                 </Show>
 
-                <Show when={product()!.dimensionsCm}>
+                <Show when={displayProduct()!.dimensionsCm}>
                   <dt>Dimensions</dt>
-                  <dd>{product()!.dimensionsCm}</dd>
+                  <dd>{displayProduct()!.dimensionsCm}</dd>
                 </Show>
 
                 <dt>Created</dt>
@@ -182,28 +233,28 @@ export default function ProductDetail() {
             </div>
 
             {/* Quality & Ratings Section */}
-            <Show when={product()!.grade || product()!.safetyRating || product()!.customerRating || product()!.ecoScore}>
+            <Show when={displayProduct()!.grade || product()!.safetyRating || product()!.customerRating || product()!.ecoScore}>
               <div class="health-section">
                 <h2>Quality & Ratings</h2>
                 <div class="score-grid">
-                  <Show when={product()!.grade}>
+                  <Show when={displayProduct()!.grade}>
                     <div class="score-item">
                       <span class="score-label">Grade</span>
-                      <GradeBadge value={product()!.grade!} />
+                      <GradeBadge value={displayProduct()!.grade!} />
                     </div>
                   </Show>
 
-                  <Show when={product()!.safetyRating}>
+                  <Show when={displayProduct()!.safetyRating}>
                     <div class="score-item">
                       <span class="score-label">Safety Rating</span>
-                      <NovaDots value={product()!.safetyRating!} />
+                      <NovaDots value={displayProduct()!.safetyRating!} />
                     </div>
                   </Show>
 
-                  <Show when={product()!.ecoScore}>
+                  <Show when={displayProduct()!.ecoScore}>
                     <div class="score-item">
                       <span class="score-label">Eco Score</span>
-                      <ProgressBar value={product()!.ecoScore!} />
+                      <ProgressBar value={displayProduct()!.ecoScore!} />
                     </div>
                   </Show>
                 </div>
@@ -211,28 +262,28 @@ export default function ProductDetail() {
             </Show>
 
             {/* Statistics Section */}
-            <Show when={product()!.unitsSold || product()!.reviewCount}>
+            <Show when={displayProduct()!.unitsSold || product()!.reviewCount}>
               <div class="stats-section">
                 <h2>Statistics</h2>
                 <dl class="info-list">
-                  <Show when={product()!.unitsSold}>
+                  <Show when={displayProduct()!.unitsSold}>
                     <dt>Units Sold</dt>
                     <dd>
-                      <LargeCounter value={product()!.unitsSold!} />
+                      <LargeCounter value={displayProduct()!.unitsSold!} />
                     </dd>
                   </Show>
 
-                  <Show when={product()!.reviewCount}>
+                  <Show when={displayProduct()!.reviewCount}>
                     <dt>Review Count</dt>
                     <dd>
-                      <LargeCounter value={product()!.reviewCount!} />
+                      <LargeCounter value={displayProduct()!.reviewCount!} />
                     </dd>
                   </Show>
 
-                  <Show when={product()!.customerRating}>
+                  <Show when={displayProduct()!.customerRating}>
                     <dt>Customer Rating</dt>
                     <dd>
-                      <StarRating value={product()!.customerRating!} />
+                      <StarRating value={displayProduct()!.customerRating!} />
                     </dd>
                   </Show>
                 </dl>
@@ -240,42 +291,42 @@ export default function ProductDetail() {
             </Show>
 
             {/* Pricing & Financial Section */}
-            <Show when={product()!.price || product()!.cost || product()!.wholesalePrice}>
+            <Show when={displayProduct()!.price || product()!.cost || product()!.wholesalePrice}>
               <div class="pricing-section">
                 <h2>Pricing & Financial</h2>
                 <dl class="info-list">
-                  <Show when={product()!.price}>
+                  <Show when={displayProduct()!.price}>
                     <dt>Price</dt>
                     <dd>
-                      <DecimalUnits value={product()!.price!} unit={product()!.currencyCode || ''} />
+                      <DecimalUnits value={displayProduct()!.price!} unit={displayProduct()!.currencyCode || ''} />
                     </dd>
                   </Show>
 
-                  <Show when={product()!.cost}>
+                  <Show when={displayProduct()!.cost}>
                     <dt>Cost</dt>
                     <dd>
-                      <DecimalUnits value={product()!.cost!} unit={product()!.currencyCode || ''} />
+                      <DecimalUnits value={displayProduct()!.cost!} unit={displayProduct()!.currencyCode || ''} />
                     </dd>
                   </Show>
 
-                  <Show when={product()!.wholesalePrice}>
+                  <Show when={displayProduct()!.wholesalePrice}>
                     <dt>Wholesale Price</dt>
                     <dd>
-                      <DecimalUnits value={product()!.wholesalePrice!} unit={product()!.currencyCode || ''} />
+                      <DecimalUnits value={displayProduct()!.wholesalePrice!} unit={displayProduct()!.currencyCode || ''} />
                     </dd>
                   </Show>
 
-                  <Show when={product()!.taxRate !== undefined}>
+                  <Show when={displayProduct()!.taxRate !== undefined}>
                     <dt>Tax Rate</dt>
                     <dd>
-                      <DecimalUnits value={product()!.taxRate!} unit="%" />
+                      <DecimalUnits value={displayProduct()!.taxRate!} unit="%" />
                     </dd>
                   </Show>
 
-                  <Show when={product()!.discountPercent !== undefined}>
+                  <Show when={displayProduct()!.discountPercent !== undefined}>
                     <dt>Discount</dt>
                     <dd>
-                      <DecimalUnits value={product()!.discountPercent!} unit="%" />
+                      <DecimalUnits value={displayProduct()!.discountPercent!} unit="%" />
                     </dd>
                   </Show>
                 </dl>
@@ -283,33 +334,33 @@ export default function ProductDetail() {
             </Show>
 
             {/* Inventory Section */}
-            <Show when={product()!.stockQuantity !== undefined || product()!.warehouseLocation || product()!.reorderLevel !== undefined}>
+            <Show when={displayProduct()!.stockQuantity !== undefined || product()!.warehouseLocation || product()!.reorderLevel !== undefined}>
               <div class="inventory-section">
                 <h2>Inventory</h2>
                 <dl class="info-list">
-                  <Show when={product()!.stockQuantity !== undefined}>
+                  <Show when={displayProduct()!.stockQuantity !== undefined}>
                     <dt>Stock Quantity</dt>
                     <dd>
-                      <DecimalUnits value={product()!.stockQuantity!} />
+                      <DecimalUnits value={displayProduct()!.stockQuantity!} />
                     </dd>
                   </Show>
 
-                  <Show when={product()!.reorderLevel !== undefined}>
+                  <Show when={displayProduct()!.reorderLevel !== undefined}>
                     <dt>Reorder Level</dt>
                     <dd>
-                      <DecimalUnits value={product()!.reorderLevel!} />
+                      <DecimalUnits value={displayProduct()!.reorderLevel!} />
                     </dd>
                   </Show>
 
-                  <Show when={product()!.warehouseLocation}>
+                  <Show when={displayProduct()!.warehouseLocation}>
                     <dt>Warehouse Location</dt>
-                    <dd>{product()!.warehouseLocation}</dd>
+                    <dd>{displayProduct()!.warehouseLocation}</dd>
                   </Show>
 
-                  <Show when={product()!.inStock !== undefined}>
+                  <Show when={displayProduct()!.inStock !== undefined}>
                     <dt>In Stock</dt>
                     <dd>
-                      <BooleanYesNo value={product()!.inStock!} />
+                      <BooleanYesNo value={displayProduct()!.inStock!} />
                     </dd>
                   </Show>
 
@@ -324,134 +375,134 @@ export default function ProductDetail() {
             </Show>
 
             {/* Geographic Section */}
-            <Show when={product()!.originCountry || product()!.manufacturerCountry || product()!.shippingZone}>
+            <Show when={displayProduct()!.originCountry || product()!.manufacturerCountry || product()!.shippingZone}>
               <div class="geographic-section">
                 <h2>Geographic Information</h2>
                 <dl class="info-list">
-                  <Show when={product()!.originCountry}>
+                  <Show when={displayProduct()!.originCountry}>
                     <dt>Origin Country</dt>
-                    <dd>{product()!.originCountry}</dd>
+                    <dd>{displayProduct()!.originCountry}</dd>
                   </Show>
 
-                  <Show when={product()!.manufacturerCountry}>
+                  <Show when={displayProduct()!.manufacturerCountry}>
                     <dt>Manufacturer Country</dt>
-                    <dd>{product()!.manufacturerCountry}</dd>
+                    <dd>{displayProduct()!.manufacturerCountry}</dd>
                   </Show>
 
-                  <Show when={product()!.shippingZone}>
+                  <Show when={displayProduct()!.shippingZone}>
                     <dt>Shipping Zone</dt>
-                    <dd>{product()!.shippingZone}</dd>
+                    <dd>{displayProduct()!.shippingZone}</dd>
                   </Show>
 
-                  <Show when={product()!.productLanguage}>
+                  <Show when={displayProduct()!.productLanguage}>
                     <dt>Product Language</dt>
-                    <dd>{product()!.productLanguage}</dd>
+                    <dd>{displayProduct()!.productLanguage}</dd>
                   </Show>
                 </dl>
               </div>
             </Show>
 
             {/* Supplier Contact Section */}
-            <Show when={product()!.firstName || product()!.lastName || product()!.supplierEmail || product()!.supplierPhone}>
+            <Show when={displayProduct()!.firstName || product()!.lastName || product()!.supplierEmail || product()!.supplierPhone}>
               <div class="supplier-section">
                 <h2>Supplier Contact</h2>
                 <dl class="info-list">
-                  <Show when={product()!.firstName || product()!.lastName}>
+                  <Show when={displayProduct()!.firstName || product()!.lastName}>
                     <dt>Contact Name</dt>
-                    <dd>{product()!.firstName} {product()!.lastName}</dd>
+                    <dd>{displayProduct()!.firstName} {displayProduct()!.lastName}</dd>
                   </Show>
 
-                  <Show when={product()!.supplierEmail}>
+                  <Show when={displayProduct()!.supplierEmail}>
                     <dt>Email</dt>
                     <dd>
-                      <span class="truncate-ellipsis" title={product()!.supplierEmail}>{product()!.supplierEmail}</span>
+                      <span class="truncate-ellipsis" title={displayProduct()!.supplierEmail}>{displayProduct()!.supplierEmail}</span>
                     </dd>
                   </Show>
 
-                  <Show when={product()!.supplierPhone}>
+                  <Show when={displayProduct()!.supplierPhone}>
                     <dt>Phone</dt>
-                    <dd>{product()!.supplierPhone}</dd>
+                    <dd>{displayProduct()!.supplierPhone}</dd>
                   </Show>
 
-                  <Show when={product()!.supplierTaxId}>
+                  <Show when={displayProduct()!.supplierTaxId}>
                     <dt>Tax ID</dt>
-                    <dd>{product()!.supplierTaxId}</dd>
+                    <dd>{displayProduct()!.supplierTaxId}</dd>
                   </Show>
                 </dl>
               </div>
             </Show>
 
             {/* Product Features Section */}
-            <Show when={product()!.isFeatured || product()!.isBestSeller || product()!.requiresShipping || product()!.isDigital || product()!.hasWarranty}>
+            <Show when={displayProduct()!.isFeatured || product()!.isBestSeller || product()!.requiresShipping || product()!.isDigital || product()!.hasWarranty}>
               <div class="features-section">
                 <h2>Product Features</h2>
                 <dl class="info-list">
-                  <Show when={product()!.isFeatured !== undefined}>
+                  <Show when={displayProduct()!.isFeatured !== undefined}>
                     <dt>Featured</dt>
                     <dd>
-                      <BooleanYesNo value={product()!.isFeatured!} />
+                      <BooleanYesNo value={displayProduct()!.isFeatured!} />
                     </dd>
                   </Show>
 
-                  <Show when={product()!.isBestSeller !== undefined}>
+                  <Show when={displayProduct()!.isBestSeller !== undefined}>
                     <dt>Best Seller</dt>
                     <dd>
-                      <BooleanYesNo value={product()!.isBestSeller!} />
+                      <BooleanYesNo value={displayProduct()!.isBestSeller!} />
                     </dd>
                   </Show>
 
-                  <Show when={product()!.requiresShipping !== undefined}>
+                  <Show when={displayProduct()!.requiresShipping !== undefined}>
                     <dt>Requires Shipping</dt>
                     <dd>
-                      <BooleanYesNo value={product()!.requiresShipping!} />
+                      <BooleanYesNo value={displayProduct()!.requiresShipping!} />
                     </dd>
                   </Show>
 
-                  <Show when={product()!.isDigital !== undefined}>
+                  <Show when={displayProduct()!.isDigital !== undefined}>
                     <dt>Digital Product</dt>
                     <dd>
-                      <BooleanYesNo value={product()!.isDigital!} />
+                      <BooleanYesNo value={displayProduct()!.isDigital!} />
                     </dd>
                   </Show>
 
-                  <Show when={product()!.hasWarranty !== undefined}>
+                  <Show when={displayProduct()!.hasWarranty !== undefined}>
                     <dt>Has Warranty</dt>
                     <dd>
-                      <BooleanYesNo value={product()!.hasWarranty!} />
+                      <BooleanYesNo value={displayProduct()!.hasWarranty!} />
                     </dd>
                   </Show>
 
-                  <Show when={product()!.warrantyMonths !== undefined}>
+                  <Show when={displayProduct()!.warrantyMonths !== undefined}>
                     <dt>Warranty Period</dt>
                     <dd>
-                      <DecimalUnits value={product()!.warrantyMonths!} unit="months" />
+                      <DecimalUnits value={displayProduct()!.warrantyMonths!} unit="months" />
                     </dd>
                   </Show>
 
-                  <Show when={product()!.certification}>
+                  <Show when={displayProduct()!.certification}>
                     <dt>Certification</dt>
-                    <dd>{product()!.certification}</dd>
+                    <dd>{displayProduct()!.certification}</dd>
                   </Show>
                 </dl>
               </div>
             </Show>
 
             {/* Shipping Section */}
-            <Show when={product()!.shippingDepartureTime || product()!.flightDurationHours !== undefined}>
+            <Show when={displayProduct()!.shippingDepartureTime || displayProduct()!.flightDurationHours !== undefined}>
               <div class="shipping-section">
                 <h2>Shipping Information</h2>
                 <dl class="info-list">
-                  <Show when={product()!.shippingDepartureTime}>
+                  <Show when={displayProduct()!.shippingDepartureTime}>
                     <dt>Departure Time</dt>
                     <dd>
-                      <TimeFormat value={product()!.shippingDepartureTime!} />
+                      <TimeFormat value={displayProduct()!.shippingDepartureTime!} />
                     </dd>
                   </Show>
 
-                  <Show when={product()!.flightDurationHours !== undefined}>
+                  <Show when={displayProduct()!.flightDurationHours !== undefined}>
                     <dt>Flight Duration</dt>
                     <dd>
-                      <DecimalUnits value={product()!.flightDurationHours!} unit="hours" />
+                      <DecimalUnits value={displayProduct()!.flightDurationHours!} unit="hours" />
                     </dd>
                   </Show>
                 </dl>
@@ -461,17 +512,12 @@ export default function ProductDetail() {
         </div>
       </Show>
 
-      <Show when={loadingState() === 'loading'}>
-        <div class="loading-state">
-          <p>Loading product...</p>
-        </div>
-      </Show>
-
       <Show when={loadingState() === 'error'}>
         <div class="error-state">
           <p>Error loading product: {errorMessage()}</p>
         </div>
       </Show>
+      </div>
     </div>
   );
 }

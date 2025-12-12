@@ -21,11 +21,27 @@ import './ProductDetail.css';
 const ProductDetail = () => {
   const { code } = useParams<{ code: string }>();
   const navigate = useNavigate();
-  const { product, loading, error } = useProduct(code ?? '');
+  const { product, loading, error, adjacent } = useProduct(code ?? '');
 
   const navigateToList = useCallback(() => {
     navigate('/list');
   }, [navigate]);
+
+  const navigateToPrevious = useCallback(() => {
+    if (adjacent?.previousId) {
+      navigate(`/detail/${adjacent.previousId}`);
+    }
+  }, [navigate, adjacent]);
+
+  const navigateToNext = useCallback(() => {
+    if (adjacent?.nextId) {
+      navigate(`/detail/${adjacent.nextId}`);
+    }
+  }, [navigate, adjacent]);
+
+  const hasPrevious = adjacent?.previousId != null;
+  const hasNext = adjacent?.nextId != null;
+  const positionInfo = adjacent ? `${adjacent.currentIndex} of ${adjacent.total}` : '';
 
   const toISOString = (value: Date | string | null | undefined): string => {
     let result: string;
@@ -562,10 +578,36 @@ const ProductDetail = () => {
 
   return (
     <div className="product-detail-container">
-      <button onClick={navigateToList} className="back-button">
-        ← Back to List
-      </button>
-      {content}
+      <div className="navigation-bar">
+        <button onClick={navigateToList} className="back-button">
+          ← Back to List
+        </button>
+        <div className="product-navigation">
+          <button
+            onClick={navigateToPrevious}
+            disabled={!hasPrevious}
+            className="nav-button"
+          >
+            ← Previous
+          </button>
+          <span className="position-info">{positionInfo}</span>
+          <button
+            onClick={navigateToNext}
+            disabled={!hasNext}
+            className="nav-button"
+          >
+            Next →
+          </button>
+        </div>
+      </div>
+      <div className="detail-area">
+        {loading && (
+          <div className="loading-overlay">
+            <span className="loading-indicator">⏳ Loading...</span>
+          </div>
+        )}
+        {content}
+      </div>
     </div>
   );
 };

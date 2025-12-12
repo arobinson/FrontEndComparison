@@ -169,15 +169,15 @@ const ProductList = () => {
   }, []);
 
   let content;
-  if (loading && products.length === 0) {
-    content = <div className="loading-indicator">⏳ Loading products...</div>;
-  } else if (error) {
+  if (error) {
     content = <p>Error loading products: {error}</p>;
   } else if (products.length > 0) {
     content = (
-      <>
+      <div className="table-area">
         {loading && (
-          <div className="loading-indicator">⏳ Loading...</div>
+          <div className="loading-overlay">
+            <div className="loading-indicator">Loading...</div>
+          </div>
         )}
         <DataTable
           columns={columns}
@@ -193,8 +193,10 @@ const ProductList = () => {
           renderFilterCell={renderFilterCell}
           renderCell={renderCell}
         />
-      </>
+      </div>
     );
+  } else if (loading) {
+    content = <div className="loading-indicator">Loading products...</div>;
   } else {
     content = <p>No products found.</p>;
   }

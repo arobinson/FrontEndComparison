@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import type { MockProductViewModel } from 'shared-types';
 import { productService } from '../services/productService';
 
@@ -16,16 +16,19 @@ interface UseProductsResult {
   refetch: () => void;
 }
 
-export const useProducts = ({ 
-  category = 'all', 
-  page = 1, 
-  pageSize = 50 
+export const useProducts = ({
+  category = 'all',
+  page = 1,
+  pageSize = 50
 }: UseProductsParams = {}): UseProductsResult => {
   const [products, setProducts] = useState<MockProductViewModel[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [refetchTrigger, setRefetchTrigger] = useState(0);
+
+  // Keep reference to previous data to preserve during loading
+  const previousDataRef = useRef<{ products: MockProductViewModel[]; total: number } | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -37,10 +40,11 @@ export const useProducts = ({
       let result;
       try {
         const data = await productService.getProductsByCategory(category, page, pageSize);
-        
+
         if (!cancelled) {
           setProducts(data.products);
           setTotal(data.total);
+          previousDataRef.current = data;
         }
         result = undefined;
       } catch (err) {
@@ -67,5 +71,9 @@ export const useProducts = ({
     setRefetchTrigger((prev) => prev + 1);
   };
 
-  return { products, total, loading, error, refetch };
+  // Return previous data during loading to keep table rendered
+  const displayProducts = products.length > 0 ? products : (previousDataRef.current?.products ?? []);
+  const displayTotal = total > 0 ? total : (previousDataRef.current?.total ?? 0);
+
+  return { products: displayProducts, total: displayTotal, loading, error, refetch };
 };

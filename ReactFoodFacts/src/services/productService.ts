@@ -1,5 +1,5 @@
 import type { RawMockProduct, MockProductViewModel } from 'shared-types';
-import { transformMockDataToViewModel, buildProductsByCategoryUrl, buildProductUrl } from 'shared-types';
+import { transformMockDataToViewModel, buildProductsByCategoryUrl, buildProductUrl, buildProductAdjacentUrl } from 'shared-types';
 
 export interface ProductsResponse {
   products: MockProductViewModel[];
@@ -44,4 +44,24 @@ export const productService = {
     }
     return result;
   },
+
+  async getAdjacentProducts(code: string): Promise<AdjacentProducts | null> {
+    const url = buildProductAdjacentUrl(code);
+    const response = await fetch(url);
+
+    let result;
+    if (!response.ok) {
+      result = null;
+    } else {
+      result = await response.json();
+    }
+    return result;
+  },
 };
+
+export interface AdjacentProducts {
+  previousId: string | null;
+  nextId: string | null;
+  currentIndex: number;
+  total: number;
+}

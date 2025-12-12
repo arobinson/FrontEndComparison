@@ -14,7 +14,7 @@ export class ProductList extends LitElement {
     :host {
       display: block;
       padding: 1.25rem;
-      height: calc(100vh - 40px);
+      height: calc(100vh - 41px); /* Account for framework header */
       display: flex;
       flex-direction: column;
       overflow: hidden;
@@ -53,14 +53,36 @@ export class ProductList extends LitElement {
       transform: translateY(1px);
     }
 
+    .table-area {
+      position: relative;
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .loading-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255, 255, 255, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      border-radius: 8px;
+    }
+
     .loading-indicator {
-      padding: 0.5rem 1rem;
+      padding: 0.75rem 1.5rem;
       background-color: #f0f8ff;
       border-left: 4px solid #0066cc;
-      margin-bottom: 1rem;
       border-radius: 4px;
       font-size: 14px;
       color: #333;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
 
     .error-message {
@@ -83,6 +105,10 @@ export class ProductList extends LitElement {
   @state() private filterResetTrigger = 0;
   @state() private filters: Record<string, unknown> = {};
 
+  // Keep previous data during loading to prevent table destruction
+  private previousProducts: MockProductViewModel[] = [];
+  private previousTotalProducts = 0;
+
   private columnKeys = allColumns.map(col => col.key);
 
   connectedCallback() {
@@ -102,12 +128,24 @@ export class ProductList extends LitElement {
     return getColumnConfig(key as keyof MockProductViewModel)?.unit;
   }
 
+  // Computed values for display (use previous data during loading)
+  private get displayProducts(): MockProductViewModel[] {
+    return this.products.length > 0 ? this.products : this.previousProducts;
+  }
+
+  private get displayTotal(): number {
+    return this.totalProducts > 0 ? this.totalProducts : this.previousTotalProducts;
+  }
+
   private async loadProducts() {
     try {
       this.productsState = 'loading';
       const result = await productService.getProductsByCategory('all', this.currentPage + 1, this.pageSize);
       this.products = result.products;
       this.totalProducts = result.total;
+      // Store as previous for next loading state
+      this.previousProducts = result.products;
+      this.previousTotalProducts = result.total;
       this.productsState = 'loaded';
     } catch (e) {
       this.error = e instanceof Error ? e : new Error('An unknown error occurred');
@@ -213,34 +251,38 @@ export class ProductList extends LitElement {
         </button>
       </div>
 
-      ${this.productsState === 'loading' ? html`
-        <div class="loading-indicator">⏳ Loading...</div>
-      ` : ''}
+      <div class="table-area">
+        ${this.productsState === 'loading' ? html`
+          <div class="loading-overlay">
+            <span class="loading-indicator">⏳ Loading...</span>
+          </div>
+        ` : ''}
 
-      ${this.productsState === 'loaded' && this.products.length > 0 ? html`
-        <data-table
-          .columns=${this.columnKeys}
-          .value=${this.products}
-          .totalPages=${this.totalPages}
-          .page=${this.currentPage}
-          .pageSize=${this.pageSize}
-          .showFilterRow=${true}
-          trackBy="code"
-          .renderHeader=${this.renderHeader}
-          .renderFilter=${this.renderFilter}
-          .renderCell=${this.renderCell}
-          @page-change=${this.handlePageChange}
-          @page-size-change=${this.handlePageSizeChange}
-        ></data-table>
-      ` : ''}
+        ${this.displayProducts.length > 0 ? html`
+          <data-table
+            .columns=${this.columnKeys}
+            .value=${this.displayProducts}
+            .totalPages=${this.totalPages}
+            .page=${this.currentPage}
+            .pageSize=${this.pageSize}
+            .showFilterRow=${true}
+            trackBy="code"
+            .renderHeader=${this.renderHeader}
+            .renderFilter=${this.renderFilter}
+            .renderCell=${this.renderCell}
+            @page-change=${this.handlePageChange}
+            @page-size-change=${this.handlePageSizeChange}
+          ></data-table>
+        ` : ''}
 
-      ${this.productsState === 'error' ? html`
-        <p class="error-message">Error loading products: ${this.error?.message ?? 'Unknown'}</p>
-      ` : ''}
+        ${this.productsState === 'error' ? html`
+          <p class="error-message">Error loading products: ${this.error?.message ?? 'Unknown'}</p>
+        ` : ''}
 
-      ${this.productsState === 'loaded' && this.products.length === 0 ? html`
-        <p>No products found.</p>
-      ` : ''}
+        ${this.productsState !== 'loading' && this.displayProducts.length === 0 ? html`
+          <p>No products found.</p>
+        ` : ''}
+      </div>
     `;
   }
 }

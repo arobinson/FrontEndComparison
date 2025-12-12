@@ -17,6 +17,14 @@ export default function ProductList() {
   const [filterResetTrigger, setFilterResetTrigger] = createSignal(0);
   const [filters, setFilters] = createSignal<Record<string, any>>({});
 
+  // Keep previous data during loading to prevent table destruction
+  const [previousProducts, setPreviousProducts] = createSignal<MockProductViewModel[] | undefined>(undefined);
+  const [previousTotalProducts, setPreviousTotalProducts] = createSignal(0);
+
+  // Computed values for display (use previous data during loading)
+  const displayProducts = createMemo(() => products() ?? previousProducts());
+  const displayTotal = createMemo(() => totalProducts() > 0 ? totalProducts() : previousTotalProducts());
+
   // Column keys for the table
   const columnKeys = allColumns.map(col => col.key);
 
@@ -39,6 +47,9 @@ export default function ProductList() {
       const result = await productService.getProductsByCategory('all', currentPage() + 1, pageSize());
       setProducts(result.products);
       setTotalProducts(result.total);
+      // Store as previous for next loading state
+      setPreviousProducts(result.products);
+      setPreviousTotalProducts(result.total);
       setProductsState('loaded');
     } catch (e) {
       setError(e instanceof Error ? e : new Error('An unknown error occurred'));
@@ -159,34 +170,38 @@ export default function ProductList() {
         </button>
       </div>
 
-      <Show when={productsState() === 'loading'}>
-        <div class="loading-indicator">⏳ Loading...</div>
-      </Show>
+      <div class="table-area">
+        <Show when={productsState() === 'loading'}>
+          <div class="loading-overlay">
+            <span class="loading-indicator">⏳ Loading...</span>
+          </div>
+        </Show>
 
-      <Show when={productsState() === 'loaded' && products()?.length}>
-        <DataTable
-          columns={columnKeys}
-          value={products()!}
-          totalPages={totalPages()}
-          page={currentPage()}
-          pageSize={pageSize()}
-          showFilterRow={true}
-          trackBy="code"
-          onPageChange={handlePageChange}
-          onPageSizeChange={handlePageSizeChange}
-          renderHeader={renderHeader}
-          renderFilter={renderFilter}
-          renderCell={renderCell}
-        />
-      </Show>
+        <Show when={displayProducts()?.length}>
+          <DataTable
+            columns={columnKeys}
+            value={displayProducts()!}
+            totalPages={totalPages()}
+            page={currentPage()}
+            pageSize={pageSize()}
+            showFilterRow={true}
+            trackBy="code"
+            onPageChange={handlePageChange}
+            onPageSizeChange={handlePageSizeChange}
+            renderHeader={renderHeader}
+            renderFilter={renderFilter}
+            renderCell={renderCell}
+          />
+        </Show>
 
-      <Show when={productsState() === 'error'}>
-        <p class="error-message">Error loading products: {error()?.message ?? 'Unknown'}</p>
-      </Show>
+        <Show when={productsState() === 'error'}>
+          <p class="error-message">Error loading products: {error()?.message ?? 'Unknown'}</p>
+        </Show>
 
-      <Show when={productsState() === 'loaded' && !products()?.length}>
-        <p>No products found.</p>
-      </Show>
+        <Show when={productsState() !== 'loading' && !displayProducts()?.length}>
+          <p>No products found.</p>
+        </Show>
+      </div>
     </div>
   );
 }

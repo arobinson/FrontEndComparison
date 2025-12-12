@@ -15,6 +15,10 @@
   let error = $state<Error | null>(null);
   let filterResetTrigger = $state(0);
 
+  // Keep previous data during loading to prevent table destruction
+  let previousProducts = $state<Array<MockProductViewModel> | undefined>(undefined);
+  let previousTotalProducts = $state<number>(0);
+
   // Column keys for the table
   const columnKeys = allColumns.map(col => col.key);
 
@@ -30,6 +34,10 @@
     return getColumnConfig(key as keyof MockProductViewModel)?.unit;
   }
 
+  // Computed values for display (use previous data during loading)
+  let displayProducts = $derived(products ?? previousProducts);
+  let displayTotal = $derived(totalProducts > 0 ? totalProducts : previousTotalProducts);
+
   // Data fetching
   async function loadProducts() {
     try {
@@ -37,6 +45,9 @@
       const result = await productService.getProductsByCategory('all', currentPage + 1, pageSize);
       products = result.products;
       totalProducts = result.total;
+      // Store as previous for next loading state
+      previousProducts = result.products;
+      previousTotalProducts = result.total;
       productsState = 'loaded';
     } catch (e) {
       error = e instanceof Error ? e : new Error('An unknown error occurred');
@@ -80,83 +91,111 @@
     </button>
   </div>
 
-  {#if productsState === 'loading'}
-    <div class="loading-indicator">⏳ Loading...</div>
-  {:else if productsState === 'loaded' && products?.length}
-    <DataTable
-      columns={columnKeys}
-      value={products}
-      {totalPages}
-      bind:page={currentPage}
-      bind:pageSize={pageSize}
-      showFilterRow={true}
-      trackBy="code"
-    >
-      {#snippet header(column)}
-        <strong>{getColumnTitle(column)}</strong>
-      {/snippet}
+  <div class="table-area">
+    {#if productsState === 'loading'}
+      <div class="loading-overlay">
+        <span class="loading-indicator">⏳ Loading...</span>
+      </div>
+    {/if}
 
-      {#snippet filter(column)}
-        {@const dataType = getColumnDataType(column as keyof MockProductViewModel)}
-        {#if dataType === 'progress-bar'}
-          <RangeSlider
-            min={0}
-            max={100}
-            resetTrigger={filterResetTrigger}
-            onValueChange={(v) => updateFilter(column, v)}
-          />
-        {:else if dataType === 'grade-badge'}
-          <MultiSelect
-            options={['A', 'B', 'C', 'D', 'E', 'F']}
-            resetTrigger={filterResetTrigger}
-            onValueChange={(v) => updateFilter(column, v)}
-          />
-        {:else if dataType === 'nova-dots'}
-          <MultiSelect
-            options={['1', '2', '3', '4']}
-            resetTrigger={filterResetTrigger}
-            onValueChange={(v) => updateFilter(column, v)}
-          />
-        {:else if dataType === 'boolean-yesno'}
-          <MultiSelect
-            options={['Yes', 'No']}
-            resetTrigger={filterResetTrigger}
-            onValueChange={(v) => updateFilter(column, v)}
-          />
-        {:else if dataType === 'large-counter'}
-          <RangeSlider
-            resetTrigger={filterResetTrigger}
-            onValueChange={(v) => updateFilter(column, v)}
-          />
-        {:else if dataType !== 'product-image'}
-          <TextSearch
-            resetTrigger={filterResetTrigger}
-            onValueChange={(v) => updateFilter(column, v)}
-          />
-        {/if}
-      {/snippet}
+    {#if displayProducts?.length}
+      <DataTable
+        columns={columnKeys}
+        value={displayProducts}
+        {totalPages}
+        bind:page={currentPage}
+        bind:pageSize={pageSize}
+        showFilterRow={true}
+        trackBy="code"
+      >
+        {#snippet header(column)}
+          <strong>{getColumnTitle(column)}</strong>
+        {/snippet}
 
-      {#snippet cell(value, column, row)}
-        {@const dataType = getColumnDataType(column as keyof MockProductViewModel)}
-        {@const unit = getColumnUnit(column)}
-        <CellRenderer {value} {dataType} {column} {row} {unit} />
-      {/snippet}
-    </DataTable>
-  {:else if productsState === 'error'}
-    <p class="error-message">Error loading products: {error?.message ?? 'Unknown'}</p>
-  {:else}
-    <p>No products found.</p>
-  {/if}
+        {#snippet filter(column)}
+          {@const dataType = getColumnDataType(column as keyof MockProductViewModel)}
+          {#if dataType === 'progress-bar'}
+            <RangeSlider
+              min={0}
+              max={100}
+              resetTrigger={filterResetTrigger}
+              onValueChange={(v) => updateFilter(column, v)}
+            />
+          {:else if dataType === 'grade-badge'}
+            <MultiSelect
+              options={['A', 'B', 'C', 'D', 'E', 'F']}
+              resetTrigger={filterResetTrigger}
+              onValueChange={(v) => updateFilter(column, v)}
+            />
+          {:else if dataType === 'nova-dots'}
+            <MultiSelect
+              options={['1', '2', '3', '4']}
+              resetTrigger={filterResetTrigger}
+              onValueChange={(v) => updateFilter(column, v)}
+            />
+          {:else if dataType === 'boolean-yesno'}
+            <MultiSelect
+              options={['Yes', 'No']}
+              resetTrigger={filterResetTrigger}
+              onValueChange={(v) => updateFilter(column, v)}
+            />
+          {:else if dataType === 'large-counter'}
+            <RangeSlider
+              resetTrigger={filterResetTrigger}
+              onValueChange={(v) => updateFilter(column, v)}
+            />
+          {:else if dataType !== 'product-image'}
+            <TextSearch
+              resetTrigger={filterResetTrigger}
+              onValueChange={(v) => updateFilter(column, v)}
+            />
+          {/if}
+        {/snippet}
+
+        {#snippet cell(value, column, row)}
+          {@const dataType = getColumnDataType(column as keyof MockProductViewModel)}
+          {@const unit = getColumnUnit(column)}
+          <CellRenderer {value} {dataType} {column} {row} {unit} />
+        {/snippet}
+      </DataTable>
+    {:else if productsState === 'error'}
+      <p class="error-message">Error loading products: {error?.message ?? 'Unknown'}</p>
+    {:else if productsState !== 'loading'}
+      <p>No products found.</p>
+    {/if}
+  </div>
 </div>
 
 <style>
   .product-list-container {
     padding: 1.25rem;
-    height: 100vh;
+    height: calc(100vh - 41px); /* Account for framework header */
     display: flex;
     flex-direction: column;
     overflow: hidden;
     box-sizing: border-box;
+  }
+
+  .table-area {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    border-radius: 8px;
   }
 
   .page-header-row {
@@ -192,13 +231,13 @@
   }
 
   .loading-indicator {
-    padding: 0.5rem 1rem;
+    padding: 0.75rem 1.5rem;
     background-color: #f0f8ff;
     border-left: 4px solid #0066cc;
-    margin-bottom: 1rem;
     border-radius: 4px;
     font-size: 14px;
     color: #333;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
 
   .error-message {

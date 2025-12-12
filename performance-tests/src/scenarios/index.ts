@@ -7,3 +7,4 @@ export { navigateToDetailScenario } from './06-navigate-to-detail.js';
 export { navigateBackScenario } from './07-navigate-back.js';
 export { paginationScenario } from './08-pagination.js';
 export { paginationCycleScenario } from './09-pagination-cycle.js';
+export { detailNavigationCycleScenario } from './10-detail-navigation-cycle.js';

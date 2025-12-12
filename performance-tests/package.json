@@ -13,7 +13,8 @@
     "debug:filter": "tsc && node dist/debug-filter.js",
     "test:filter:headed": "tsc && node dist/test-filter-headed.js",
     "test:navigation": "tsc && node dist/test-navigation-only.js",
-    "test:trace": "tsc && node dist/test-trace-navigation.js"
+    "test:trace": "tsc && node dist/test-trace-navigation.js",
+    "test:detail-cycle": "tsc && node dist/test-detail-navigation-cycle.js"
   },
   "dependencies": {
     "shared-types": "workspace:*"

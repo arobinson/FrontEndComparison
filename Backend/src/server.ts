@@ -76,6 +76,28 @@ app.get('/api/products/:id', (req, res) => {
   }
 });
 
+// Get adjacent product IDs for navigation
+app.get('/api/products/:id/adjacent', (req, res) => {
+  const { id } = req.params;
+  const currentIndex = productsData.findIndex((p: any) => String(p.id) === id);
+
+  if (currentIndex === -1) {
+    res.status(404).json({ error: 'Product not found' });
+    return;
+  }
+
+  const previousId = currentIndex > 0 ? productsData[currentIndex - 1].id : null;
+  const nextId = currentIndex < productsData.length - 1 ? productsData[currentIndex + 1].id : null;
+
+  res.setHeader('Cache-Control', 'public, max-age=300');
+  res.json({
+    previousId,
+    nextId,
+    currentIndex: currentIndex + 1, // 1-based for display
+    total: productsData.length
+  });
+});
+
 // Get available categories
 app.get('/api/categories', (req, res) => {
   const categories = Array.from(new Set(productsData.map((p: any) => p.category).filter(Boolean))).sort();

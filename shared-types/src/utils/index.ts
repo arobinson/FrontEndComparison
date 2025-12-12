@@ -38,6 +38,10 @@ export function buildProductsSearchUrl(query: string, page = 1, pageSize = 50): 
   return `${API_BASE_URL}/products?search=${encodeURIComponent(query)}&limit=${pageSize}&skip=${skip}`;
 }
 
+export function buildProductAdjacentUrl(code: string): string {
+  return `${API_BASE_URL}/products/${code}/adjacent`;
+}
+
 // DummyJSON API transformer
 export function transformDummyJsonToProductViewModel(dummyProduct: DummyJsonProduct): ProductViewModel {
   const seedRandom = (seed: number, min: number, max: number) => {

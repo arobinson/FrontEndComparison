@@ -3,10 +3,18 @@ import {
   buildProductsByCategoryUrl,
   buildProductUrl,
   buildProductsSearchUrl,
+  buildProductAdjacentUrl,
   RawMockProduct,
   MockProductViewModel,
   transformMockDataToViewModel,
 } from 'shared-types';
+
+export interface AdjacentProducts {
+  previousId: string | null;
+  nextId: string | null;
+  currentIndex: number;
+  total: number;
+}
 
 /**
  * Export types from shared-types for use in Angular components
@@ -66,8 +74,9 @@ export class FoodFacts {
    */
   createProductResource(code: Signal<string>) {
     return resource({
-      loader: async () => {
-        const url = buildProductUrl(code());
+      params: () => ({ code: code() }),
+      loader: async ({ params }) => {
+        const url = buildProductUrl(params.code);
         const response = await fetch(url);
 
         let result;
@@ -100,6 +109,27 @@ export class FoodFacts {
 
         // Local backend already returns transformed ProductViewModel objects
         return data?.products || [];
+      },
+    });
+  }
+
+  /**
+   * Create a resource for adjacent product IDs (for next/previous navigation)
+   */
+  createAdjacentProductsResource(code: Signal<string>) {
+    return resource({
+      params: () => ({ code: code() }),
+      loader: async ({ params }) => {
+        const url = buildProductAdjacentUrl(params.code);
+        const response = await fetch(url);
+
+        let result: AdjacentProducts | null;
+        if (!response.ok) {
+          result = null;
+        } else {
+          result = await response.json();
+        }
+        return result;
       },
     });
   }

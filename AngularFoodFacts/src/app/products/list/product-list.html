@@ -6,13 +6,14 @@
     </button>
   </div>
 
-  @if (isLoading() && !hasData()) {
-    <div class="loading-indicator">⏳ Loading products...</div>
-  } @else if (hasData()) {
+  <div class="table-area">
     @if (isLoading()) {
-      <div class="loading-indicator">⏳ Loading...</div>
+      <div class="loading-overlay">
+        <div class="loading-indicator">⏳ Loading...</div>
+      </div>
     }
-    <aff-data-table
+    @if (hasData()) {
+      <aff-data-table
       [columns]="columns"
       [value]="currentPageData()"
       [totalPages]="totalPages()"
@@ -20,7 +21,6 @@
       [(pageSize)]="pageSize"
       [pageSizes]="[10, 25, 50]"
       [renderFilter]="true"
-      trackBy="code"
     >
       <ng-template #header let-column>
         <strong>{{ getColumnTitle(column) }}</strong>
@@ -122,9 +122,10 @@
         }
       </ng-template>
     </aff-data-table>
-  } @else if (isError()) {
-    <p>Error loading products: {{ productsResource.error() }}</p>
-  } @else {
-    <p>No products found.</p>
-  }
+    } @else if (isError()) {
+      <p>Error loading products: {{ productsResource.error() }}</p>
+    } @else if (!isLoading()) {
+      <p>No products found.</p>
+    }
+  </div>
 </div>

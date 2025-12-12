@@ -1,4 +1,4 @@
-import { Component, input, signal } from '@angular/core';
+import { Component, input, signal, effect } from '@angular/core';
 
 @Component({
   selector: 'aff-product-image',
@@ -12,6 +12,15 @@ export class ProductImage {
 
   readonly imageLoaded = signal(false);
   readonly imageError = signal(false);
+
+  constructor() {
+    // Reset loading state when URL changes
+    effect(() => {
+      this.imageLoaded.set(false);
+      this.imageError.set(false);
+      this.value(); // Track the input
+    });
+  }
 
   onImageLoad() {
     this.imageLoaded.set(true);

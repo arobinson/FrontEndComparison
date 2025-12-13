@@ -21,8 +21,67 @@ export default function ProductList() {
   const [previousProducts, setPreviousProducts] = createSignal<MockProductViewModel[] | undefined>(undefined);
   const [previousTotalProducts, setPreviousTotalProducts] = createSignal(0);
 
-  // Computed values for display (use previous data during loading)
-  const displayProducts = createMemo(() => products() ?? previousProducts());
+  // Apply client-side filters
+  function applyFilters(productList: MockProductViewModel[]): MockProductViewModel[] {
+    const activeFilters = filters();
+    if (Object.keys(activeFilters).length === 0) {
+      return productList;
+    }
+
+    return productList.filter((product) => {
+      for (const [column, filterValue] of Object.entries(activeFilters)) {
+        if (!filterValue) continue;
+
+        const productValue = (product as Record<string, any>)[column];
+
+        // Text search
+        if (typeof filterValue === 'string') {
+          if (filterValue.length > 0) {
+            if (!productValue?.toString().toLowerCase().includes(filterValue.toLowerCase())) {
+              return false;
+            }
+          }
+        }
+        // Range filter
+        else if (typeof filterValue === 'object' && filterValue !== null && ('min' in filterValue || 'max' in filterValue)) {
+          const rangeFilter = filterValue as { min?: number; max?: number };
+          const numValue = Number(productValue);
+          if (rangeFilter.min !== undefined && numValue < rangeFilter.min) {
+            return false;
+          }
+          if (rangeFilter.max !== undefined && numValue > rangeFilter.max) {
+            return false;
+          }
+        }
+        // Multi-select
+        else if (Array.isArray(filterValue)) {
+          if (filterValue.length > 0) {
+            // Handle boolean yes/no filters
+            if (typeof productValue === 'boolean') {
+              const boolStrings = filterValue.map((v: string) => {
+                if (v === 'Yes') return true;
+                if (v === 'No') return false;
+                return v;
+              });
+              if (!boolStrings.includes(productValue)) {
+                return false;
+              }
+            } else if (!filterValue.includes(productValue)) {
+              return false;
+            }
+          }
+        }
+      }
+      return true;
+    });
+  }
+
+  // Computed values for display (use previous data during loading, then apply filters)
+  const baseProducts = createMemo(() => products() ?? previousProducts());
+  const displayProducts = createMemo(() => {
+    const base = baseProducts();
+    return base ? applyFilters(base) : undefined;
+  });
   const displayTotal = createMemo(() => totalProducts() > 0 ? totalProducts() : previousTotalProducts());
 
   // Column keys for the table

@@ -14,6 +14,7 @@
   let totalProducts = $state<number>(0);
   let error = $state<Error | null>(null);
   let filterResetTrigger = $state(0);
+  let filters = $state<Record<string, any>>({});
 
   // Keep previous data during loading to prevent table destruction
   let previousProducts = $state<Array<MockProductViewModel> | undefined>(undefined);
@@ -34,8 +35,65 @@
     return getColumnConfig(key as keyof MockProductViewModel)?.unit;
   }
 
-  // Computed values for display (use previous data during loading)
-  let displayProducts = $derived(products ?? previousProducts);
+  // Computed values for display (use previous data during loading, then apply filters)
+  let baseProducts = $derived(products ?? previousProducts);
+  // Inline filter logic so Svelte tracks all dependencies
+  let displayProducts = $derived.by(() => {
+    const prods = baseProducts;
+    if (!prods) return [];
+
+    const activeFilters = filters;
+    if (Object.keys(activeFilters).length === 0) {
+      return prods;
+    }
+
+    return prods.filter((product) => {
+      for (const [column, filterValue] of Object.entries(activeFilters)) {
+        if (!filterValue) continue;
+
+        const productValue = (product as Record<string, any>)[column];
+
+        // Text search
+        if (typeof filterValue === 'string') {
+          if (filterValue.length > 0) {
+            if (!productValue?.toString().toLowerCase().includes(filterValue.toLowerCase())) {
+              return false;
+            }
+          }
+        }
+        // Range filter
+        else if (typeof filterValue === 'object' && filterValue !== null && ('min' in filterValue || 'max' in filterValue)) {
+          const rangeFilter = filterValue as { min?: number; max?: number };
+          const numValue = Number(productValue);
+          if (rangeFilter.min !== undefined && numValue < rangeFilter.min) {
+            return false;
+          }
+          if (rangeFilter.max !== undefined && numValue > rangeFilter.max) {
+            return false;
+          }
+        }
+        // Multi-select
+        else if (Array.isArray(filterValue)) {
+          if (filterValue.length > 0) {
+            // Handle boolean yes/no filters
+            if (typeof productValue === 'boolean') {
+              const boolStrings = filterValue.map((v: string) => {
+                if (v === 'Yes') return true;
+                if (v === 'No') return false;
+                return v;
+              });
+              if (!boolStrings.includes(productValue)) {
+                return false;
+              }
+            } else if (!filterValue.includes(productValue)) {
+              return false;
+            }
+          }
+        }
+      }
+      return true;
+    });
+  });
   let displayTotal = $derived(totalProducts > 0 ? totalProducts : previousTotalProducts);
 
   // Data fetching
@@ -70,11 +128,8 @@
     }
   });
 
-  // Filter state
-  let filters = $state<Record<string, any>>({});
-
   function updateFilter(column: string, value: any) {
-    filters[column] = value;
+    filters = { ...filters, [column]: value };
   }
 
   function resetFilters() {

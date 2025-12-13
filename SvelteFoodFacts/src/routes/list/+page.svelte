@@ -94,7 +94,6 @@
       return true;
     });
   });
-  let displayTotal = $derived(totalProducts > 0 ? totalProducts : previousTotalProducts);
 
   // Data fetching
   async function loadProducts() {

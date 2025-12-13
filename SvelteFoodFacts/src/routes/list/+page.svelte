@@ -158,7 +158,6 @@
         bind:page={currentPage}
         bind:pageSize={pageSize}
         showFilterRow={true}
-        trackBy="code"
       >
         {#snippet header(column)}
           <strong>{getColumnTitle(column)}</strong>

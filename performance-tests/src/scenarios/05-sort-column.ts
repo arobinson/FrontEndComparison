@@ -15,6 +15,12 @@ export const sortColumnScenario: TestScenario = {
 
     const memoryBefore = await getMemoryMetrics(page);
 
+    // Get the first row's product code before sorting
+    const firstRowCodeBefore = await page.evaluate(() => {
+      const firstCell = document.querySelector('tbody tr:first-child td:first-child');
+      return firstCell?.textContent?.trim() ?? '';
+    });
+
     // Find the product_name column header (first th with click handler)
     const columnHeader = page.locator('thead th').first();
 
@@ -23,32 +29,16 @@ export const sortColumnScenario: TestScenario = {
 
     await columnHeader.click();
 
-    // Wait for table to re-render
-    await page.evaluate(() => {
-      return new Promise<void>((resolve) => {
-        const tbody = document.querySelector('tbody');
-        if (!tbody) {
-          resolve();
-          return;
-        }
-
-        let timeoutId: NodeJS.Timeout;
-        const observer = new MutationObserver(() => {
-          clearTimeout(timeoutId);
-          timeoutId = setTimeout(() => {
-            observer.disconnect();
-            resolve();
-          }, 100);
-        });
-
-        observer.observe(tbody, { childList: true, subtree: true, attributes: true });
-
-        setTimeout(() => {
-          observer.disconnect();
-          resolve();
-        }, 500);
-      });
-    });
+    // Wait for first row's product code to change (sort applied)
+    await page.waitForFunction(
+      (previousCode: string) => {
+        const firstCell = document.querySelector('tbody tr:first-child td:first-child');
+        const currentCode = firstCell?.textContent?.trim() ?? '';
+        return currentCode !== previousCode;
+      },
+      firstRowCodeBefore,
+      { timeout: 5000 }
+    );
 
     const operationEnd = Date.now();
     await performanceMark(page, 'sort-end');

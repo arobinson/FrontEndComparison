@@ -17,6 +17,11 @@ export const filterApplicationScenario: TestScenario = {
     // Wait for table to be visible
     await page.waitForSelector('table', { state: 'visible' });
 
+    // Get initial row count before filtering
+    const initialRowCount = await page.evaluate(() => {
+      return document.querySelectorAll('tbody tr').length;
+    });
+
     // Get initial memory
     const memoryBefore = await getMemoryMetrics(page);
 
@@ -42,34 +47,15 @@ export const filterApplicationScenario: TestScenario = {
       }
     });
 
-    // Wait for table to update using MutationObserver
-    await page.evaluate(() => {
-      return new Promise<void>((resolve) => {
-        const tbody = document.querySelector('tbody');
-        if (!tbody) {
-          resolve();
-          return;
-        }
-
-        let timeoutId: NodeJS.Timeout;
-        const observer = new MutationObserver(() => {
-          // Reset timeout on each mutation
-          clearTimeout(timeoutId);
-          timeoutId = setTimeout(() => {
-            observer.disconnect();
-            resolve();
-          }, 50); // Reduced from 100ms - quicker detection after mutations stop
-        });
-
-        observer.observe(tbody, { childList: true, subtree: true });
-
-        // Fallback timeout - reduced from 2000ms to 500ms
-        setTimeout(() => {
-          observer.disconnect();
-          resolve();
-        }, 500);
-      });
-    });
+    // Wait for row count to change (filter applied)
+    await page.waitForFunction(
+      (initialCount: number) => {
+        const currentCount = document.querySelectorAll('tbody tr').length;
+        return currentCount !== initialCount;
+      },
+      initialRowCount,
+      { timeout: 5000 }
+    );
 
     const operationEnd = Date.now();
     await performanceMark(page, 'filter-end');

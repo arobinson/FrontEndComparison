@@ -16,6 +16,12 @@ export const paginationScenario: TestScenario = {
 
     const memoryBefore = await getMemoryMetrics(page);
 
+    // Get the last row's product code before pagination
+    const lastRowCodeBefore = await page.evaluate(() => {
+      const lastRow = document.querySelector('tbody tr:last-child td:first-child');
+      return lastRow?.textContent?.trim() ?? '';
+    });
+
     // Find the next page button
     const nextButton = await page.evaluate(() => {
       const buttons = Array.from(document.querySelectorAll('button'));
@@ -51,32 +57,16 @@ export const paginationScenario: TestScenario = {
       }
     });
 
-    // Wait for new page data to load and render
-    await page.evaluate(() => {
-      return new Promise<void>((resolve) => {
-        const tbody = document.querySelector('tbody');
-        if (!tbody) {
-          resolve();
-          return;
-        }
-
-        let timeoutId: NodeJS.Timeout;
-        const observer = new MutationObserver(() => {
-          clearTimeout(timeoutId);
-          timeoutId = setTimeout(() => {
-            observer.disconnect();
-            resolve();
-          }, 200);
-        });
-
-        observer.observe(tbody, { childList: true, subtree: true });
-
-        setTimeout(() => {
-          observer.disconnect();
-          resolve();
-        }, 3000);
-      });
-    });
+    // Wait for last row's product code to change (page fully loaded)
+    await page.waitForFunction(
+      (previousCode: string) => {
+        const lastRow = document.querySelector('tbody tr:last-child td:first-child');
+        const currentCode = lastRow?.textContent?.trim() ?? '';
+        return currentCode !== previousCode;
+      },
+      lastRowCodeBefore,
+      { timeout: 5000 }
+    );
 
     const operationEnd = Date.now();
     await performanceMark(page, 'pagination-end');

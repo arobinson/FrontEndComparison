@@ -33,6 +33,11 @@ export const clearFiltersScenario: TestScenario = {
     // Get memory before clear
     const memoryBefore = await getMemoryMetrics(page);
 
+    // Get row count before clear (filtered state)
+    const rowCountBefore = await page.evaluate(() => {
+      return document.querySelectorAll('tbody tr').length;
+    });
+
     // Find the Reset Filters button using text content
     const resetButton = page.getByRole('button', { name: /reset|clear/i });
 
@@ -43,32 +48,15 @@ export const clearFiltersScenario: TestScenario = {
     const operationStart = Date.now();
     await resetButton.click();
 
-    // Wait for table to restore all rows
-    await page.evaluate(() => {
-      return new Promise<void>((resolve) => {
-        const tbody = document.querySelector('tbody');
-        if (!tbody) {
-          resolve();
-          return;
-        }
-
-        let timeoutId: NodeJS.Timeout;
-        const observer = new MutationObserver(() => {
-          clearTimeout(timeoutId);
-          timeoutId = setTimeout(() => {
-            observer.disconnect();
-            resolve();
-          }, 50);
-        });
-
-        observer.observe(tbody, { childList: true, subtree: true });
-
-        setTimeout(() => {
-          observer.disconnect();
-          resolve();
-        }, 500);
-      });
-    });
+    // Wait for row count to increase (table restored to full set)
+    await page.waitForFunction(
+      (previousCount: number) => {
+        const currentCount = document.querySelectorAll('tbody tr').length;
+        return currentCount > previousCount;
+      },
+      rowCountBefore,
+      { timeout: 5000 }
+    );
 
     const operationEnd = Date.now();
     await performanceMark(page, 'clear-end');

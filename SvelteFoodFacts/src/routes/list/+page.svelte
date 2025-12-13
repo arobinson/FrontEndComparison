@@ -18,7 +18,6 @@
 
   // Keep previous data during loading to prevent table destruction
   let previousProducts = $state<Array<MockProductViewModel> | undefined>(undefined);
-  let previousTotalProducts = $state<number>(0);
 
   // Column keys for the table
   const columnKeys = allColumns.map(col => col.key);
@@ -104,7 +103,6 @@
       totalProducts = result.total;
       // Store as previous for next loading state
       previousProducts = result.products;
-      previousTotalProducts = result.total;
       productsState = 'loaded';
     } catch (e) {
       error = e instanceof Error ? e : new Error('An unknown error occurred');

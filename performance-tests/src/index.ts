@@ -24,11 +24,11 @@ async function main(): Promise<void> {
     scenarios.filterApplicationScenario,
     scenarios.clearFiltersScenario,
     scenarios.expandCollapseScenario,
-    scenarios.sortColumnScenario,
     scenarios.navigateToDetailScenario,
     scenarios.navigateBackScenario,
     scenarios.paginationScenario,
-    scenarios.paginationCycleScenario
+    scenarios.paginationCycleScenario,
+    scenarios.detailNavigationCycleScenario
   ];
 
   console.log('='.repeat(80));

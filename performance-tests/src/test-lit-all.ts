@@ -20,13 +20,11 @@ async function main(): Promise<void> {
 
   await mkdir(config.outputDir, { recursive: true });
 
-  // Test scenarios (excluding sort-column which is not implemented in any framework)
   const testScenarios = [
     scenarios.initialLoadScenario,
     scenarios.filterApplicationScenario,
     scenarios.clearFiltersScenario,
     scenarios.expandCollapseScenario,
-    // scenarios.sortColumnScenario - skipped: sorting not implemented
     scenarios.navigateToDetailScenario,
     scenarios.navigateBackScenario,
     scenarios.paginationScenario,
@@ -47,8 +45,6 @@ async function main(): Promise<void> {
   console.log('  7. Pagination');
   console.log('  8. Pagination Cycle');
   console.log('  9. Detail Navigation Cycle');
-  console.log('');
-  console.log('  (Sort Column skipped - not implemented in frameworks)');
   console.log('');
 
   const runner = new TestRunner(config);

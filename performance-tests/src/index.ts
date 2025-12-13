@@ -26,7 +26,6 @@ async function main(): Promise<void> {
     scenarios.expandCollapseScenario,
     scenarios.navigateToDetailScenario,
     scenarios.navigateBackScenario,
-    scenarios.paginationScenario,
     scenarios.paginationCycleScenario,
     scenarios.detailNavigationCycleScenario
   ];

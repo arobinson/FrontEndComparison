@@ -27,7 +27,6 @@ async function main(): Promise<void> {
     scenarios.expandCollapseScenario,
     scenarios.navigateToDetailScenario,
     scenarios.navigateBackScenario,
-    scenarios.paginationScenario,
     scenarios.paginationCycleScenario,
     scenarios.detailNavigationCycleScenario
   ];
@@ -42,9 +41,8 @@ async function main(): Promise<void> {
   console.log('  4. Expand/Collapse');
   console.log('  5. Navigate to Detail');
   console.log('  6. Navigate Back');
-  console.log('  7. Pagination');
-  console.log('  8. Pagination Cycle');
-  console.log('  9. Detail Navigation Cycle');
+  console.log('  7. Pagination Cycle');
+  console.log('  8. Detail Navigation Cycle');
   console.log('');
 
   const runner = new TestRunner(config);

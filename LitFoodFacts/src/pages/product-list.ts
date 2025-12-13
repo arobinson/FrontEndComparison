@@ -107,9 +107,8 @@ export class ProductList extends LitElement {
 
   // Keep previous data during loading to prevent table destruction
   private previousProducts: MockProductViewModel[] = [];
-  private previousTotalProducts = 0;
 
-  private columnKeys = allColumns.map(col => col.key);
+  private columnKeys = allColumns.map((col) => col.key);
 
   connectedCallback() {
     super.connectedCallback();
@@ -130,11 +129,65 @@ export class ProductList extends LitElement {
 
   // Computed values for display (use previous data during loading)
   private get displayProducts(): MockProductViewModel[] {
-    return this.products.length > 0 ? this.products : this.previousProducts;
+    const baseProducts = this.products.length > 0 ? this.products : this.previousProducts;
+    return this.applyFilters(baseProducts);
   }
 
-  private get displayTotal(): number {
-    return this.totalProducts > 0 ? this.totalProducts : this.previousTotalProducts;
+  /**
+   * Apply client-side filters to the products
+   */
+  private applyFilters(products: MockProductViewModel[]): MockProductViewModel[] {
+    const activeFilters = this.filters;
+    if (Object.keys(activeFilters).length === 0) {
+      return products;
+    }
+
+    return products.filter((product) => {
+      for (const [column, filterValue] of Object.entries(activeFilters)) {
+        if (!filterValue) continue;
+
+        const productValue = (product as unknown as Record<string, unknown>)[column];
+
+        // Text search
+        if (typeof filterValue === 'string') {
+          if (filterValue.length > 0) {
+            if (!productValue?.toString().toLowerCase().includes(filterValue.toLowerCase())) {
+              return false;
+            }
+          }
+        }
+        // Range filter
+        else if (typeof filterValue === 'object' && filterValue !== null && ('min' in filterValue || 'max' in filterValue)) {
+          const rangeFilter = filterValue as { min?: number; max?: number };
+          const numValue = Number(productValue);
+          if (rangeFilter.min !== undefined && numValue < rangeFilter.min) {
+            return false;
+          }
+          if (rangeFilter.max !== undefined && numValue > rangeFilter.max) {
+            return false;
+          }
+        }
+        // Multi-select
+        else if (Array.isArray(filterValue)) {
+          if (filterValue.length > 0) {
+            // Handle boolean yes/no filters
+            if (typeof productValue === 'boolean') {
+              const boolStrings = filterValue.map((v) => {
+                if (v === 'Yes') return true;
+                if (v === 'No') return false;
+                return v;
+              });
+              if (!boolStrings.includes(productValue)) {
+                return false;
+              }
+            } else if (!filterValue.includes(productValue)) {
+              return false;
+            }
+          }
+        }
+      }
+      return true;
+    });
   }
 
   private async loadProducts() {
@@ -145,7 +198,6 @@ export class ProductList extends LitElement {
       this.totalProducts = result.total;
       // Store as previous for next loading state
       this.previousProducts = result.products;
-      this.previousTotalProducts = result.total;
       this.productsState = 'loaded';
     } catch (e) {
       this.error = e instanceof Error ? e : new Error('An unknown error occurred');
@@ -246,42 +298,39 @@ export class ProductList extends LitElement {
     return html`
       <div class="page-header-row">
         <h1>Products</h1>
-        <button class="reset-button" @click=${this.resetFilters} type="button">
-          Reset Filters
-        </button>
+        <button class="reset-button" @click=${this.resetFilters} type="button"> Reset Filters </button>
       </div>
 
       <div class="table-area">
-        ${this.productsState === 'loading' ? html`
-          <div class="loading-overlay">
-            <span class="loading-indicator">⏳ Loading...</span>
-          </div>
-        ` : ''}
-
-        ${this.displayProducts.length > 0 ? html`
-          <data-table
-            .columns=${this.columnKeys}
-            .value=${this.displayProducts}
-            .totalPages=${this.totalPages}
-            .page=${this.currentPage}
-            .pageSize=${this.pageSize}
-            .showFilterRow=${true}
-            trackBy="code"
-            .renderHeader=${this.renderHeader}
-            .renderFilter=${this.renderFilter}
-            .renderCell=${this.renderCell}
-            @page-change=${this.handlePageChange}
-            @page-size-change=${this.handlePageSizeChange}
-          ></data-table>
-        ` : ''}
-
-        ${this.productsState === 'error' ? html`
-          <p class="error-message">Error loading products: ${this.error?.message ?? 'Unknown'}</p>
-        ` : ''}
-
-        ${this.productsState !== 'loading' && this.displayProducts.length === 0 ? html`
-          <p>No products found.</p>
-        ` : ''}
+        ${this.productsState === 'loading'
+          ? html`
+              <div class="loading-overlay">
+                <span class="loading-indicator">⏳ Loading...</span>
+              </div>
+            `
+          : ''}
+        ${this.displayProducts.length > 0
+          ? html`
+              <data-table
+                .columns=${this.columnKeys}
+                .value=${this.displayProducts}
+                .totalPages=${this.totalPages}
+                .page=${this.currentPage}
+                .pageSize=${this.pageSize}
+                .showFilterRow=${true}
+                trackBy="code"
+                .renderHeader=${this.renderHeader}
+                .renderFilter=${this.renderFilter}
+                .renderCell=${this.renderCell}
+                @page-change=${this.handlePageChange}
+                @page-size-change=${this.handlePageSizeChange}
+              ></data-table>
+            `
+          : ''}
+        ${this.productsState === 'error'
+          ? html` <p class="error-message">Error loading products: ${this.error?.message ?? 'Unknown'}</p> `
+          : ''}
+        ${this.productsState !== 'loading' && this.displayProducts.length === 0 ? html` <p>No products found.</p> ` : ''}
       </div>
     `;
   }

@@ -1,5 +1,6 @@
 import { TestScenario, TestContext, ScenarioResult, Measurement } from '../types.js';
 import { performanceMark, performanceMeasure, getMemoryMetrics } from '../utils/performance-helpers.js';
+import { getCountInShadow, waitForSelectorInShadow } from '../utils/shadow-dom-helpers.js';
 
 export const clearFiltersScenario: TestScenario = {
   name: 'clear-filters',
@@ -14,31 +15,28 @@ export const clearFiltersScenario: TestScenario = {
     await page.goto(baseUrl, { waitUntil: 'networkidle' });
     await new Promise((resolve) => setTimeout(resolve, 500));
 
+    // Wait for table to appear (shadow-aware)
+    await waitForSelectorInShadow(page, 'table', { timeout: 30000 });
+
     // First apply a filter (use Product Name column - second text input)
-    const filterInput = page.locator('thead input[type="text"]').nth(1);
+    // Playwright locator automatically pierces shadow DOM
+    const filterInput = page.locator('input[type="text"]').nth(1);
 
     // Apply a simple filter
     await filterInput.fill('a');
 
-    // Focus away from input to trigger blur event
-    await page.evaluate(() => {
-      const inputs = document.querySelectorAll('thead input[type="text"]');
-      const productNameInput = inputs[1] as HTMLInputElement;
-      if (productNameInput) {
-        productNameInput.blur();
-      }
-    });
+    // Blur to trigger filter
+    await filterInput.blur();
     await new Promise((resolve) => setTimeout(resolve, 500));
 
     // Get memory before clear
     const memoryBefore = await getMemoryMetrics(page);
 
-    // Get row count before clear (filtered state)
-    const rowCountBefore = await page.evaluate(() => {
-      return document.querySelectorAll('tbody tr').length;
-    });
+    // Get row count before clear (filtered state) - shadow-aware
+    const rowCountBefore = await getCountInShadow(page, 'tbody tr');
 
     // Find the Reset Filters button using text content
+    // Playwright getByRole pierces shadow DOM
     const resetButton = page.getByRole('button', { name: /reset|clear/i });
 
     // Mark start of clear operation
@@ -48,10 +46,23 @@ export const clearFiltersScenario: TestScenario = {
     const operationStart = Date.now();
     await resetButton.click();
 
-    // Wait for row count to increase (table restored to full set)
+    // Wait for row count to increase (table restored to full set) - shadow-aware
     await page.waitForFunction(
       (previousCount: number) => {
-        const currentCount = document.querySelectorAll('tbody tr').length;
+        function countInShadow(root: Document | ShadowRoot | Element, selector: string): number {
+          const found = root.querySelectorAll(selector);
+          if (found.length > 0) return found.length;
+          const elements = Array.from(root.querySelectorAll('*'));
+          for (let i = 0; i < elements.length; i++) {
+            const el = elements[i];
+            if (el.shadowRoot) {
+              const count = countInShadow(el.shadowRoot, selector);
+              if (count > 0) return count;
+            }
+          }
+          return 0;
+        }
+        const currentCount = countInShadow(document, 'tbody tr');
         return currentCount > previousCount;
       },
       rowCountBefore,
@@ -75,11 +86,8 @@ export const clearFiltersScenario: TestScenario = {
     const memoryDelta = memoryAfter.usedHeapSize - memoryBefore.usedHeapSize;
     measurements.push({ name: 'memory_delta', value: memoryDelta, unit: 'bytes' });
 
-    // Count rows after clear (should be back to full set)
-    const visibleRows = await page.evaluate(() => {
-      const rows = document.querySelectorAll('tbody tr');
-      return rows.length;
-    });
+    // Count rows after clear (should be back to full set) - shadow-aware
+    const visibleRows = await getCountInShadow(page, 'tbody tr');
     measurements.push({ name: 'restored_row_count', value: visibleRows, unit: 'count' });
 
     result = {

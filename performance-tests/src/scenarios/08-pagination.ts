@@ -1,6 +1,7 @@
 import { TestScenario, TestContext, ScenarioResult, Measurement } from '../types.js';
 import { performanceMark, performanceMeasure, getMemoryMetrics } from '../utils/performance-helpers.js';
 import { NetworkTracker } from '../utils/network-tracker.js';
+import { waitForSelectorInShadow, findInShadowFn } from '../utils/shadow-dom-helpers.js';
 
 export const paginationScenario: TestScenario = {
   name: 'pagination',
@@ -14,26 +15,25 @@ export const paginationScenario: TestScenario = {
     await page.goto(baseUrl, { waitUntil: 'networkidle' });
     await new Promise((resolve) => setTimeout(resolve, 500));
 
+    // Wait for table (shadow-aware)
+    await waitForSelectorInShadow(page, 'table', { timeout: 30000 });
+
     const memoryBefore = await getMemoryMetrics(page);
 
     // Get the last row's product code before pagination
-    const lastRowCodeBefore = await page.evaluate(() => {
-      const lastRow = document.querySelector('tbody tr:last-child td:first-child');
-      return lastRow?.textContent?.trim() ?? '';
-    });
+    // Find the td (may be in shadow DOM), then find the <a> within it
+    const lastRowCodeBefore = await page.evaluate(`(function() {
+      ${findInShadowFn}
+      const td = findInShadow(document, 'tbody tr:last-child td:first-child');
+      const el = td ? findInShadow(td, 'a') : null;
+      return el?.textContent?.trim() ?? '';
+    })()`);
 
-    // Find the next page button
-    const nextButton = await page.evaluate(() => {
-      const buttons = Array.from(document.querySelectorAll('button'));
-      const next = buttons.find((btn) => {
-        const text = btn.textContent?.trim().toLowerCase() || '';
-        return text.includes('next') || text.includes('>') || text === '2';
-      });
+    // Find the next page button using Playwright's role-based locator
+    const nextButton = page.getByRole('button', { name: /next/i });
+    const nextButtonExists = await nextButton.count() > 0;
 
-      return next ? true : false;
-    });
-
-    if (!nextButton) {
+    if (!nextButtonExists) {
       throw new Error('Could not find next page button');
     }
 
@@ -44,29 +44,17 @@ export const paginationScenario: TestScenario = {
     await performanceMark(page, 'pagination-start');
     const operationStart = Date.now();
 
-    // Click next page
-    await page.evaluate(() => {
-      const buttons = Array.from(document.querySelectorAll('button'));
-      const next = buttons.find((btn) => {
-        const text = btn.textContent?.trim().toLowerCase() || '';
-        return text.includes('next') || text.includes('>') || text === '2';
-      });
-
-      if (next) {
-        (next as HTMLElement).click();
-      }
-    });
+    // Click next page using Playwright locator
+    await nextButton.click();
 
     // Wait for last row's product code to change (page fully loaded)
-    await page.waitForFunction(
-      (previousCode: string) => {
-        const lastRow = document.querySelector('tbody tr:last-child td:first-child');
-        const currentCode = lastRow?.textContent?.trim() ?? '';
-        return currentCode !== previousCode;
-      },
-      lastRowCodeBefore,
-      { timeout: 5000 }
-    );
+    await page.waitForFunction(`(function() {
+      ${findInShadowFn}
+      const td = findInShadow(document, 'tbody tr:last-child td:first-child');
+      const el = td ? findInShadow(td, 'a') : null;
+      const currentCode = el?.textContent?.trim() ?? '';
+      return currentCode !== '${lastRowCodeBefore}';
+    })()`, { timeout: 10000 });
 
     const operationEnd = Date.now();
     await performanceMark(page, 'pagination-end');

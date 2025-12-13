@@ -175,3 +175,24 @@ export async function getCountInShadow(page: Page, selector: string): Promise<nu
     return countInShadow(document, sel);
   }, selector);
 }
+
+/**
+ * Injectable JS function string for finding elements in shadow DOM.
+ * Use in page.evaluate() or page.waitForFunction().
+ */
+export const findInShadowFn = `
+  function findInShadow(root, selector) {
+    const found = root.querySelector(selector);
+    if (found) return found;
+    const elements = Array.from(root.querySelectorAll('*'));
+    for (let i = 0; i < elements.length; i++) {
+      const el = elements[i];
+      if (el.shadowRoot) {
+        const result = findInShadow(el.shadowRoot, selector);
+        if (result) return result;
+      }
+    }
+    return null;
+  }
+`;
+

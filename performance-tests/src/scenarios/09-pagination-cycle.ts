@@ -1,6 +1,7 @@
 import { TestScenario, TestContext, ScenarioResult, Measurement } from '../types.js';
 import { performanceMark, performanceMeasure, getMemoryMetrics } from '../utils/performance-helpers.js';
 import { NetworkTracker } from '../utils/network-tracker.js';
+import { waitForSelectorInShadow, findInShadowFn } from '../utils/shadow-dom-helpers.js';
 
 export const paginationCycleScenario: TestScenario = {
   name: 'pagination-cycle',
@@ -14,41 +15,50 @@ export const paginationCycleScenario: TestScenario = {
     await page.goto(baseUrl, { waitUntil: 'networkidle' });
     await new Promise((resolve) => setTimeout(resolve, 500));
 
+    // Wait for table (shadow-aware)
+    await waitForSelectorInShadow(page, 'table', { timeout: 30000 });
+
     const memoryBefore = await getMemoryMetrics(page);
 
     // Start network tracking for all pagination operations
     const networkTracker = new NetworkTracker(page);
     networkTracker.start();
 
-    // Define the page sequence: 1→2→3→2→1
-    const pageSequence = [2, 3, 2, 1];
+    // Define the navigation sequence: Next, Next, Previous, Previous
+    // This goes 1→2→3→2→1 using Next/Previous buttons
+    const navigationSequence: Array<'next' | 'previous'> = ['next', 'next', 'previous', 'previous'];
     const pageTimes: number[] = [];
 
     await performanceMark(page, 'pagination-cycle-start');
     const cycleStart = Date.now();
 
-    for (let i = 0; i < pageSequence.length; i++) {
-      const targetPage = pageSequence[i];
+    for (let i = 0; i < navigationSequence.length; i++) {
+      const direction = navigationSequence[i];
+
+      // Get the last row's product code before navigation
+      // Find the td (may be in shadow DOM), then find the <a> within it
+      const lastRowCodeBefore = await page.evaluate(`(function() {
+        ${findInShadowFn}
+        const td = findInShadow(document, 'tbody tr:last-child td:first-child');
+        const el = td ? findInShadow(td, 'a') : null;
+        return el?.textContent?.trim() ?? '';
+      })()`);
 
       await performanceMark(page, `page-${i}-start`);
       const pageStart = Date.now();
 
-      // Click the page number button
-      await page.evaluate((pageNum: number) => {
-        const buttons = Array.from(document.querySelectorAll('button'));
-        const pageButton = buttons.find((btn) => {
-          const text = btn.textContent?.trim() || '';
-          return text === String(pageNum);
-        });
+      // Click the Next or Previous button using Playwright's role-based locator
+      const button = page.getByRole('button', { name: new RegExp(direction, 'i') });
+      await button.click();
 
-        if (pageButton) {
-          (pageButton as HTMLElement).click();
-        }
-      }, targetPage);
-
-      // Wait for loading indicator to appear and then disappear
-      await page.waitForSelector('.loading-indicator', { timeout: 1000 }).catch(() => {});
-      await page.waitForSelector('.loading-indicator', { state: 'hidden', timeout: 10000 }).catch(() => {});
+      // Wait for last row's product code to change (page fully loaded)
+      await page.waitForFunction(`(function() {
+        ${findInShadowFn}
+        const td = findInShadow(document, 'tbody tr:last-child td:first-child');
+        const el = td ? findInShadow(td, 'a') : null;
+        const currentCode = el?.textContent?.trim() ?? '';
+        return currentCode !== '${lastRowCodeBefore}';
+      })()`, { timeout: 10000 });
 
       const pageEnd = Date.now();
       await performanceMark(page, `page-${i}-end`);
@@ -58,12 +68,12 @@ export const paginationCycleScenario: TestScenario = {
       pageTimes.push(pageTime);
 
       measurements.push({
-        name: `page_transition_${i + 1}_to_${targetPage}`,
+        name: `page_transition_${i + 1}_${direction}`,
         value: pageTime,
         unit: 'ms'
       });
       measurements.push({
-        name: `page_transition_${i + 1}_to_${targetPage}_js`,
+        name: `page_transition_${i + 1}_${direction}_js`,
         value: pageDuration,
         unit: 'ms'
       });

@@ -468,7 +468,7 @@ export class ProductDetail extends LitElement {
               </dl>
             </div>
 
-            ${this.displayProduct.grade || this.product.safetyRating || this.product.customerRating || this.product.ecoScore ? html`
+            ${this.displayProduct.grade || this.displayProduct.safetyRating || this.displayProduct.customerRating || this.displayProduct.ecoScore ? html`
               <div class="health-section">
                 <h2>Quality & Ratings</h2>
                 <div class="score-grid">
@@ -496,7 +496,7 @@ export class ProductDetail extends LitElement {
               </div>
             ` : ''}
 
-            ${this.displayProduct.unitsSold || this.product.reviewCount ? html`
+            ${this.displayProduct.unitsSold || this.displayProduct.reviewCount ? html`
               <div class="stats-section">
                 <h2>Statistics</h2>
                 <dl class="info-list">
@@ -518,7 +518,7 @@ export class ProductDetail extends LitElement {
               </div>
             ` : ''}
 
-            ${this.displayProduct.price || this.product.cost || this.product.wholesalePrice ? html`
+            ${this.displayProduct.price || this.displayProduct.cost || this.displayProduct.wholesalePrice ? html`
               <div class="pricing-section">
                 <h2>Pricing & Financial</h2>
                 <dl class="info-list">
@@ -550,7 +550,7 @@ export class ProductDetail extends LitElement {
               </div>
             ` : ''}
 
-            ${this.displayProduct.stockQuantity !== undefined || this.product.warehouseLocation || this.product.reorderLevel !== undefined ? html`
+            ${this.displayProduct.stockQuantity !== undefined || this.displayProduct.warehouseLocation || this.displayProduct.reorderLevel !== undefined ? html`
               <div class="inventory-section">
                 <h2>Inventory</h2>
                 <dl class="info-list">
@@ -582,7 +582,7 @@ export class ProductDetail extends LitElement {
               </div>
             ` : ''}
 
-            ${this.displayProduct.originCountry || this.product.manufacturerCountry || this.product.shippingZone ? html`
+            ${this.displayProduct.originCountry || this.displayProduct.manufacturerCountry || this.displayProduct.shippingZone ? html`
               <div class="geographic-section">
                 <h2>Geographic Information</h2>
                 <dl class="info-list">
@@ -609,11 +609,11 @@ export class ProductDetail extends LitElement {
               </div>
             ` : ''}
 
-            ${this.displayProduct.firstName || this.product.lastName || this.product.supplierEmail || this.product.supplierPhone ? html`
+            ${this.displayProduct.firstName || this.displayProduct.lastName || this.displayProduct.supplierEmail || this.displayProduct.supplierPhone ? html`
               <div class="supplier-section">
                 <h2>Supplier Contact</h2>
                 <dl class="info-list">
-                  ${this.displayProduct.firstName || this.product.lastName ? html`
+                  ${this.displayProduct.firstName || this.displayProduct.lastName ? html`
                     <dt>Contact Name</dt>
                     <dd>${this.displayProduct.firstName} ${this.displayProduct.lastName}</dd>
                   ` : ''}
@@ -636,7 +636,7 @@ export class ProductDetail extends LitElement {
               </div>
             ` : ''}
 
-            ${this.displayProduct.isFeatured !== undefined || this.product.isBestSeller !== undefined || this.product.requiresShipping !== undefined || this.product.isDigital !== undefined || this.product.hasWarranty !== undefined ? html`
+            ${this.displayProduct.isFeatured !== undefined || this.displayProduct.isBestSeller !== undefined || this.displayProduct.requiresShipping !== undefined || this.displayProduct.isDigital !== undefined || this.displayProduct.hasWarranty !== undefined ? html`
               <div class="features-section">
                 <h2>Product Features</h2>
                 <dl class="info-list">

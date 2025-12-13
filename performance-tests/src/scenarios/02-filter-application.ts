@@ -1,5 +1,6 @@
 import { TestScenario, TestContext, ScenarioResult, Measurement } from '../types.js';
 import { performanceMark, performanceMeasure, getMemoryMetrics } from '../utils/performance-helpers.js';
+import { getCountInShadow, waitForSelectorInShadow } from '../utils/shadow-dom-helpers.js';
 
 export const filterApplicationScenario: TestScenario = {
   name: 'filter-application',
@@ -14,13 +15,11 @@ export const filterApplicationScenario: TestScenario = {
     await page.goto(baseUrl, { waitUntil: 'networkidle' });
     await new Promise((resolve) => setTimeout(resolve, 500));
 
-    // Wait for table to be visible
-    await page.waitForSelector('table', { state: 'visible' });
+    // Wait for table to be visible (use shadow-aware wait)
+    await waitForSelectorInShadow(page, 'table', { timeout: 30000 });
 
-    // Get initial row count before filtering
-    const initialRowCount = await page.evaluate(() => {
-      return document.querySelectorAll('tbody tr').length;
-    });
+    // Get initial row count before filtering (use shadow-aware count)
+    const initialRowCount = await getCountInShadow(page, 'tbody tr');
 
     // Get initial memory
     const memoryBefore = await getMemoryMetrics(page);
@@ -29,7 +28,8 @@ export const filterApplicationScenario: TestScenario = {
     const filterValue = 'Ri';
 
     // Find the product_name filter input (second text input - first is Code column)
-    const filterInput = page.locator('thead input[type="text"]').nth(1);
+    // Playwright locator automatically pierces shadow DOM
+    const filterInput = page.locator('input[type="text"]').nth(1);
 
     // Mark start of filter operation
     await performanceMark(page, 'filter-start');
@@ -38,19 +38,26 @@ export const filterApplicationScenario: TestScenario = {
     const operationStart = Date.now();
     await filterInput.fill(filterValue);
 
-    // Focus away from input to trigger blur event
-    await page.evaluate(() => {
-      const inputs = document.querySelectorAll('thead input[type="text"]');
-      const productNameInput = inputs[1] as HTMLInputElement; // Second input is Product Name
-      if (productNameInput) {
-        productNameInput.blur();
-      }
-    });
+    // Blur the input to trigger change
+    await filterInput.blur();
 
-    // Wait for row count to change (filter applied)
+    // Wait for row count to change (filter applied) - use shadow-aware function
     await page.waitForFunction(
       (initialCount: number) => {
-        const currentCount = document.querySelectorAll('tbody tr').length;
+        function countInShadow(root: Document | ShadowRoot | Element, selector: string): number {
+          const found = root.querySelectorAll(selector);
+          if (found.length > 0) return found.length;
+          const elements = Array.from(root.querySelectorAll('*'));
+          for (let i = 0; i < elements.length; i++) {
+            const el = elements[i];
+            if (el.shadowRoot) {
+              const count = countInShadow(el.shadowRoot, selector);
+              if (count > 0) return count;
+            }
+          }
+          return 0;
+        }
+        const currentCount = countInShadow(document, 'tbody tr');
         return currentCount !== initialCount;
       },
       initialRowCount,
@@ -74,11 +81,8 @@ export const filterApplicationScenario: TestScenario = {
     const memoryDelta = memoryAfter.usedHeapSize - memoryBefore.usedHeapSize;
     measurements.push({ name: 'memory_delta', value: memoryDelta, unit: 'bytes' });
 
-    // Count visible rows after filter
-    const visibleRows = await page.evaluate(() => {
-      const rows = document.querySelectorAll('tbody tr');
-      return rows.length;
-    });
+    // Count visible rows after filter (use shadow-aware count)
+    const visibleRows = await getCountInShadow(page, 'tbody tr');
     measurements.push({ name: 'filtered_row_count', value: visibleRows, unit: 'count' });
 
     // Get JavaScript execution time

@@ -37,3 +37,6 @@ yarn-error.log*
 # SvelteKit
 .svelte-kit/
 /SvelteFoodFacts/build/
+
+# Lit
+/LitFoodFacts/dist/

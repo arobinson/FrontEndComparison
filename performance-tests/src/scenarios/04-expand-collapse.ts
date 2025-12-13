@@ -1,5 +1,6 @@
 import { TestScenario, TestContext, ScenarioResult, Measurement } from '../types.js';
 import { performanceMark, performanceMeasure } from '../utils/performance-helpers.js';
+import { clickInShadow, waitForSelectorInShadow } from '../utils/shadow-dom-helpers.js';
 
 export const expandCollapseScenario: TestScenario = {
   name: 'expand-collapse-description',
@@ -14,11 +15,27 @@ export const expandCollapseScenario: TestScenario = {
     await page.goto(baseUrl, { waitUntil: 'networkidle' });
     await new Promise((resolve) => setTimeout(resolve, 500));
 
-    // Find the first "Show more" link in description column
+    // Wait for table (shadow-aware)
+    await waitForSelectorInShadow(page, 'table', { timeout: 30000 });
+
+    // Find the first "Show more" link in description column (shadow-aware)
     const showMoreLink = await page.evaluate(() => {
-      // Look for a button or link with "Show more" text
-      const links = Array.from(document.querySelectorAll('button, a'));
-      const showMore = links.find((el) => {
+      function findInShadow(root: Document | ShadowRoot | Element, predicate: (el: Element) => boolean): Element | null {
+        const elements = Array.from(root.querySelectorAll('button, a'));
+        for (const el of elements) {
+          if (predicate(el)) return el;
+        }
+        const allElements = Array.from(root.querySelectorAll('*'));
+        for (const el of allElements) {
+          if (el.shadowRoot) {
+            const found = findInShadow(el.shadowRoot, predicate);
+            if (found) return found;
+          }
+        }
+        return null;
+      }
+
+      const showMore = findInShadow(document, (el) => {
         const text = el.textContent?.trim().toLowerCase() || '';
         return text.includes('show more') || text.includes('more');
       });
@@ -27,7 +44,6 @@ export const expandCollapseScenario: TestScenario = {
         return null;
       }
 
-      // Return selector info
       return {
         tag: showMore.tagName,
         text: showMore.textContent?.trim()
@@ -47,10 +63,24 @@ export const expandCollapseScenario: TestScenario = {
     await performanceMark(page, 'expand-start');
     const expandStart = Date.now();
 
-    // Click show more
+    // Click show more (shadow-aware)
     await page.evaluate(() => {
-      const links = Array.from(document.querySelectorAll('button, a'));
-      const showMore = links.find((el) => {
+      function findInShadow(root: Document | ShadowRoot | Element, predicate: (el: Element) => boolean): Element | null {
+        const elements = Array.from(root.querySelectorAll('button, a'));
+        for (const el of elements) {
+          if (predicate(el)) return el;
+        }
+        const allElements = Array.from(root.querySelectorAll('*'));
+        for (const el of allElements) {
+          if (el.shadowRoot) {
+            const found = findInShadow(el.shadowRoot, predicate);
+            if (found) return found;
+          }
+        }
+        return null;
+      }
+
+      const showMore = findInShadow(document, (el) => {
         const text = el.textContent?.trim().toLowerCase() || '';
         return text.includes('show more') || text.includes('more');
       });
@@ -86,10 +116,24 @@ export const expandCollapseScenario: TestScenario = {
     await performanceMark(page, 'collapse-start');
     const collapseStart = Date.now();
 
-    // Click show less
+    // Click show less (shadow-aware)
     await page.evaluate(() => {
-      const links = Array.from(document.querySelectorAll('button, a'));
-      const showLess = links.find((el) => {
+      function findInShadow(root: Document | ShadowRoot | Element, predicate: (el: Element) => boolean): Element | null {
+        const elements = Array.from(root.querySelectorAll('button, a'));
+        for (const el of elements) {
+          if (predicate(el)) return el;
+        }
+        const allElements = Array.from(root.querySelectorAll('*'));
+        for (const el of allElements) {
+          if (el.shadowRoot) {
+            const found = findInShadow(el.shadowRoot, predicate);
+            if (found) return found;
+          }
+        }
+        return null;
+      }
+
+      const showLess = findInShadow(document, (el) => {
         const text = el.textContent?.trim().toLowerCase() || '';
         return text.includes('show less') || text.includes('less');
       });

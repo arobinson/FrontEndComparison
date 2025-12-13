@@ -1,5 +1,6 @@
 import { TestScenario, TestContext, ScenarioResult, Measurement } from '../types.js';
 import { performanceMark, performanceMeasure, getMemoryMetrics } from '../utils/performance-helpers.js';
+import { waitForSelectorInShadow } from '../utils/shadow-dom-helpers.js';
 
 export const sortColumnScenario: TestScenario = {
   name: 'sort-column',
@@ -13,15 +14,31 @@ export const sortColumnScenario: TestScenario = {
     await page.goto(baseUrl, { waitUntil: 'networkidle' });
     await new Promise((resolve) => setTimeout(resolve, 500));
 
+    // Wait for table (shadow-aware)
+    await waitForSelectorInShadow(page, 'table', { timeout: 30000 });
+
     const memoryBefore = await getMemoryMetrics(page);
 
-    // Get the first row's product code before sorting
+    // Get the first row's product code before sorting (shadow-aware)
     const firstRowCodeBefore = await page.evaluate(() => {
-      const firstCell = document.querySelector('tbody tr:first-child td:first-child');
+      function findInShadow(root: Document | ShadowRoot | Element, selector: string): Element | null {
+        const found = root.querySelector(selector);
+        if (found) return found;
+        const elements = Array.from(root.querySelectorAll('*'));
+        for (const el of elements) {
+          if (el.shadowRoot) {
+            const result = findInShadow(el.shadowRoot, selector);
+            if (result) return result;
+          }
+        }
+        return null;
+      }
+      const firstCell = findInShadow(document, 'tbody tr:first-child td:first-child');
       return firstCell?.textContent?.trim() ?? '';
     });
 
     // Find the product_name column header (first th with click handler)
+    // Playwright locator automatically pierces shadow DOM
     const columnHeader = page.locator('thead th').first();
 
     await performanceMark(page, 'sort-start');
@@ -29,10 +46,22 @@ export const sortColumnScenario: TestScenario = {
 
     await columnHeader.click();
 
-    // Wait for first row's product code to change (sort applied)
+    // Wait for first row's product code to change (sort applied) - shadow-aware
     await page.waitForFunction(
       (previousCode: string) => {
-        const firstCell = document.querySelector('tbody tr:first-child td:first-child');
+        function findInShadow(root: Document | ShadowRoot | Element, selector: string): Element | null {
+          const found = root.querySelector(selector);
+          if (found) return found;
+          const elements = Array.from(root.querySelectorAll('*'));
+          for (const el of elements) {
+            if (el.shadowRoot) {
+              const result = findInShadow(el.shadowRoot, selector);
+              if (result) return result;
+            }
+          }
+          return null;
+        }
+        const firstCell = findInShadow(document, 'tbody tr:first-child td:first-child');
         const currentCode = firstCell?.textContent?.trim() ?? '';
         return currentCode !== previousCode;
       },

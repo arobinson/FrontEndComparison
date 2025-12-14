@@ -1,89 +1,105 @@
 # Frontend Framework Performance Comparison
 
-A comprehensive performance and bundle size comparison between modern frontend frameworks: **Angular**, **React**, **Svelte**, and **SolidJS**.
+A comprehensive performance comparison between modern frontend frameworks: **Angular**, **React**, **Svelte**, **SolidJS**, and **Lit**.
 
-## Project Overview
+## Read the Full Analysis
 
-This repository contains functionally identical implementations of a food product discovery application across multiple frontend frameworks. Each implementation uses the OpenFoodFacts API to demonstrate real-world performance characteristics with complex UI components and data-heavy pages.
+**[Frontend Framework Performance Comparison (Medium)](https://medium.com/)** | [Markdown Version](Story.md)
 
-## Framework Implementations
+## Quick Start
 
-- **Angular** (`AngularFoodFacts/`) - Angular 20.x with zoneless change detection and standalone components
-- **React** - Coming soon
-- **Svelte** - Coming soon
-- **SolidJS** - Coming soon
+### Prerequisites
 
-## Application Features
+- Node.js 20+
+- pnpm 9+
 
-Each framework implementation includes:
-
-- **Product List Page**: Browse and search food products with 49 columns for performance testing
-- **Product Detail Page**: Detailed product information including nutritional data, ingredients, and images
-- **Navigation Performance**: Optimized routing between list and detail views
-- **OpenFoodFacts Integration**: Real-world product data with consistent dataset for fair comparison
-
-## Data Architecture
-
-### Local Backend for Performance Testing
-
-To ensure consistent and fair performance comparisons across all framework implementations, this project uses a local backend (`Backend/`) that serves cached OpenFoodFacts data:
-
-- **Consistent Dataset**: All frameworks use the same ~150 products to ensure identical testing conditions
-- **Cached Data**: Local JSON file (`shared-data/open-food-facts-products.json`) eliminates network variability
-- **Performance Optimized**: Removes API rate limiting and network latency from performance measurements
-- **Real Product Data**: Genuine OpenFoodFacts data, not mock/synthetic data
-
-### Backend Setup
+### Install Dependencies
 
 ```bash
-cd Backend
 pnpm install
-pnpm start  # Runs on http://localhost:3001
 ```
 
-The backend provides endpoints for:
-
-- `/api/products` - Paginated product listing with search and category filtering
-- `/api/products/:code` - Individual product details
-
-### Data Generation
-
-To refresh the cached dataset with latest OpenFoodFacts data:
+### Start the Backend
 
 ```bash
-cd Backend
-pnpm exec ts-node src/fetch-open-food-facts.ts
+cd Backend && pnpm run dev
 ```
 
-This fetches ~150 products across 8 categories with complete nutritional data and working image URLs.
+The backend runs on `http://localhost:3001` and serves cached product data.
 
-## Performance Testing
-
-### Metrics Measured
-
-- **Web Vitals**: First Contentful Paint (FCP), Largest Contentful Paint (LCP), Cumulative Layout Shift (CLS)
-- **Bundle Analysis**: JavaScript bundle sizes, code splitting effectiveness
-- **Runtime Performance**: Component rendering speed, memory usage, navigation timing
-- **Network Performance**: API request handling, image loading optimization
-
-### Testing Methodology
-
-- **Puppeteer Automation**: Consistent performance measurement across all implementations
-- **Controlled Environment**: Same hardware, network conditions, and test scenarios
-- **Statistical Analysis**: Multiple test runs with averaged results for reliability
-
-## Getting Started
-
-Navigate to any framework directory and follow its specific README for setup instructions.
-
-Example with Angular:
+### Run a Framework (Development)
 
 ```bash
-cd AngularFoodFacts
-pnpm install
-pnpm exec ng serve
+# Angular
+cd AngularFoodFacts && pnpm exec ng serve
+
+# React
+cd ReactFoodFacts && pnpm run dev
+
+# Svelte
+cd SvelteFoodFacts && pnpm run dev
+
+# SolidJS
+cd SolidFoodFacts && pnpm run dev
+
+# Lit
+cd LitFoodFacts && pnpm run dev
 ```
 
-## Results
+### Build for Production
 
-Performance comparison results and analysis will be documented here as implementations are completed.
+```bash
+# Angular
+cd AngularFoodFacts && pnpm exec ng build
+
+# React
+cd ReactFoodFacts && pnpm run build
+
+# Svelte
+cd SvelteFoodFacts && pnpm run build
+
+# SolidJS
+cd SolidFoodFacts && pnpm run build
+
+# Lit
+cd LitFoodFacts && pnpm run build
+```
+
+### Run Performance Tests
+
+```bash
+cd performance-tests && pnpm run test
+```
+
+Results are saved to `performance-tests/results/`.
+
+## Project Structure
+
+```text
+FrontEndComparison/
+├── AngularFoodFacts/    # Angular 21.x implementation
+├── ReactFoodFacts/      # React 19.x implementation
+├── SvelteFoodFacts/     # SvelteKit 2.x / Svelte 5.x implementation
+├── SolidFoodFacts/      # SolidJS 1.x implementation
+├── LitFoodFacts/        # Lit 3.x implementation
+├── Backend/             # Node.js API server
+├── shared-types/        # TypeScript types shared across frameworks
+├── shared-data/         # Cached product data (JSON)
+├── performance-tests/   # Puppeteer-based test runner
+├── Blog/                # Charts and raw data for the blog post
+└── Story.md             # Full performance analysis
+```
+
+## Framework Versions
+
+| Framework | Version | Build Tool            |
+| --------- | ------- | --------------------- |
+| Angular   | 21.0.3  | Angular CLI / esbuild |
+| React     | 19.2.1  | Vite 7.1.7            |
+| Svelte    | 5.33.0  | SvelteKit / Vite 6.3  |
+| SolidJS   | 1.9.10  | Vite 7.2.4            |
+| Lit       | 3.2.0   | Vite 7.2.4            |
+
+## License
+
+MIT

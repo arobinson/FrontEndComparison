@@ -22,6 +22,7 @@ Published on [Medium](https://medium.com/@drew.robi/frontend-framework-performan
 - [Overview](#overview)
   - [Background](#background)
   - [Frameworks Compared](#frameworks-compared)
+  - [Why These Frameworks?](#why-these-frameworks)
 - [Methodology](#methodology)
   - [Test Environment](#test-environment)
   - [Test Execution](#test-execution)
@@ -68,6 +69,16 @@ To address this gap, I built a custom "Food Facts" application. It uses pre-gene
 | Lit       | 3.2.0   | Vite 7.2.4                    | @lit-labs/router 0.1.3 |
 
 All projects use TypeScript ~5.9.3 and share types via a workspace package (`shared-types`).
+
+### Why These Frameworks?
+
+- **Angular**: Still a popular choice for enterprise applications. I've worked with Angular for the last 7 years, and performance challenges with large component pages inspired this comparison.
+- **React**: The most popular frontend framework worldwide, making it an essential benchmark.
+- **Svelte**: A trending framework generating buzz for its lightweight, reactive approach.
+- **SolidJS**: A newer library with fine-grained reactivity and good developer experience.
+- **Lit**: A web standards baseline. I considered vanilla JS or raw web components, but implementation variations would affect results. Lit provides a minimal abstraction over web component standards, offering a comparison point closer to the W3C specifications. Also used by Google for projects like Material 3.
+
+Svelte, SolidJS, and Lit can all compile to web components—Svelte and Lit natively, and SolidJS via the `solid-element` package. This makes them viable options for writing high-performance reusable components that can be embedded in larger frameworks like Angular, offering a potential optimization path for enterprises that cannot afford a full rewrite.
 
 ## Methodology
 

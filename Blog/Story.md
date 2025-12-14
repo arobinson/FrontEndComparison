@@ -1,5 +1,7 @@
 # Frontend Framework Performance Comparison
 
+Published on [Medium](https://medium.com/@drew.robi/frontend-framework-performance-comparison-382dbf20b9de)
+
 ## Key Findings
 
 | Category               | Winner          | Runner-up        |
@@ -270,11 +272,13 @@ The detail page includes:
 
 **Winner**: React (197ms) — **8x faster** than Angular, 2.7x faster than Svelte
 
-This is the most striking result. React's back-navigation performance is dramatically faster than all other frameworks, suggesting optimizations in how React handles component remounting or state restoration.
+This is the most striking result. Chrome DevTools performance profiling revealed Angular's slower times are due to significantly longer script execution during component recreation. React's functional component model may contribute to its advantage here, potentially reducing object creation overhead compared to class-based approaches.
 
 ### Pagination Cycle
 
 ![Pagination Cycle](pagination-cycle.svg)
+
+*Note: This test navigates through 4 page transitions (1→2→3→2→1). "Total Cycle" is the cumulative time for all 4 transitions.*
 
 | Framework | Total Cycle (ms) | Avg Page Transition (ms) |
 | --------- | ---------------- | ------------------------ |
@@ -289,6 +293,8 @@ This is the most striking result. React's back-navigation performance is dramati
 ### Detail Navigation Cycle
 
 ![Detail Navigation Cycle](detail-navigation.svg)
+
+*Note: This test navigates between detail pages (1→2→1). "Total Cycle" is the cumulative time for both navigations.*
 
 | Framework | Total Cycle (ms) | Avg Navigation (ms) |
 | --------- | ---------------- | ------------------- |

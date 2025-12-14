@@ -47,17 +47,13 @@
 
 ## Overview
 
-Comparison of 5 different UI frameworks for performance (December 2025).
+A performance comparison of five modern frontend frameworks (December 2025).
 
 ### Background
 
-I was disappointed to not find more information comparing front end frameworks
-that tested business-like applications with large numbers of components and routing.
+I was disappointed to find limited benchmarks comparing frontend frameworks in scenarios that reflect real business applications—specifically, applications with large numbers of components and client-side routing.
 
-This application is a custom "Food Facts" application that uses random data saved to JSON
-and run by a local server that returns data from JSON. The order is always the same and
-ensures that the backend is not going to adversely affect the performance numbers while
-still using a real backend in terms of fetching data in the browser.
+To address this gap, I built a custom "Food Facts" application. It uses pre-generated data served by a local backend, ensuring the data order is deterministic and network variability doesn't skew results. This setup provides realistic HTTP fetching behavior while isolating framework performance.
 
 ### Frameworks Compared
 
@@ -96,12 +92,11 @@ comparison points.
 
 ## Application Design
 
-The application is identical, as much as possible, in terms of HTML and CSS for each
-framework. It has just two pages: a list view and a detail view.
+Each framework implementation shares identical HTML structure and CSS styling as much as possible. The application consists of two pages: a list view and a detail view.
 
 ### List View
 
-![List View](Blog/ListViewNormalZoom.png)
+![List View](ListViewNormalZoom.png)
 
 The initial page is a list view with **54 columns** and **50 rows**, rendering **~1,600 components** on screen. The columns use 16 different component types to render various data formats:
 
@@ -131,16 +126,15 @@ The list supports:
 
 ### Detail View
 
-![Detail View](Blog/Detail.png)
+![Detail View](Detail.png)
 
-Clicking the product code in the first column navigates the browser to a detail page.
-The detail page displays the same data fields with a larger image and a different layout, rendering **~35 components**.
+Clicking a product code navigates to the detail page, which displays the same data fields in a different layout with a larger image—rendering only **~35 components**.
 
 > **Component counts measured using Angular with lifecycle instrumentation. All frameworks use identical HTML structure, so counts are consistent across implementations.**
 
-The detail features:
+The detail page includes:
 
-- **Previous/Next navigation**: Navigate between detail pages without returning to list
+- **Previous/Next navigation**: Move between products without returning to the list
 - **Back to list**: Return to the list view
 
 ## Performance Scenarios
@@ -168,7 +162,7 @@ The detail features:
 - **Pagination cycle**
   - **Purpose**: Tests component re-rendering with data changes
   - **Action**: Navigate through 4 page transitions (next, next, previous, previous)
-  - **Note**: Loop tracking by index ensures components update rather than recreation
+  - **Note**: Components are tracked by index, ensuring updates rather than full recreation
 
 ### Navigation Tests
 
@@ -194,21 +188,21 @@ The detail features:
 
 ### Initial Page Load
 
-![First Contentful Paint](Blog/fcp.svg)
+![First Contentful Paint](fcp.svg)
 
 | Framework | FCP (ms) | LCP (ms) | TTI (ms) | Bundle Size (KB) |
 | --------- | -------- | -------- | -------- | ---------------- |
-| Angular   | **80**   | **80**   | 10       | 501              |
-| React     | 104      | 104      | **11**   | 451              |
-| Svelte    | 96       | 96       | 13       | **307**          |
-| SolidJS   | 92       | 92       | 12       | 257              |
+| Angular   | **80**   | **80**   | **10**   | 501              |
+| React     | 104      | 104      | 11       | 451              |
+| Svelte    | 96       | 96       | 13       | 307              |
+| SolidJS   | 92       | 92       | 12       | **257**          |
 | Lit       | 100      | 100      | 13       | 265              |
 
 **Winner**: Angular (fastest FCP/LCP) | **Best Bundle**: SolidJS (257KB)
 
 ### Filter Application
 
-![Filter Application](Blog/filter-application.svg)
+![Filter Application](filter-application.svg)
 
 | Framework | Filter Duration (ms) | JS Execution (ms) |
 | --------- | -------------------- | ----------------- |
@@ -222,7 +216,7 @@ The detail features:
 
 ### Clear Filters
 
-![Clear Filters](Blog/clear-filters.svg)
+![Clear Filters](clear-filters.svg)
 
 | Framework | Clear Duration (ms) | Restored Rows |
 | --------- | ------------------- | ------------- |
@@ -236,7 +230,7 @@ The detail features:
 
 ### Expand/Collapse
 
-![Expand/Collapse](Blog/expand-collapse.svg)
+![Expand/Collapse](expand-collapse.svg)
 
 | Framework | Expand (ms) | Collapse (ms) |
 | --------- | ----------- | ------------- |
@@ -250,21 +244,21 @@ The detail features:
 
 ### Navigate to Detail
 
-![Navigate to Detail](Blog/navigate-to-detail.svg)
+![Navigate to Detail](navigate-to-detail.svg)
 
 | Framework | Navigation Time (ms) | Detail LCP (ms) |
 | --------- | -------------------- | --------------- |
-| Angular   | 190                  | 84              |
+| Angular   | 190                  | **84**          |
 | React     | 171                  | 100             |
 | Svelte    | 187                  | 92              |
 | SolidJS   | **170**              | 92              |
-| Lit       | 170                  | **86**          |
+| Lit       | **170**              | 86              |
 
 **Winner**: SolidJS/Lit (tied at 170ms)
 
 ### Navigate Back to List
 
-![Navigate Back to List](Blog/navigate-back.svg)
+![Navigate Back to List](navigate-back.svg)
 
 | Framework | Back Navigation (ms) |
 | --------- | -------------------- |
@@ -274,13 +268,13 @@ The detail features:
 | SolidJS   | 281                  |
 | Lit       | 339                  |
 
-**Winner**: React (197ms) - **8x faster** than Angular, 2.7x faster than Svelte
+**Winner**: React (197ms) — **8x faster** than Angular, 2.7x faster than Svelte
 
-This is a significant finding. React's navigation back to the list is dramatically faster than all other frameworks.
+This is the most striking result. React's back-navigation performance is dramatically faster than all other frameworks, suggesting optimizations in how React handles component remounting or state restoration.
 
 ### Pagination Cycle
 
-![Pagination Cycle](Blog/pagination-cycle.svg)
+![Pagination Cycle](pagination-cycle.svg)
 
 | Framework | Total Cycle (ms) | Avg Page Transition (ms) |
 | --------- | ---------------- | ------------------------ |
@@ -294,7 +288,7 @@ This is a significant finding. React's navigation back to the list is dramatical
 
 ### Detail Navigation Cycle
 
-![Detail Navigation Cycle](Blog/detail-navigation.svg)
+![Detail Navigation Cycle](detail-navigation.svg)
 
 | Framework | Total Cycle (ms) | Avg Navigation (ms) |
 | --------- | ---------------- | ------------------- |
@@ -308,7 +302,7 @@ This is a significant finding. React's navigation back to the list is dramatical
 
 ### Bundle Sizes
 
-![Bundle Size](Blog/bundle-size.svg)
+![Bundle Size](bundle-size.svg)
 
 | Framework | Total Bytes | Largest Request | Request Count |
 | --------- | ----------- | --------------- | ------------- |
@@ -322,7 +316,7 @@ This is a significant finding. React's navigation back to the list is dramatical
 
 ### Overall Comparison
 
-![Overall Comparison](Blog/overall.svg)
+![Overall Comparison](overall.svg)
 
 | Framework   | Wins  | Notable Strengths                                   | Notable Weaknesses                      |
 | ----------- | ----- | --------------------------------------------------- | --------------------------------------- |
@@ -334,31 +328,33 @@ This is a significant finding. React's navigation back to the list is dramatical
 
 #### Overall Winner: SolidJS
 
-SolidJS demonstrates the best overall performance, winning 6 of 8 measured categories. Its fine-grained reactivity system shows clear advantages in scenarios involving component updates (filtering, pagination, detail navigation) while maintaining the smallest bundle size.
+SolidJS delivers the best overall performance, winning 6 of 8 categories. Its fine-grained reactivity system excels in scenarios involving component updates—filtering, pagination, and detail navigation—while also producing the smallest bundle.
 
 #### Runner-up: React
 
-React shows competitive performance across all metrics and dominates the "navigate back to list" scenario by a significant margin. Its mature ecosystem and consistent performance make it a strong choice.
+React performs competitively across all metrics and dominates the "navigate back to list" scenario by a wide margin. Its mature ecosystem and consistent results make it an excellent choice for most applications.
 
 ## Limitations
 
-This comparison has the following limitations:
+Keep these caveats in mind when interpreting the results:
 
-- **Not about Developer Experience (DX)**: This study focuses purely on runtime performance metrics. It does not evaluate ease of development, debugging experience, learning curve, or ecosystem maturity.
+- **Not about Developer Experience (DX)**: This study focuses purely on runtime performance. It does not evaluate ease of development, debugging, learning curve, or ecosystem maturity.
 
-- **Svelte without SvelteKit alternatives**: The Svelte implementation uses SvelteKit. Performance may differ with vanilla Svelte or other meta-frameworks.
+- **SvelteKit only**: The Svelte implementation uses SvelteKit. Results may differ with vanilla Svelte or alternative meta-frameworks.
 
-- **No Server-Side Rendering (SSR)**: All frameworks were tested as client-side SPAs only. SSR performance characteristics may differ significantly.
+- **No Server-Side Rendering (SSR)**: All frameworks were tested as client-side SPAs. SSR performance may differ significantly.
 
-- **Latest versions only**: Tests used the latest stable versions of each framework as of December 2025. Older versions may have different performance characteristics.
+- **Latest versions only**: Tests used the latest stable versions as of December 2025. Older versions may behave differently.
 
-- **Single machine**: All tests ran on a single MacBook Pro. Results may vary on different hardware configurations.
+- **Single machine**: All tests ran on one MacBook Pro. Results may vary on different hardware.
 
-- **Synthetic data**: The test application uses generated mock data. Real-world applications with complex business logic may show different patterns.
+- **Synthetic data**: The application uses generated mock data. Real-world apps with complex business logic may show different patterns.
 
-- **Component count focus**: This test emphasizes scenarios with many components. Applications with fewer, more complex components may show different results.
+- **High component count**: This test emphasizes scenarios with many components. Applications with fewer, more complex components may yield different results.
+
+- **AI-assisted development**: [Claude Code](https://claude.ai/code) was used to help build each framework implementation, ensuring modern best practices and idiomatic patterns for each framework's latest version.
 
 ## Resources
 
 - **Source Code**: [github.com/arobinson/FrontEndComparison](https://github.com/arobinson/FrontEndComparison)
-- **Raw Data**: [Aggregated CSV](Blog/RawData/aggregated-2025-12-14T00-38-38-281Z.csv) | [Full Results JSON](Blog/RawData/results-2025-12-14T00-38-38-281Z.json)
+- **Raw Data**: [Aggregated CSV](RawData/aggregated-2025-12-14T00-38-38-281Z.csv) | [Full Results JSON](RawData/results-2025-12-14T00-38-38-281Z.json)

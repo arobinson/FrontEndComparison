@@ -4,7 +4,7 @@ A comprehensive performance comparison between modern frontend frameworks: **Ang
 
 ## Read the Full Analysis
 
-**[Frontend Framework Performance Comparison (Medium)](https://medium.com/)** | [Markdown Version](Story.md)
+**[Frontend Framework Performance Comparison (Medium)](https://medium.com/)** | [Markdown Version](Blog/Story.md)
 
 ## Quick Start
 

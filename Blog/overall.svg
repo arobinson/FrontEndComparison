@@ -1,0 +1,155 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 950 520" style="max-width: 950px; background-color: white;">
+  <defs>
+    <linearGradient id="grad-angular" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#FF6B6B;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#C92A2A;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="grad-react" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#74C0FC;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#339AF0;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="grad-svelte" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFA94D;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#F76707;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="grad-solid" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#69DB7C;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2F9E44;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="grad-lit" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#B197FC;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#7950F2;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <style>
+    .title { font: bold 18px "trebuchet ms", verdana, arial, sans-serif; fill: #333; }
+    .axis-label { font: 12px "trebuchet ms", verdana, arial, sans-serif; fill: #333; }
+    .scenario-label { font: 11px "trebuchet ms", verdana, arial, sans-serif; fill: #333; }
+    .legend-text { font: 12px "trebuchet ms", verdana, arial, sans-serif; fill: #333; }
+    .axis-line { stroke: #333; stroke-width: 2; }
+    .grid-line { stroke: #e0e0e0; stroke-width: 1; }
+  </style>
+
+  <!-- Title -->
+  <text x="475" y="28" text-anchor="middle" class="title">Overall Performance Comparison (ms) - Lower is Better</text>
+
+  <!-- Legend -->
+  <g transform="translate(200, 48)">
+    <rect x="0" y="0" width="18" height="14" fill="url(#grad-angular)" rx="2"/>
+    <text x="24" y="11" class="legend-text">Angular</text>
+    <rect x="100" y="0" width="18" height="14" fill="url(#grad-react)" rx="2"/>
+    <text x="124" y="11" class="legend-text">React</text>
+    <rect x="190" y="0" width="18" height="14" fill="url(#grad-svelte)" rx="2"/>
+    <text x="214" y="11" class="legend-text">Svelte</text>
+    <rect x="280" y="0" width="18" height="14" fill="url(#grad-solid)" rx="2"/>
+    <text x="304" y="11" class="legend-text">SolidJS</text>
+    <rect x="380" y="0" width="18" height="14" fill="url(#grad-lit)" rx="2"/>
+    <text x="404" y="11" class="legend-text">Lit</text>
+  </g>
+
+  <!-- Chart area: x=70 to 920, y=80 to 440, height=360 -->
+  <!-- Y-axis -->
+  <line x1="70" y1="80" x2="70" y2="440" class="axis-line"/>
+  <!-- X-axis -->
+  <line x1="70" y1="440" x2="920" y2="440" class="axis-line"/>
+
+  <!-- Y-axis: 0 to 2000ms, chart height = 360px -->
+  <!-- Scale: 360/2000 = 0.18 px/ms -->
+
+  <!-- Grid lines and Y-axis labels -->
+  <line x1="70" y1="440" x2="920" y2="440" class="grid-line"/>
+  <text x="62" y="444" text-anchor="end" class="axis-label">0</text>
+
+  <line x1="70" y1="350" x2="920" y2="350" class="grid-line"/>
+  <text x="62" y="354" text-anchor="end" class="axis-label">500</text>
+
+  <line x1="70" y1="260" x2="920" y2="260" class="grid-line"/>
+  <text x="62" y="264" text-anchor="end" class="axis-label">1000</text>
+
+  <line x1="70" y1="170" x2="920" y2="170" class="grid-line"/>
+  <text x="62" y="174" text-anchor="end" class="axis-label">1500</text>
+
+  <line x1="70" y1="80" x2="920" y2="80" class="grid-line"/>
+  <text x="62" y="84" text-anchor="end" class="axis-label">2000</text>
+
+  <!-- Y-axis title -->
+  <text x="20" y="260" text-anchor="middle" transform="rotate(-90, 20, 260)" class="axis-label">Time (ms)</text>
+
+  <!-- 7 scenario groups, each ~115px wide with gaps -->
+  <!-- Bar width: 16px, gap between bars: 3px, group width: 5*16 + 4*3 = 92px -->
+  <!-- Group centers at: 130, 250, 370, 490, 610, 730, 850 -->
+
+  <!-- Group 1: FCP (80, 104, 96, 92, 100) -->
+  <g transform="translate(84, 0)">
+    <rect x="0" y="425.6" width="16" height="14.4" fill="url(#grad-angular)" rx="1"/>
+    <rect x="19" y="421.3" width="16" height="18.7" fill="url(#grad-react)" rx="1"/>
+    <rect x="38" y="422.7" width="16" height="17.3" fill="url(#grad-svelte)" rx="1"/>
+    <rect x="57" y="423.4" width="16" height="16.6" fill="url(#grad-solid)" rx="1"/>
+    <rect x="76" y="422" width="16" height="18" fill="url(#grad-lit)" rx="1"/>
+    <text x="46" y="458" text-anchor="middle" class="scenario-label">FCP</text>
+  </g>
+
+  <!-- Group 2: Filter (112, 92, 122, 78, 131) -->
+  <g transform="translate(204, 0)">
+    <rect x="0" y="419.8" width="16" height="20.2" fill="url(#grad-angular)" rx="1"/>
+    <rect x="19" y="423.4" width="16" height="16.6" fill="url(#grad-react)" rx="1"/>
+    <rect x="38" y="418" width="16" height="22" fill="url(#grad-svelte)" rx="1"/>
+    <rect x="57" y="426" width="16" height="14" fill="url(#grad-solid)" rx="1"/>
+    <rect x="76" y="416.4" width="16" height="23.6" fill="url(#grad-lit)" rx="1"/>
+    <text x="46" y="458" text-anchor="middle" class="scenario-label">Filter</text>
+  </g>
+
+  <!-- Group 3: Clear Filters (677, 355, 442, 208, 460) -->
+  <g transform="translate(324, 0)">
+    <rect x="0" y="318.1" width="16" height="121.9" fill="url(#grad-angular)" rx="1"/>
+    <rect x="19" y="376.1" width="16" height="63.9" fill="url(#grad-react)" rx="1"/>
+    <rect x="38" y="360.4" width="16" height="79.6" fill="url(#grad-svelte)" rx="1"/>
+    <rect x="57" y="402.6" width="16" height="37.4" fill="url(#grad-solid)" rx="1"/>
+    <rect x="76" y="357.2" width="16" height="82.8" fill="url(#grad-lit)" rx="1"/>
+    <text x="46" y="458" text-anchor="middle" class="scenario-label">Clear</text>
+  </g>
+
+  <!-- Group 4: Navigate to Detail (190, 171, 187, 170, 170) -->
+  <g transform="translate(444, 0)">
+    <rect x="0" y="405.8" width="16" height="34.2" fill="url(#grad-angular)" rx="1"/>
+    <rect x="19" y="409.2" width="16" height="30.8" fill="url(#grad-react)" rx="1"/>
+    <rect x="38" y="406.3" width="16" height="33.7" fill="url(#grad-svelte)" rx="1"/>
+    <rect x="57" y="409.4" width="16" height="30.6" fill="url(#grad-solid)" rx="1"/>
+    <rect x="76" y="409.4" width="16" height="30.6" fill="url(#grad-lit)" rx="1"/>
+    <text x="46" y="458" text-anchor="middle" class="scenario-label">To Detail</text>
+  </g>
+
+  <!-- Group 5: Navigate Back (1634, 197, 740, 281, 339) -->
+  <g transform="translate(564, 0)">
+    <rect x="0" y="145.9" width="16" height="294.1" fill="url(#grad-angular)" rx="1"/>
+    <rect x="19" y="404.5" width="16" height="35.5" fill="url(#grad-react)" rx="1"/>
+    <rect x="38" y="306.8" width="16" height="133.2" fill="url(#grad-svelte)" rx="1"/>
+    <rect x="57" y="389.4" width="16" height="50.6" fill="url(#grad-solid)" rx="1"/>
+    <rect x="76" y="378.98" width="16" height="61.02" fill="url(#grad-lit)" rx="1"/>
+    <text x="46" y="458" text-anchor="middle" class="scenario-label">Back</text>
+  </g>
+
+  <!-- Group 6: Pagination Cycle (1675, 1571, 1543, 1490, 1886) -->
+  <g transform="translate(684, 0)">
+    <rect x="0" y="138.5" width="16" height="301.5" fill="url(#grad-angular)" rx="1"/>
+    <rect x="19" y="157.2" width="16" height="282.8" fill="url(#grad-react)" rx="1"/>
+    <rect x="38" y="162.3" width="16" height="277.7" fill="url(#grad-svelte)" rx="1"/>
+    <rect x="57" y="171.8" width="16" height="268.2" fill="url(#grad-solid)" rx="1"/>
+    <rect x="76" y="100.5" width="16" height="339.5" fill="url(#grad-lit)" rx="1"/>
+    <text x="46" y="458" text-anchor="middle" class="scenario-label">Pagination</text>
+  </g>
+
+  <!-- Group 7: Detail Navigation (348, 336, 337, 331, 340) -->
+  <g transform="translate(804, 0)">
+    <rect x="0" y="377.4" width="16" height="62.6" fill="url(#grad-angular)" rx="1"/>
+    <rect x="19" y="379.5" width="16" height="60.5" fill="url(#grad-react)" rx="1"/>
+    <rect x="38" y="379.3" width="16" height="60.7" fill="url(#grad-svelte)" rx="1"/>
+    <rect x="57" y="380.4" width="16" height="59.6" fill="url(#grad-solid)" rx="1"/>
+    <rect x="76" y="378.8" width="16" height="61.2" fill="url(#grad-lit)" rx="1"/>
+    <text x="46" y="458" text-anchor="middle" class="scenario-label">Detail Nav</text>
+  </g>
+
+  <!-- Footer note -->
+  <text x="475" y="490" text-anchor="middle" class="axis-label" style="font-style: italic; fill: #666;">Bundle size excluded (different units). All times in milliseconds. Lower bars = better performance.</text>
+</svg>

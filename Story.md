@@ -103,7 +103,7 @@ framework. It has just two pages: a list view and a detail view.
 
 ![List View](Blog/ListViewNormalZoom.png)
 
-The initial page is a list view with **54 columns** and **50 rows**. The columns use 16 different component types to render various data formats:
+The initial page is a list view with **54 columns** and **50 rows**, rendering **~1,600 components** on screen. The columns use 16 different component types to render various data formats:
 
 | Component Type   | Description                      | Example Columns                    |
 | ---------------- | -------------------------------- | ---------------------------------- |
@@ -134,7 +134,9 @@ The list supports:
 ![Detail View](Blog/Detail.png)
 
 Clicking the product code in the first column navigates the browser to a detail page.
-The detail page displays the same data fields with a larger image and a different layout.
+The detail page displays the same data fields with a larger image and a different layout, rendering **~35 components**.
+
+> **Component counts measured using Angular with lifecycle instrumentation. All frameworks use identical HTML structure, so counts are consistent across implementations.**
 
 The detail features:
 
@@ -172,7 +174,7 @@ The detail features:
 
 - **Navigate to detail**
   - **Purpose**: Tests destroying many components and creating fewer
-  - **Action**: Click product link to navigate from list (2,700+ components) to detail (~50 components)
+  - **Action**: Click product link to navigate from list (~1,600 components) to detail (~35 components)
 
 - **Navigate back to list**
   - **Purpose**: Tests list view creation without cold-start overhead
@@ -359,4 +361,4 @@ This comparison has the following limitations:
 ## Resources
 
 - **Source Code**: [github.com/arobinson/FrontEndComparison](https://github.com/arobinson/FrontEndComparison)
-- **Test Results**: Available in `performance-tests/results/` directory
+- **Raw Data**: [Aggregated CSV](Blog/RawData/aggregated-2025-12-14T00-38-38-281Z.csv) | [Full Results JSON](Blog/RawData/results-2025-12-14T00-38-38-281Z.json)

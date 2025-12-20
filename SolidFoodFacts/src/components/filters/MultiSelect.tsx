@@ -1,4 +1,4 @@
-import { createSignal, createEffect, createMemo, For, Show } from 'solid-js';
+import { createSignal, createEffect, createSelector, For, Show } from 'solid-js';
 import './MultiSelect.css';
 
 interface MultiSelectProps {
@@ -13,10 +13,14 @@ export default function MultiSelect(props: MultiSelectProps) {
 
   const options = () => props.options ?? [];
 
+  // Use createSelector for optimized selected state checking
+  // Only re-renders checkboxes whose selected state actually changed
+  const isSelected = createSelector<Set<string>, string>(selected, (option, set) => set.has(option));
+
   // Reset when trigger changes
   createEffect(() => {
     if (props.resetTrigger) {
-      setSelected(new Set());
+      setSelected(new Set<string>());
     }
   });
 
@@ -31,17 +35,11 @@ export default function MultiSelect(props: MultiSelectProps) {
     props.onValueChange?.([...newSelected]);
   }
 
-  const displayText = createMemo(() =>
-    selected().size === 0 ? 'All' : `${selected().size} selected`
-  );
+  const displayText = () => (selected().size === 0 ? 'All' : `${selected().size} selected`);
 
   return (
     <div class="multi-select">
-      <button
-        type="button"
-        class="select-button"
-        onClick={() => setIsOpen(!isOpen())}
-      >
+      <button type="button" class="select-button" onClick={() => setIsOpen(!isOpen())}>
         {displayText()}
         <span class="arrow">{isOpen() ? '▲' : '▼'}</span>
       </button>
@@ -51,11 +49,7 @@ export default function MultiSelect(props: MultiSelectProps) {
           <For each={options()}>
             {(option) => (
               <label class="option">
-                <input
-                  type="checkbox"
-                  checked={selected().has(option)}
-                  onChange={() => toggleOption(option)}
-                />
+                <input type="checkbox" checked={isSelected(option)} onChange={() => toggleOption(option)} />
                 {option}
               </label>
             )}

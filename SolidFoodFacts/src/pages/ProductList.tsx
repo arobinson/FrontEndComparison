@@ -1,4 +1,4 @@
-import { createSignal, createEffect, createMemo, Show } from 'solid-js';
+import { createSignal, createMemo, createResource, Show } from 'solid-js';
 import type { MockProductViewModel } from 'shared-types';
 import { allColumns, getColumnConfig, getColumnDataType } from 'shared-types';
 import { productService } from '../services/productService';
@@ -8,18 +8,20 @@ import { TextSearch, RangeSlider, MultiSelect } from '../components/filters';
 import './ProductList.css';
 
 export default function ProductList() {
-  const [products, setProducts] = createSignal<MockProductViewModel[] | undefined>(undefined);
-  const [productsState, setProductsState] = createSignal<'initial' | 'loading' | 'error' | 'loaded'>('initial');
   const [currentPage, setCurrentPage] = createSignal(0);
   const [pageSize, setPageSize] = createSignal(50);
-  const [totalProducts, setTotalProducts] = createSignal(0);
-  const [error, setError] = createSignal<Error | null>(null);
   const [filterResetTrigger, setFilterResetTrigger] = createSignal(0);
   const [filters, setFilters] = createSignal<Record<string, any>>({});
 
-  // Keep previous data during loading to prevent table destruction
-  const [previousProducts, setPreviousProducts] = createSignal<MockProductViewModel[] | undefined>(undefined);
-  const [previousTotalProducts, setPreviousTotalProducts] = createSignal(0);
+  // Use createResource for data fetching - automatically handles loading/error states
+  // and re-fetches when the source signal changes
+  const [productsData] = createResource(
+    () => ({ page: currentPage(), size: pageSize() }),
+    async (params) => {
+      const result = await productService.getProductsByCategory('all', params.page + 1, params.size);
+      return result;
+    }
+  );
 
   // Apply client-side filters
   function applyFilters(productList: MockProductViewModel[]): MockProductViewModel[] {
@@ -76,16 +78,18 @@ export default function ProductList() {
     });
   }
 
-  // Computed values for display (use previous data during loading, then apply filters)
-  const baseProducts = createMemo(() => products() ?? previousProducts());
+  // Computed values derived from resource
+  const products = () => productsData()?.products;
+  const totalProducts = () => productsData()?.total ?? 0;
+
+  // Computed values for display with filters applied
   const displayProducts = createMemo(() => {
-    const base = baseProducts();
-    return base ? applyFilters(base) : undefined;
+    const productList = products();
+    return productList ? applyFilters(productList) : undefined;
   });
-  const displayTotal = createMemo(() => totalProducts() > 0 ? totalProducts() : previousTotalProducts());
 
   // Column keys for the table
-  const columnKeys = allColumns.map(col => col.key);
+  const columnKeys = allColumns.map((col) => col.key);
 
   // Computed values
   const totalPages = createMemo(() => Math.ceil(totalProducts() / pageSize()));
@@ -98,40 +102,6 @@ export default function ProductList() {
   function getColumnUnit(key: string): string | undefined {
     return getColumnConfig(key as keyof MockProductViewModel)?.unit;
   }
-
-  // Data fetching
-  async function loadProducts() {
-    try {
-      setProductsState('loading');
-      const result = await productService.getProductsByCategory('all', currentPage() + 1, pageSize());
-      setProducts(result.products);
-      setTotalProducts(result.total);
-      // Store as previous for next loading state
-      setPreviousProducts(result.products);
-      setPreviousTotalProducts(result.total);
-      setProductsState('loaded');
-    } catch (e) {
-      setError(e instanceof Error ? e : new Error('An unknown error occurred'));
-      setProductsState('error');
-    }
-  }
-
-  // Track page/pageSize for refetching
-  let lastPage = -1;
-  let lastPageSize = -1;
-
-  createEffect(() => {
-    const page = currentPage();
-    const size = pageSize();
-    const pageChanged = page !== lastPage;
-    const pageSizeChanged = size !== lastPageSize;
-
-    if (pageChanged || pageSizeChanged) {
-      lastPage = page;
-      lastPageSize = size;
-      loadProducts();
-    }
-  });
 
   function updateFilter(column: string, value: any) {
     setFilters({ ...filters(), [column]: value });
@@ -159,14 +129,7 @@ export default function ProductList() {
     const dataType = getColumnDataType(column as keyof MockProductViewModel);
 
     if (dataType === 'progress-bar') {
-      return (
-        <RangeSlider
-          min={0}
-          max={100}
-          resetTrigger={filterResetTrigger()}
-          onValueChange={(v) => updateFilter(column, v)}
-        />
-      );
+      return <RangeSlider min={0} max={100} resetTrigger={filterResetTrigger()} onValueChange={(v) => updateFilter(column, v)} />;
     }
     if (dataType === 'grade-badge') {
       return (
@@ -179,37 +142,17 @@ export default function ProductList() {
     }
     if (dataType === 'nova-dots') {
       return (
-        <MultiSelect
-          options={['1', '2', '3', '4']}
-          resetTrigger={filterResetTrigger()}
-          onValueChange={(v) => updateFilter(column, v)}
-        />
+        <MultiSelect options={['1', '2', '3', '4']} resetTrigger={filterResetTrigger()} onValueChange={(v) => updateFilter(column, v)} />
       );
     }
     if (dataType === 'boolean-yesno') {
-      return (
-        <MultiSelect
-          options={['Yes', 'No']}
-          resetTrigger={filterResetTrigger()}
-          onValueChange={(v) => updateFilter(column, v)}
-        />
-      );
+      return <MultiSelect options={['Yes', 'No']} resetTrigger={filterResetTrigger()} onValueChange={(v) => updateFilter(column, v)} />;
     }
     if (dataType === 'large-counter') {
-      return (
-        <RangeSlider
-          resetTrigger={filterResetTrigger()}
-          onValueChange={(v) => updateFilter(column, v)}
-        />
-      );
+      return <RangeSlider resetTrigger={filterResetTrigger()} onValueChange={(v) => updateFilter(column, v)} />;
     }
     if (dataType !== 'product-image') {
-      return (
-        <TextSearch
-          resetTrigger={filterResetTrigger()}
-          onValueChange={(v) => updateFilter(column, v)}
-        />
-      );
+      return <TextSearch resetTrigger={filterResetTrigger()} onValueChange={(v) => updateFilter(column, v)} />;
     }
     return null;
   }
@@ -230,7 +173,7 @@ export default function ProductList() {
       </div>
 
       <div class="table-area">
-        <Show when={productsState() === 'loading'}>
+        <Show when={productsData.loading}>
           <div class="loading-overlay">
             <span class="loading-indicator">⏳ Loading...</span>
           </div>
@@ -253,11 +196,11 @@ export default function ProductList() {
           />
         </Show>
 
-        <Show when={productsState() === 'error'}>
-          <p class="error-message">Error loading products: {error()?.message ?? 'Unknown'}</p>
+        <Show when={productsData.error}>
+          <p class="error-message">Error loading products: {productsData.error?.message ?? 'Unknown'}</p>
         </Show>
 
-        <Show when={productsState() !== 'loading' && !displayProducts()?.length}>
+        <Show when={!productsData.loading && !displayProducts()?.length}>
           <p>No products found.</p>
         </Show>
       </div>

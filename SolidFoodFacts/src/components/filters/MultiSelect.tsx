@@ -16,7 +16,7 @@ export default function MultiSelect(props: MultiSelectProps) {
   // Reset when trigger changes
   createEffect(() => {
     if (props.resetTrigger) {
-      setSelected(new Set());
+      setSelected(new Set<string>());
     }
   });
 

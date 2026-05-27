@@ -19,7 +19,6 @@ export default function ProductList() {
 
   // Keep previous data during loading to prevent table destruction
   const [previousProducts, setPreviousProducts] = createSignal<MockProductViewModel[] | undefined>(undefined);
-  const [previousTotalProducts, setPreviousTotalProducts] = createSignal(0);
 
   // Apply client-side filters
   function applyFilters(productList: MockProductViewModel[]): MockProductViewModel[] {
@@ -82,7 +81,6 @@ export default function ProductList() {
     const base = baseProducts();
     return base ? applyFilters(base) : undefined;
   });
-  const displayTotal = createMemo(() => totalProducts() > 0 ? totalProducts() : previousTotalProducts());
 
   // Column keys for the table
   const columnKeys = allColumns.map(col => col.key);
@@ -108,7 +106,6 @@ export default function ProductList() {
       setTotalProducts(result.total);
       // Store as previous for next loading state
       setPreviousProducts(result.products);
-      setPreviousTotalProducts(result.total);
       setProductsState('loaded');
     } catch (e) {
       setError(e instanceof Error ? e : new Error('An unknown error occurred'));

@@ -7,3 +7,10 @@ packages:
   - 'SolidFoodFacts'
   - 'LitFoodFacts'
   - 'performance-tests'
+allowBuilds:
+  '@parcel/watcher': true
+  esbuild: true
+  lmdb: true
+  msgpackr-extract: true
+  puppeteer: false
+  sharp: true

@@ -9,7 +9,7 @@ import {
   selector: 'aff-progress-bar',
   imports: [],
   templateUrl: './progress-bar.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './progress-bar.css',
 })
 export class ProgressBar {

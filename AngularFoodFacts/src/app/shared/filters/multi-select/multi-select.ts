@@ -15,7 +15,7 @@ import { ClickOutsideService } from '../../services/click-outside.service';
   selector: 'aff-multi-select',
   imports: [],
   templateUrl: './multi-select.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './multi-select.css',
 })
 export class MultiSelect {

@@ -9,7 +9,7 @@ import {
   selector: 'aff-boolean-yesno',
   imports: [],
   templateUrl: './boolean-yesno.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './boolean-yesno.css',
 })
 export class BooleanYesno {

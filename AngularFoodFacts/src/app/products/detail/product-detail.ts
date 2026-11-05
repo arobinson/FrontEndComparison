@@ -43,7 +43,7 @@ import { AffButton } from '../../shared/aff-button/aff-button';
     AffButton,
   ],
   templateUrl: './product-detail.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './product-detail.css',
 })
 export class ProductDetail {

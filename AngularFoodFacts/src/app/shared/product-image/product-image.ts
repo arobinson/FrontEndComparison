@@ -10,7 +10,7 @@ import {
   selector: 'aff-product-image',
   imports: [],
   templateUrl: './product-image.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './product-image.css',
 })
 export class ProductImage {

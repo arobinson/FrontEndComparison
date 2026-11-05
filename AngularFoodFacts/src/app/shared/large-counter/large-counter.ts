@@ -9,7 +9,7 @@ import {
   selector: 'aff-large-counter',
   imports: [],
   templateUrl: './large-counter.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './large-counter.css',
 })
 export class LargeCounter {

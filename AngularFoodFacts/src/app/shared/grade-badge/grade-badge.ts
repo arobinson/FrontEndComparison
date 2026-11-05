@@ -9,7 +9,7 @@ import {
   selector: 'aff-grade-badge',
   imports: [],
   templateUrl: './grade-badge.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './grade-badge.css',
 })
 export class GradeBadge {

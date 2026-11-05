@@ -11,7 +11,7 @@ import {
   selector: 'aff-text-search',
   imports: [],
   templateUrl: './text-search.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './text-search.css',
 })
 export class TextSearch {

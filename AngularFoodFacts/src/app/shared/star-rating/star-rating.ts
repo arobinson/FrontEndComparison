@@ -9,7 +9,7 @@ import {
   selector: 'aff-star-rating',
   imports: [],
   templateUrl: './star-rating.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './star-rating.css',
 })
 export class StarRating {

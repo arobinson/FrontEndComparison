@@ -11,7 +11,7 @@ import {
   selector: 'aff-range-slider',
   imports: [],
   templateUrl: './range-slider.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './range-slider.css',
 })
 export class RangeSlider {

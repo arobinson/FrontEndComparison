@@ -51,7 +51,7 @@ import { MultiSelect } from '../../shared/filters/multi-select/multi-select';
     MultiSelect,
   ],
   templateUrl: './product-list.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './product-list.css',
 })
 export class ProductList {

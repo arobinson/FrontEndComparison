@@ -19,7 +19,7 @@ const SYMBOL_TO_CURRENCY: Record<string, string> = {
   selector: 'aff-decimal-units',
   imports: [],
   templateUrl: './decimal-units.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './decimal-units.css',
 })
 export class DecimalUnits {

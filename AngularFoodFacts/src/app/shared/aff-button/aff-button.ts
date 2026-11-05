@@ -12,7 +12,7 @@ import {
   selector: 'aff-button',
   imports: [],
   templateUrl: './aff-button.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './aff-button.css',
 })
 export class AffButton {

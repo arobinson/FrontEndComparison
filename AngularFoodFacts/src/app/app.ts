@@ -6,7 +6,7 @@ import { FrameworkHeader } from './shared/framework-header/framework-header';
   selector: 'aff-root',
   imports: [RouterOutlet, FrameworkHeader],
   templateUrl: './app.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './app.css',
 })
 export class App {

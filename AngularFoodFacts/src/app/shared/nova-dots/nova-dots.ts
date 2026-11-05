@@ -9,7 +9,7 @@ import {
   selector: 'aff-nova-dots',
   imports: [],
   templateUrl: './nova-dots.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './nova-dots.css',
 })
 export class NovaDots {

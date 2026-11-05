@@ -15,7 +15,7 @@ import { AffButton } from '../aff-button/aff-button';
   selector: 'aff-data-table',
   imports: [NgTemplateOutlet, FormsModule, AffButton],
   templateUrl: './data-table.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './data-table.css',
 })
 export class DataTable {

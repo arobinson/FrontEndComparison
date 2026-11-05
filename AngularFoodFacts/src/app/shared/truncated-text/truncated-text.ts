@@ -9,7 +9,7 @@ import {
   selector: 'aff-truncated-text',
   imports: [],
   templateUrl: './truncated-text.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './truncated-text.css',
 })
 export class TruncatedText {

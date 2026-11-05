@@ -9,7 +9,7 @@ import {
   selector: 'aff-time-format',
   imports: [],
   templateUrl: './time-format.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './time-format.css',
 })
 export class TimeFormat {

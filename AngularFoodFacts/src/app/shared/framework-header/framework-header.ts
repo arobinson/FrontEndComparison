@@ -7,7 +7,7 @@ const CURRENT_FRAMEWORK = 'angular';
   selector: 'aff-framework-header',
   standalone: true,
   templateUrl: './framework-header.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './framework-header.css',
 })
 export class FrameworkHeader {

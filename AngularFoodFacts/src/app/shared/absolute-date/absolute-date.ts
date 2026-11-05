@@ -9,7 +9,7 @@ import {
   selector: 'aff-absolute-date',
   imports: [],
   templateUrl: './absolute-date.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './absolute-date.css',
 })
 export class AbsoluteDate {

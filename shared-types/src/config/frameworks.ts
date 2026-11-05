@@ -13,6 +13,7 @@ export const FRAMEWORKS: FrameworkConfig[] = [
   { id: 'lit', name: 'Lit', devPort: 3006, color: '#325cff' },
   { id: 'vue', name: 'Vue', devPort: 3007, color: '#42b883' },
   { id: 'preact', name: 'Preact', devPort: 3008, color: '#673ab8' },
+  { id: 'vue-vapor', name: 'Vue Vapor', devPort: 3009, color: '#35495e' },
 ];
 
 export const PERF_SERVER_PORT = 8888;

@@ -47,6 +47,13 @@ export const allFrameworks: FrameworkConfig[] = [
     baseUrl: 'http://localhost:8888/preact',
     buildCommand: 'pnpm run build:perf',
     buildOutputDir: join(process.cwd(), '../perf-dist/preact')
+  },
+  {
+    // PREVIEW, NOT RANKED: Vue 3.6 RC Vapor Mode (exact version in VueVaporFoodFacts/package.json)
+    name: 'VueVapor',
+    baseUrl: 'http://localhost:8888/vue-vapor',
+    buildCommand: 'pnpm run build:perf',
+    buildOutputDir: join(process.cwd(), '../perf-dist/vue-vapor')
   }
 ];
 

@@ -1,0 +1,22 @@
+.nova-dots {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid var(--color-primary, #0066cc);
+  background-color: transparent;
+  transition: background-color 0.2s ease;
+}
+
+.dot.filled {
+  background-color: var(--color-primary, #0066cc);
+}
+
+.dot:hover {
+  transform: scale(1.1);
+}

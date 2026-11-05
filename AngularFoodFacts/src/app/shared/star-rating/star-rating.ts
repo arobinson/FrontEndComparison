@@ -1,9 +1,15 @@
-import { Component, input, computed } from '@angular/core';
+import {
+  Component,
+  input,
+  computed,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 
 @Component({
   selector: 'aff-star-rating',
   imports: [],
   templateUrl: './star-rating.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './star-rating.css',
 })
 export class StarRating {

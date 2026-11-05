@@ -1,4 +1,11 @@
-import { Component, inject, signal, computed, effect } from '@angular/core';
+import {
+  Component,
+  inject,
+  signal,
+  computed,
+  effect,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 
 import { RouterModule } from '@angular/router';
 import { allColumns, ColumnConfig, getColumnConfig } from 'shared-types';
@@ -41,9 +48,10 @@ import { MultiSelect } from '../../shared/filters/multi-select/multi-select';
     ColorPill,
     TextSearch,
     RangeSlider,
-    MultiSelect
-],
+    MultiSelect,
+  ],
   templateUrl: './product-list.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './product-list.css',
 })
 export class ProductList {
@@ -111,7 +119,9 @@ export class ProductList {
    * Get data type for a specific column
    */
   getColumnDataType(column: string): string {
-    return getColumnConfig(column as keyof ProductViewModel)?.type ?? 'simple-text';
+    return (
+      getColumnConfig(column as keyof ProductViewModel)?.type ?? 'simple-text'
+    );
   }
 
   /**

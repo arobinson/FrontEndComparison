@@ -5,6 +5,7 @@ import {
   contentChild,
   TemplateRef,
   computed,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -14,6 +15,7 @@ import { AffButton } from '../aff-button/aff-button';
   selector: 'aff-data-table',
   imports: [NgTemplateOutlet, FormsModule, AffButton],
   templateUrl: './data-table.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './data-table.css',
 })
 export class DataTable {

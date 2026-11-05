@@ -1,9 +1,15 @@
-import { Component, input, computed } from '@angular/core';
+import {
+  Component,
+  input,
+  computed,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 
 @Component({
   selector: 'aff-time-format',
   imports: [],
   templateUrl: './time-format.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './time-format.css',
 })
 export class TimeFormat {

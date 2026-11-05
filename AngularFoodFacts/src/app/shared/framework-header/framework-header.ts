@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { FRAMEWORKS, getFrameworkUrl } from 'shared-types';
 
 const CURRENT_FRAMEWORK = 'angular';
@@ -7,19 +7,22 @@ const CURRENT_FRAMEWORK = 'angular';
   selector: 'aff-framework-header',
   standalone: true,
   templateUrl: './framework-header.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './framework-header.css',
 })
 export class FrameworkHeader {
   protected readonly frameworks = FRAMEWORKS;
   protected readonly currentFramework = CURRENT_FRAMEWORK;
-  protected readonly currentFrameworkName = FRAMEWORKS.find((f) => f.id === CURRENT_FRAMEWORK)?.name;
+  protected readonly currentFrameworkName = FRAMEWORKS.find(
+    (f) => f.id === CURRENT_FRAMEWORK,
+  )?.name;
 
   protected getUrl(frameworkId: string): string {
     return getFrameworkUrl(
       CURRENT_FRAMEWORK,
       frameworkId,
       window.location.pathname,
-      window.location.port
+      window.location.port,
     );
   }
 }

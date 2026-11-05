@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router';
 import FrameworkHeader from './components/shared/FrameworkHeader';
 import ProductList from './pages/ProductList';
 import ProductDetail from './pages/ProductDetail';

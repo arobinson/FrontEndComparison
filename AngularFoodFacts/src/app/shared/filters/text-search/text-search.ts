@@ -1,9 +1,17 @@
-import { Component, input, output, signal, effect } from '@angular/core';
+import {
+  Component,
+  input,
+  output,
+  signal,
+  effect,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 
 @Component({
   selector: 'aff-text-search',
   imports: [],
   templateUrl: './text-search.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './text-search.css',
 })
 export class TextSearch {

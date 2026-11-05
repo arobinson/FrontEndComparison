@@ -1,9 +1,15 @@
-import { Component, input, signal } from '@angular/core';
+import {
+  Component,
+  input,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 
 @Component({
   selector: 'aff-truncated-text',
   imports: [],
   templateUrl: './truncated-text.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './truncated-text.css',
 })
 export class TruncatedText {

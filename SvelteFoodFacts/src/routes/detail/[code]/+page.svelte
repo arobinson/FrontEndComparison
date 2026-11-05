@@ -3,21 +3,21 @@
   import { goto } from '$app/navigation';
   import { resolve } from '$app/paths';
   import type { MockProductViewModel } from 'shared-types';
-  import { productService, type AdjacentProducts } from '$lib/services/productService';
+  import { productService, type AdjacentProducts } from '#lib/services/productService';
 
-  import ProgressBar from '$lib/components/display/ProgressBar.svelte';
-  import ProductImage from '$lib/components/display/ProductImage.svelte';
-  import TruncatedText from '$lib/components/display/TruncatedText.svelte';
-  import GradeBadge from '$lib/components/display/GradeBadge.svelte';
-  import NovaDots from '$lib/components/display/NovaDots.svelte';
-  import LargeCounter from '$lib/components/display/LargeCounter.svelte';
-  import StarRating from '$lib/components/display/StarRating.svelte';
-  import DecimalUnits from '$lib/components/display/DecimalUnits.svelte';
-  import BooleanYesNo from '$lib/components/display/BooleanYesNo.svelte';
-  import ColorPill from '$lib/components/display/ColorPill.svelte';
-  import TimeFormat from '$lib/components/display/TimeFormat.svelte';
-  import AbsoluteDate from '$lib/components/display/AbsoluteDate.svelte';
-  import RelativeDate from '$lib/components/display/RelativeDate.svelte';
+  import ProgressBar from '#lib/components/display/ProgressBar.svelte';
+  import ProductImage from '#lib/components/display/ProductImage.svelte';
+  import TruncatedText from '#lib/components/display/TruncatedText.svelte';
+  import GradeBadge from '#lib/components/display/GradeBadge.svelte';
+  import NovaDots from '#lib/components/display/NovaDots.svelte';
+  import LargeCounter from '#lib/components/display/LargeCounter.svelte';
+  import StarRating from '#lib/components/display/StarRating.svelte';
+  import DecimalUnits from '#lib/components/display/DecimalUnits.svelte';
+  import BooleanYesNo from '#lib/components/display/BooleanYesNo.svelte';
+  import ColorPill from '#lib/components/display/ColorPill.svelte';
+  import TimeFormat from '#lib/components/display/TimeFormat.svelte';
+  import AbsoluteDate from '#lib/components/display/AbsoluteDate.svelte';
+  import RelativeDate from '#lib/components/display/RelativeDate.svelte';
 
   let product = $state<MockProductViewModel | null>(null);
   let loadingState = $state<'loading' | 'error' | 'loaded'>('loading');

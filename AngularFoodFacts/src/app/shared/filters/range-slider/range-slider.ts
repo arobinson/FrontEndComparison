@@ -1,9 +1,17 @@
-import { Component, input, output, signal, effect } from '@angular/core';
+import {
+  Component,
+  input,
+  output,
+  signal,
+  effect,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 
 @Component({
   selector: 'aff-range-slider',
   imports: [],
   templateUrl: './range-slider.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './range-slider.css',
 })
 export class RangeSlider {

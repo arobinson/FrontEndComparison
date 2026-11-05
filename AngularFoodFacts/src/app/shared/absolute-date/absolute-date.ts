@@ -1,9 +1,15 @@
-import { Component, input, computed } from '@angular/core';
+import {
+  Component,
+  input,
+  computed,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 
 @Component({
   selector: 'aff-absolute-date',
   imports: [],
   templateUrl: './absolute-date.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './absolute-date.css',
 })
 export class AbsoluteDate {

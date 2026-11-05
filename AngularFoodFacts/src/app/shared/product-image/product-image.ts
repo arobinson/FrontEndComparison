@@ -1,9 +1,16 @@
-import { Component, input, signal, effect } from '@angular/core';
+import {
+  Component,
+  input,
+  signal,
+  effect,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 
 @Component({
   selector: 'aff-product-image',
   imports: [],
   templateUrl: './product-image.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './product-image.css',
 })
 export class ProductImage {

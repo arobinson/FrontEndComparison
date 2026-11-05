@@ -1,9 +1,15 @@
-import { Component, input, computed } from '@angular/core';
+import {
+  Component,
+  input,
+  computed,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 
 @Component({
   selector: 'aff-boolean-yesno',
   imports: [],
   templateUrl: './boolean-yesno.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './boolean-yesno.css',
 })
 export class BooleanYesno {

@@ -1,9 +1,15 @@
-import { Component, input, computed } from '@angular/core';
+import {
+  Component,
+  input,
+  computed,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 
 @Component({
   selector: 'aff-nova-dots',
   imports: [],
   templateUrl: './nova-dots.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './nova-dots.css',
 })
 export class NovaDots {

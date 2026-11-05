@@ -15,7 +15,7 @@
     TimeFormat,
     TruncatedText,
     StarRating,
-  } from '$lib/components/display';
+  } from '#lib/components/display';
 
   let {
     value,

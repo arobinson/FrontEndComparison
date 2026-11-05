@@ -7,6 +7,7 @@ import {
   ElementRef,
   inject,
   computed,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { ClickOutsideService } from '../../services/click-outside.service';
 
@@ -14,6 +15,7 @@ import { ClickOutsideService } from '../../services/click-outside.service';
   selector: 'aff-multi-select',
   imports: [],
   templateUrl: './multi-select.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './multi-select.css',
 })
 export class MultiSelect {

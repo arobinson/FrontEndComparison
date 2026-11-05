@@ -1,4 +1,9 @@
-import { Component, input, computed } from '@angular/core';
+import {
+  Component,
+  input,
+  computed,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 
 // Regex to extract currency symbol and numeric value
 const CURRENCY_REGEX = /^([£$€¥₹])?([0-9,.-]+)([£$€¥₹])?$/;
@@ -14,6 +19,7 @@ const SYMBOL_TO_CURRENCY: Record<string, string> = {
   selector: 'aff-decimal-units',
   imports: [],
   templateUrl: './decimal-units.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './decimal-units.css',
 })
 export class DecimalUnits {

@@ -1,4 +1,11 @@
-import { Component, inject, computed, signal, effect } from '@angular/core';
+import {
+  Component,
+  inject,
+  computed,
+  signal,
+  effect,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FoodFacts, ProductViewModel } from '../food-facts';
 import { MockProductViewModel } from 'shared-types';
@@ -36,6 +43,7 @@ import { AffButton } from '../../shared/aff-button/aff-button';
     AffButton,
   ],
   templateUrl: './product-detail.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './product-detail.css',
 })
 export class ProductDetail {

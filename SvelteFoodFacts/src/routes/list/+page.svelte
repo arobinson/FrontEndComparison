@@ -1,11 +1,11 @@
 <script lang="ts">
   import type { MockProductViewModel } from 'shared-types';
   import { allColumns, getColumnConfig, getColumnDataType } from 'shared-types';
-  import { productService } from '$lib/services/productService';
+  import { productService } from '#lib/services/productService';
   import { onMount } from 'svelte';
-  import DataTable from '$lib/components/shared/DataTable/DataTable.svelte';
-  import CellRenderer from '$lib/components/table/CellRenderer.svelte';
-  import { TextSearch, RangeSlider, MultiSelect } from '$lib/components/filters';
+  import DataTable from '#lib/components/shared/DataTable/DataTable.svelte';
+  import CellRenderer from '#lib/components/table/CellRenderer.svelte';
+  import { TextSearch, RangeSlider, MultiSelect } from '#lib/components/filters';
 
   let products = $state<Array<MockProductViewModel> | undefined>(undefined);
   let productsState = $state<'initial' | 'loading' | 'error' | 'loaded'>('initial');

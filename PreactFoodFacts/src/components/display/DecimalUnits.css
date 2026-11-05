@@ -1,0 +1,9 @@
+.decimal-units {
+  font-variant-numeric: tabular-nums;
+}
+
+.decimal-units .unit {
+  margin-left: 2px;
+  color: var(--color-text-secondary, #666);
+  font-size: 0.9em;
+}

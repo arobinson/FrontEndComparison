@@ -35,6 +35,18 @@ export const allFrameworks: FrameworkConfig[] = [
     baseUrl: 'http://localhost:8888/lit',
     buildCommand: 'pnpm run build:perf',
     buildOutputDir: join(process.cwd(), '../perf-dist/lit')
+  },
+  {
+    name: 'Vue',
+    baseUrl: 'http://localhost:8888/vue',
+    buildCommand: 'pnpm run build:perf',
+    buildOutputDir: join(process.cwd(), '../perf-dist/vue')
+  },
+  {
+    name: 'Preact',
+    baseUrl: 'http://localhost:8888/preact',
+    buildCommand: 'pnpm run build:perf',
+    buildOutputDir: join(process.cwd(), '../perf-dist/preact')
   }
 ];
 

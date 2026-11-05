@@ -1,0 +1,15 @@
+.boolean-yesno {
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.boolean-yesno.yes {
+  color: var(--color-success, #4caf50);
+  background-color: var(--color-success-bg, #e8f5e9);
+}
+
+.boolean-yesno.no {
+  color: var(--color-text-secondary, #666);
+  background-color: var(--color-bg-secondary, #f5f5f5);
+}

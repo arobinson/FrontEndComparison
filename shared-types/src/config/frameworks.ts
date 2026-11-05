@@ -11,6 +11,8 @@ export const FRAMEWORKS: FrameworkConfig[] = [
   { id: 'svelte', name: 'Svelte', devPort: 3003, color: '#ff3e00' },
   { id: 'solid', name: 'Solid', devPort: 3004, color: '#2c4f7c' },
   { id: 'lit', name: 'Lit', devPort: 3006, color: '#325cff' },
+  { id: 'vue', name: 'Vue', devPort: 3007, color: '#42b883' },
+  { id: 'preact', name: 'Preact', devPort: 3008, color: '#673ab8' },
 ];
 
 export const PERF_SERVER_PORT = 8888;

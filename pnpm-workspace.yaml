@@ -6,6 +6,8 @@ packages:
   - 'SvelteFoodFacts'
   - 'SolidFoodFacts'
   - 'LitFoodFacts'
+  - 'VueFoodFacts'
+  - 'PreactFoodFacts'
   - 'performance-tests'
 allowBuilds:
   '@parcel/watcher': true

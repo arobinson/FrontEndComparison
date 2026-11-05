@@ -1,0 +1,1 @@
+export { TextSearch } from './TextSearch';

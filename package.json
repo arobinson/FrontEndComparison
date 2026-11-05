@@ -1,7 +1,7 @@
 {
   "name": "frontend-framework-comparison",
   "version": "1.0.0",
-  "description": "Performance and bundle size comparison across Angular, React, Svelte, and SolidJS frameworks",
+  "description": "Performance and bundle size comparison across Angular, React, Svelte, SolidJS, Lit, Vue, and Preact",
   "private": true,
   "type": "module",
   "packageManager": "pnpm@12.1.0",
@@ -20,11 +20,15 @@
     "build:svelte": "pnpm --filter SvelteFoodFacts build",
     "build:solid": "pnpm --filter SolidFoodFacts build",
     "build:lit": "pnpm --filter LitFoodFacts build",
+    "build:vue": "pnpm --filter vue-food-facts build",
+    "build:preact": "pnpm --filter preact-food-facts build",
     "dev:angular": "pnpm --filter AngularFoodFacts dev",
     "dev:react": "pnpm --filter ReactFoodFacts dev",
     "dev:svelte": "pnpm --filter SvelteFoodFacts dev",
     "dev:solid": "pnpm --filter SolidFoodFacts dev",
     "dev:lit": "pnpm --filter LitFoodFacts dev",
+    "dev:vue": "pnpm --filter vue-food-facts dev",
+    "dev:preact": "pnpm --filter preact-food-facts dev",
     "test:all": "pnpm -r test",
     "test:angular": "pnpm --filter AngularFoodFacts test",
     "test:react": "pnpm --filter ReactFoodFacts test",
@@ -39,7 +43,7 @@
     "benchmark:dev-startup": "node performance-tests/dev-server-benchmark.js",
     "generate:charts": "node performance-tests/generate-charts.js",
     "generate:blog": "node performance-tests/generate-blog-report.js",
-    "perf:build": "rm -rf perf-dist && mkdir perf-dist && cp perf-serve.json perf-dist/serve.json && pnpm --filter angular-food-facts build:perf && pnpm --filter react-food-facts build:perf && pnpm --filter svelte-food-facts build:perf && pnpm --filter solid-food-facts build:perf && pnpm --filter lit-food-facts build:perf",
+    "perf:build": "rm -rf perf-dist && mkdir perf-dist && cp perf-serve.json perf-dist/serve.json && pnpm --filter angular-food-facts build:perf && pnpm --filter react-food-facts build:perf && pnpm --filter svelte-food-facts build:perf && pnpm --filter solid-food-facts build:perf && pnpm --filter lit-food-facts build:perf && pnpm --filter vue-food-facts build:perf && pnpm --filter preact-food-facts build:perf",
     "perf:serve": "serve perf-dist -l 8888",
     "perf:build:serve": "pnpm run perf:build && pnpm run perf:serve",
     "format": "prettier --write .",
@@ -54,6 +58,8 @@
     "SvelteFoodFacts",
     "SolidFoodFacts",
     "LitFoodFacts",
+    "VueFoodFacts",
+    "PreactFoodFacts",
     "performance-tests"
   ],
   "devDependencies": {
@@ -79,7 +85,9 @@
     "react",
     "svelte",
     "solidjs",
-    "lit"
+    "lit",
+    "vue",
+    "preact"
   ],
   "author": "",
   "license": "MIT"

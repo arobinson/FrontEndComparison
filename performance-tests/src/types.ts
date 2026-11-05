@@ -61,6 +61,12 @@ export interface TestRun {
   scenario: string;
   timestamp: string;
   measurements: Measurement[];
+  /** Interleaved protocol: 1-based position of this framework within its round's shuffled order. */
+  orderInRound?: number;
+  /** Machine-wide CPU busy % measured just before this run's round started. */
+  cpuBusyPct?: number;
+  /** True if the idle-CPU gate timed out before this run's round (noisier conditions). */
+  cpuGateTimedOut?: boolean;
 }
 
 export interface AggregatedResults {
@@ -73,6 +79,7 @@ export interface AggregatedResults {
   min: Record<string, number>; // metric name -> min value
   max: Record<string, number>; // metric name -> max value
   stdDev: Record<string, number>; // metric name -> standard deviation
+  cv: Record<string, number>; // metric name -> coefficient of variation (stdDev / mean)
 }
 
 export interface TestConfig {
@@ -82,6 +89,14 @@ export interface TestConfig {
   outputDir: string;
   viewportWidth: number;
   viewportHeight: number;
+  /** Discarded warm-up rounds per scenario (interleaved protocol). */
+  warmupRounds: number;
+  /** Seed for the per-round framework shuffle, so a run's order is reproducible. */
+  seed: number;
+  /** Idle-CPU gate: proceed when busy % <= this. */
+  cpuThresholdPct: number;
+  /** Idle-CPU gate: max wait before proceeding (flagged). */
+  cpuMaxWaitMs: number;
 }
 
 export interface FrameworkConfig {

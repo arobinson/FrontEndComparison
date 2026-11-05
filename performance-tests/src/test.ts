@@ -8,6 +8,8 @@ import { mkdir } from 'fs/promises';
 import { join } from 'path';
 import * as scenarios from './scenarios/index.js';
 import { allFrameworks, defaultTestConfig } from './config/frameworks.js';
+import { collectEnvironment } from './utils/environment.js';
+import { AggregatedResults } from './types.js';
 
 const allScenarios: TestScenario[] = [
   scenarios.initialLoadScenario,
@@ -26,6 +28,10 @@ function parseArgs(): {
   iterations: number;
   skipBuild: boolean;
   skipExport: boolean;
+  warmup: number;
+  seed: number;
+  cpuThreshold: number;
+  cpuMaxWait: number;
   help: boolean;
 } {
   const args = process.argv.slice(2);
@@ -35,6 +41,11 @@ function parseArgs(): {
     iterations: defaultTestConfig.repetitions as number,
     skipBuild: false,
     skipExport: false,
+    warmup: defaultTestConfig.warmupRounds as number,
+    // Random by default, always recorded in the results so the order can be replayed with --seed
+    seed: Math.floor(Math.random() * 2 ** 31),
+    cpuThreshold: defaultTestConfig.cpuThresholdPct as number,
+    cpuMaxWait: defaultTestConfig.cpuMaxWaitMs as number,
     help: false
   };
 
@@ -62,6 +73,18 @@ function parseArgs(): {
       result.skipBuild = true;
     } else if (arg === '--skip-export') {
       result.skipExport = true;
+    } else if (arg === '--warmup') {
+      const value = parseInt(args[++i], 10);
+      if (!isNaN(value) && value >= 0) result.warmup = value;
+    } else if (arg === '--seed') {
+      const value = parseInt(args[++i], 10);
+      if (!isNaN(value)) result.seed = value;
+    } else if (arg === '--cpu-threshold') {
+      const value = parseFloat(args[++i]);
+      if (!isNaN(value) && value > 0) result.cpuThreshold = value;
+    } else if (arg === '--cpu-max-wait') {
+      const value = parseFloat(args[++i]);
+      if (!isNaN(value) && value >= 0) result.cpuMaxWait = value * 1000;
     }
   }
 
@@ -79,10 +102,18 @@ Options:
                            Available: ${frameworkNames}
   -s, --scenario <name>    Run specific scenario (can be used multiple times)
                            Available: ${scenarioNames}
-  -i, --iterations <n>     Number of iterations per scenario (default: ${defaultTestConfig.repetitions})
+  -i, --iterations <n>     Measured rounds per scenario (default: ${defaultTestConfig.repetitions})
+  --warmup <n>             Discarded warm-up rounds per scenario (default: ${defaultTestConfig.warmupRounds})
+  --seed <n>               Seed for the per-round framework shuffle (default: random, recorded)
+  --cpu-threshold <pct>    Idle-CPU gate: start a round at or below this busy % (default: ${defaultTestConfig.cpuThresholdPct})
+  --cpu-max-wait <sec>     Idle-CPU gate: max wait before proceeding, round flagged (default: ${defaultTestConfig.cpuMaxWaitMs / 1000})
   --skip-build             Skip build analysis
   --skip-export            Skip exporting results to files
   -h, --help               Show this help message
+
+Protocol: for each scenario, every round runs each framework once in a freshly
+shuffled order, each run in a fresh browser context (cold cache), and each round
+waits for the machine to be idle first. See test-runner.ts.
 
 Examples:
   node dist/test.js                              # Run all frameworks, all scenarios
@@ -123,7 +154,11 @@ async function main(): Promise<void> {
     discardOutliers: defaultTestConfig.discardOutliers,
     outputDir: defaultTestConfig.outputDir,
     viewportWidth: defaultTestConfig.viewportWidth,
-    viewportHeight: defaultTestConfig.viewportHeight
+    viewportHeight: defaultTestConfig.viewportHeight,
+    warmupRounds: args.warmup,
+    seed: args.seed,
+    cpuThresholdPct: args.cpuThreshold,
+    cpuMaxWaitMs: args.cpuMaxWait
   };
 
   await mkdir(config.outputDir, { recursive: true });
@@ -146,7 +181,9 @@ async function main(): Promise<void> {
   console.log('Frontend Framework Performance Testing');
   console.log('='.repeat(80));
   console.log(`\nConfiguration:`);
-  console.log(`  Iterations: ${config.repetitions}`);
+  console.log(`  Measured rounds: ${config.repetitions}  (+${config.warmupRounds} warm-up, discarded)`);
+  console.log(`  Seed: ${config.seed}`);
+  console.log(`  CPU gate: <= ${config.cpuThresholdPct}% busy, max wait ${config.cpuMaxWaitMs / 1000}s`);
   console.log(`  Viewport: ${config.viewportWidth}x${config.viewportHeight}`);
   console.log(`  Frameworks: ${config.frameworks.map((f) => f.name).join(', ')}`);
   console.log(`  Scenarios: ${testScenarios.length}`);
@@ -155,6 +192,11 @@ async function main(): Promise<void> {
 
   const runner = new TestRunner(config);
   await runner.initialize();
+  const environment = collectEnvironment(runner.browserVersion, config.frameworks);
+  console.log(`  Browser: ${environment.browser}  Node: ${environment.node}  ${environment.cpuModel} x${environment.cpuCores}`);
+  if (environment.gitDirty) {
+    console.warn('  ⚠️  Working tree has uncommitted changes - results will not map cleanly to a commit');
+  }
 
   try {
     const allRuns = await runner.runAllFrameworks(testScenarios);
@@ -210,8 +252,14 @@ async function main(): Promise<void> {
         config: {
           repetitions: config.repetitions,
           viewportWidth: config.viewportWidth,
-          viewportHeight: config.viewportHeight
+          viewportHeight: config.viewportHeight,
+          warmupRounds: config.warmupRounds,
+          seed: config.seed,
+          cpuThresholdPct: config.cpuThresholdPct,
+          cpuMaxWaitMs: config.cpuMaxWaitMs,
+          protocol: 'interleaved-shuffled-rounds, fresh-context-per-run, idle-cpu-gate'
         },
+        environment,
         rawRuns: Array.from(allRuns.values()).flat(),
         aggregated,
         buildMetrics
@@ -227,11 +275,12 @@ async function main(): Promise<void> {
     console.log('Results Summary');
     console.log('='.repeat(80));
 
-    for (const [framework, runs] of allRuns.entries()) {
-      console.log(`\n${framework}:`);
-      for (const run of runs) {
-        console.log(`  ${run.scenario}: ${run.measurements.length} measurements`);
-      }
+    printSummary(aggregated, testScenarios);
+
+    const allRunList = Array.from(allRuns.values()).flat();
+    const flagged = allRunList.filter((r) => r.cpuGateTimedOut).length;
+    if (flagged > 0) {
+      console.warn(`\n⚠️  ${flagged}/${allRunList.length} runs started while the CPU gate had timed out (machine busy). Close other apps and re-run before publishing.`);
     }
 
     console.log('\n' + '='.repeat(80));
@@ -246,3 +295,29 @@ main().catch((error) => {
   console.error('Fatal error:', error);
   process.exit(1);
 });
+
+/** CV above this means the spread is too wide to rank frameworks confidently. */
+const NOISY_CV = 0.1;
+
+/**
+ * Per scenario, frameworks ranked by the median of the scenario's primary
+ * (first) metric, with min/max and coefficient of variation.
+ */
+function printSummary(aggregated: AggregatedResults[], scenarios: TestScenario[]): void {
+  for (const scenario of scenarios) {
+    const rows = aggregated.filter((a) => a.scenario === scenario.name);
+    if (rows.length === 0) continue;
+    const metric = Object.keys(rows[0].median)[0];
+    rows.sort((a, b) => a.median[metric] - b.median[metric]);
+
+    console.log(`\n${scenario.name}  [${metric}]`);
+    console.log(`  ${'framework'.padEnd(12)}${'median'.padStart(9)}${'min'.padStart(9)}${'max'.padStart(9)}${'cv'.padStart(8)}`);
+    for (const row of rows) {
+      const cv = row.cv[metric];
+      const noisy = cv > NOISY_CV ? '  ⚠️ noisy' : '';
+      console.log(
+        `  ${row.framework.padEnd(12)}${row.median[metric].toFixed(0).padStart(9)}${row.min[metric].toFixed(0).padStart(9)}${row.max[metric].toFixed(0).padStart(9)}${(cv * 100).toFixed(1).padStart(7)}%${noisy}`
+      );
+    }
+  }
+}

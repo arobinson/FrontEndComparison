@@ -1,3 +1,4 @@
+import { EnvironmentInfo } from '../utils/environment.js';
 import { writeFile } from 'fs/promises';
 import { TestRun, AggregatedResults, BuildMetrics } from '../types.js';
 
@@ -7,7 +8,13 @@ export interface FullTestResults {
     repetitions: number;
     viewportWidth: number;
     viewportHeight: number;
+    warmupRounds?: number;
+    seed?: number;
+    cpuThresholdPct?: number;
+    cpuMaxWaitMs?: number;
+    protocol?: string;
   };
+  environment?: EnvironmentInfo;
   rawRuns: TestRun[];
   aggregated: AggregatedResults[];
   buildMetrics?: Record<string, BuildMetrics>;

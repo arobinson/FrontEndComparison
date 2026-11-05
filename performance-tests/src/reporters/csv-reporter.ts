@@ -2,7 +2,7 @@ import { writeFile } from 'fs/promises';
 import { TestRun, AggregatedResults } from '../types.js';
 
 export async function exportRawDataToCSV(runs: TestRun[], outputPath: string): Promise<void> {
-  const headers = ['run_number', 'framework', 'scenario', 'timestamp', 'metric_name', 'value', 'unit'];
+  const headers = ['run_number', 'framework', 'scenario', 'timestamp', 'metric_name', 'value', 'unit', 'order_in_round', 'cpu_busy_pct', 'cpu_gate_timed_out'];
   const rows: string[] = [headers.join(',')];
 
   for (const run of runs) {
@@ -14,7 +14,10 @@ export async function exportRawDataToCSV(runs: TestRun[], outputPath: string): P
         escapeCSV(run.timestamp),
         escapeCSV(measurement.name),
         measurement.value.toString(),
-        escapeCSV(measurement.unit)
+        escapeCSV(measurement.unit),
+        run.orderInRound?.toString() ?? '',
+        run.cpuBusyPct?.toString() ?? '',
+        run.cpuGateTimedOut === undefined ? '' : String(run.cpuGateTimedOut)
       ];
       rows.push(row.join(','));
     }
@@ -26,7 +29,7 @@ export async function exportRawDataToCSV(runs: TestRun[], outputPath: string): P
 }
 
 export async function exportAggregatedToCSV(aggregated: AggregatedResults[], outputPath: string): Promise<void> {
-  const headers = ['framework', 'scenario', 'metric_name', 'median', 'mean', 'min', 'max', 'std_dev', 'total_runs', 'discarded_runs'];
+  const headers = ['framework', 'scenario', 'metric_name', 'median', 'mean', 'min', 'max', 'std_dev', 'cv', 'total_runs', 'discarded_runs'];
   const rows: string[] = [headers.join(',')];
 
   for (const result of aggregated) {
@@ -42,6 +45,7 @@ export async function exportAggregatedToCSV(aggregated: AggregatedResults[], out
         result.min[metricName].toString(),
         result.max[metricName].toString(),
         result.stdDev[metricName].toString(),
+        (result.cv[metricName] ?? 0).toFixed(4),
         result.totalRuns.toString(),
         result.discardedRuns.join(';')
       ];

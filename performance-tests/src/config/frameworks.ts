@@ -77,5 +77,10 @@ export const defaultTestConfig = {
   discardOutliers: false,
   outputDir: join(process.cwd(), 'results'),
   viewportWidth: 1920,
-  viewportHeight: 1080
+  viewportHeight: 1080,
+  // Measurement protocol (see test-runner.ts runAllFrameworks)
+  warmupRounds: 1,
+  seed: 1,
+  cpuThresholdPct: 25,
+  cpuMaxWaitMs: 120_000
 } as const;

@@ -29,6 +29,7 @@ export function aggregateResults(runs: TestRun[]): AggregatedResults {
   const min: Record<string, number> = {};
   const max: Record<string, number> = {};
   const stdDev: Record<string, number> = {};
+  const cv: Record<string, number> = {};
 
   let discardedRuns: number[] = [];
   if (runs.length >= 17) {
@@ -50,6 +51,7 @@ export function aggregateResults(runs: TestRun[]): AggregatedResults {
     min[metricName] = Math.min(...filteredValues);
     max[metricName] = Math.max(...filteredValues);
     stdDev[metricName] = calculateStdDev(filteredValues);
+    cv[metricName] = mean[metricName] !== 0 ? stdDev[metricName] / mean[metricName] : 0;
   }
 
   result = {
@@ -61,7 +63,8 @@ export function aggregateResults(runs: TestRun[]): AggregatedResults {
     mean,
     min,
     max,
-    stdDev
+    stdDev,
+    cv
   };
   return result;
 }

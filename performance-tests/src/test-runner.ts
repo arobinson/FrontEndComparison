@@ -113,7 +113,7 @@ export class TestRunner {
    * framework difference.
    */
   async runAllFrameworks(scenarios: TestScenario[]): Promise<Map<string, TestRun[]>> {
-    const { frameworks, repetitions, warmupRounds, seed, cpuThresholdPct, cpuMaxWaitMs } = this.#config;
+    const { frameworks, repetitions, warmupRounds, seed, cpuThresholdPct, cpuMaxWaitMs, coldBrowser } = this.#config;
     const rng = createRng(seed);
     const resultsByFramework = new Map<string, TestRun[]>(frameworks.map((f) => [f.name, []]));
     const gateOptions = { thresholdPct: cpuThresholdPct, maxWaitMs: cpuMaxWaitMs, sampleMs: 1_000 };
@@ -136,7 +136,13 @@ export class TestRunner {
         for (let position = 0; position < order.length; position++) {
           const framework = order[position];
           try {
+            if (coldBrowser) {
+              // Fresh browser process per run: nothing carries over between runs (some frameworks
+              // pay a large one-time cost on their first load in a new browser; see README notes)
+              await this.restartBrowser();
+            }
             const run = await this.runOnce(framework, scenario, round);
+            if (coldBrowser) run.scenario = `${scenario.name}-cold-browser`;
             if (!isWarmup) {
               run.orderInRound = position + 1;
               run.cpuBusyPct = gate.busyPct;

@@ -13,6 +13,7 @@ export interface FullTestResults {
     cpuThresholdPct?: number;
     cpuMaxWaitMs?: number;
     protocol?: string;
+    coldBrowser?: boolean;
   };
   environment?: EnvironmentInfo;
   rawRuns: TestRun[];

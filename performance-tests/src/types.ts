@@ -97,6 +97,11 @@ export interface TestConfig {
   cpuThresholdPct: number;
   /** Idle-CPU gate: max wait before proceeding (flagged). */
   cpuMaxWaitMs: number;
+  /**
+   * Relaunch the browser before every run, so each measurement is the first page load in a fresh
+   * browser process (a first-visit upper bound). Scenario names get a '-cold-browser' suffix.
+   */
+  coldBrowser?: boolean;
 }
 
 export interface FrameworkConfig {

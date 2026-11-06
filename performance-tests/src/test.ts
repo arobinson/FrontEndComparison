@@ -32,6 +32,7 @@ function parseArgs(): {
   seed: number;
   cpuThreshold: number;
   cpuMaxWait: number;
+  coldBrowser: boolean;
   help: boolean;
 } {
   const args = process.argv.slice(2);
@@ -46,6 +47,7 @@ function parseArgs(): {
     seed: Math.floor(Math.random() * 2 ** 31),
     cpuThreshold: defaultTestConfig.cpuThresholdPct as number,
     cpuMaxWait: defaultTestConfig.cpuMaxWaitMs as number,
+    coldBrowser: false,
     help: false
   };
 
@@ -79,6 +81,8 @@ function parseArgs(): {
     } else if (arg === '--seed') {
       const value = parseInt(args[++i], 10);
       if (!isNaN(value)) result.seed = value;
+    } else if (arg === '--cold-browser') {
+      result.coldBrowser = true;
     } else if (arg === '--cpu-threshold') {
       const value = parseFloat(args[++i]);
       if (!isNaN(value) && value > 0) result.cpuThreshold = value;
@@ -106,6 +110,8 @@ Options:
   --warmup <n>             Discarded warm-up rounds per scenario (default: ${defaultTestConfig.warmupRounds})
   --seed <n>               Seed for the per-round framework shuffle (default: random, recorded)
   --cpu-threshold <pct>    Idle-CPU gate: start a round at or below this busy % (default: ${defaultTestConfig.cpuThresholdPct})
+  --cold-browser           Relaunch the browser before every run (first load in a fresh browser;
+                           scenario names get a '-cold-browser' suffix). Default: one browser per scenario
   --cpu-max-wait <sec>     Idle-CPU gate: max wait before proceeding, round flagged (default: ${defaultTestConfig.cpuMaxWaitMs / 1000})
   --skip-build             Skip build analysis
   --skip-export            Skip exporting results to files
@@ -158,7 +164,8 @@ async function main(): Promise<void> {
     warmupRounds: args.warmup,
     seed: args.seed,
     cpuThresholdPct: args.cpuThreshold,
-    cpuMaxWaitMs: args.cpuMaxWait
+    cpuMaxWaitMs: args.cpuMaxWait,
+    coldBrowser: args.coldBrowser
   };
 
   await mkdir(config.outputDir, { recursive: true });
@@ -183,6 +190,7 @@ async function main(): Promise<void> {
   console.log(`\nConfiguration:`);
   console.log(`  Measured rounds: ${config.repetitions}  (+${config.warmupRounds} warm-up, discarded)`);
   console.log(`  Seed: ${config.seed}`);
+  console.log(`  Browser per run: ${config.coldBrowser ? 'fresh browser process (cold-browser)' : 'one browser per scenario, fresh context per run'}`);
   console.log(`  CPU gate: <= ${config.cpuThresholdPct}% busy, max wait ${config.cpuMaxWaitMs / 1000}s`);
   console.log(`  Viewport: ${config.viewportWidth}x${config.viewportHeight}`);
   console.log(`  Frameworks: ${config.frameworks.map((f) => f.name).join(', ')}`);
@@ -257,7 +265,8 @@ async function main(): Promise<void> {
           seed: config.seed,
           cpuThresholdPct: config.cpuThresholdPct,
           cpuMaxWaitMs: config.cpuMaxWaitMs,
-          protocol: 'interleaved-shuffled-rounds, fresh-context-per-run, idle-cpu-gate'
+          protocol: `interleaved-shuffled-rounds, ${config.coldBrowser ? 'fresh-browser-per-run' : 'fresh-context-per-run'}, idle-cpu-gate`,
+          coldBrowser: config.coldBrowser ?? false
         },
         environment,
         rawRuns: Array.from(allRuns.values()).flat(),
@@ -304,13 +313,18 @@ const NOISY_CV = 0.1;
  * (first) metric, with min/max and coefficient of variation.
  */
 function printSummary(aggregated: AggregatedResults[], scenarios: TestScenario[]): void {
-  for (const scenario of scenarios) {
-    const rows = aggregated.filter((a) => a.scenario === scenario.name);
+  // Scenario names may carry a mode suffix (e.g. '-cold-browser'), so list what's actually in the results
+  const order = scenarios.map((s) => s.name);
+  const names = [...new Set(aggregated.map((a) => a.scenario))].sort(
+    (x, y) => order.findIndex((n) => x.startsWith(n)) - order.findIndex((n) => y.startsWith(n))
+  );
+  for (const name of names) {
+    const rows = aggregated.filter((a) => a.scenario === name);
     if (rows.length === 0) continue;
     const metric = Object.keys(rows[0].median)[0];
     rows.sort((a, b) => a.median[metric] - b.median[metric]);
 
-    console.log(`\n${scenario.name}  [${metric}]`);
+    console.log(`\n${name}  [${metric}]`);
     console.log(`  ${'framework'.padEnd(12)}${'median'.padStart(9)}${'min'.padStart(9)}${'max'.padStart(9)}${'cv'.padStart(8)}`);
     for (const row of rows) {
       const cv = row.cv[metric];

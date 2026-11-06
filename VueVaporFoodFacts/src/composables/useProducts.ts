@@ -15,6 +15,7 @@ export const useProducts = ({ category = 'all', page = 1, pageSize = 50 }: UsePr
   const loading = ref(true);
   const error = ref<string | null>(null);
 
+  // Side effect: fetches from the API whenever the request params change (no router data loaders).
   // Previous data stays in place while the next page loads, keeping the table rendered
   watch(
     [() => toValue(category), () => toValue(page), () => toValue(pageSize)],

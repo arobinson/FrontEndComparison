@@ -2,10 +2,10 @@
   @if (!imageError()) {
     <img
       [src]="value()"
-      [alt]="'Product image'"
+      alt="Product image"
       (load)="onImageLoad()"
       (error)="onImageError()"
-      [class.loaded]="imageLoaded()"
+      [attr.class]="imageLoaded() ? 'loaded' : ''"
     />
   } @else {
     <div class="image-placeholder">No image</div>

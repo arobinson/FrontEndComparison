@@ -1,8 +1,10 @@
 <script setup lang="ts">
+import { inject } from 'vue';
 import { FRAMEWORKS, getFrameworkUrl } from 'shared-types';
+import { currentFrameworkKey } from '../../config/framework';
 import './FrameworkHeader.css';
 
-const CURRENT_FRAMEWORK = 'vue';
+const CURRENT_FRAMEWORK = inject(currentFrameworkKey, '');
 
 const currentFrameworkName = FRAMEWORKS.find((f) => f.id === CURRENT_FRAMEWORK)?.name;
 // Read once at setup, like the React header which renders once at mount

@@ -1,25 +1,16 @@
 .product-list-container {
   padding: 1.25rem;
-  height: calc(100vh - 41px); /* Account for framework header height */
+  height: calc(100vh - 41px); /* Account for framework header */
   display: flex;
   flex-direction: column;
   overflow: hidden;
   box-sizing: border-box;
 }
 
-.page-header-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.25rem;
-  flex-shrink: 0;
-}
-
 .table-area {
   position: relative;
   flex: 1;
   min-height: 0;
-  overflow: hidden;
   display: flex;
   flex-direction: column;
 }
@@ -35,16 +26,25 @@
   align-items: center;
   justify-content: center;
   z-index: 100;
+  border-radius: 8px;
+}
+
+.page-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+  flex-shrink: 0;
 }
 
 .loading-indicator {
-  padding: 0.75rem 1.5rem;
+  padding: 0.5rem 1rem;
   background-color: #f0f8ff;
   border-left: 4px solid #0066cc;
+  margin-bottom: 1rem;
   border-radius: 4px;
   font-size: 14px;
   color: #333;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .product-list-container h1 {
@@ -71,85 +71,9 @@
   transform: translateY(1px);
 }
 
+/* aff-data-table host stands in for React's .data-table-container (emulated encapsulation) */
 .table-area aff-data-table {
   flex: 1;
   min-height: 0;
   overflow: hidden;
-}
-
-.product-link {
-  color: var(--primary-color, #007bff);
-  text-decoration: none;
-  font-weight: var(--font-weight-medium, 500);
-}
-
-.product-link:hover {
-  text-decoration: underline;
-  color: var(--primary-hover, #0056b3);
-}
-
-.product-image-small {
-  max-width: 2rem;
-  max-height: 2rem;
-  object-fit: contain;
-  border-radius: var(--border-radius, 0.25rem);
-}
-
-.grade-badge {
-  display: inline-block;
-  padding: var(--spacing-xs, 4px) var(--spacing-sm, 8px);
-  border-radius: var(--border-radius, 4px);
-  font-weight: var(--font-weight-semibold, 600);
-  font-size: var(--font-size-sm, 14px);
-  text-align: center;
-  min-width: 20px;
-}
-
-.grade-a {
-  background: var(--success-color, #28a745);
-  color: white;
-}
-.grade-b {
-  background: var(--info-color, #17a2b8);
-  color: white;
-}
-.grade-c {
-  background: var(--warning-color, #ffc107);
-  color: black;
-}
-.grade-d {
-  background: var(--warning-dark, #fd7e14);
-  color: white;
-}
-.grade-e {
-  background: var(--danger-color, #dc3545);
-  color: white;
-}
-.grade-unknown {
-  background: var(--muted-color, #6c757d);
-  color: white;
-}
-
-.nova-dots {
-  display: inline-flex;
-  gap: 2px;
-  align-items: center;
-}
-
-.nova-dot {
-  font-size: 16px;
-  color: var(--muted-color, #6c757d);
-}
-
-.nova-dot.filled {
-  color: var(--primary-color, #007bff);
-}
-
-.truncated-text {
-  display: inline-block;
-  max-width: 12rem;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  cursor: help;
 }

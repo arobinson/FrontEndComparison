@@ -1,14 +1,14 @@
 <script lang="ts">
   let { value }: { value: number } = $props();
 
-  let percentage = $derived(() => {
+  let percentage = $derived.by(() => {
     if (value < 0) return 0;
     if (value > 100) return 100;
     return value;
   });
 
-  let colorClass = $derived(() => {
-    const pct = percentage();
+  let colorClass = $derived.by(() => {
+    const pct = percentage;
     if (pct >= 70) return 'high';
     if (pct >= 40) return 'medium';
     return 'low';
@@ -16,10 +16,10 @@
 </script>
 
 <div class="progress-bar-container">
-  <div class="progress-bar {colorClass()}">
-    <div class="progress-fill" style:width="{percentage()}%"></div>
+  <div class="progress-bar {colorClass}">
+    <div class="progress-fill" style:width="{percentage}%"></div>
   </div>
-  <span class="progress-text">{percentage()}%</span>
+  <span class="progress-text">{percentage}%</span>
 </div>
 
 <style>

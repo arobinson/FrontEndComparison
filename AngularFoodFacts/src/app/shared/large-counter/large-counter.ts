@@ -2,14 +2,12 @@ import {
   Component,
   input,
   computed,
-  ChangeDetectionStrategy,
 } from '@angular/core';
 
 @Component({
   selector: 'aff-large-counter',
   imports: [],
   templateUrl: './large-counter.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './large-counter.css',
 })
 export class LargeCounter {

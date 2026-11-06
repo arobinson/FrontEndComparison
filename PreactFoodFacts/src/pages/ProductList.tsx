@@ -2,17 +2,27 @@ import { useState, useMemo, useCallback } from 'preact/hooks';
 import { useProducts } from '../hooks/useProducts';
 import { allColumns, getColumnConfig } from '../config/columnConfig';
 import { DataTable, TextSearch, RangeSlider, MultiSelect } from '../components/shared';
+import {
+  FiltersContext,
+  FilterActionsContext,
+  useFiltersReducer,
+  type FilterActions,
+} from '../components/shared/filters/filterStore';
 import { CellRenderer } from '../components/table/CellRenderer';
 import './ProductList.css';
 import type { MockProductViewModel } from 'shared-types';
 
-type FilterValue = string | { min?: number; max?: number } | string[];
+// Static table config, hoisted so DataTable's memo is not defeated by fresh
+// arrays on every render (typing in a filter re-renders this page through the
+// filter store; the table itself should not re-render for a draft change).
+const columns = allColumns.map((col) => col.key);
+const pageSizes = [10, 25, 50];
 
 const ProductList = () => {
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(50);
-  const [filters, setFilters] = useState<Record<string, FilterValue>>({});
-  const [filterResetTrigger, setFilterResetTrigger] = useState(0);
+  const [filterState, dispatch] = useFiltersReducer();
+  const filters = filterState.applied;
 
   const { products, total, loading, error } = useProducts({
     category: 'all',
@@ -68,19 +78,19 @@ const ProductList = () => {
     return result;
   }, [products, filters]);
 
-  const updateFilter = useCallback((column: string, value: FilterValue) => {
-    setFilters((current) => ({
-      ...current,
-      [column]: value,
-    }));
-    setPage(0);
-  }, []);
-
-  const resetFilters = useCallback(() => {
-    setFilters({});
-    setPage(0);
-    setFilterResetTrigger((val) => val + 1);
-  }, []);
+  // Store actions handed to the filter components. Committing (apply) or
+  // clearing filters also returns to the first page, as before.
+  const filterActions = useMemo<FilterActions>(() => ({
+    setDraft: (column, value) => dispatch({ type: 'setDraft', column, value }),
+    apply: (column) => {
+      dispatch({ type: 'apply', column });
+      setPage(0);
+    },
+    clear: () => {
+      dispatch({ type: 'clear' });
+      setPage(0);
+    },
+  }), [dispatch]);
 
   const handlePageChange = useCallback((newPage: number) => {
     setPage(newPage);
@@ -92,7 +102,6 @@ const ProductList = () => {
   }, []);
 
   const totalPages = Math.ceil(total / pageSize);
-  const columns = allColumns.map((col) => col.key);
 
   const getColumnDataType = (column: string): string => {
     return getColumnConfig(column as keyof MockProductViewModel)?.type ?? 'simple-text';
@@ -113,54 +122,46 @@ const ProductList = () => {
       case 'progress-bar':
         return (
           <RangeSlider
+            column={column}
             min={0}
             max={100}
-            resetTrigger={filterResetTrigger}
-            onValueChange={(value) => updateFilter(column, value)}
           />
         );
       case 'grade-badge':
         return (
           <MultiSelect
+            column={column}
             options={['A', 'B', 'C', 'D', 'F']}
-            resetTrigger={filterResetTrigger}
-            onValueChange={(value) => updateFilter(column, value)}
           />
         );
       case 'nova-dots':
         return (
           <MultiSelect
+            column={column}
             options={['1', '2', '3', '4']}
-            resetTrigger={filterResetTrigger}
-            onValueChange={(value) => updateFilter(column, value)}
           />
         );
       case 'large-counter':
         return (
           <RangeSlider
-            resetTrigger={filterResetTrigger}
-            onValueChange={(value) => updateFilter(column, value)}
+            column={column}
           />
         );
       case 'boolean-yesno':
         return (
           <MultiSelect
+            column={column}
             options={['Yes', 'No']}
-            resetTrigger={filterResetTrigger}
-            onValueChange={(value) => updateFilter(column, value)}
           />
         );
       case 'product-image':
         return null;
       default:
         return (
-          <TextSearch
-            resetTrigger={filterResetTrigger}
-            onValueChange={(value) => updateFilter(column, value)}
-          />
+          <TextSearch column={column} />
         );
     }
-  }, [filterResetTrigger, updateFilter]);
+  }, []);
 
   const renderCell = useCallback((value: any, column: string, row: Record<string, any>) => {
     const columnConfig = allColumns.find((col) => col.key === column);
@@ -185,7 +186,7 @@ const ProductList = () => {
           totalPages={totalPages}
           page={page}
           pageSize={pageSize}
-          pageSizes={[10, 25, 50]}
+          pageSizes={pageSizes}
           showFilterRow={true}
           onPageChange={handlePageChange}
           onPageSizeChange={handlePageSizeChange}
@@ -202,15 +203,19 @@ const ProductList = () => {
   }
 
   return (
-    <div className="product-list-container">
-      <div className="page-header-row">
-        <h1>Products</h1>
-        <button className="reset-button" onClick={resetFilters} type="button">
-          Reset Filters
-        </button>
-      </div>
-      {content}
-    </div>
+    <FilterActionsContext.Provider value={filterActions}>
+      <FiltersContext.Provider value={filterState}>
+        <div className="product-list-container">
+          <div className="page-header-row">
+            <h1>Products</h1>
+            <button className="reset-button" onClick={filterActions.clear} type="button">
+              Reset Filters
+            </button>
+          </div>
+          {content}
+        </div>
+      </FiltersContext.Provider>
+    </FilterActionsContext.Provider>
   );
 };
 

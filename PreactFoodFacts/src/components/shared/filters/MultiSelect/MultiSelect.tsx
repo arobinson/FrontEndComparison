@@ -1,32 +1,26 @@
 import type { TargetedMouseEvent } from 'preact';
 import { useState, useEffect, useCallback, useRef } from 'preact/hooks';
+import { useFilterActions, useFilterDraft } from '../filterStore';
 import './MultiSelect.css';
 
 interface MultiSelectProps {
+  column: string;
   options: string[];
   placeholder?: string;
-  resetTrigger?: number;
-  onValueChange: (values: string[]) => void;
 }
 
-// Plain component: the React version's memo never bails out, because the
-// parent passes a fresh inline `onValueChange` closure (and `options` array
-// literal) on every render.
 export const MultiSelect = ({
+  column,
   options,
   placeholder = 'Select...',
-  resetTrigger = 0,
-  onValueChange,
 }: MultiSelectProps) => {
-  const [selectedValues, setSelectedValues] = useState<Set<string>>(new Set());
+  const selectedValues = useFilterDraft<string[]>(column) ?? [];
+  const { setDraft, apply } = useFilterActions();
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const lastClickWhenOpenedRef = useRef<EventTarget | null>(null);
 
-  useEffect(() => {
-    setSelectedValues(new Set());
-  }, [resetTrigger]);
-
+  // Real side effect: a document-level click listener (click-outside to close).
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (!isOpen) return;
@@ -49,29 +43,25 @@ export const MultiSelect = ({
     setIsOpen(willBeOpen);
   }, [isOpen]);
 
-  const toggleOption = useCallback((option: string) => {
-    setSelectedValues((current) => {
-      const newSet = new Set(current);
-      if (newSet.has(option)) {
-        newSet.delete(option);
-      } else {
-        newSet.add(option);
-      }
-      onValueChange(Array.from(newSet));
-      return newSet;
-    });
-  }, [onValueChange]);
+  // Multi-select applies on every toggle.
+  const toggleOption = (option: string) => {
+    const next = selectedValues.includes(option)
+      ? selectedValues.filter((value) => value !== option)
+      : [...selectedValues, option];
+    setDraft(column, next);
+    apply(column);
+  };
 
-  const getDisplayText = useCallback(() => {
-    const count = selectedValues.size;
+  const getDisplayText = () => {
+    const count = selectedValues.length;
     if (count === 0) {
       return placeholder;
     } else if (count === 1) {
-      return Array.from(selectedValues)[0];
+      return selectedValues[0];
     } else {
       return `${count} selected`;
     }
-  }, [selectedValues, placeholder]);
+  };
 
   return (
     <div className="multi-select" ref={containerRef}>
@@ -86,7 +76,7 @@ export const MultiSelect = ({
             <label key={option} className="option">
               <input
                 type="checkbox"
-                checked={selectedValues.has(option)}
+                checked={selectedValues.includes(option)}
                 onChange={() => toggleOption(option)}
               />
               <span>{option}</span>

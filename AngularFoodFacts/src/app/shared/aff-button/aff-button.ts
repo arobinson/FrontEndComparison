@@ -5,14 +5,12 @@ import {
   contentChildren,
   ElementRef,
   ViewChild,
-  ChangeDetectionStrategy,
 } from '@angular/core';
 
 @Component({
   selector: 'aff-button',
   imports: [],
   templateUrl: './aff-button.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './aff-button.css',
 })
 export class AffButton {

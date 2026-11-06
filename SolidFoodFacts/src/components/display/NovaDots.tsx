@@ -24,7 +24,7 @@ export default function NovaDots(props: NovaDotsProps) {
   return (
     <div class="nova-dots">
       <For each={dots()}>
-        {(dot) => <span class={`dot ${dot.filled ? 'filled' : ''}`}></span>}
+        {(dot) => <span class={`dot${dot.filled ? ' filled' : ''}`}></span>}
       </For>
     </div>
   );

@@ -6,16 +6,18 @@ const BASE_URL = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
 @customElement('product-link')
 export class ProductLink extends LitElement {
   static styles = css`
-    a {
-      color: #0066cc;
+    .product-link {
+      color: var(--color-primary, #0066cc);
       text-decoration: none;
       font-weight: 500;
     }
-    a:hover {
-      color: #004499;
+
+    .product-link:hover {
+      color: var(--color-primary-dark, #004499);
     }
-    a:visited {
-      color: #551a8b;
+
+    .product-link:visited {
+      color: var(--color-primary-visited, #551a8b);
     }
   `;
 
@@ -32,10 +34,6 @@ export class ProductLink extends LitElement {
   }
 
   render() {
-    return html`
-      <a href="${BASE_URL}/detail/${this.value}" @click="${this.handleClick}">
-        ${this.value}
-      </a>
-    `;
+    return html`<a class="product-link" href="${BASE_URL}/detail/${this.value}" @click="${this.handleClick}">${this.value}</a>`;
   }
 }

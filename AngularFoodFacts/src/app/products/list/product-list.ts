@@ -1,13 +1,5 @@
-import {
-  Component,
-  inject,
-  signal,
-  computed,
-  effect,
-  ChangeDetectionStrategy,
-} from '@angular/core';
+import { Component, inject, signal, computed, linkedSignal } from '@angular/core';
 
-import { RouterModule } from '@angular/router';
 import { allColumns, ColumnConfig, getColumnConfig } from 'shared-types';
 import { FoodFacts, ProductViewModel } from '../food-facts';
 import { DataTable } from '../../shared/data-table/data-table';
@@ -24,14 +16,20 @@ import { AbsoluteDate } from '../../shared/absolute-date/absolute-date';
 import { RelativeDate } from '../../shared/relative-date/relative-date';
 import { TimeFormat } from '../../shared/time-format/time-format';
 import { ColorPill } from '../../shared/color-pill/color-pill';
+import { StarRating } from '../../shared/star-rating/star-rating';
 import { TextSearch } from '../../shared/filters/text-search/text-search';
 import { RangeSlider } from '../../shared/filters/range-slider/range-slider';
 import { MultiSelect } from '../../shared/filters/multi-select/multi-select';
+import { FilterStore } from '../../shared/filters/filter-store';
+
+interface ProductPage {
+  products: ProductViewModel[];
+  total: number;
+}
 
 @Component({
   selector: 'aff-product-list',
   imports: [
-    RouterModule,
     DataTable,
     ProductLink,
     ProgressBar,
@@ -46,25 +44,31 @@ import { MultiSelect } from '../../shared/filters/multi-select/multi-select';
     RelativeDate,
     TimeFormat,
     ColorPill,
+    StarRating,
     TextSearch,
     RangeSlider,
     MultiSelect,
   ],
   templateUrl: './product-list.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './product-list.css',
+  providers: [FilterStore],
 })
 export class ProductList {
   readonly #foodFacts = inject(FoodFacts);
+  readonly #filters = inject(FilterStore);
 
   readonly category = signal('all');
 
   // #region Pagination State
 
   /**
-   * Current page for pagination (0-based for UI, 1-based for API)
+   * Current page for pagination (0-based for UI, 1-based for API).
+   * Resets to the first page whenever a filter is applied or cleared.
    */
-  readonly currentPage = signal(0);
+  readonly currentPage = linkedSignal({
+    source: this.#filters.applied,
+    computation: () => 0,
+  });
 
   /**
    * Items per page
@@ -81,25 +85,6 @@ export class ProductList {
     this.apiPage,
     this.pageSize,
   );
-
-  /**
-   * Previous data to show while loading new page
-   */
-  readonly previousData = signal<{
-    products: ProductViewModel[];
-    total: number;
-  } | null>(null);
-
-  constructor() {
-    // Update previousData whenever we get new resolved data
-    effect(() => {
-      const status = this.productsResource.status();
-      const value = this.productsResource.value();
-      if (status === 'resolved' && value) {
-        this.previousData.set(value);
-      }
-    });
-  }
 
   // #endregion
 
@@ -142,27 +127,11 @@ export class ProductList {
 
   // #region Filter State
 
-  readonly filters = signal<Record<string, any>>({});
-  readonly filterResetTrigger = signal(0);
-
   /**
-   * Update filter for a specific column
-   */
-  updateFilter(column: string, value: any) {
-    this.filters.update((current) => ({
-      ...current,
-      [column]: value,
-    }));
-    this.currentPage.set(0); // Reset to first page when filtering
-  }
-
-  /**
-   * Reset all filters
+   * Reset all filters (also returns to the first page, see currentPage)
    */
   resetFilters() {
-    this.filters.set({});
-    this.currentPage.set(0);
-    this.filterResetTrigger.update((val) => val + 1);
+    this.#filters.clear();
   }
 
   // #endregion
@@ -175,18 +144,17 @@ export class ProductList {
   readonly isError = computed(() => this.productsResource.status() === 'error');
 
   /**
-   * Current data or previous data if loading
+   * Current data, or the previous page's data while the next page loads
    */
-  readonly displayData = computed(() => {
-    const current = this.productsResource.value();
-    const previous = this.previousData();
-    let result;
-    if (current) {
-      result = current;
-    } else {
-      result = previous;
-    }
-    return result;
+  readonly displayData = linkedSignal<
+    ProductPage | undefined,
+    ProductPage | null
+  >({
+    source: () =>
+      this.productsResource.hasValue()
+        ? this.productsResource.value()
+        : undefined,
+    computation: (current, previous) => current ?? previous?.value ?? null,
   });
 
   readonly hasData = computed(() => {
@@ -200,7 +168,7 @@ export class ProductList {
   readonly filteredData = computed(() => {
     const response = this.displayData();
     const allData = response?.products || [];
-    const activeFilters = this.filters();
+    const activeFilters: Record<string, any> = this.#filters.applied();
 
     let result = allData;
     if (Object.keys(activeFilters).length > 0) {

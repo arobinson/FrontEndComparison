@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import type { MockProductViewModel } from 'shared-types';
 import { productService, type AdjacentProducts } from '../services/productService';
 
@@ -17,9 +17,9 @@ export const useProduct = (code: string): UseProductResult => {
   const [adjacent, setAdjacent] = useState<AdjacentProducts | null>(null);
   const [refetchTrigger, setRefetchTrigger] = useState(0);
 
-  // Keep reference to previous product to preserve during loading
-  const previousProductRef = useRef<MockProductViewModel | null>(null);
-
+  // Legitimate effect: synchronizes with the network (data fetching), React's documented
+  // no-framework pattern (custom hook + ignore flag). Router loaders are deliberately not
+  // used: they would hold the old route until data resolves and change the loading UI.
   useEffect(() => {
     let cancelled = false;
 
@@ -27,6 +27,8 @@ export const useProduct = (code: string): UseProductResult => {
       setLoading(true);
       setError(null);
 
+      // No `finally`: React Compiler cannot compile try/finally; the line after try/catch
+      // runs on both paths, same as before.
       try {
         const [productData, adjacentData] = await Promise.all([
           productService.getProduct(code),
@@ -36,7 +38,6 @@ export const useProduct = (code: string): UseProductResult => {
         if (!cancelled) {
           if (productData) {
             setProduct(productData);
-            previousProductRef.current = productData;
           } else {
             setError('Product not found');
           }
@@ -46,10 +47,9 @@ export const useProduct = (code: string): UseProductResult => {
         if (!cancelled) {
           setError(err instanceof Error ? err.message : 'Failed to fetch product');
         }
-      } finally {
-        if (!cancelled) {
-          setLoading(false);
-        }
+      }
+      if (!cancelled) {
+        setLoading(false);
       }
     };
 
@@ -64,8 +64,7 @@ export const useProduct = (code: string): UseProductResult => {
     setRefetchTrigger((prev) => prev + 1);
   };
 
-  // Return previous product during loading to prevent UI destruction
-  const displayProduct = product ?? previousProductRef.current;
-
-  return { product: displayProduct, loading, error, adjacent, refetch };
+  // product is only replaced when a fetch succeeds, so the previous product stays
+  // rendered while the next one loads.
+  return { product, loading, error, adjacent, refetch };
 };

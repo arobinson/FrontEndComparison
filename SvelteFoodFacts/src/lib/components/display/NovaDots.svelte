@@ -1,14 +1,14 @@
 <script lang="ts">
   let { value }: { value: number } = $props();
 
-  let rating = $derived(() => {
+  let rating = $derived.by(() => {
     if (value < 1) return 1;
     if (value > 4) return 4;
     return Math.floor(value);
   });
 
-  let dots = $derived(() => {
-    const filledCount = rating();
+  let dots = $derived.by(() => {
+    const filledCount = rating;
     const result = [];
     for (let i = 1; i <= 4; i++) {
       result.push({ filled: i <= filledCount });
@@ -18,7 +18,7 @@
 </script>
 
 <div class="nova-dots">
-  {#each dots() as dot, i (i)}
+  {#each dots as dot, i (i)}
     <span class="dot" class:filled={dot.filled}></span>
   {/each}
 </div>

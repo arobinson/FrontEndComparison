@@ -20,6 +20,7 @@ export class LitApp extends LitElement {
   connectedCallback() {
     super.connectedCallback();
     this.handleRoute();
+    // Side effect: subscribe to browser back/forward (hand-rolled router; app root, never disconnected).
     window.addEventListener('popstate', () => this.handleRoute());
     // Listen for navigate-to-detail events from product links
     this.addEventListener('navigate-to-detail', ((e: CustomEvent) => {

@@ -1,49 +1,34 @@
-import {
-  Component,
-  input,
-  output,
-  signal,
-  effect,
-  ChangeDetectionStrategy,
-} from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
+import { FilterStore } from '../filter-store';
 
 @Component({
   selector: 'aff-text-search',
   imports: [],
   templateUrl: './text-search.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './text-search.css',
 })
 export class TextSearch {
+  readonly column = input.required<string>();
   readonly placeholder = input<string>('Search');
-  readonly resetTrigger = input<number>(0);
-  readonly valueChange = output<string>();
 
-  readonly searchValue = signal('');
+  readonly #store = inject(FilterStore);
 
-  constructor() {
-    effect(() => {
-      this.resetTrigger();
-      this.clear();
-    });
-  }
-
-  clear() {
-    this.searchValue.set('');
-  }
+  readonly searchValue = computed(
+    () => (this.#store.draft(this.column()) as string | undefined) ?? '',
+  );
 
   onInput(event: Event) {
     const target = event.target as HTMLInputElement;
-    this.searchValue.set(target.value);
+    this.#store.setDraft(this.column(), target.value);
   }
 
   onBlur() {
-    this.valueChange.emit(this.searchValue());
+    this.#store.apply(this.column());
   }
 
   onKeyup(event: KeyboardEvent) {
     if (event.key === 'Enter') {
-      this.valueChange.emit(this.searchValue());
+      this.#store.apply(this.column());
     }
   }
 }

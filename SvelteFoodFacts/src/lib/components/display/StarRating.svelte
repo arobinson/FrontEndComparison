@@ -1,7 +1,7 @@
 <script lang="ts">
   let { value, maxStars = 5 }: { value: number; maxStars?: number } = $props();
 
-  let stars = $derived(() => {
+  let stars = $derived.by(() => {
     const rating = Number(value) || 0;
     const fullStars = Math.floor(rating);
     const hasHalfStar = rating % 1 >= 0.5;
@@ -16,13 +16,13 @@
 </script>
 
 <div class="star-rating">
-  {#each stars().full, i (i)}
+  {#each stars.full, i (i)}
     <span class="star full">★</span>
   {/each}
-  {#each stars().half, i (i)}
+  {#each stars.half, i (i)}
     <span class="star half">★</span>
   {/each}
-  {#each stars().empty, i (i)}
+  {#each stars.empty, i (i)}
     <span class="star empty">☆</span>
   {/each}
   <span class="rating-value">{value}</span>

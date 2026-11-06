@@ -1,39 +1,29 @@
 import type { TargetedEvent, TargetedKeyboardEvent } from 'preact';
-import { useState, useEffect, useCallback } from 'preact/hooks';
+import { useFilterActions, useFilterDraft } from '../filterStore';
 import './TextSearch.css';
 
 interface TextSearchProps {
+  column: string;
   placeholder?: string;
-  resetTrigger?: number;
-  onValueChange: (value: string) => void;
 }
 
-// Plain component: the React version's memo never bails out, because the
-// parent passes a fresh inline `onValueChange` closure on every render.
-export const TextSearch = ({
-  placeholder = 'Search',
-  resetTrigger = 0,
-  onValueChange,
-}: TextSearchProps) => {
-  const [searchValue, setSearchValue] = useState('');
+export const TextSearch = ({ column, placeholder = 'Search' }: TextSearchProps) => {
+  const searchValue = useFilterDraft<string>(column) ?? '';
+  const { setDraft, apply } = useFilterActions();
 
-  useEffect(() => {
-    setSearchValue('');
-  }, [resetTrigger]);
+  const handleInput = (event: TargetedEvent<HTMLInputElement>) => {
+    setDraft(column, event.currentTarget.value);
+  };
 
-  const handleInput = useCallback((event: TargetedEvent<HTMLInputElement>) => {
-    setSearchValue(event.currentTarget.value);
-  }, []);
+  const handleBlur = () => {
+    apply(column);
+  };
 
-  const handleBlur = useCallback(() => {
-    onValueChange(searchValue);
-  }, [searchValue, onValueChange]);
-
-  const handleKeyUp = useCallback((event: TargetedKeyboardEvent<HTMLInputElement>) => {
+  const handleKeyUp = (event: TargetedKeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
-      onValueChange(searchValue);
+      apply(column);
     }
-  }, [searchValue, onValueChange]);
+  };
 
   // onInput = React's onChange for text inputs (fires on every keystroke).
   return (

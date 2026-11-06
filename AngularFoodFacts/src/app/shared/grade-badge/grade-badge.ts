@@ -2,14 +2,12 @@ import {
   Component,
   input,
   computed,
-  ChangeDetectionStrategy,
 } from '@angular/core';
 
 @Component({
   selector: 'aff-grade-badge',
   imports: [],
   templateUrl: './grade-badge.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './grade-badge.css',
 })
 export class GradeBadge {

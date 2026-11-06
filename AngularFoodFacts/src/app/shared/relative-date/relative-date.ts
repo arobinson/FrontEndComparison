@@ -2,14 +2,12 @@ import {
   Component,
   input,
   computed,
-  ChangeDetectionStrategy,
 } from '@angular/core';
 
 @Component({
   selector: 'aff-relative-date',
   imports: [],
   templateUrl: './relative-date.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './relative-date.css',
 })
 export class RelativeDate {

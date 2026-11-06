@@ -3,8 +3,7 @@ import {
   inject,
   computed,
   signal,
-  effect,
-  ChangeDetectionStrategy,
+  linkedSignal,
 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FoodFacts, ProductViewModel } from '../food-facts';
@@ -22,7 +21,6 @@ import { DecimalUnits } from '../../shared/decimal-units/decimal-units';
 import { TimeFormat } from '../../shared/time-format/time-format';
 import { StarRating } from '../../shared/star-rating/star-rating';
 import { ColorPill } from '../../shared/color-pill/color-pill';
-import { AffButton } from '../../shared/aff-button/aff-button';
 
 @Component({
   selector: 'aff-product-detail',
@@ -40,10 +38,8 @@ import { AffButton } from '../../shared/aff-button/aff-button';
     TimeFormat,
     StarRating,
     ColorPill,
-    AffButton,
   ],
   templateUrl: './product-detail.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './product-detail.css',
 })
 export class ProductDetail {
@@ -57,21 +53,24 @@ export class ProductDetail {
     this.id,
   );
 
-  // Keep previous product value during loading to prevent component destruction
-  readonly product = signal<ProductViewModel | null>(null);
+  // Keep the previous product shown while the next one loads (prevents component destruction)
+  readonly product = linkedSignal<
+    ProductViewModel | null | undefined,
+    ProductViewModel | null
+  >({
+    source: () =>
+      this.productResource.hasValue() ? this.productResource.value() : undefined,
+    computation: (current, previous) => current ?? previous?.value ?? null,
+  });
+
+  readonly #adjacent = computed(() =>
+    this.adjacentResource.hasValue() ? this.adjacentResource.value() : null,
+  );
 
   constructor() {
     // Update id signal when route params change (component is reused)
     this.#route.params.subscribe((params) => {
       this.id.set(params['id']);
-    });
-
-    // Effect to update product signal, preserving previous value during loading
-    effect(() => {
-      const current = this.productResource.value();
-      if (current) {
-        this.product.set(current);
-      }
     });
   }
 
@@ -79,15 +78,9 @@ export class ProductDetail {
     () => this.productResource.status() === 'loading',
   );
   readonly isError = computed(() => this.productResource.status() === 'error');
-  readonly hasData = computed(
-    () =>
-      this.productResource.status() === 'resolved' &&
-      this.productResource.value(),
-  );
-
   readonly createdDate = computed(() => {
     let result: string;
-    const date = this.productResource.value()?.createdDate;
+    const date = this.product()?.createdDate;
     if (date) {
       result = date.toISOString();
     } else {
@@ -98,7 +91,7 @@ export class ProductDetail {
 
   readonly lastModifiedDate = computed(() => {
     let result: string;
-    const date = this.productResource.value()?.lastUpdated;
+    const date = this.product()?.lastUpdated;
     if (date) {
       result = date.toISOString();
     } else {
@@ -109,7 +102,7 @@ export class ProductDetail {
 
   readonly releaseDate = computed(() => {
     let result: string;
-    const date = this.productResource.value()?.releaseDate;
+    const date = this.product()?.releaseDate;
     if (date) {
       result = date.toISOString();
     } else {
@@ -120,7 +113,7 @@ export class ProductDetail {
 
   readonly nextRestockDate = computed(() => {
     let result: string;
-    const date = this.productResource.value()?.nextRestockDate;
+    const date = this.product()?.nextRestockDate;
     if (date) {
       result = date.toISOString();
     } else {
@@ -130,17 +123,17 @@ export class ProductDetail {
   });
 
   readonly hasPrevious = computed(() => {
-    const adjacent = this.adjacentResource.value();
+    const adjacent = this.#adjacent();
     return adjacent?.previousId != null;
   });
 
   readonly hasNext = computed(() => {
-    const adjacent = this.adjacentResource.value();
+    const adjacent = this.#adjacent();
     return adjacent?.nextId != null;
   });
 
   readonly positionInfo = computed(() => {
-    const adjacent = this.adjacentResource.value();
+    const adjacent = this.#adjacent();
     if (adjacent) {
       return `${adjacent.currentIndex} of ${adjacent.total}`;
     }
@@ -152,14 +145,14 @@ export class ProductDetail {
   }
 
   navigateToPrevious(): void {
-    const adjacent = this.adjacentResource.value();
+    const adjacent = this.#adjacent();
     if (adjacent?.previousId) {
       this.#router.navigate(['/detail', adjacent.previousId]);
     }
   }
 
   navigateToNext(): void {
-    const adjacent = this.adjacentResource.value();
+    const adjacent = this.#adjacent();
     if (adjacent?.nextId) {
       this.#router.navigate(['/detail', adjacent.nextId]);
     }

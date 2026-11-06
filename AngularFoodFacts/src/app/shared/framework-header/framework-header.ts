@@ -1,13 +1,11 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component } from '@angular/core';
 import { FRAMEWORKS, getFrameworkUrl } from 'shared-types';
 
 const CURRENT_FRAMEWORK = 'angular';
 
 @Component({
   selector: 'aff-framework-header',
-  standalone: true,
   templateUrl: './framework-header.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './framework-header.css',
 })
 export class FrameworkHeader {

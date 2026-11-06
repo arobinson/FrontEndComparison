@@ -1,3 +1,7 @@
+@let header = headerTemplate();
+@let filter = filterTemplate();
+@let data = dataTemplate();
+@let empty = emptyTemplate();
 <div class="data-table-container">
   @if (hasData()) {
     <div class="table-wrapper">
@@ -6,10 +10,10 @@
           <tr class="header-row">
             @for (column of columns(); track column) {
               <th class="header-cell" scope="col">
-                @if (headerTemplate()) {
+                @if (header) {
                   <ng-container
                     *ngTemplateOutlet="
-                      headerTemplate();
+                      header;
                       context: { $implicit: column, column: column }
                     "
                   ></ng-container>
@@ -24,10 +28,10 @@
             <tr class="filter-row">
               @for (column of columns(); track column) {
                 <th class="filter-cell" scope="col">
-                  @if (filterTemplate()) {
+                  @if (filter) {
                     <ng-container
                       *ngTemplateOutlet="
-                        filterTemplate();
+                        filter;
                         context: { $implicit: column, column: column }
                       "
                     ></ng-container>
@@ -39,14 +43,14 @@
         </thead>
 
         <tbody class="table-body">
-          @for (row of value(); track getRowTrackValue(row, $index)) {
+          @for (row of value(); track row.code) {
             <tr class="data-row">
               @for (column of columns(); track column) {
                 <td class="data-cell">
-                  @if (dataTemplate()) {
+                  @if (data) {
                     <ng-container
                       *ngTemplateOutlet="
-                        dataTemplate();
+                        data;
                         context: {
                           $implicit: row[column],
                           column: column,
@@ -71,12 +75,11 @@
         <label for="pageSize">Items per page:</label>
         <select
           id="pageSize"
-          [ngModel]="pageSize()"
-          [class.error]="!isValidPageSize()"
-          (ngModelChange)="onPageSizeChange(+$event)"
+          [attr.class]="isValidPageSize() ? '' : 'error'"
+          (change)="onPageSizeChange(+$any($event.target).value)"
         >
           @for (size of pageSizes(); track size) {
-            <option [value]="size">{{ size }}</option>
+            <option [value]="size" [selected]="size === pageSize()">{{ size }}</option>
           }
         </select>
         @if (!isValidPageSize()) {
@@ -85,47 +88,21 @@
       </div>
 
       <div class="pagination-controls">
-        <aff-button
-          [disabled]="page() === 0"
-          (clicked)="onFirstPage()"
-          size="sm"
-        >
-          First
-        </aff-button>
+        <aff-button [disabled]="page() === 0" (clicked)="onFirstPage()" size="sm">First</aff-button>
 
-        <aff-button
-          [disabled]="page() === 0"
-          (clicked)="onPreviousPage()"
-          size="sm"
-        >
-          Previous
-        </aff-button>
+        <aff-button [disabled]="page() === 0" (clicked)="onPreviousPage()" size="sm">Previous</aff-button>
 
-        <span class="page-info">
-          Page {{ page() + 1 }} of {{ totalPages() }}
-        </span>
+        <span class="page-info">Page {{ page() + 1 }} of {{ totalPages() }}</span>
 
-        <aff-button
-          [disabled]="page() >= totalPages() - 1"
-          (clicked)="onNextPage()"
-          size="sm"
-        >
-          Next
-        </aff-button>
+        <aff-button [disabled]="page() >= totalPages() - 1" (clicked)="onNextPage()" size="sm">Next</aff-button>
 
-        <aff-button
-          [disabled]="page() >= totalPages() - 1"
-          (clicked)="onLastPage()"
-          size="sm"
-        >
-          Last
-        </aff-button>
+        <aff-button [disabled]="page() >= totalPages() - 1" (clicked)="onLastPage()" size="sm">Last</aff-button>
       </div>
     </div>
   } @else {
     <div class="empty-state">
-      @if (emptyTemplate()) {
-        <ng-container *ngTemplateOutlet="emptyTemplate()"></ng-container>
+      @if (empty) {
+        <ng-container *ngTemplateOutlet="empty"></ng-container>
       } @else {
         <p class="empty-text">{{ emptyText() }}</p>
       }

@@ -1,104 +1,69 @@
 import {
   Component,
-  input,
-  output,
-  signal,
-  effect,
+  computed,
   ElementRef,
   inject,
-  computed,
-  ChangeDetectionStrategy,
+  input,
+  signal,
 } from '@angular/core';
-import { ClickOutsideService } from '../../services/click-outside.service';
+import { FilterStore } from '../filter-store';
 
 @Component({
   selector: 'aff-multi-select',
   imports: [],
   templateUrl: './multi-select.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './multi-select.css',
+  host: {
+    '(document:click)': 'onDocumentClick($event)',
+  },
 })
 export class MultiSelect {
+  readonly column = input.required<string>();
   readonly options = input.required<string[]>();
   readonly placeholder = input<string>('Select...');
-  readonly resetTrigger = input<number>(0);
-  readonly valueChange = output<string[]>();
 
-  readonly selectedValues = signal<Set<string>>(new Set());
+  readonly #store = inject(FilterStore);
+  readonly #elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
+
   readonly isOpen = signal(false);
 
-  readonly #elementRef = inject(ElementRef);
-  readonly #clickOutsideService = inject(ClickOutsideService);
-  #lastClickWhenOpened: EventTarget | null = null;
+  readonly selectedValues = computed(
+    () => (this.#store.draft(this.column()) as string[] | undefined) ?? [],
+  );
 
-  readonly #clickedOutside = computed(() => {
-    const target = this.#clickOutsideService.lastClickedElement();
-    let result: boolean;
-    if (!target || !this.isOpen()) {
-      result = false;
-    } else if (target === this.#lastClickWhenOpened) {
-      // Ignore the click that opened the dropdown
-      result = false;
+  readonly displayText = computed(() => {
+    const selected = this.selectedValues();
+    let result: string;
+    if (selected.length === 0) {
+      result = this.placeholder();
+    } else if (selected.length === 1) {
+      result = selected[0];
     } else {
-      const clickedInside = this.#elementRef.nativeElement.contains(target);
-      result = !clickedInside;
+      result = `${selected.length} selected`;
     }
     return result;
   });
 
-  constructor() {
-    effect(() => {
-      this.resetTrigger();
-      this.clear();
-    });
-
-    effect(() => {
-      if (this.#clickedOutside()) {
-        this.isOpen.set(false);
-      }
-    });
-  }
-
-  clear() {
-    this.selectedValues.set(new Set());
-  }
-
   toggleDropdown() {
-    const willBeOpen = !this.isOpen();
-    if (willBeOpen) {
-      this.#lastClickWhenOpened =
-        this.#clickOutsideService.lastClickedElement();
+    this.isOpen.update((open) => !open);
+  }
+
+  /** Close the dropdown on a click anywhere outside this component. */
+  onDocumentClick(event: MouseEvent) {
+    if (
+      this.isOpen() &&
+      !this.#elementRef.nativeElement.contains(event.target as Node)
+    ) {
+      this.isOpen.set(false);
     }
-    this.isOpen.set(willBeOpen);
   }
 
   toggleOption(option: string) {
-    this.selectedValues.update((current) => {
-      const newSet = new Set(current);
-      if (newSet.has(option)) {
-        newSet.delete(option);
-      } else {
-        newSet.add(option);
-      }
-      return newSet;
-    });
-    this.valueChange.emit(Array.from(this.selectedValues()));
-  }
-
-  isSelected(option: string): boolean {
-    return this.selectedValues().has(option);
-  }
-
-  getDisplayText(): string {
-    const count = this.selectedValues().size;
-    let result: string;
-    if (count === 0) {
-      result = this.placeholder();
-    } else if (count === 1) {
-      result = Array.from(this.selectedValues())[0];
-    } else {
-      result = `${count} selected`;
-    }
-    return result;
+    const current = this.selectedValues();
+    const next = current.includes(option)
+      ? current.filter((value) => value !== option)
+      : [...current, option];
+    this.#store.setDraft(this.column(), next);
+    this.#store.apply(this.column());
   }
 }

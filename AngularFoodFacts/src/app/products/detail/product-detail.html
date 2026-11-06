@@ -1,31 +1,17 @@
 <div class="product-detail-container">
   <div class="navigation-bar">
-    <button (click)="navigateToList()" class="back-button">
-      ← Back to List
-    </button>
+    <button (click)="navigateToList()" class="back-button">← Back to List</button>
     <div class="product-navigation">
-      <aff-button
-        [disabled]="!hasPrevious()"
-        (clicked)="navigateToPrevious()"
-        size="sm"
-      >
-        ← Previous
-      </aff-button>
+      <button (click)="navigateToPrevious()" [disabled]="!hasPrevious()" class="nav-button">← Previous</button>
       <span class="position-info">{{ positionInfo() }}</span>
-      <aff-button
-        [disabled]="!hasNext()"
-        (clicked)="navigateToNext()"
-        size="sm"
-      >
-        Next →
-      </aff-button>
+      <button (click)="navigateToNext()" [disabled]="!hasNext()" class="nav-button">Next →</button>
     </div>
   </div>
 
   <div class="detail-area">
     @if (isLoading()) {
       <div class="loading-overlay">
-        <div class="loading-indicator">Loading...</div>
+        <span class="loading-indicator">⏳ Loading...</span>
       </div>
     }
     @if (product(); as product) {
@@ -464,12 +450,15 @@
           }
         </div>
       </div>
-    }
-    @if (isError()) {
+    } @else if (isLoading()) {
+      <div class="loading-state">
+        <p>Loading product...</p>
+      </div>
+    } @else if (isError()) {
       <div class="error-state">
         <p>Error loading product: {{ productResource.error() }}</p>
       </div>
-    } @else if (!isLoading() && !product()) {
+    } @else {
       <div class="not-found-state">
         <p>Product not found.</p>
       </div>

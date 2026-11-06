@@ -1,4 +1,4 @@
-<script setup vapor lang="ts" generic="T extends Record<string, any>">
+<script setup lang="ts" generic="T extends Record<string, any>">
 import { computed } from 'vue';
 import { Button } from '../Button';
 import './DataTable.css';
@@ -81,8 +81,8 @@ const selectedPageSize = computed({
         </thead>
 
         <tbody class="table-body">
-          <!-- Keyed by index to match the React implementation's row reconciliation -->
-          <tr v-for="(row, rowIndex) in value" :key="rowIndex" class="data-row">
+          <!-- Keyed by the product's primary key -->
+          <tr v-for="row in value" :key="row.code" class="data-row">
             <td v-for="column in columns" :key="column" class="data-cell">
               <slot name="cell" :value="row[column]" :column="column" :row="row">{{ row[column] }}</slot>
             </td>

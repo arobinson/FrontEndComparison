@@ -1,8 +1,10 @@
 import { LitElement, html, css, TemplateResult } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
+import { Task, TaskStatus } from '@lit/task';
 import type { MockProductViewModel } from 'shared-types';
 import { allColumns, getColumnConfig, getColumnDataType } from 'shared-types';
-import { productService } from '../services/productService.js';
+import { productService, type ProductsResponse } from '../services/productService.js';
+import { FilterStore, FilterStoreController, type FilterValue } from '../components/filters/filter-store.js';
 import '../components/shared/data-table.js';
 import '../components/table/cell-renderer.js';
 import '../components/filters/index.js';
@@ -13,6 +15,9 @@ export class ProductList extends LitElement {
   static styles = css`
     :host {
       display: block;
+    }
+
+    .product-list-container {
       padding: 1.25rem;
       height: calc(100vh - 41px); /* Account for framework header */
       display: flex;
@@ -76,18 +81,13 @@ export class ProductList extends LitElement {
     }
 
     .loading-indicator {
-      padding: 0.75rem 1.5rem;
+      padding: 0.5rem 1rem;
       background-color: #f0f8ff;
       border-left: 4px solid #0066cc;
+      margin-bottom: 1rem;
       border-radius: 4px;
       font-size: 14px;
       color: #333;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    .error-message {
-      color: #dc3545;
-      padding: 1rem;
     }
 
     data-table {
@@ -96,27 +96,47 @@ export class ProductList extends LitElement {
     }
   `;
 
-  @state() private products: MockProductViewModel[] = [];
-  @state() private productsState: 'initial' | 'loading' | 'error' | 'loaded' = 'initial';
   @state() private currentPage = 0;
   @state() private pageSize = 50;
-  @state() private totalProducts = 0;
-  @state() private error: Error | null = null;
-  @state() private filterResetTrigger = 0;
-  @state() private filters: Record<string, unknown> = {};
 
-  // Keep previous data during loading to prevent table destruction
-  private previousProducts: MockProductViewModel[] = [];
+  // Page-scoped filter store: created with this page, passed to the filter elements.
+  // Any apply/clear returns to the first page (in the same event), as in the other apps.
+  private filters = new FilterStore(() => {
+    this.currentPage = 0;
+  });
+
+  // One products request per page / page-size change. The signal is deliberately not
+  // passed to fetch, so a superseded request still completes (same network trace as before).
+  private productsTask = new Task(this, {
+    task: ([page, pageSize]) => productService.getProductsByCategory('all', page + 1, pageSize),
+    args: () => [this.currentPage, this.pageSize] as const,
+    onComplete: (result) => {
+      this.lastLoaded = result;
+    },
+  });
+
+  // Last successful page. Task.value keeps it while the next page is pending but drops it
+  // on error; this keeps it so a retry after an error still shows the previous rows.
+  private lastLoaded?: ProductsResponse;
+
+  // Derived in willUpdate (memoized on the data and the applied filters).
+  private displayProducts: MockProductViewModel[] = [];
+  private displayBase?: MockProductViewModel[];
+  private displayFilters?: Readonly<Record<string, FilterValue | undefined>>;
 
   private columnKeys = allColumns.map((col) => col.key);
 
-  connectedCallback() {
-    super.connectedCallback();
-    this.loadProducts();
+  constructor() {
+    super();
+    new FilterStoreController(this, () => this.filters);
+  }
+
+  private get loaded(): ProductsResponse | undefined {
+    return this.productsTask.value ?? this.lastLoaded;
   }
 
   private get totalPages(): number {
-    return Math.ceil(this.totalProducts / this.pageSize);
+    return Math.ceil((this.loaded?.total ?? 0) / this.pageSize);
   }
 
   private getColumnTitle(key: string): string {
@@ -127,17 +147,21 @@ export class ProductList extends LitElement {
     return getColumnConfig(key as keyof MockProductViewModel)?.unit;
   }
 
-  // Computed values for display (use previous data during loading)
-  private get displayProducts(): MockProductViewModel[] {
-    const baseProducts = this.products.length > 0 ? this.products : this.previousProducts;
-    return this.applyFilters(baseProducts);
+  willUpdate() {
+    const base = this.loaded?.products ?? [];
+    const applied = this.filters.applied;
+    if (base !== this.displayBase || applied !== this.displayFilters) {
+      this.displayBase = base;
+      this.displayFilters = applied;
+      this.displayProducts = this.applyFilters(base);
+    }
   }
 
   /**
    * Apply client-side filters to the products
    */
   private applyFilters(products: MockProductViewModel[]): MockProductViewModel[] {
-    const activeFilters = this.filters;
+    const activeFilters: Record<string, unknown> = this.filters.applied;
     if (Object.keys(activeFilters).length === 0) {
       return products;
     }
@@ -190,39 +214,17 @@ export class ProductList extends LitElement {
     });
   }
 
-  private async loadProducts() {
-    try {
-      this.productsState = 'loading';
-      const result = await productService.getProductsByCategory('all', this.currentPage + 1, this.pageSize);
-      this.products = result.products;
-      this.totalProducts = result.total;
-      // Store as previous for next loading state
-      this.previousProducts = result.products;
-      this.productsState = 'loaded';
-    } catch (e) {
-      this.error = e instanceof Error ? e : new Error('An unknown error occurred');
-      this.productsState = 'error';
-    }
-  }
-
-  private updateFilter(column: string, value: unknown) {
-    this.filters = { ...this.filters, [column]: value };
-  }
-
   private resetFilters() {
-    this.filters = {};
-    this.filterResetTrigger++;
+    this.filters.clear();
   }
 
   private handlePageChange(e: CustomEvent<number>) {
     this.currentPage = e.detail;
-    this.loadProducts();
   }
 
   private handlePageSizeChange(e: CustomEvent<number>) {
     this.pageSize = e.detail;
     this.currentPage = 0;
-    this.loadProducts();
   }
 
   private renderHeader = (column: string): TemplateResult => {
@@ -237,17 +239,17 @@ export class ProductList extends LitElement {
         <range-slider
           min="0"
           max="100"
-          .resetTrigger=${this.filterResetTrigger}
-          @value-change=${(e: CustomEvent) => this.updateFilter(column, e.detail)}
+          .column=${column}
+          .store=${this.filters}
         ></range-slider>
       `;
     }
     if (dataType === 'grade-badge') {
       return html`
         <multi-select
-          .options=${['A', 'B', 'C', 'D', 'E', 'F']}
-          .resetTrigger=${this.filterResetTrigger}
-          @value-change=${(e: CustomEvent) => this.updateFilter(column, e.detail)}
+          .options=${['A', 'B', 'C', 'D', 'F']}
+          .column=${column}
+          .store=${this.filters}
         ></multi-select>
       `;
     }
@@ -255,8 +257,8 @@ export class ProductList extends LitElement {
       return html`
         <multi-select
           .options=${['1', '2', '3', '4']}
-          .resetTrigger=${this.filterResetTrigger}
-          @value-change=${(e: CustomEvent) => this.updateFilter(column, e.detail)}
+          .column=${column}
+          .store=${this.filters}
         ></multi-select>
       `;
     }
@@ -264,24 +266,24 @@ export class ProductList extends LitElement {
       return html`
         <multi-select
           .options=${['Yes', 'No']}
-          .resetTrigger=${this.filterResetTrigger}
-          @value-change=${(e: CustomEvent) => this.updateFilter(column, e.detail)}
+          .column=${column}
+          .store=${this.filters}
         ></multi-select>
       `;
     }
     if (dataType === 'large-counter') {
       return html`
         <range-slider
-          .resetTrigger=${this.filterResetTrigger}
-          @value-change=${(e: CustomEvent) => this.updateFilter(column, e.detail)}
+          .column=${column}
+          .store=${this.filters}
         ></range-slider>
       `;
     }
     if (dataType !== 'product-image') {
       return html`
         <text-search
-          .resetTrigger=${this.filterResetTrigger}
-          @value-change=${(e: CustomEvent) => this.updateFilter(column, e.detail)}
+          .column=${column}
+          .store=${this.filters}
         ></text-search>
       `;
     }
@@ -294,43 +296,58 @@ export class ProductList extends LitElement {
     return html`<cell-renderer .value=${value} .dataType=${dataType} .column=${column} .row=${row} .unit=${unit}></cell-renderer>`;
   };
 
+  // Same branches as the other apps: error, else the table once a page has loaded (kept,
+  // with an overlay, while the next page loads; filtered to zero rows it shows its empty
+  // state), else the initial loading message, else "No products found."
+  private renderContent(): TemplateResult {
+    const status = this.productsTask.status;
+    if (status === TaskStatus.ERROR) {
+      const error = this.productsTask.error;
+      return html`<p>Error loading products: ${error instanceof Error ? error.message : 'Failed to fetch products'}</p>`;
+    }
+    const loading = status === TaskStatus.PENDING || status === TaskStatus.INITIAL;
+    if ((this.loaded?.products.length ?? 0) > 0) {
+      return html`
+        <div class="table-area">
+          ${loading
+            ? html`
+                <div class="loading-overlay">
+                  <div class="loading-indicator">Loading...</div>
+                </div>
+              `
+            : ''}
+          <data-table
+            .columns=${this.columnKeys}
+            .value=${this.displayProducts}
+            .totalPages=${this.totalPages}
+            .page=${this.currentPage}
+            .pageSize=${this.pageSize}
+            .showFilterRow=${true}
+            trackBy="code"
+            .renderHeader=${this.renderHeader}
+            .renderFilter=${this.renderFilter}
+            .renderCell=${this.renderCell}
+            @page-change=${this.handlePageChange}
+            @page-size-change=${this.handlePageSizeChange}
+          ></data-table>
+        </div>
+      `;
+    }
+    if (loading) {
+      return html`<div class="loading-indicator">Loading products...</div>`;
+    }
+    return html`<p>No products found.</p>`;
+  }
+
   render() {
     return html`
-      <div class="page-header-row">
-        <h1>Products</h1>
-        <button class="reset-button" @click=${this.resetFilters} type="button"> Reset Filters </button>
-      </div>
+      <div class="product-list-container">
+        <div class="page-header-row">
+          <h1>Products</h1>
+          <button class="reset-button" @click=${this.resetFilters} type="button"> Reset Filters </button>
+        </div>
 
-      <div class="table-area">
-        ${this.productsState === 'loading'
-          ? html`
-              <div class="loading-overlay">
-                <span class="loading-indicator">⏳ Loading...</span>
-              </div>
-            `
-          : ''}
-        ${this.displayProducts.length > 0
-          ? html`
-              <data-table
-                .columns=${this.columnKeys}
-                .value=${this.displayProducts}
-                .totalPages=${this.totalPages}
-                .page=${this.currentPage}
-                .pageSize=${this.pageSize}
-                .showFilterRow=${true}
-                trackBy="code"
-                .renderHeader=${this.renderHeader}
-                .renderFilter=${this.renderFilter}
-                .renderCell=${this.renderCell}
-                @page-change=${this.handlePageChange}
-                @page-size-change=${this.handlePageSizeChange}
-              ></data-table>
-            `
-          : ''}
-        ${this.productsState === 'error'
-          ? html` <p class="error-message">Error loading products: ${this.error?.message ?? 'Unknown'}</p> `
-          : ''}
-        ${this.productsState !== 'loading' && this.displayProducts.length === 0 ? html` <p>No products found.</p> ` : ''}
+        ${this.renderContent()}
       </div>
     `;
   }

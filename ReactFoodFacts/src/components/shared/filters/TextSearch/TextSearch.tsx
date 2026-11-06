@@ -1,36 +1,32 @@
-import { memo, useState, useEffect, useCallback, type KeyboardEvent, type ChangeEvent } from 'react';
+import { memo, useCallback, type KeyboardEvent, type ChangeEvent } from 'react';
+import { useFilterDraft, useFilterDispatch } from '../filterStore';
 import './TextSearch.css';
 
 interface TextSearchProps {
+  column: string;
   placeholder?: string;
-  resetTrigger?: number;
-  onValueChange: (value: string) => void;
 }
 
 export const TextSearch = memo(({
+  column,
   placeholder = 'Search',
-  resetTrigger = 0,
-  onValueChange,
 }: TextSearchProps) => {
-  const [searchValue, setSearchValue] = useState('');
-
-  useEffect(() => {
-    setSearchValue('');
-  }, [resetTrigger]);
+  const searchValue = useFilterDraft<string>(column) ?? '';
+  const dispatch = useFilterDispatch();
 
   const handleInput = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-    setSearchValue(event.target.value);
-  }, []);
+    dispatch({ type: 'setDraft', column, value: event.target.value });
+  }, [dispatch, column]);
 
   const handleBlur = useCallback(() => {
-    onValueChange(searchValue);
-  }, [searchValue, onValueChange]);
+    dispatch({ type: 'apply', column });
+  }, [dispatch, column]);
 
   const handleKeyUp = useCallback((event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
-      onValueChange(searchValue);
+      dispatch({ type: 'apply', column });
     }
-  }, [searchValue, onValueChange]);
+  }, [dispatch, column]);
 
   return (
     <input

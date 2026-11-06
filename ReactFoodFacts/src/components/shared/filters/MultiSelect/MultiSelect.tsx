@@ -1,28 +1,27 @@
 import { memo, useState, useEffect, useCallback, useRef } from 'react';
+import { useFilterDraft, useFilterDispatch } from '../filterStore';
 import './MultiSelect.css';
 
 interface MultiSelectProps {
+  column: string;
   options: string[];
   placeholder?: string;
-  resetTrigger?: number;
-  onValueChange: (values: string[]) => void;
 }
 
+const NO_SELECTION: string[] = [];
+
 export const MultiSelect = memo(({
+  column,
   options,
   placeholder = 'Select...',
-  resetTrigger = 0,
-  onValueChange,
 }: MultiSelectProps) => {
-  const [selectedValues, setSelectedValues] = useState<Set<string>>(new Set());
+  const selectedValues = useFilterDraft<string[]>(column) ?? NO_SELECTION;
+  const dispatch = useFilterDispatch();
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const lastClickWhenOpenedRef = useRef<EventTarget | null>(null);
 
-  useEffect(() => {
-    setSelectedValues(new Set());
-  }, [resetTrigger]);
-
+  // Legitimate effect: subscribes to a document-level click listener (click-outside to close).
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (!isOpen) return;
@@ -45,25 +44,21 @@ export const MultiSelect = memo(({
     setIsOpen(willBeOpen);
   }, [isOpen]);
 
+  // Every toggle updates the selection and applies it immediately.
   const toggleOption = useCallback((option: string) => {
-    setSelectedValues((current) => {
-      const newSet = new Set(current);
-      if (newSet.has(option)) {
-        newSet.delete(option);
-      } else {
-        newSet.add(option);
-      }
-      onValueChange(Array.from(newSet));
-      return newSet;
-    });
-  }, [onValueChange]);
+    const next = selectedValues.includes(option)
+      ? selectedValues.filter((value) => value !== option)
+      : [...selectedValues, option];
+    dispatch({ type: 'setDraft', column, value: next });
+    dispatch({ type: 'apply', column });
+  }, [selectedValues, dispatch, column]);
 
   const getDisplayText = useCallback(() => {
-    const count = selectedValues.size;
+    const count = selectedValues.length;
     if (count === 0) {
       return placeholder;
     } else if (count === 1) {
-      return Array.from(selectedValues)[0];
+      return selectedValues[0];
     } else {
       return `${count} selected`;
     }
@@ -82,7 +77,7 @@ export const MultiSelect = memo(({
             <label key={option} className="option">
               <input
                 type="checkbox"
-                checked={selectedValues.has(option)}
+                checked={selectedValues.includes(option)}
                 onChange={() => toggleOption(option)}
               />
               <span>{option}</span>

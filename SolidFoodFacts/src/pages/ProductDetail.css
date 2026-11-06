@@ -147,6 +147,23 @@
   margin-bottom: 1rem;
 }
 
+.thumbnail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 1rem;
+}
+
+.thumbnail {
+  text-align: center;
+}
+
+.thumbnail-label {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  color: #6c757d;
+}
+
 /* Section Headings */
 h2 {
   margin: 0 0 1rem 0;
@@ -157,7 +174,8 @@ h2 {
 }
 
 /* Info Lists */
-.info-list {
+.info-list,
+.nutrition-list {
   display: grid;
   grid-template-columns: 150px 1fr;
   gap: 0.75rem 1rem;
@@ -204,6 +222,17 @@ dd {
   font-size: 0.875rem;
 }
 
+.score-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #212529;
+}
+
+/* Nutrition Section */
+.nutrition-section {
+  grid-column: 1 / -1;
+}
+
 /* Loading/Error States */
 .loading-state,
 .error-state,
@@ -239,8 +268,13 @@ dd {
     grid-template-columns: 1fr;
   }
 
-  .info-list {
+  .info-list,
+  .nutrition-list {
     grid-template-columns: 120px 1fr;
     gap: 0.5rem 0.75rem;
+  }
+
+  .thumbnail-grid {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
   }
 }

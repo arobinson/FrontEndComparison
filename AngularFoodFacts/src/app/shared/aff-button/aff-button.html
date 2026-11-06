@@ -1,9 +1,6 @@
 <button
-  class="aff-button"
-  [class]="'variant-' + variant() + ' size-' + size()"
+  [attr.class]="'aff-button variant-' + variant() + ' size-' + size()"
   [type]="type()"
   [disabled]="disabled()"
   (click)="onButtonClick($event)"
->
-  <ng-content></ng-content>
-</button>
+><ng-content /></button>

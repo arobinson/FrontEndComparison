@@ -5,7 +5,7 @@
 
   let shouldTruncate = $derived((value?.length ?? 0) > maxLength);
 
-  let displayText = $derived(() => {
+  let displayText = $derived.by(() => {
     const text = value || '';
     if (shouldTruncate && !isExpanded) {
       return text.substring(0, maxLength - 3) + '...';
@@ -19,7 +19,7 @@
 </script>
 
 <div class="truncated-text">
-  <span class="text-content">{displayText()}</span>
+  <span class="text-content">{displayText}</span>
   {#if shouldTruncate}
     <button class="toggle-button" onclick={toggleExpanded} type="button">
       {isExpanded ? 'Show less' : 'Show more'}

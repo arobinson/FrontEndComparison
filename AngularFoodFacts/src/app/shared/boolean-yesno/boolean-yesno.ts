@@ -2,14 +2,12 @@ import {
   Component,
   input,
   computed,
-  ChangeDetectionStrategy,
 } from '@angular/core';
 
 @Component({
   selector: 'aff-boolean-yesno',
   imports: [],
   templateUrl: './boolean-yesno.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './boolean-yesno.css',
 })
 export class BooleanYesno {

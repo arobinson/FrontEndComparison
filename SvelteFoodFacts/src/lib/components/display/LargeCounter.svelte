@@ -1,7 +1,7 @@
 <script lang="ts">
   let { value }: { value: number | undefined } = $props();
 
-  let formattedValue = $derived(() => {
+  let formattedValue = $derived.by(() => {
     if (value === undefined || value === null) {
       return '0';
     }
@@ -15,7 +15,7 @@
   });
 </script>
 
-<span class="large-counter">{formattedValue()}</span>
+<span class="large-counter">{formattedValue}</span>
 
 <style>
   .large-counter {

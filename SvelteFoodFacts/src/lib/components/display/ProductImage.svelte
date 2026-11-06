@@ -17,7 +17,7 @@
   {#if !imageError}
     <img
       src={value}
-      alt="Product"
+      alt="Product image"
       class:loaded={imageLoaded}
       onload={onImageLoad}
       onerror={onImageError}

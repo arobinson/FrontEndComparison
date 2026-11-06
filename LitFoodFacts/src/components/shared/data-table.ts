@@ -1,5 +1,6 @@
 import { LitElement, html, css, TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import { repeat } from 'lit/directives/repeat.js';
 import './lit-button.js';
 
 export type RenderHeaderFn = (column: string) => TemplateResult;
@@ -10,6 +11,15 @@ export type RenderCellFn = (value: unknown, column: string, row: Record<string, 
 export class DataTable extends LitElement {
   static styles = css`
     :host {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .data-table-container {
+      flex: 1;
+      min-height: 0;
       display: flex;
       flex-direction: column;
       height: 100%;
@@ -154,15 +164,16 @@ export class DataTable extends LitElement {
     }
   `;
 
-  @property({ type: Array }) columns: string[] = [];
-  @property({ type: Array }) value: Record<string, unknown>[] = [];
+  @property({ attribute: false }) columns: string[] = [];
+  @property({ attribute: false }) value: Record<string, unknown>[] = [];
   @property({ type: Number }) totalPages = 0;
   @property({ type: Number }) page = 0;
   @property({ type: Number }) pageSize = 50;
-  @property({ type: Array }) pageSizes: number[] = [10, 25, 50];
+  @property({ attribute: false }) pageSizes: number[] = [10, 25, 50];
   @property({ type: Boolean }) showFilterRow = false;
   @property({ type: String }) emptyText = 'No data available';
-  @property({ type: String }) trackBy?: string;
+  // Primary-key field: rows are keyed by it (repeat) and it is written to data-key.
+  @property({ type: String }) trackBy = 'code';
   @property({ attribute: false }) renderHeader?: RenderHeaderFn;
   @property({ attribute: false }) renderFilter?: RenderFilterFn;
   @property({ attribute: false }) renderCell?: RenderCellFn;
@@ -173,13 +184,6 @@ export class DataTable extends LitElement {
 
   private get isValidPageSize(): boolean {
     return this.pageSizes.includes(this.pageSize);
-  }
-
-  private getRowTrackValue(row: Record<string, unknown>, index: number): unknown {
-    if (this.trackBy && row[this.trackBy] !== undefined) {
-      return row[this.trackBy];
-    }
-    return index;
   }
 
   private onFirstPage() {
@@ -210,89 +214,93 @@ export class DataTable extends LitElement {
   render() {
     if (!this.hasData) {
       return html`
-        <div class="empty-state">
-          <p class="empty-text">${this.emptyText}</p>
-        </div>
-      `;
-    }
+        <div class="data-table-container">
+            <div class="empty-state">
+              <p class="empty-text">${this.emptyText}</p>
+            </div>
+          </div>
+        `;
+      }
 
-    return html`
-      <div class="table-wrapper">
-        <table class="data-table">
-          <thead class="table-header">
-            <tr class="header-row">
-              ${this.columns.map(column => html`
-                <th class="header-cell" scope="col">
-                  ${this.renderHeader ? this.renderHeader(column) : column}
-                </th>
-              `)}
-            </tr>
-
-            ${this.showFilterRow ? html`
-              <tr class="filter-row">
+      return html`
+      <div class="data-table-container">
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead class="table-header">
+              <tr class="header-row">
                 ${this.columns.map(column => html`
-                  <th class="filter-cell" scope="col">
-                    ${this.renderFilter?.(column)}
+                  <th class="header-cell" scope="col">
+                    ${this.renderHeader ? this.renderHeader(column) : column}
                   </th>
                 `)}
               </tr>
-            ` : ''}
-          </thead>
 
-          <tbody class="table-body">
-            ${this.value.map((row, index) => html`
-              <tr class="data-row" data-key=${this.getRowTrackValue(row, index)}>
-                ${this.columns.map(column => html`
-                  <td class="data-cell">
-                    ${this.renderCell
-                      ? this.renderCell(row[column], column, row)
-                      : row[column]}
-                  </td>
-                `)}
-              </tr>
-            `)}
-          </tbody>
-        </table>
-      </div>
+              ${this.showFilterRow ? html`
+                <tr class="filter-row">
+                  ${this.columns.map(column => html`
+                    <th class="filter-cell" scope="col">
+                      ${this.renderFilter?.(column)}
+                    </th>
+                  `)}
+                </tr>
+              ` : ''}
+            </thead>
 
-      <div class="table-paginator">
-        <div class="page-size-selector">
-          <label for="pageSize">Items per page:</label>
-          <select
-            id="pageSize"
-            .value=${String(this.pageSize)}
-            class=${!this.isValidPageSize ? 'error' : ''}
-            @change=${this.handlePageSizeChange}
-          >
-            ${this.pageSizes.map(size => html`
-              <option value=${size} ?selected=${size === this.pageSize}>${size}</option>
-            `)}
-          </select>
-          ${!this.isValidPageSize ? html`
-            <span class="error-message">Invalid page size: ${this.pageSize}</span>
-          ` : ''}
+            <tbody class="table-body">
+              ${repeat(this.value, (row) => row[this.trackBy], (row) => html`
+                <tr class="data-row" data-key=${row[this.trackBy]}>
+                  ${this.columns.map(column => html`
+                    <td class="data-cell">
+                      ${this.renderCell
+                        ? this.renderCell(row[column], column, row)
+                        : row[column]}
+                    </td>
+                  `)}
+                </tr>
+              `)}
+            </tbody>
+          </table>
         </div>
 
-        <div class="pagination-controls">
-          <lit-button ?disabled=${this.page === 0} @button-click=${this.onFirstPage} size="sm">
-            First
-          </lit-button>
+        <div class="table-paginator">
+          <div class="page-size-selector">
+            <label for="pageSize">Items per page:</label>
+            <select
+              id="pageSize"
+              .value=${String(this.pageSize)}
+              class=${!this.isValidPageSize ? 'error' : ''}
+              @change=${this.handlePageSizeChange}
+            >
+              ${this.pageSizes.map(size => html`
+                <option value=${size} ?selected=${size === this.pageSize}>${size}</option>
+              `)}
+            </select>
+            ${!this.isValidPageSize ? html`
+              <span class="error-message">Invalid page size: ${this.pageSize}</span>
+            ` : ''}
+          </div>
 
-          <lit-button ?disabled=${this.page === 0} @button-click=${this.onPreviousPage} size="sm">
-            Previous
-          </lit-button>
+          <div class="pagination-controls">
+            <lit-button ?disabled=${this.page === 0} @button-click=${this.onFirstPage} size="sm">
+              First
+            </lit-button>
 
-          <span class="page-info">
-            Page ${this.page + 1} of ${this.totalPages}
-          </span>
+            <lit-button ?disabled=${this.page === 0} @button-click=${this.onPreviousPage} size="sm">
+              Previous
+            </lit-button>
 
-          <lit-button ?disabled=${this.page >= this.totalPages - 1} @button-click=${this.onNextPage} size="sm">
-            Next
-          </lit-button>
+            <span class="page-info">
+              Page ${this.page + 1} of ${this.totalPages}
+            </span>
 
-          <lit-button ?disabled=${this.page >= this.totalPages - 1} @button-click=${this.onLastPage} size="sm">
-            Last
-          </lit-button>
+            <lit-button ?disabled=${this.page >= this.totalPages - 1} @button-click=${this.onNextPage} size="sm">
+              Next
+            </lit-button>
+
+            <lit-button ?disabled=${this.page >= this.totalPages - 1} @button-click=${this.onLastPage} size="sm">
+              Last
+            </lit-button>
+          </div>
         </div>
       </div>
     `;

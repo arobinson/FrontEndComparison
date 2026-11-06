@@ -1,5 +1,4 @@
 import { createMemo } from 'solid-js';
-import './TimeFormat.css';
 
 interface TimeFormatProps {
   value: string;
@@ -20,5 +19,5 @@ export default function TimeFormat(props: TimeFormatProps) {
     }).format(date);
   });
 
-  return <span class="time-format">{formattedTime()}</span>;
+  return <>{formattedTime()}</>;
 }

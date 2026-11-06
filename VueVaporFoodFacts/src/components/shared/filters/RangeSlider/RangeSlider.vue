@@ -1,32 +1,21 @@
-<script setup vapor lang="ts">
-import { ref, watch } from 'vue';
+<script setup lang="ts">
+import { computed } from 'vue';
+import { useFilterStore, type RangeValue } from '../../../../composables/useFilterStore';
 import './RangeSlider.css';
 
-interface RangeValue {
+const {
+  column,
+  min = 0,
+  max = 100,
+} = defineProps<{
+  column: string;
   min?: number;
   max?: number;
-}
-
-const { min = 0, max = 100, resetTrigger = 0 } = defineProps<{
-  min?: number;
-  max?: number;
-  resetTrigger?: number;
 }>();
 
-const emit = defineEmits<{
-  valueChange: [value: RangeValue];
-}>();
+const store = useFilterStore();
 
-const minValue = ref<number | undefined>(undefined);
-const maxValue = ref<number | undefined>(undefined);
-
-watch(
-  () => resetTrigger,
-  () => {
-    minValue.value = undefined;
-    maxValue.value = undefined;
-  }
-);
+const range = computed(() => store.getDraft<RangeValue>(column, {}));
 
 const toNumber = (event: Event): number | undefined => {
   const raw = (event.target as HTMLInputElement).value;
@@ -34,22 +23,16 @@ const toNumber = (event: Event): number | undefined => {
 };
 
 const handleMinChange = (event: Event) => {
-  minValue.value = toNumber(event);
+  store.setDraft(column, { ...range.value, min: toNumber(event) });
 };
 
 const handleMaxChange = (event: Event) => {
-  maxValue.value = toNumber(event);
+  store.setDraft(column, { ...range.value, max: toNumber(event) });
 };
 
+// Applies on blur of either input; the applied object only contains the bounds that are set
 const handleBlur = () => {
-  const result: RangeValue = {};
-  if (minValue.value !== undefined) {
-    result.min = minValue.value;
-  }
-  if (maxValue.value !== undefined) {
-    result.max = maxValue.value;
-  }
-  emit('valueChange', result);
+  store.apply(column);
 };
 </script>
 
@@ -60,7 +43,7 @@ const handleBlur = () => {
       class="range-input"
       :min="min"
       :max="max"
-      :value="minValue ?? ''"
+      :value="range.min ?? ''"
       placeholder="Min"
       @input="handleMinChange"
       @blur="handleBlur"
@@ -71,7 +54,7 @@ const handleBlur = () => {
       class="range-input"
       :min="min"
       :max="max"
-      :value="maxValue ?? ''"
+      :value="range.max ?? ''"
       placeholder="Max"
       @input="handleMaxChange"
       @blur="handleBlur"

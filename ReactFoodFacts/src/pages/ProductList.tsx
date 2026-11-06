@@ -1,18 +1,27 @@
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useReducer } from 'react';
 import { useProducts } from '../hooks/useProducts';
 import { allColumns, getColumnConfig } from '../config/columnConfig';
-import { DataTable, TextSearch, RangeSlider, MultiSelect } from '../components/shared';
+import {
+  DataTable,
+  TextSearch,
+  RangeSlider,
+  MultiSelect,
+  FilterContext,
+  FilterDispatchContext,
+  filterReducer,
+  initialFilterState,
+  type FilterAction,
+} from '../components/shared';
 import { CellRenderer } from '../components/table/CellRenderer';
 import './ProductList.css';
 import type { MockProductViewModel } from 'shared-types';
 
-type FilterValue = string | { min?: number; max?: number } | string[];
-
 const ProductList = () => {
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(50);
-  const [filters, setFilters] = useState<Record<string, FilterValue>>({});
-  const [filterResetTrigger, setFilterResetTrigger] = useState(0);
+  // Page-scoped filter store (lives and dies with this page), provided below via context.
+  const [filterState, dispatchFilter] = useReducer(filterReducer, initialFilterState);
+  const filters = filterState.applied;
 
   const { products, total, loading, error } = useProducts({
     category: 'all',
@@ -68,19 +77,18 @@ const ProductList = () => {
     return result;
   }, [products, filters]);
 
-  const updateFilter = useCallback((column: string, value: FilterValue) => {
-    setFilters((current) => ({
-      ...current,
-      [column]: value,
-    }));
-    setPage(0);
+  // Dispatch handed to the filter components: applying (or clearing) a filter
+  // also returns to the first page, in the same event, as before.
+  const dispatch = useCallback((action: FilterAction) => {
+    dispatchFilter(action);
+    if (action.type !== 'setDraft') {
+      setPage(0);
+    }
   }, []);
 
   const resetFilters = useCallback(() => {
-    setFilters({});
-    setPage(0);
-    setFilterResetTrigger((val) => val + 1);
-  }, []);
+    dispatch({ type: 'clear' });
+  }, [dispatch]);
 
   const handlePageChange = useCallback((newPage: number) => {
     setPage(newPage);
@@ -113,54 +121,40 @@ const ProductList = () => {
       case 'progress-bar':
         return (
           <RangeSlider
+            column={column}
             min={0}
             max={100}
-            resetTrigger={filterResetTrigger}
-            onValueChange={(value) => updateFilter(column, value)}
           />
         );
       case 'grade-badge':
         return (
           <MultiSelect
+            column={column}
             options={['A', 'B', 'C', 'D', 'F']}
-            resetTrigger={filterResetTrigger}
-            onValueChange={(value) => updateFilter(column, value)}
           />
         );
       case 'nova-dots':
         return (
           <MultiSelect
+            column={column}
             options={['1', '2', '3', '4']}
-            resetTrigger={filterResetTrigger}
-            onValueChange={(value) => updateFilter(column, value)}
           />
         );
       case 'large-counter':
-        return (
-          <RangeSlider
-            resetTrigger={filterResetTrigger}
-            onValueChange={(value) => updateFilter(column, value)}
-          />
-        );
+        return <RangeSlider column={column} />;
       case 'boolean-yesno':
         return (
           <MultiSelect
+            column={column}
             options={['Yes', 'No']}
-            resetTrigger={filterResetTrigger}
-            onValueChange={(value) => updateFilter(column, value)}
           />
         );
       case 'product-image':
         return null;
       default:
-        return (
-          <TextSearch
-            resetTrigger={filterResetTrigger}
-            onValueChange={(value) => updateFilter(column, value)}
-          />
-        );
+        return <TextSearch column={column} />;
     }
-  }, [filterResetTrigger, updateFilter]);
+  }, []);
 
   const renderCell = useCallback((value: any, column: string, row: Record<string, any>) => {
     const columnConfig = allColumns.find((col) => col.key === column);
@@ -202,15 +196,19 @@ const ProductList = () => {
   }
 
   return (
-    <div className="product-list-container">
-      <div className="page-header-row">
-        <h1>Products</h1>
-        <button className="reset-button" onClick={resetFilters} type="button">
-          Reset Filters
-        </button>
-      </div>
-      {content}
-    </div>
+    <FilterContext value={filterState}>
+      <FilterDispatchContext value={dispatch}>
+        <div className="product-list-container">
+          <div className="page-header-row">
+            <h1>Products</h1>
+            <button className="reset-button" onClick={resetFilters} type="button">
+              Reset Filters
+            </button>
+          </div>
+          {content}
+        </div>
+      </FilterDispatchContext>
+    </FilterContext>
   );
 };
 

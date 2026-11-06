@@ -1,15 +1,9 @@
-import {
-  Component,
-  input,
-  signal,
-  ChangeDetectionStrategy,
-} from '@angular/core';
+import { Component, computed, input, signal } from '@angular/core';
 
 @Component({
   selector: 'aff-truncated-text',
   imports: [],
   templateUrl: './truncated-text.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './truncated-text.css',
 })
 export class TruncatedText {
@@ -18,15 +12,11 @@ export class TruncatedText {
 
   readonly isExpanded = signal(false);
 
-  toggleExpanded() {
-    this.isExpanded.update((val) => !val);
-  }
+  readonly shouldTruncate = computed(
+    () => this.value()?.length > this.maxLength(),
+  );
 
-  shouldTruncate(): boolean {
-    return this.value()?.length > this.maxLength();
-  }
-
-  getDisplayText(): string {
+  readonly displayText = computed(() => {
     const text = this.value() || '';
     let result: string;
     if (this.shouldTruncate() && !this.isExpanded()) {
@@ -36,5 +26,9 @@ export class TruncatedText {
       result = text;
     }
     return result;
+  });
+
+  toggleExpanded() {
+    this.isExpanded.update((val) => !val);
   }
 }

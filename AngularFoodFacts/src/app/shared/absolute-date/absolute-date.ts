@@ -2,14 +2,12 @@ import {
   Component,
   input,
   computed,
-  ChangeDetectionStrategy,
 } from '@angular/core';
 
 @Component({
   selector: 'aff-absolute-date',
   imports: [],
   templateUrl: './absolute-date.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './absolute-date.css',
 })
 export class AbsoluteDate {

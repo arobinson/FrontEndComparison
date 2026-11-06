@@ -1,4 +1,4 @@
-import { createMemo, For, Index, Show } from 'solid-js';
+import { createMemo, For, Show } from 'solid-js';
 import type { JSX } from 'solid-js';
 import Button from './Button';
 import './DataTable.css';
@@ -17,8 +17,7 @@ interface DataTableProps {
   onPageSizeChange: (pageSize: number) => void;
   renderHeader?: (column: string) => JSX.Element;
   renderFilter?: (column: string) => JSX.Element;
-  // Accessors, so cell components are created once per row position and update in place
-  renderCell?: (value: () => any, column: string, row: () => Record<string, any>) => JSX.Element;
+  renderCell?: (value: any, column: string, row: Record<string, any>) => JSX.Element;
 }
 
 export default function DataTable(props: DataTableProps) {
@@ -97,24 +96,22 @@ export default function DataTable(props: DataTableProps) {
             </thead>
 
             <tbody class="table-body">
-              {/* <Index>, not <For>: rows are reused by position and their cells update in place when
-                  the page changes (each page is new objects, so <For> would recreate every row). This
-                  matches the positional/index row reuse of every other app in the comparison. */}
-              <Index each={props.value}>
+              {/* <For> keys rows by object identity: a new page (new objects) replaces every row */}
+              <For each={props.value}>
                 {(row, index) => (
-                  <tr class="data-row" data-key={getRowTrackValue(row(), index)}>
+                  <tr class="data-row" data-key={getRowTrackValue(row, index())}>
                     <For each={props.columns}>
                       {(column) => (
                         <td class="data-cell">
                           {props.renderCell
-                            ? props.renderCell(() => row()[column], column, row)
-                            : row()[column]}
+                            ? props.renderCell(row[column], column, row)
+                            : row[column]}
                         </td>
                       )}
                     </For>
                   </tr>
                 )}
-              </Index>
+              </For>
             </tbody>
           </table>
         </div>

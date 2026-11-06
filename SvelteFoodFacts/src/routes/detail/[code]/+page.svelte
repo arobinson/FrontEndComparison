@@ -19,24 +19,22 @@
   import AbsoluteDate from '#lib/components/display/AbsoluteDate.svelte';
   import RelativeDate from '#lib/components/display/RelativeDate.svelte';
 
-  let product = $state<MockProductViewModel | null>(null);
+  // Fetched data is only ever replaced, never mutated: no deep proxy needed.
+  // The previous product stays in `product` while the next one loads (content stays visible under the overlay).
+  let product = $state.raw<MockProductViewModel | null>(null);
   let loadingState = $state<'loading' | 'error' | 'loaded'>('loading');
   let errorMessage = $state<string>('');
-  let adjacent = $state<AdjacentProducts | null>(null);
-
-  // Keep previous product during loading to prevent component destruction
-  let previousProduct = $state<MockProductViewModel | null>(null);
-  let displayProduct = $derived(product ?? previousProduct);
+  let adjacent = $state.raw<AdjacentProducts | null>(null);
 
   // Navigation state
   let hasPrevious = $derived(adjacent?.previousId != null);
   let hasNext = $derived(adjacent?.nextId != null);
   let positionInfo = $derived(adjacent ? `${adjacent.currentIndex} of ${adjacent.total}` : '');
 
-  let createdDateStr = $derived(displayProduct?.createdDate ? toISOString(displayProduct.createdDate) : '');
-  let lastUpdatedStr = $derived(displayProduct?.lastUpdated ? toISOString(displayProduct.lastUpdated) : '');
-  let releaseDateStr = $derived(displayProduct?.releaseDate ? toISOString(displayProduct.releaseDate) : '');
-  let nextRestockDateStr = $derived(displayProduct?.nextRestockDate ? toISOString(displayProduct.nextRestockDate) : '');
+  let createdDateStr = $derived(product?.createdDate ? toISOString(product.createdDate) : '');
+  let lastUpdatedStr = $derived(product?.lastUpdated ? toISOString(product.lastUpdated) : '');
+  let releaseDateStr = $derived(product?.releaseDate ? toISOString(product.releaseDate) : '');
+  let nextRestockDateStr = $derived(product?.nextRestockDate ? toISOString(product.nextRestockDate) : '');
 
   function toISOString(value: Date | string | number | undefined): string {
     if (!value) return '';
@@ -65,6 +63,8 @@
     }
   }
 
+  // Side effect: fetch product + adjacent whenever the route's `code` param changes
+  // (the component is reused across /detail/[code] navigations). It only starts the request.
   $effect(() => {
     const code = page.params.code;
 
@@ -83,7 +83,6 @@
 
       if (productResult) {
         product = productResult;
-        previousProduct = productResult;
         loadingState = 'loaded';
       } else {
         loadingState = 'error';
@@ -92,7 +91,7 @@
       adjacent = adjacentResult;
     } catch (e) {
       loadingState = 'error';
-      errorMessage = e instanceof Error ? e.message : 'Unknown error';
+      errorMessage = e instanceof Error ? e.message : 'Failed to fetch product';
     }
   }
 </script>
@@ -118,25 +117,25 @@
       </div>
     {/if}
 
-    {#if displayProduct}
+    {#if product}
     <div class="product-detail">
       <div class="header-section">
-        <h1>{displayProduct.productName || 'Unknown Product'}</h1>
+        <h1>{product.productName || 'Unknown Product'}</h1>
         <div class="header-meta">
-          <span class="product-code">Code: {displayProduct.code}</span>
-          {#if displayProduct.qualityScore}
-            <ProgressBar value={displayProduct.qualityScore} />
+          <span class="product-code">Code: {product.code}</span>
+          {#if product.qualityScore}
+            <ProgressBar value={product.qualityScore} />
           {/if}
         </div>
       </div>
 
       <div class="content-grid">
         <!-- Image Gallery Section -->
-        {#if displayProduct.imageUrl}
+        {#if product.imageUrl}
           <div class="image-gallery">
             <h2>Product Images</h2>
             <div class="main-image">
-              <ProductImage value={displayProduct.imageUrl} size="large" />
+              <ProductImage value={product.imageUrl} size="large" />
             </div>
           </div>
         {/if}
@@ -146,63 +145,63 @@
           <h2>Basic Information</h2>
           <dl class="info-list">
             <dt>Product Name</dt>
-            <dd>{displayProduct.productName || 'N/A'}</dd>
+            <dd>{product.productName || 'N/A'}</dd>
 
             <dt>Brand</dt>
-            <dd>{displayProduct.brand || 'N/A'}</dd>
+            <dd>{product.brand || 'N/A'}</dd>
 
             <dt>Category</dt>
-            <dd>{displayProduct.category || 'N/A'}</dd>
+            <dd>{product.category || 'N/A'}</dd>
 
-            {#if displayProduct.description}
+            {#if product.description}
               <dt>Description</dt>
               <dd>
-                <TruncatedText value={displayProduct.description} />
+                <TruncatedText value={product.description} />
               </dd>
             {/if}
 
-            {#if displayProduct.sku}
+            {#if product.sku}
               <dt>SKU</dt>
-              <dd>{displayProduct.sku}</dd>
+              <dd>{product.sku}</dd>
             {/if}
 
-            {#if displayProduct.modelNumber}
+            {#if product.modelNumber}
               <dt>Model Number</dt>
-              <dd>{displayProduct.modelNumber}</dd>
+              <dd>{product.modelNumber}</dd>
             {/if}
 
-            {#if displayProduct.barcode}
+            {#if product.barcode}
               <dt>Barcode</dt>
-              <dd>{displayProduct.barcode}</dd>
+              <dd>{product.barcode}</dd>
             {/if}
 
-            {#if displayProduct.color}
+            {#if product.color}
               <dt>Color</dt>
               <dd>
-                <ColorPill value={displayProduct.color} />
+                <ColorPill value={product.color} />
               </dd>
             {/if}
 
-            {#if displayProduct.material}
+            {#if product.material}
               <dt>Material</dt>
-              <dd>{displayProduct.material}</dd>
+              <dd>{product.material}</dd>
             {/if}
 
-            {#if displayProduct.size}
+            {#if product.size}
               <dt>Size</dt>
-              <dd>{displayProduct.size}</dd>
+              <dd>{product.size}</dd>
             {/if}
 
-            {#if displayProduct.weightKg}
+            {#if product.weightKg}
               <dt>Weight</dt>
               <dd>
-                <DecimalUnits value={displayProduct.weightKg} unit="kg" />
+                <DecimalUnits value={product.weightKg} unit="kg" />
               </dd>
             {/if}
 
-            {#if displayProduct.dimensionsCm}
+            {#if product.dimensionsCm}
               <dt>Dimensions</dt>
-              <dd>{displayProduct.dimensionsCm}</dd>
+              <dd>{product.dimensionsCm}</dd>
             {/if}
 
             <dt>Created</dt>
@@ -225,28 +224,28 @@
         </div>
 
         <!-- Quality & Ratings Section -->
-        {#if displayProduct.grade || product.safetyRating || product.customerRating || product.ecoScore}
+        {#if product.grade || product.safetyRating || product.customerRating || product.ecoScore}
           <div class="health-section">
             <h2>Quality & Ratings</h2>
             <div class="score-grid">
-              {#if displayProduct.grade}
+              {#if product.grade}
                 <div class="score-item">
                   <span class="score-label">Grade</span>
-                  <GradeBadge value={displayProduct.grade} />
+                  <GradeBadge value={product.grade} />
                 </div>
               {/if}
 
-              {#if displayProduct.safetyRating}
+              {#if product.safetyRating}
                 <div class="score-item">
                   <span class="score-label">Safety Rating</span>
-                  <NovaDots value={displayProduct.safetyRating} />
+                  <NovaDots value={product.safetyRating} />
                 </div>
               {/if}
 
-              {#if displayProduct.ecoScore}
+              {#if product.ecoScore}
                 <div class="score-item">
                   <span class="score-label">Eco Score</span>
-                  <ProgressBar value={displayProduct.ecoScore} />
+                  <ProgressBar value={product.ecoScore} />
                 </div>
               {/if}
             </div>
@@ -254,28 +253,28 @@
         {/if}
 
         <!-- Statistics Section -->
-        {#if displayProduct.unitsSold || product.reviewCount}
+        {#if product.unitsSold || product.reviewCount}
           <div class="stats-section">
             <h2>Statistics</h2>
             <dl class="info-list">
-              {#if displayProduct.unitsSold}
+              {#if product.unitsSold}
                 <dt>Units Sold</dt>
                 <dd>
-                  <LargeCounter value={displayProduct.unitsSold} />
+                  <LargeCounter value={product.unitsSold} />
                 </dd>
               {/if}
 
-              {#if displayProduct.reviewCount}
+              {#if product.reviewCount}
                 <dt>Review Count</dt>
                 <dd>
-                  <LargeCounter value={displayProduct.reviewCount} />
+                  <LargeCounter value={product.reviewCount} />
                 </dd>
               {/if}
 
-              {#if displayProduct.customerRating}
+              {#if product.customerRating}
                 <dt>Customer Rating</dt>
                 <dd>
-                  <StarRating value={displayProduct.customerRating} />
+                  <StarRating value={product.customerRating} />
                 </dd>
               {/if}
             </dl>
@@ -283,42 +282,42 @@
         {/if}
 
         <!-- Pricing & Financial Section -->
-        {#if displayProduct.price || product.cost || product.wholesalePrice}
+        {#if product.price || product.cost || product.wholesalePrice}
           <div class="pricing-section">
             <h2>Pricing & Financial</h2>
             <dl class="info-list">
-              {#if displayProduct.price}
+              {#if product.price}
                 <dt>Price</dt>
                 <dd>
-                  <DecimalUnits value={displayProduct.price} unit={displayProduct.currencyCode || ''} />
+                  <DecimalUnits value={product.price} unit={product.currencyCode || ''} />
                 </dd>
               {/if}
 
-              {#if displayProduct.cost}
+              {#if product.cost}
                 <dt>Cost</dt>
                 <dd>
-                  <DecimalUnits value={displayProduct.cost} unit={displayProduct.currencyCode || ''} />
+                  <DecimalUnits value={product.cost} unit={product.currencyCode || ''} />
                 </dd>
               {/if}
 
-              {#if displayProduct.wholesalePrice}
+              {#if product.wholesalePrice}
                 <dt>Wholesale Price</dt>
                 <dd>
-                  <DecimalUnits value={displayProduct.wholesalePrice} unit={displayProduct.currencyCode || ''} />
+                  <DecimalUnits value={product.wholesalePrice} unit={product.currencyCode || ''} />
                 </dd>
               {/if}
 
-              {#if displayProduct.taxRate !== undefined}
+              {#if product.taxRate !== undefined}
                 <dt>Tax Rate</dt>
                 <dd>
-                  <DecimalUnits value={displayProduct.taxRate} unit="%" />
+                  <DecimalUnits value={product.taxRate} unit="%" />
                 </dd>
               {/if}
 
-              {#if displayProduct.discountPercent !== undefined}
+              {#if product.discountPercent !== undefined}
                 <dt>Discount</dt>
                 <dd>
-                  <DecimalUnits value={displayProduct.discountPercent} unit="%" />
+                  <DecimalUnits value={product.discountPercent} unit="%" />
                 </dd>
               {/if}
             </dl>
@@ -326,33 +325,33 @@
         {/if}
 
         <!-- Inventory Section -->
-        {#if displayProduct.stockQuantity !== undefined || product.warehouseLocation || product.reorderLevel !== undefined}
+        {#if product.stockQuantity !== undefined || product.warehouseLocation || product.reorderLevel !== undefined}
           <div class="inventory-section">
             <h2>Inventory</h2>
             <dl class="info-list">
-              {#if displayProduct.stockQuantity !== undefined}
+              {#if product.stockQuantity !== undefined}
                 <dt>Stock Quantity</dt>
                 <dd>
-                  <DecimalUnits value={displayProduct.stockQuantity} />
+                  <DecimalUnits value={product.stockQuantity} />
                 </dd>
               {/if}
 
-              {#if displayProduct.reorderLevel !== undefined}
+              {#if product.reorderLevel !== undefined}
                 <dt>Reorder Level</dt>
                 <dd>
-                  <DecimalUnits value={displayProduct.reorderLevel} />
+                  <DecimalUnits value={product.reorderLevel} />
                 </dd>
               {/if}
 
-              {#if displayProduct.warehouseLocation}
+              {#if product.warehouseLocation}
                 <dt>Warehouse Location</dt>
-                <dd>{displayProduct.warehouseLocation}</dd>
+                <dd>{product.warehouseLocation}</dd>
               {/if}
 
-              {#if displayProduct.inStock !== undefined}
+              {#if product.inStock !== undefined}
                 <dt>In Stock</dt>
                 <dd>
-                  <BooleanYesNo value={displayProduct.inStock} />
+                  <BooleanYesNo value={product.inStock} />
                 </dd>
               {/if}
 
@@ -367,134 +366,134 @@
         {/if}
 
         <!-- Geographic Section -->
-        {#if displayProduct.originCountry || product.manufacturerCountry || product.shippingZone}
+        {#if product.originCountry || product.manufacturerCountry || product.shippingZone}
           <div class="geographic-section">
             <h2>Geographic Information</h2>
             <dl class="info-list">
-              {#if displayProduct.originCountry}
+              {#if product.originCountry}
                 <dt>Origin Country</dt>
-                <dd>{displayProduct.originCountry}</dd>
+                <dd>{product.originCountry}</dd>
               {/if}
 
-              {#if displayProduct.manufacturerCountry}
+              {#if product.manufacturerCountry}
                 <dt>Manufacturer Country</dt>
-                <dd>{displayProduct.manufacturerCountry}</dd>
+                <dd>{product.manufacturerCountry}</dd>
               {/if}
 
-              {#if displayProduct.shippingZone}
+              {#if product.shippingZone}
                 <dt>Shipping Zone</dt>
-                <dd>{displayProduct.shippingZone}</dd>
+                <dd>{product.shippingZone}</dd>
               {/if}
 
-              {#if displayProduct.productLanguage}
+              {#if product.productLanguage}
                 <dt>Product Language</dt>
-                <dd>{displayProduct.productLanguage}</dd>
+                <dd>{product.productLanguage}</dd>
               {/if}
             </dl>
           </div>
         {/if}
 
         <!-- Supplier Contact Section -->
-        {#if displayProduct.firstName || product.lastName || product.supplierEmail || product.supplierPhone}
+        {#if product.firstName || product.lastName || product.supplierEmail || product.supplierPhone}
           <div class="supplier-section">
             <h2>Supplier Contact</h2>
             <dl class="info-list">
-              {#if displayProduct.firstName || product.lastName}
+              {#if product.firstName || product.lastName}
                 <dt>Contact Name</dt>
-                <dd>{displayProduct.firstName} {displayProduct.lastName}</dd>
+                <dd>{product.firstName} {product.lastName}</dd>
               {/if}
 
-              {#if displayProduct.supplierEmail}
+              {#if product.supplierEmail}
                 <dt>Email</dt>
                 <dd>
-                  <span class="truncate-ellipsis" title={displayProduct.supplierEmail}>{displayProduct.supplierEmail}</span>
+                  <span class="truncate-ellipsis" title={product.supplierEmail}>{product.supplierEmail}</span>
                 </dd>
               {/if}
 
-              {#if displayProduct.supplierPhone}
+              {#if product.supplierPhone}
                 <dt>Phone</dt>
-                <dd>{displayProduct.supplierPhone}</dd>
+                <dd>{product.supplierPhone}</dd>
               {/if}
 
-              {#if displayProduct.supplierTaxId}
+              {#if product.supplierTaxId}
                 <dt>Tax ID</dt>
-                <dd>{displayProduct.supplierTaxId}</dd>
+                <dd>{product.supplierTaxId}</dd>
               {/if}
             </dl>
           </div>
         {/if}
 
         <!-- Product Features Section -->
-        {#if displayProduct.isFeatured || product.isBestSeller || product.requiresShipping || product.isDigital || product.hasWarranty}
+        {#if product.isFeatured || product.isBestSeller || product.requiresShipping || product.isDigital || product.hasWarranty}
           <div class="features-section">
             <h2>Product Features</h2>
             <dl class="info-list">
-              {#if displayProduct.isFeatured !== undefined}
+              {#if product.isFeatured !== undefined}
                 <dt>Featured</dt>
                 <dd>
-                  <BooleanYesNo value={displayProduct.isFeatured} />
+                  <BooleanYesNo value={product.isFeatured} />
                 </dd>
               {/if}
 
-              {#if displayProduct.isBestSeller !== undefined}
+              {#if product.isBestSeller !== undefined}
                 <dt>Best Seller</dt>
                 <dd>
-                  <BooleanYesNo value={displayProduct.isBestSeller} />
+                  <BooleanYesNo value={product.isBestSeller} />
                 </dd>
               {/if}
 
-              {#if displayProduct.requiresShipping !== undefined}
+              {#if product.requiresShipping !== undefined}
                 <dt>Requires Shipping</dt>
                 <dd>
-                  <BooleanYesNo value={displayProduct.requiresShipping} />
+                  <BooleanYesNo value={product.requiresShipping} />
                 </dd>
               {/if}
 
-              {#if displayProduct.isDigital !== undefined}
+              {#if product.isDigital !== undefined}
                 <dt>Digital Product</dt>
                 <dd>
-                  <BooleanYesNo value={displayProduct.isDigital} />
+                  <BooleanYesNo value={product.isDigital} />
                 </dd>
               {/if}
 
-              {#if displayProduct.hasWarranty !== undefined}
+              {#if product.hasWarranty !== undefined}
                 <dt>Has Warranty</dt>
                 <dd>
-                  <BooleanYesNo value={displayProduct.hasWarranty} />
+                  <BooleanYesNo value={product.hasWarranty} />
                 </dd>
               {/if}
 
-              {#if displayProduct.warrantyMonths !== undefined}
+              {#if product.warrantyMonths !== undefined}
                 <dt>Warranty Period</dt>
                 <dd>
-                  <DecimalUnits value={displayProduct.warrantyMonths} unit="months" />
+                  <DecimalUnits value={product.warrantyMonths} unit="months" />
                 </dd>
               {/if}
 
-              {#if displayProduct.certification}
+              {#if product.certification}
                 <dt>Certification</dt>
-                <dd>{displayProduct.certification}</dd>
+                <dd>{product.certification}</dd>
               {/if}
             </dl>
           </div>
         {/if}
 
         <!-- Shipping Section -->
-        {#if displayProduct.shippingDepartureTime || displayProduct.flightDurationHours !== undefined}
+        {#if product.shippingDepartureTime || product.flightDurationHours !== undefined}
           <div class="shipping-section">
             <h2>Shipping Information</h2>
             <dl class="info-list">
-              {#if displayProduct.shippingDepartureTime}
+              {#if product.shippingDepartureTime}
                 <dt>Departure Time</dt>
                 <dd>
-                  <TimeFormat value={displayProduct.shippingDepartureTime} />
+                  <TimeFormat value={product.shippingDepartureTime} />
                 </dd>
               {/if}
 
-              {#if displayProduct.flightDurationHours !== undefined}
+              {#if product.flightDurationHours !== undefined}
                 <dt>Flight Duration</dt>
                 <dd>
-                  <DecimalUnits value={displayProduct.flightDurationHours} unit="hours" />
+                  <DecimalUnits value={product.flightDurationHours} unit="hours" />
                 </dd>
               {/if}
             </dl>
@@ -502,11 +501,15 @@
         {/if}
       </div>
     </div>
+    {:else if loadingState === 'loading'}
+      <div class="loading-state">
+        <p>Loading product...</p>
+      </div>
     {:else if loadingState === 'error'}
       <div class="error-state">
         <p>Error loading product: {errorMessage}</p>
       </div>
-    {:else if loadingState !== 'loading'}
+    {:else}
       <div class="not-found-state">
         <p>Product not found.</p>
       </div>

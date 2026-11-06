@@ -23,5 +23,5 @@ export default function GradeBadge(props: GradeBadgeProps) {
     }
   });
 
-  return <span class={`grade-badge ${gradeClass()}`}>{props.value}</span>;
+  return <span class={`grade-badge ${gradeClass()}`}>{` ${props.value} `}</span>;
 }

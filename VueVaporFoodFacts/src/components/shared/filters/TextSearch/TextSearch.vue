@@ -1,31 +1,23 @@
-<script setup vapor lang="ts">
-import { ref, watch } from 'vue';
+<script setup lang="ts">
+import { computed } from 'vue';
+import { useFilterStore } from '../../../../composables/useFilterStore';
 import './TextSearch.css';
 
-const { placeholder = 'Search', resetTrigger = 0 } = defineProps<{
+const { column, placeholder = 'Search' } = defineProps<{
+  column: string;
   placeholder?: string;
-  resetTrigger?: number;
 }>();
 
-const emit = defineEmits<{
-  valueChange: [value: string];
-}>();
+const store = useFilterStore();
 
-const searchValue = ref('');
-
-watch(
-  () => resetTrigger,
-  () => {
-    searchValue.value = '';
-  }
-);
+const searchValue = computed(() => store.getDraft(column, ''));
 
 const handleInput = (event: Event) => {
-  searchValue.value = (event.target as HTMLInputElement).value;
+  store.setDraft(column, (event.target as HTMLInputElement).value);
 };
 
 const commit = () => {
-  emit('valueChange', searchValue.value);
+  store.apply(column);
 };
 </script>
 

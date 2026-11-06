@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { FrameworkHeader } from './shared/framework-header/framework-header';
 
@@ -6,7 +6,6 @@ import { FrameworkHeader } from './shared/framework-header/framework-header';
   selector: 'aff-root',
   imports: [RouterOutlet, FrameworkHeader],
   templateUrl: './app.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './app.css',
 })
 export class App {

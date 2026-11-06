@@ -1,33 +1,24 @@
-import {
-  Component,
-  input,
-  signal,
-  effect,
-  ChangeDetectionStrategy,
-} from '@angular/core';
+import { Component, input, linkedSignal } from '@angular/core';
 
 @Component({
   selector: 'aff-product-image',
   imports: [],
   templateUrl: './product-image.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './product-image.css',
 })
 export class ProductImage {
   readonly value = input.required<string>();
   readonly size = input<'small' | 'large'>('small');
 
-  readonly imageLoaded = signal(false);
-  readonly imageError = signal(false);
-
-  constructor() {
-    // Reset loading state when URL changes
-    effect(() => {
-      this.imageLoaded.set(false);
-      this.imageError.set(false);
-      this.value(); // Track the input
-    });
-  }
+  // Loading state resets whenever the image URL changes
+  readonly imageLoaded = linkedSignal({
+    source: this.value,
+    computation: () => false,
+  });
+  readonly imageError = linkedSignal({
+    source: this.value,
+    computation: () => false,
+  });
 
   onImageLoad() {
     this.imageLoaded.set(true);

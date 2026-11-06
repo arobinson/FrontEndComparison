@@ -15,7 +15,8 @@ render(
   () => (
     <>
       <FrameworkHeader />
-      <Router base={base}>
+      {/* preload={false}: no route/data preloading on link hover or touch */}
+      <Router base={base} preload={false}>
         <App />
       </Router>
     </>

@@ -1,47 +1,58 @@
 <script lang="ts">
+  import { getFilterStore } from '#lib/stores/filterStore.svelte';
+  import './MultiSelect.css';
+
   let {
-    options = [],
-    resetTrigger = 0,
-    onValueChange,
+    column,
+    options,
+    placeholder = 'Select...',
   }: {
-    options?: string[];
-    resetTrigger?: number;
-    onValueChange?: (value: string[]) => void;
+    column: string;
+    options: string[];
+    placeholder?: string;
   } = $props();
 
-  let selected = $state<Set<string>>(new Set());
+  const store = getFilterStore();
+
+  let selectedValues = $derived((store.drafts[column] as string[] | undefined) ?? []);
   let isOpen = $state(false);
+  let container: HTMLDivElement | undefined = $state();
 
-  // Reset when trigger changes
-  $effect(() => {
-    if (resetTrigger) {
-      selected = new Set();
-    }
-  });
+  let displayText = $derived(
+    selectedValues.length === 0
+      ? placeholder
+      : selectedValues.length === 1
+        ? selectedValues[0]
+        : `${selectedValues.length} selected`
+  );
 
-  function toggleOption(option: string) {
-    if (selected.has(option)) {
-      selected.delete(option);
-    } else {
-      selected.add(option);
+  // Click outside closes the dropdown (the toggle's own click lands inside the container).
+  function handleDocumentClick(event: MouseEvent) {
+    if (isOpen && container && !container.contains(event.target as Node)) {
+      isOpen = false;
     }
-    selected = new Set(selected); // Trigger reactivity
-    onValueChange?.([...selected]);
   }
 
   function toggleDropdown() {
     isOpen = !isOpen;
   }
 
-  let displayText = $derived(
-    selected.size === 0 ? 'All' : `${selected.size} selected`
-  );
+  // Every toggle updates the selection and applies it immediately.
+  function toggleOption(option: string) {
+    const next = selectedValues.includes(option)
+      ? selectedValues.filter((value) => value !== option)
+      : [...selectedValues, option];
+    store.setDraft(column, next);
+    store.apply(column);
+  }
 </script>
 
-<div class="multi-select">
-  <button type="button" class="select-button" onclick={toggleDropdown}>
-    {displayText}
-    <span class="arrow">{isOpen ? '▲' : '▼'}</span>
+<svelte:document onclick={handleDocumentClick} />
+
+<div class="multi-select" bind:this={container}>
+  <button class="select-toggle" onclick={toggleDropdown} type="button">
+    <span>{displayText}</span>
+    <span class="arrow">▼</span>
   </button>
 
   {#if isOpen}
@@ -50,74 +61,12 @@
         <label class="option">
           <input
             type="checkbox"
-            checked={selected.has(option)}
+            checked={selectedValues.includes(option)}
             onchange={() => toggleOption(option)}
           />
-          {option}
+          <span>{option}</span>
         </label>
       {/each}
     </div>
   {/if}
 </div>
-
-<style>
-  .multi-select {
-    position: relative;
-  }
-
-  .select-button {
-    width: 100%;
-    padding: 4px 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    background: white;
-    font-size: 13px;
-    text-align: left;
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-sizing: border-box;
-  }
-
-  .select-button:hover {
-    border-color: #0066cc;
-  }
-
-  .arrow {
-    font-size: 10px;
-    color: #999;
-  }
-
-  .dropdown {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    margin-top: 2px;
-    max-height: 200px;
-    overflow-y: auto;
-    background: white;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    z-index: 100;
-  }
-
-  .option {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 6px 8px;
-    cursor: pointer;
-    font-size: 13px;
-  }
-
-  .option:hover {
-    background-color: #f5f5f5;
-  }
-
-  .option input[type="checkbox"] {
-    cursor: pointer;
-  }
-</style>

@@ -27,6 +27,7 @@ const KEY_PACKAGES = [
   'svelte',
   '@sveltejs/kit',
   'solid-js',
+  '@solidjs/web',
   '@solidjs/router',
   'lit',
   '@lit-labs/router',

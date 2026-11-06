@@ -86,7 +86,7 @@ const ProductDetail = () => {
           <h1>{product.productName || 'Unknown Product'}</h1>
           <div className="header-meta">
             <span className="product-code">Code: {product.code}</span>
-            {product.qualityScore && <ProgressBar value={product.qualityScore} />}
+            {!!product.qualityScore && <ProgressBar value={product.qualityScore} />}
           </div>
         </div>
 
@@ -234,11 +234,11 @@ const ProductDetail = () => {
           )}
 
           {/* Statistics Section */}
-          {(product.unitsSold || product.reviewCount) && (
+          {!!(product.unitsSold || product.reviewCount) && (
             <div className="stats-section">
               <h2>Statistics</h2>
               <dl className="info-list">
-                {product.unitsSold && (
+                {!!product.unitsSold && (
                   <>
                     <dt>Units Sold</dt>
                     <dd>
@@ -247,7 +247,7 @@ const ProductDetail = () => {
                   </>
                 )}
 
-                {product.reviewCount && (
+                {!!product.reviewCount && (
                   <>
                     <dt>Review Count</dt>
                     <dd>

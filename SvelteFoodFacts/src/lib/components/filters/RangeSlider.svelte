@@ -1,44 +1,51 @@
 <script lang="ts">
+  import { getFilterStore, type RangeFilterValue } from '#lib/stores/filterStore.svelte';
+  import './RangeSlider.css';
+
   let {
+    column,
     min = 0,
     max = 100,
-    resetTrigger = 0,
-    onValueChange,
   }: {
+    column: string;
     min?: number;
     max?: number;
-    resetTrigger?: number;
-    onValueChange?: (value: { min: number; max: number }) => void;
   } = $props();
 
-  let minValue = $state(0);
-  let maxValue = $state(100);
+  const store = getFilterStore();
 
-  // Sync with props and handle reset
-  $effect(() => {
-    minValue = min;
-    maxValue = max;
-  });
+  let draft = $derived(store.drafts[column] as RangeFilterValue | undefined);
+  let minValue = $derived(draft?.min);
+  let maxValue = $derived(draft?.max);
 
-  $effect(() => {
-    if (resetTrigger) {
-      minValue = min;
-      maxValue = max;
+  function parseInput(event: Event): number | undefined {
+    const value = (event.target as HTMLInputElement).value;
+    return value === '' ? undefined : Number(value);
+  }
+
+  // Only bounds that are set end up in the (applied) range object.
+  function toRange(minBound: number | undefined, maxBound: number | undefined): RangeFilterValue {
+    const result: RangeFilterValue = {};
+    if (minBound !== undefined) {
+      result.min = minBound;
     }
-  });
+    if (maxBound !== undefined) {
+      result.max = maxBound;
+    }
+    return result;
+  }
 
   function handleMinChange(event: Event) {
-    const target = event.target as HTMLInputElement;
-    minValue = Number(target.value);
-    if (minValue > maxValue) minValue = maxValue;
-    onValueChange?.({ min: minValue, max: maxValue });
+    store.setDraft(column, toRange(parseInput(event), maxValue));
   }
 
   function handleMaxChange(event: Event) {
-    const target = event.target as HTMLInputElement;
-    maxValue = Number(target.value);
-    if (maxValue < minValue) maxValue = minValue;
-    onValueChange?.({ min: minValue, max: maxValue });
+    store.setDraft(column, toRange(minValue, parseInput(event)));
+  }
+
+  // Applies on blur of either input.
+  function handleBlur() {
+    store.apply(column);
   }
 </script>
 
@@ -46,45 +53,22 @@
   <input
     type="number"
     class="range-input"
-    value={minValue}
     {min}
-    max={maxValue}
+    {max}
+    value={minValue ?? ''}
     oninput={handleMinChange}
+    onblur={handleBlur}
+    placeholder="Min"
   />
-  <span class="separator">-</span>
+  <span class="range-separator">-</span>
   <input
     type="number"
     class="range-input"
-    value={maxValue}
-    min={minValue}
+    {min}
     {max}
+    value={maxValue ?? ''}
     oninput={handleMaxChange}
+    onblur={handleBlur}
+    placeholder="Max"
   />
 </div>
-
-<style>
-  .range-slider {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
-
-  .range-input {
-    width: 60px;
-    padding: 4px 6px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 13px;
-    font-family: inherit;
-    box-sizing: border-box;
-  }
-
-  .range-input:focus {
-    outline: none;
-    border-color: #0066cc;
-  }
-
-  .separator {
-    color: #999;
-  }
-</style>

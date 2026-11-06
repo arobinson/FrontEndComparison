@@ -1,26 +1,34 @@
-import { createEffect, createSignal } from 'solid-js';
+import { useFilterStore } from './filterStore';
 import './TextSearch.css';
 
 interface TextSearchProps {
+  column: string;
   placeholder?: string;
-  resetTrigger?: number;
-  onValueChange?: (value: string) => void;
 }
 
 export default function TextSearch(props: TextSearchProps) {
-  const [inputValue, setInputValue] = createSignal('');
+  const store = useFilterStore();
 
-  const onInput = (e: Event) => {
-    const value = (e.target as HTMLInputElement).value;
-    setInputValue(value);
-    props.onValueChange?.(value);
+  // Typing only updates the draft; the filter is applied on blur or Enter.
+  const handleInput = (event: InputEvent & { currentTarget: HTMLInputElement }) => {
+    store.setDraft(props.column, event.currentTarget.value);
   };
 
-  createEffect(() => {
-    if (props.resetTrigger) {
-      setInputValue('');
+  const handleKeyUp = (event: KeyboardEvent) => {
+    if (event.key === 'Enter') {
+      store.apply(props.column);
     }
-  });
+  };
 
-  return <input type="text" class="text-search" placeholder={props.placeholder ?? 'Search'} onInput={onInput} value={inputValue()} />;
+  return (
+    <input
+      type="text"
+      class="text-search-input"
+      placeholder={props.placeholder ?? 'Search'}
+      value={(store.state.draft[props.column] as string | undefined) ?? ''}
+      onInput={handleInput}
+      onBlur={() => store.apply(props.column)}
+      onKeyUp={handleKeyUp}
+    />
+  );
 }

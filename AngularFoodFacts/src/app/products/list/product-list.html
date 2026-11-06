@@ -1,18 +1,18 @@
 <div class="product-list-container">
   <div class="page-header-row">
     <h1>Products</h1>
-    <button class="reset-button" (click)="resetFilters()" type="button">
-      Reset Filters
-    </button>
+    <button class="reset-button" (click)="resetFilters()" type="button">Reset Filters</button>
   </div>
 
-  <div class="table-area">
-    @if (isLoading()) {
-      <div class="loading-overlay">
-        <div class="loading-indicator">⏳ Loading...</div>
-      </div>
-    }
-    @if (hasData()) {
+  @if (isError()) {
+    <p>Error loading products: {{ productsResource.error() }}</p>
+  } @else if (hasData()) {
+    <div class="table-area">
+      @if (isLoading()) {
+        <div class="loading-overlay">
+          <div class="loading-indicator">Loading...</div>
+        </div>
+      }
       <aff-data-table
       [columns]="columns"
       [value]="currentPageData()"
@@ -30,47 +30,37 @@
         @switch (getColumnDataType(column)) {
           @case ("progress-bar") {
             <aff-range-slider
+              [column]="column"
               [min]="0"
               [max]="100"
-              [resetTrigger]="filterResetTrigger()"
-              (valueChange)="updateFilter(column, $event)"
             />
           }
           @case ("grade-badge") {
             <aff-multi-select
+              [column]="column"
               [options]="['A', 'B', 'C', 'D', 'F']"
-              [resetTrigger]="filterResetTrigger()"
-              (valueChange)="updateFilter(column, $event)"
             />
           }
           @case ("nova-dots") {
             <aff-multi-select
+              [column]="column"
               [options]="['1', '2', '3', '4']"
-              [resetTrigger]="filterResetTrigger()"
-              (valueChange)="updateFilter(column, $event)"
             />
           }
           @case ("large-counter") {
-            <aff-range-slider
-              [resetTrigger]="filterResetTrigger()"
-              (valueChange)="updateFilter(column, $event)"
-            />
+            <aff-range-slider [column]="column" />
           }
           @case ("boolean-yesno") {
             <aff-multi-select
+              [column]="column"
               [options]="['Yes', 'No']"
-              [resetTrigger]="filterResetTrigger()"
-              (valueChange)="updateFilter(column, $event)"
             />
           }
           @case ("product-image") {
             <!-- No filter for images -->
           }
           @default {
-            <aff-text-search
-              [resetTrigger]="filterResetTrigger()"
-              (valueChange)="updateFilter(column, $event)"
-            />
+            <aff-text-search [column]="column" />
           }
         }
       </ng-template>
@@ -102,7 +92,11 @@
             <aff-product-image [value]="value" />
           }
           @case ("decimal-units") {
-            <aff-decimal-units [value]="value" [unit]="getColumnUnit(column)" />
+            @if (getColumnUnit(column)) {
+              <aff-decimal-units [value]="value" [unit]="getColumnUnit(column)" />
+            } @else {
+              <ng-container>{{ value ?? "" }}</ng-container>
+            }
           }
           @case ("absolute-date") {
             <aff-absolute-date [value]="value" />
@@ -113,19 +107,22 @@
           @case ("time-format") {
             <aff-time-format [value]="value" />
           }
+          @case ("star-rating") {
+            <aff-star-rating [value]="value" />
+          }
           @case ("color-pill") {
             <aff-color-pill [value]="value" />
           }
           @default {
-            {{ value || "" }}
+            <ng-container>{{ value ?? "" }}</ng-container>
           }
         }
       </ng-template>
-    </aff-data-table>
-    } @else if (isError()) {
-      <p>Error loading products: {{ productsResource.error() }}</p>
-    } @else if (!isLoading()) {
-      <p>No products found.</p>
-    }
-  </div>
+      </aff-data-table>
+    </div>
+  } @else if (isLoading()) {
+    <div class="loading-indicator">Loading products...</div>
+  } @else {
+    <p>No products found.</p>
+  }
 </div>

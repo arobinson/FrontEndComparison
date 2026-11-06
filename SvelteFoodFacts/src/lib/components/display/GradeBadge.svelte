@@ -1,7 +1,7 @@
 <script lang="ts">
   let { value }: { value: string } = $props();
 
-  let gradeClass = $derived(() => {
+  let gradeClass = $derived.by(() => {
     switch (value?.toUpperCase()) {
       case 'A': return 'grade-a';
       case 'B': return 'grade-b';
@@ -13,7 +13,7 @@
   });
 </script>
 
-<span class="grade-badge {gradeClass()}">
+<span class="grade-badge {gradeClass}">
   {value}
 </span>
 

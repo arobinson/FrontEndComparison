@@ -6,18 +6,20 @@
   import DataTable from '#lib/components/shared/DataTable/DataTable.svelte';
   import CellRenderer from '#lib/components/table/CellRenderer.svelte';
   import { TextSearch, RangeSlider, MultiSelect } from '#lib/components/filters';
+  import { FilterStore, setFilterStore } from '#lib/stores/filterStore.svelte';
 
-  let products = $state<Array<MockProductViewModel> | undefined>(undefined);
-  let productsState = $state<'initial' | 'loading' | 'error' | 'loaded'>('initial');
+  // Fetched data is only ever replaced, never mutated: no deep proxy needed.
+  // The previous page stays in `products` while the next one loads (rows stay visible under the overlay).
+  let products = $state.raw<Array<MockProductViewModel> | undefined>(undefined);
+  let productsState = $state<'loading' | 'error' | 'loaded'>('loading');
   let currentPage = $state(0);
   let pageSize = $state(50);
   let totalProducts = $state<number>(0);
-  let error = $state<Error | null>(null);
-  let filterResetTrigger = $state(0);
-  let filters = $state<Record<string, any>>({});
+  let error = $state<string | null>(null);
 
-  // Keep previous data during loading to prevent table destruction
-  let previousProducts = $state<Array<MockProductViewModel> | undefined>(undefined);
+  // Page-scoped filter state, shared with the filter components via context.
+  // Applying or clearing a filter returns to the first page.
+  const filterStore = setFilterStore(new FilterStore(goToFirstPage));
 
   // Column keys for the table
   const columnKeys = allColumns.map(col => col.key);
@@ -34,14 +36,12 @@
     return getColumnConfig(key as keyof MockProductViewModel)?.unit;
   }
 
-  // Computed values for display (use previous data during loading, then apply filters)
-  let baseProducts = $derived(products ?? previousProducts);
-  // Inline filter logic so Svelte tracks all dependencies
+  // Rows shown: the fetched page with the applied filters.
   let displayProducts = $derived.by(() => {
-    const prods = baseProducts;
+    const prods = products;
     if (!prods) return [];
 
-    const activeFilters = filters;
+    const activeFilters = filterStore.applied;
     if (Object.keys(activeFilters).length === 0) {
       return prods;
     }
@@ -101,37 +101,36 @@
       const result = await productService.getProductsByCategory('all', currentPage + 1, pageSize);
       products = result.products;
       totalProducts = result.total;
-      // Store as previous for next loading state
-      previousProducts = result.products;
       productsState = 'loaded';
     } catch (e) {
-      error = e instanceof Error ? e : new Error('An unknown error occurred');
+      error = e instanceof Error ? e.message : 'Failed to fetch products';
       productsState = 'error';
     }
   }
 
-  // Track page/pageSize for refetching
-  let lastPage = $state(-1);
-  let lastPageSize = $state(-1);
-
-  $effect(() => {
-    const pageChanged = currentPage !== lastPage;
-    const pageSizeChanged = pageSize !== lastPageSize;
-
-    if (pageChanged || pageSizeChanged) {
-      lastPage = currentPage;
-      lastPageSize = pageSize;
-      loadProducts();
-    }
+  onMount(() => {
+    loadProducts();
   });
 
-  function updateFilter(column: string, value: any) {
-    filters = { ...filters, [column]: value };
+  function handlePageChange(page: number) {
+    currentPage = page;
+    loadProducts();
+  }
+
+  function handlePageSizeChange(size: number) {
+    pageSize = size;
+    currentPage = 0;
+    loadProducts();
+  }
+
+  function goToFirstPage() {
+    if (currentPage !== 0) {
+      handlePageChange(0);
+    }
   }
 
   function resetFilters() {
-    filters = {};
-    filterResetTrigger++;
+    filterStore.clear();
   }
 </script>
 
@@ -143,21 +142,25 @@
     </button>
   </div>
 
-  <div class="table-area">
-    {#if productsState === 'loading'}
-      <div class="loading-overlay">
-        <span class="loading-indicator">⏳ Loading...</span>
-      </div>
-    {/if}
-
-    {#if displayProducts?.length}
+  {#if productsState === 'error'}
+    <p>Error loading products: {error}</p>
+  {:else if products && products.length > 0}
+    <div class="table-area">
+      {#if productsState === 'loading'}
+        <div class="loading-overlay">
+          <div class="loading-indicator">Loading...</div>
+        </div>
+      {/if}
       <DataTable
         columns={columnKeys}
         value={displayProducts}
         {totalPages}
-        bind:page={currentPage}
-        bind:pageSize={pageSize}
+        page={currentPage}
+        {pageSize}
+        pageSizes={[10, 25, 50]}
         showFilterRow={true}
+        onPageChange={handlePageChange}
+        onPageSizeChange={handlePageSizeChange}
       >
         {#snippet header(column)}
           <strong>{getColumnTitle(column)}</strong>
@@ -166,40 +169,17 @@
         {#snippet filter(column)}
           {@const dataType = getColumnDataType(column as keyof MockProductViewModel)}
           {#if dataType === 'progress-bar'}
-            <RangeSlider
-              min={0}
-              max={100}
-              resetTrigger={filterResetTrigger}
-              onValueChange={(v) => updateFilter(column, v)}
-            />
+            <RangeSlider {column} min={0} max={100} />
           {:else if dataType === 'grade-badge'}
-            <MultiSelect
-              options={['A', 'B', 'C', 'D', 'E', 'F']}
-              resetTrigger={filterResetTrigger}
-              onValueChange={(v) => updateFilter(column, v)}
-            />
+            <MultiSelect {column} options={['A', 'B', 'C', 'D', 'F']} />
           {:else if dataType === 'nova-dots'}
-            <MultiSelect
-              options={['1', '2', '3', '4']}
-              resetTrigger={filterResetTrigger}
-              onValueChange={(v) => updateFilter(column, v)}
-            />
+            <MultiSelect {column} options={['1', '2', '3', '4']} />
           {:else if dataType === 'boolean-yesno'}
-            <MultiSelect
-              options={['Yes', 'No']}
-              resetTrigger={filterResetTrigger}
-              onValueChange={(v) => updateFilter(column, v)}
-            />
+            <MultiSelect {column} options={['Yes', 'No']} />
           {:else if dataType === 'large-counter'}
-            <RangeSlider
-              resetTrigger={filterResetTrigger}
-              onValueChange={(v) => updateFilter(column, v)}
-            />
+            <RangeSlider {column} />
           {:else if dataType !== 'product-image'}
-            <TextSearch
-              resetTrigger={filterResetTrigger}
-              onValueChange={(v) => updateFilter(column, v)}
-            />
+            <TextSearch {column} />
           {/if}
         {/snippet}
 
@@ -209,12 +189,12 @@
           <CellRenderer {value} {dataType} {column} {row} {unit} />
         {/snippet}
       </DataTable>
-    {:else if productsState === 'error'}
-      <p class="error-message">Error loading products: {error?.message ?? 'Unknown'}</p>
-    {:else if productsState !== 'loading'}
-      <p>No products found.</p>
-    {/if}
-  </div>
+    </div>
+  {:else if productsState === 'loading'}
+    <div class="loading-indicator">Loading products...</div>
+  {:else}
+    <p>No products found.</p>
+  {/if}
 </div>
 
 <style>
@@ -257,14 +237,24 @@
     flex-shrink: 0;
   }
 
-  .page-header-row h1 {
+  .loading-indicator {
+    padding: 0.5rem 1rem;
+    background-color: #f0f8ff;
+    border-left: 4px solid #0066cc;
+    margin-bottom: 1rem;
+    border-radius: 4px;
+    font-size: 14px;
+    color: #333;
+  }
+
+  .product-list-container h1 {
     color: #333;
     margin: 0;
   }
 
   .reset-button {
     padding: 8px 16px;
-    background-color: #0066cc;
+    background-color: var(--color-primary, #0066cc);
     color: white;
     border: none;
     border-radius: 4px;
@@ -274,25 +264,16 @@
   }
 
   .reset-button:hover {
-    background-color: #004499;
+    background-color: var(--color-primary-dark, #004499);
   }
 
   .reset-button:active {
     transform: translateY(1px);
   }
 
-  .loading-indicator {
-    padding: 0.75rem 1.5rem;
-    background-color: #f0f8ff;
-    border-left: 4px solid #0066cc;
-    border-radius: 4px;
-    font-size: 14px;
-    color: #333;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  }
-
-  .error-message {
-    color: #dc3545;
-    padding: 1rem;
+  .product-list-container :global(.data-table-container) {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
   }
 </style>

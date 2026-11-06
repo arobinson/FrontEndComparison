@@ -10,6 +10,7 @@ export const useProduct = (code: MaybeRefOrGetter<string>) => {
   const error = ref<string | null>(null);
   const adjacent = shallowRef<AdjacentProducts | null>(null);
 
+  // Side effect: fetches from the API whenever the product code changes (no router data loaders)
   watch(
     () => toValue(code),
     async (codeValue) => {

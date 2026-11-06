@@ -1,14 +1,8 @@
-import { LitElement, html, css } from 'lit';
+import { LitElement, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 
 @customElement('time-format')
 export class TimeFormat extends LitElement {
-  static styles = css`
-    .time-format {
-      font-variant-numeric: tabular-nums;
-    }
-  `;
-
   @property({ type: String })
   value = '';
 
@@ -27,6 +21,7 @@ export class TimeFormat extends LitElement {
   }
 
   render() {
-    return html`<span class="time-format">${this.formattedTime}</span>`;
+    // Bare text, like the other apps.
+    return html`${this.formattedTime}`;
   }
 }

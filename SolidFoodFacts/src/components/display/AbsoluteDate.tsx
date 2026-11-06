@@ -1,5 +1,4 @@
 import { createMemo } from 'solid-js';
-import './AbsoluteDate.css';
 
 interface AbsoluteDateProps {
   value: string;

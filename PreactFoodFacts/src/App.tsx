@@ -1,14 +1,17 @@
 import { useEffect } from 'preact/hooks';
-import { LocationProvider, Router, Route, useLocation } from 'preact-iso';
+import { LocationProvider, Router, Route, lazy, useLocation } from 'preact-iso';
 import FrameworkHeader from './components/shared/FrameworkHeader';
-import ProductList from './pages/ProductList';
-import ProductDetail from './pages/ProductDetail';
 import { BASE, toPath } from './config/routes';
 
-// Equivalent of React Router's <Navigate to="/list" replace />: navigates in an
-// effect after render and renders nothing.
+// Route-level code splitting with preact-iso's lazy(); chunks load on first
+// visit only (no .preload()).
+const ProductList = lazy(() => import('./pages/ProductList'));
+const ProductDetail = lazy(() => import('./pages/ProductDetail'));
+
+// Equivalent of React Router's <Navigate to="/list" replace />: renders nothing.
 const RedirectToList = () => {
   const { route } = useLocation();
+  // Real side effect: imperative router navigation (history.replaceState), run after render.
   useEffect(() => {
     route(toPath('/list'), true);
   }, []);

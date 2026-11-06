@@ -1,5 +1,4 @@
 import { createMemo } from 'solid-js';
-import './RelativeDate.css';
 
 interface RelativeDateProps {
   value: string;

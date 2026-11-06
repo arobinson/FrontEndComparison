@@ -1,5 +1,6 @@
 import { LitElement, html, css } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { customElement, property } from 'lit/decorators.js';
+import { Task, TaskStatus, initialState } from '@lit/task';
 import type { MockProductViewModel } from 'shared-types';
 import { productService, type AdjacentProducts } from '../services/productService.js';
 import '../components/display/index.js';
@@ -20,6 +21,9 @@ export class ProductDetail extends LitElement {
   static styles = css`
     :host {
       display: block;
+    }
+
+    .product-detail-container {
       max-width: 1200px;
       margin: 0 auto;
       padding: 2rem;
@@ -236,7 +240,7 @@ export class ProductDetail extends LitElement {
     }
 
     @media (max-width: 768px) {
-      product-detail {
+      .product-detail-container {
         padding: 1rem;
       }
 
@@ -261,16 +265,54 @@ export class ProductDetail extends LitElement {
 
   @property({ type: String }) code = '';
 
-  @state() private product: MockProductViewModel | null = null;
-  @state() private loadingState: 'loading' | 'error' | 'loaded' = 'loading';
-  @state() private errorMessage = '';
-  @state() private adjacent: AdjacentProducts | null = null;
+  // One product + one adjacent request per code (initial load and each Previous/Next).
+  // The signal is deliberately not passed to fetch (same network trace as before).
+  private productTask = new Task(this, {
+    task: async ([code]) => {
+      if (!code) return initialState;
+      const [product, adjacent] = await Promise.all([
+        productService.getProduct(code),
+        productService.getAdjacentProducts(code),
+      ]);
+      return { product, adjacent };
+    },
+    args: () => [this.code] as const,
+    onComplete: ({ product, adjacent }) => {
+      if (product) this.previousProduct = product;
+      this.previousAdjacent = adjacent;
+    },
+  });
 
-  // Keep previous product during loading to prevent component destruction
+  // Last loaded product / adjacent info. Task.value keeps them while the next code is
+  // pending; these also keep them on screen after a failed load, as before.
   private previousProduct: MockProductViewModel | null = null;
+  private previousAdjacent: AdjacentProducts | null = null;
 
   private get displayProduct(): MockProductViewModel | null {
-    return this.product ?? this.previousProduct;
+    return this.productTask.value?.product ?? this.previousProduct;
+  }
+
+  private get adjacent(): AdjacentProducts | null {
+    return this.productTask.value?.adjacent ?? this.previousAdjacent;
+  }
+
+  private get loadingState(): 'loading' | 'error' | 'loaded' {
+    switch (this.productTask.status) {
+      case TaskStatus.COMPLETE:
+        return this.productTask.value?.product ? 'loaded' : 'error';
+      case TaskStatus.ERROR:
+        return 'error';
+      default:
+        return 'loading';
+    }
+  }
+
+  private get errorMessage(): string {
+    if (this.productTask.status === TaskStatus.ERROR) {
+      const e = this.productTask.error;
+      return e instanceof Error ? e.message : 'Failed to fetch product';
+    }
+    return 'Product not found';
   }
 
   // Navigation state
@@ -284,42 +326,6 @@ export class ProductDetail extends LitElement {
 
   private get positionInfo(): string {
     return this.adjacent ? `${this.adjacent.currentIndex} of ${this.adjacent.total}` : '';
-  }
-
-  updated(changedProperties: Map<string, unknown>) {
-    if (changedProperties.has('code') && this.code) {
-      this.loadProduct();
-    }
-  }
-
-  connectedCallback() {
-    super.connectedCallback();
-    if (this.code) {
-      this.loadProduct();
-    }
-  }
-
-  private async loadProduct() {
-    this.loadingState = 'loading';
-    try {
-      const [productResult, adjacentResult] = await Promise.all([
-        productService.getProduct(this.code),
-        productService.getAdjacentProducts(this.code),
-      ]);
-
-      if (productResult) {
-        this.product = productResult;
-        this.previousProduct = productResult;
-        this.loadingState = 'loaded';
-      } else {
-        this.loadingState = 'error';
-        this.errorMessage = 'Product not found';
-      }
-      this.adjacent = adjacentResult;
-    } catch (e) {
-      this.loadingState = 'error';
-      this.errorMessage = e instanceof Error ? e.message : 'Unknown error';
-    }
   }
 
   private navigateToList() {
@@ -356,353 +362,361 @@ export class ProductDetail extends LitElement {
 
   render() {
     return html`
-      <div class="navigation-bar">
-        <button @click=${this.navigateToList} class="back-button">← Back to List</button>
-        <div class="product-navigation">
-          <button @click=${this.navigateToPrevious} ?disabled=${!this.hasPrevious} class="nav-button">
-            ← Previous
-          </button>
-          <span class="position-info">${this.positionInfo}</span>
-          <button @click=${this.navigateToNext} ?disabled=${!this.hasNext} class="nav-button">
-            Next →
-          </button>
-        </div>
-      </div>
-
-      <div class="detail-area">
-        ${this.loadingState === 'loading' ? html`
-          <div class="loading-overlay">
-            <span class="loading-indicator">⏳ Loading...</span>
+      <div class="product-detail-container">
+        <div class="navigation-bar">
+          <button @click=${this.navigateToList} class="back-button">← Back to List</button>
+          <div class="product-navigation">
+            <button @click=${this.navigateToPrevious} ?disabled=${!this.hasPrevious} class="nav-button">
+              ← Previous
+            </button>
+            <span class="position-info">${this.positionInfo}</span>
+            <button @click=${this.navigateToNext} ?disabled=${!this.hasNext} class="nav-button">
+              Next →
+            </button>
           </div>
-        ` : ''}
+        </div>
 
-        ${this.displayProduct ? html`
-          <div class="product-detail">
-            <div class="header-section">
-              <h1>${this.displayProduct.productName || 'Unknown Product'}</h1>
-              <div class="header-meta">
-                <span class="product-code">Code: ${this.displayProduct.code}</span>
-                ${this.displayProduct.qualityScore ? html`
-                  <progress-bar .value=${this.displayProduct.qualityScore}></progress-bar>
-                ` : ''}
-              </div>
+        <div class="detail-area">
+          ${this.loadingState === 'loading' ? html`
+            <div class="loading-overlay">
+              <span class="loading-indicator">⏳ Loading...</span>
             </div>
+          ` : ''}
 
-            <div class="content-grid">
-              ${this.displayProduct.imageUrl ? html`
-                <div class="image-gallery">
-                  <h2>Product Images</h2>
-                  <div class="main-image">
-                    <product-image .value=${this.displayProduct.imageUrl} size="large"></product-image>
+          ${this.displayProduct ? html`
+            <div class="product-detail">
+              <div class="header-section">
+                <h1>${this.displayProduct.productName || 'Unknown Product'}</h1>
+                <div class="header-meta">
+                  <span class="product-code">Code: ${this.displayProduct.code}</span>
+                  ${this.displayProduct.qualityScore ? html`
+                    <progress-bar .value=${this.displayProduct.qualityScore}></progress-bar>
+                  ` : ''}
+                </div>
+              </div>
+
+              <div class="content-grid">
+                ${this.displayProduct.imageUrl ? html`
+                  <div class="image-gallery">
+                    <h2>Product Images</h2>
+                    <div class="main-image">
+                      <product-image .value=${this.displayProduct.imageUrl} size="large"></product-image>
+                    </div>
+                  </div>
+                ` : ''}
+
+              <div class="info-section">
+                <h2>Basic Information</h2>
+                <dl class="info-list">
+                  <dt>Product Name</dt>
+                  <dd>${this.displayProduct.productName || 'N/A'}</dd>
+
+                  <dt>Brand</dt>
+                  <dd>${this.displayProduct.brand || 'N/A'}</dd>
+
+                  <dt>Category</dt>
+                  <dd>${this.displayProduct.category || 'N/A'}</dd>
+
+                  ${this.displayProduct.description ? html`
+                    <dt>Description</dt>
+                    <dd><truncated-text .value=${this.displayProduct.description}></truncated-text></dd>
+                  ` : ''}
+
+                  ${this.displayProduct.sku ? html`
+                    <dt>SKU</dt>
+                    <dd>${this.displayProduct.sku}</dd>
+                  ` : ''}
+
+                  ${this.displayProduct.modelNumber ? html`
+                    <dt>Model Number</dt>
+                    <dd>${this.displayProduct.modelNumber}</dd>
+                  ` : ''}
+
+                  ${this.displayProduct.barcode ? html`
+                    <dt>Barcode</dt>
+                    <dd>${this.displayProduct.barcode}</dd>
+                  ` : ''}
+
+                  ${this.displayProduct.color ? html`
+                    <dt>Color</dt>
+                    <dd><color-pill .value=${this.displayProduct.color}></color-pill></dd>
+                  ` : ''}
+
+                  ${this.displayProduct.material ? html`
+                    <dt>Material</dt>
+                    <dd>${this.displayProduct.material}</dd>
+                  ` : ''}
+
+                  ${this.displayProduct.size ? html`
+                    <dt>Size</dt>
+                    <dd>${this.displayProduct.size}</dd>
+                  ` : ''}
+
+                  ${this.displayProduct.weightKg ? html`
+                    <dt>Weight</dt>
+                    <dd><decimal-units .value=${this.displayProduct.weightKg} unit="kg"></decimal-units></dd>
+                  ` : ''}
+
+                  ${this.displayProduct.dimensionsCm ? html`
+                    <dt>Dimensions</dt>
+                    <dd>${this.displayProduct.dimensionsCm}</dd>
+                  ` : ''}
+
+                  <dt>Created</dt>
+                  <dd><absolute-date .value=${this.createdDateStr}></absolute-date></dd>
+
+                  <dt>Last Updated</dt>
+                  <dd><relative-date .value=${this.lastUpdatedStr}></relative-date></dd>
+
+                  ${this.releaseDateStr ? html`
+                    <dt>Release Date</dt>
+                    <dd><absolute-date .value=${this.releaseDateStr}></absolute-date></dd>
+                  ` : ''}
+                </dl>
+              </div>
+
+              ${this.displayProduct.grade || this.displayProduct.safetyRating || this.displayProduct.customerRating || this.displayProduct.ecoScore ? html`
+                <div class="health-section">
+                  <h2>Quality & Ratings</h2>
+                  <div class="score-grid">
+                    ${this.displayProduct.grade ? html`
+                      <div class="score-item">
+                        <span class="score-label">Grade</span>
+                        <grade-badge .value=${this.displayProduct.grade}></grade-badge>
+                      </div>
+                    ` : ''}
+
+                    ${this.displayProduct.safetyRating ? html`
+                      <div class="score-item">
+                        <span class="score-label">Safety Rating</span>
+                        <nova-dots .value=${this.displayProduct.safetyRating}></nova-dots>
+                      </div>
+                    ` : ''}
+
+                    ${this.displayProduct.ecoScore ? html`
+                      <div class="score-item">
+                        <span class="score-label">Eco Score</span>
+                        <progress-bar .value=${this.displayProduct.ecoScore}></progress-bar>
+                      </div>
+                    ` : ''}
                   </div>
                 </div>
               ` : ''}
 
-            <div class="info-section">
-              <h2>Basic Information</h2>
-              <dl class="info-list">
-                <dt>Product Name</dt>
-                <dd>${this.displayProduct.productName || 'N/A'}</dd>
+              ${this.displayProduct.unitsSold || this.displayProduct.reviewCount ? html`
+                <div class="stats-section">
+                  <h2>Statistics</h2>
+                  <dl class="info-list">
+                    ${this.displayProduct.unitsSold ? html`
+                      <dt>Units Sold</dt>
+                      <dd><large-counter .value=${this.displayProduct.unitsSold}></large-counter></dd>
+                    ` : ''}
 
-                <dt>Brand</dt>
-                <dd>${this.displayProduct.brand || 'N/A'}</dd>
+                    ${this.displayProduct.reviewCount ? html`
+                      <dt>Review Count</dt>
+                      <dd><large-counter .value=${this.displayProduct.reviewCount}></large-counter></dd>
+                    ` : ''}
 
-                <dt>Category</dt>
-                <dd>${this.displayProduct.category || 'N/A'}</dd>
-
-                ${this.displayProduct.description ? html`
-                  <dt>Description</dt>
-                  <dd><truncated-text .value=${this.displayProduct.description}></truncated-text></dd>
-                ` : ''}
-
-                ${this.displayProduct.sku ? html`
-                  <dt>SKU</dt>
-                  <dd>${this.displayProduct.sku}</dd>
-                ` : ''}
-
-                ${this.displayProduct.modelNumber ? html`
-                  <dt>Model Number</dt>
-                  <dd>${this.displayProduct.modelNumber}</dd>
-                ` : ''}
-
-                ${this.displayProduct.barcode ? html`
-                  <dt>Barcode</dt>
-                  <dd>${this.displayProduct.barcode}</dd>
-                ` : ''}
-
-                ${this.displayProduct.color ? html`
-                  <dt>Color</dt>
-                  <dd><color-pill .value=${this.displayProduct.color}></color-pill></dd>
-                ` : ''}
-
-                ${this.displayProduct.material ? html`
-                  <dt>Material</dt>
-                  <dd>${this.displayProduct.material}</dd>
-                ` : ''}
-
-                ${this.displayProduct.size ? html`
-                  <dt>Size</dt>
-                  <dd>${this.displayProduct.size}</dd>
-                ` : ''}
-
-                ${this.displayProduct.weightKg ? html`
-                  <dt>Weight</dt>
-                  <dd><decimal-units .value=${this.displayProduct.weightKg} unit="kg"></decimal-units></dd>
-                ` : ''}
-
-                ${this.displayProduct.dimensionsCm ? html`
-                  <dt>Dimensions</dt>
-                  <dd>${this.displayProduct.dimensionsCm}</dd>
-                ` : ''}
-
-                <dt>Created</dt>
-                <dd><absolute-date .value=${this.createdDateStr}></absolute-date></dd>
-
-                <dt>Last Updated</dt>
-                <dd><relative-date .value=${this.lastUpdatedStr}></relative-date></dd>
-
-                ${this.releaseDateStr ? html`
-                  <dt>Release Date</dt>
-                  <dd><absolute-date .value=${this.releaseDateStr}></absolute-date></dd>
-                ` : ''}
-              </dl>
-            </div>
-
-            ${this.displayProduct.grade || this.displayProduct.safetyRating || this.displayProduct.customerRating || this.displayProduct.ecoScore ? html`
-              <div class="health-section">
-                <h2>Quality & Ratings</h2>
-                <div class="score-grid">
-                  ${this.displayProduct.grade ? html`
-                    <div class="score-item">
-                      <span class="score-label">Grade</span>
-                      <grade-badge .value=${this.displayProduct.grade}></grade-badge>
-                    </div>
-                  ` : ''}
-
-                  ${this.displayProduct.safetyRating ? html`
-                    <div class="score-item">
-                      <span class="score-label">Safety Rating</span>
-                      <nova-dots .value=${this.displayProduct.safetyRating}></nova-dots>
-                    </div>
-                  ` : ''}
-
-                  ${this.displayProduct.ecoScore ? html`
-                    <div class="score-item">
-                      <span class="score-label">Eco Score</span>
-                      <progress-bar .value=${this.displayProduct.ecoScore}></progress-bar>
-                    </div>
-                  ` : ''}
+                    ${this.displayProduct.customerRating ? html`
+                      <dt>Customer Rating</dt>
+                      <dd><star-rating .value=${this.displayProduct.customerRating}></star-rating></dd>
+                    ` : ''}
+                  </dl>
                 </div>
-              </div>
-            ` : ''}
+              ` : ''}
 
-            ${this.displayProduct.unitsSold || this.displayProduct.reviewCount ? html`
-              <div class="stats-section">
-                <h2>Statistics</h2>
-                <dl class="info-list">
-                  ${this.displayProduct.unitsSold ? html`
-                    <dt>Units Sold</dt>
-                    <dd><large-counter .value=${this.displayProduct.unitsSold}></large-counter></dd>
-                  ` : ''}
+              ${this.displayProduct.price || this.displayProduct.cost || this.displayProduct.wholesalePrice ? html`
+                <div class="pricing-section">
+                  <h2>Pricing & Financial</h2>
+                  <dl class="info-list">
+                    ${this.displayProduct.price ? html`
+                      <dt>Price</dt>
+                      <dd><decimal-units .value=${this.displayProduct.price} .unit=${this.displayProduct.currencyCode || ''}></decimal-units></dd>
+                    ` : ''}
 
-                  ${this.displayProduct.reviewCount ? html`
-                    <dt>Review Count</dt>
-                    <dd><large-counter .value=${this.displayProduct.reviewCount}></large-counter></dd>
-                  ` : ''}
+                    ${this.displayProduct.cost ? html`
+                      <dt>Cost</dt>
+                      <dd><decimal-units .value=${this.displayProduct.cost} .unit=${this.displayProduct.currencyCode || ''}></decimal-units></dd>
+                    ` : ''}
 
-                  ${this.displayProduct.customerRating ? html`
-                    <dt>Customer Rating</dt>
-                    <dd><star-rating .value=${this.displayProduct.customerRating}></star-rating></dd>
-                  ` : ''}
-                </dl>
-              </div>
-            ` : ''}
+                    ${this.displayProduct.wholesalePrice ? html`
+                      <dt>Wholesale Price</dt>
+                      <dd><decimal-units .value=${this.displayProduct.wholesalePrice} .unit=${this.displayProduct.currencyCode || ''}></decimal-units></dd>
+                    ` : ''}
 
-            ${this.displayProduct.price || this.displayProduct.cost || this.displayProduct.wholesalePrice ? html`
-              <div class="pricing-section">
-                <h2>Pricing & Financial</h2>
-                <dl class="info-list">
-                  ${this.displayProduct.price ? html`
-                    <dt>Price</dt>
-                    <dd><decimal-units .value=${this.displayProduct.price} .unit=${this.displayProduct.currencyCode || ''}></decimal-units></dd>
-                  ` : ''}
+                    ${this.displayProduct.taxRate !== undefined ? html`
+                      <dt>Tax Rate</dt>
+                      <dd><decimal-units .value=${this.displayProduct.taxRate} unit="%"></decimal-units></dd>
+                    ` : ''}
 
-                  ${this.displayProduct.cost ? html`
-                    <dt>Cost</dt>
-                    <dd><decimal-units .value=${this.displayProduct.cost} .unit=${this.displayProduct.currencyCode || ''}></decimal-units></dd>
-                  ` : ''}
+                    ${this.displayProduct.discountPercent !== undefined ? html`
+                      <dt>Discount</dt>
+                      <dd><decimal-units .value=${this.displayProduct.discountPercent} unit="%"></decimal-units></dd>
+                    ` : ''}
+                  </dl>
+                </div>
+              ` : ''}
 
-                  ${this.displayProduct.wholesalePrice ? html`
-                    <dt>Wholesale Price</dt>
-                    <dd><decimal-units .value=${this.displayProduct.wholesalePrice} .unit=${this.displayProduct.currencyCode || ''}></decimal-units></dd>
-                  ` : ''}
+              ${this.displayProduct.stockQuantity !== undefined || this.displayProduct.warehouseLocation || this.displayProduct.reorderLevel !== undefined ? html`
+                <div class="inventory-section">
+                  <h2>Inventory</h2>
+                  <dl class="info-list">
+                    ${this.displayProduct.stockQuantity !== undefined ? html`
+                      <dt>Stock Quantity</dt>
+                      <dd><decimal-units .value=${this.displayProduct.stockQuantity}></decimal-units></dd>
+                    ` : ''}
 
-                  ${this.displayProduct.taxRate !== undefined ? html`
-                    <dt>Tax Rate</dt>
-                    <dd><decimal-units .value=${this.displayProduct.taxRate} unit="%"></decimal-units></dd>
-                  ` : ''}
+                    ${this.displayProduct.reorderLevel !== undefined ? html`
+                      <dt>Reorder Level</dt>
+                      <dd><decimal-units .value=${this.displayProduct.reorderLevel}></decimal-units></dd>
+                    ` : ''}
 
-                  ${this.displayProduct.discountPercent !== undefined ? html`
-                    <dt>Discount</dt>
-                    <dd><decimal-units .value=${this.displayProduct.discountPercent} unit="%"></decimal-units></dd>
-                  ` : ''}
-                </dl>
-              </div>
-            ` : ''}
+                    ${this.displayProduct.warehouseLocation ? html`
+                      <dt>Warehouse Location</dt>
+                      <dd>${this.displayProduct.warehouseLocation}</dd>
+                    ` : ''}
 
-            ${this.displayProduct.stockQuantity !== undefined || this.displayProduct.warehouseLocation || this.displayProduct.reorderLevel !== undefined ? html`
-              <div class="inventory-section">
-                <h2>Inventory</h2>
-                <dl class="info-list">
-                  ${this.displayProduct.stockQuantity !== undefined ? html`
-                    <dt>Stock Quantity</dt>
-                    <dd><decimal-units .value=${this.displayProduct.stockQuantity}></decimal-units></dd>
-                  ` : ''}
+                    ${this.displayProduct.inStock !== undefined ? html`
+                      <dt>In Stock</dt>
+                      <dd><boolean-yesno .value=${this.displayProduct.inStock}></boolean-yesno></dd>
+                    ` : ''}
 
-                  ${this.displayProduct.reorderLevel !== undefined ? html`
-                    <dt>Reorder Level</dt>
-                    <dd><decimal-units .value=${this.displayProduct.reorderLevel}></decimal-units></dd>
-                  ` : ''}
+                    ${this.nextRestockDateStr ? html`
+                      <dt>Next Restock</dt>
+                      <dd><absolute-date .value=${this.nextRestockDateStr}></absolute-date></dd>
+                    ` : ''}
+                  </dl>
+                </div>
+              ` : ''}
 
-                  ${this.displayProduct.warehouseLocation ? html`
-                    <dt>Warehouse Location</dt>
-                    <dd>${this.displayProduct.warehouseLocation}</dd>
-                  ` : ''}
+              ${this.displayProduct.originCountry || this.displayProduct.manufacturerCountry || this.displayProduct.shippingZone ? html`
+                <div class="geographic-section">
+                  <h2>Geographic Information</h2>
+                  <dl class="info-list">
+                    ${this.displayProduct.originCountry ? html`
+                      <dt>Origin Country</dt>
+                      <dd>${this.displayProduct.originCountry}</dd>
+                    ` : ''}
 
-                  ${this.displayProduct.inStock !== undefined ? html`
-                    <dt>In Stock</dt>
-                    <dd><boolean-yesno .value=${this.displayProduct.inStock}></boolean-yesno></dd>
-                  ` : ''}
+                    ${this.displayProduct.manufacturerCountry ? html`
+                      <dt>Manufacturer Country</dt>
+                      <dd>${this.displayProduct.manufacturerCountry}</dd>
+                    ` : ''}
 
-                  ${this.nextRestockDateStr ? html`
-                    <dt>Next Restock</dt>
-                    <dd><absolute-date .value=${this.nextRestockDateStr}></absolute-date></dd>
-                  ` : ''}
-                </dl>
-              </div>
-            ` : ''}
+                    ${this.displayProduct.shippingZone ? html`
+                      <dt>Shipping Zone</dt>
+                      <dd>${this.displayProduct.shippingZone}</dd>
+                    ` : ''}
 
-            ${this.displayProduct.originCountry || this.displayProduct.manufacturerCountry || this.displayProduct.shippingZone ? html`
-              <div class="geographic-section">
-                <h2>Geographic Information</h2>
-                <dl class="info-list">
-                  ${this.displayProduct.originCountry ? html`
-                    <dt>Origin Country</dt>
-                    <dd>${this.displayProduct.originCountry}</dd>
-                  ` : ''}
+                    ${this.displayProduct.productLanguage ? html`
+                      <dt>Product Language</dt>
+                      <dd>${this.displayProduct.productLanguage}</dd>
+                    ` : ''}
+                  </dl>
+                </div>
+              ` : ''}
 
-                  ${this.displayProduct.manufacturerCountry ? html`
-                    <dt>Manufacturer Country</dt>
-                    <dd>${this.displayProduct.manufacturerCountry}</dd>
-                  ` : ''}
+              ${this.displayProduct.firstName || this.displayProduct.lastName || this.displayProduct.supplierEmail || this.displayProduct.supplierPhone ? html`
+                <div class="supplier-section">
+                  <h2>Supplier Contact</h2>
+                  <dl class="info-list">
+                    ${this.displayProduct.firstName || this.displayProduct.lastName ? html`
+                      <dt>Contact Name</dt>
+                      <dd>${this.displayProduct.firstName} ${this.displayProduct.lastName}</dd>
+                    ` : ''}
 
-                  ${this.displayProduct.shippingZone ? html`
-                    <dt>Shipping Zone</dt>
-                    <dd>${this.displayProduct.shippingZone}</dd>
-                  ` : ''}
+                    ${this.displayProduct.supplierEmail ? html`
+                      <dt>Email</dt>
+                      <dd><span class="truncate-ellipsis" title=${this.displayProduct.supplierEmail}>${this.displayProduct.supplierEmail}</span></dd>
+                    ` : ''}
 
-                  ${this.displayProduct.productLanguage ? html`
-                    <dt>Product Language</dt>
-                    <dd>${this.displayProduct.productLanguage}</dd>
-                  ` : ''}
-                </dl>
-              </div>
-            ` : ''}
+                    ${this.displayProduct.supplierPhone ? html`
+                      <dt>Phone</dt>
+                      <dd>${this.displayProduct.supplierPhone}</dd>
+                    ` : ''}
 
-            ${this.displayProduct.firstName || this.displayProduct.lastName || this.displayProduct.supplierEmail || this.displayProduct.supplierPhone ? html`
-              <div class="supplier-section">
-                <h2>Supplier Contact</h2>
-                <dl class="info-list">
-                  ${this.displayProduct.firstName || this.displayProduct.lastName ? html`
-                    <dt>Contact Name</dt>
-                    <dd>${this.displayProduct.firstName} ${this.displayProduct.lastName}</dd>
-                  ` : ''}
+                    ${this.displayProduct.supplierTaxId ? html`
+                      <dt>Tax ID</dt>
+                      <dd>${this.displayProduct.supplierTaxId}</dd>
+                    ` : ''}
+                  </dl>
+                </div>
+              ` : ''}
 
-                  ${this.displayProduct.supplierEmail ? html`
-                    <dt>Email</dt>
-                    <dd><span class="truncate-ellipsis" title=${this.displayProduct.supplierEmail}>${this.displayProduct.supplierEmail}</span></dd>
-                  ` : ''}
+              ${this.displayProduct.isFeatured || this.displayProduct.isBestSeller || this.displayProduct.requiresShipping || this.displayProduct.isDigital || this.displayProduct.hasWarranty ? html`
+                <div class="features-section">
+                  <h2>Product Features</h2>
+                  <dl class="info-list">
+                    ${this.displayProduct.isFeatured !== undefined ? html`
+                      <dt>Featured</dt>
+                      <dd><boolean-yesno .value=${this.displayProduct.isFeatured}></boolean-yesno></dd>
+                    ` : ''}
 
-                  ${this.displayProduct.supplierPhone ? html`
-                    <dt>Phone</dt>
-                    <dd>${this.displayProduct.supplierPhone}</dd>
-                  ` : ''}
+                    ${this.displayProduct.isBestSeller !== undefined ? html`
+                      <dt>Best Seller</dt>
+                      <dd><boolean-yesno .value=${this.displayProduct.isBestSeller}></boolean-yesno></dd>
+                    ` : ''}
 
-                  ${this.displayProduct.supplierTaxId ? html`
-                    <dt>Tax ID</dt>
-                    <dd>${this.displayProduct.supplierTaxId}</dd>
-                  ` : ''}
-                </dl>
-              </div>
-            ` : ''}
+                    ${this.displayProduct.requiresShipping !== undefined ? html`
+                      <dt>Requires Shipping</dt>
+                      <dd><boolean-yesno .value=${this.displayProduct.requiresShipping}></boolean-yesno></dd>
+                    ` : ''}
 
-            ${this.displayProduct.isFeatured !== undefined || this.displayProduct.isBestSeller !== undefined || this.displayProduct.requiresShipping !== undefined || this.displayProduct.isDigital !== undefined || this.displayProduct.hasWarranty !== undefined ? html`
-              <div class="features-section">
-                <h2>Product Features</h2>
-                <dl class="info-list">
-                  ${this.displayProduct.isFeatured !== undefined ? html`
-                    <dt>Featured</dt>
-                    <dd><boolean-yesno .value=${this.displayProduct.isFeatured}></boolean-yesno></dd>
-                  ` : ''}
+                    ${this.displayProduct.isDigital !== undefined ? html`
+                      <dt>Digital Product</dt>
+                      <dd><boolean-yesno .value=${this.displayProduct.isDigital}></boolean-yesno></dd>
+                    ` : ''}
 
-                  ${this.displayProduct.isBestSeller !== undefined ? html`
-                    <dt>Best Seller</dt>
-                    <dd><boolean-yesno .value=${this.displayProduct.isBestSeller}></boolean-yesno></dd>
-                  ` : ''}
+                    ${this.displayProduct.hasWarranty !== undefined ? html`
+                      <dt>Has Warranty</dt>
+                      <dd><boolean-yesno .value=${this.displayProduct.hasWarranty}></boolean-yesno></dd>
+                    ` : ''}
 
-                  ${this.displayProduct.requiresShipping !== undefined ? html`
-                    <dt>Requires Shipping</dt>
-                    <dd><boolean-yesno .value=${this.displayProduct.requiresShipping}></boolean-yesno></dd>
-                  ` : ''}
+                    ${this.displayProduct.warrantyMonths !== undefined ? html`
+                      <dt>Warranty Period</dt>
+                      <dd><decimal-units .value=${this.displayProduct.warrantyMonths} unit="months"></decimal-units></dd>
+                    ` : ''}
 
-                  ${this.displayProduct.isDigital !== undefined ? html`
-                    <dt>Digital Product</dt>
-                    <dd><boolean-yesno .value=${this.displayProduct.isDigital}></boolean-yesno></dd>
-                  ` : ''}
+                    ${this.displayProduct.certification ? html`
+                      <dt>Certification</dt>
+                      <dd>${this.displayProduct.certification}</dd>
+                    ` : ''}
+                  </dl>
+                </div>
+              ` : ''}
 
-                  ${this.displayProduct.hasWarranty !== undefined ? html`
-                    <dt>Has Warranty</dt>
-                    <dd><boolean-yesno .value=${this.displayProduct.hasWarranty}></boolean-yesno></dd>
-                  ` : ''}
+              ${this.displayProduct.shippingDepartureTime || this.displayProduct.flightDurationHours !== undefined ? html`
+                <div class="shipping-section">
+                  <h2>Shipping Information</h2>
+                  <dl class="info-list">
+                    ${this.displayProduct.shippingDepartureTime ? html`
+                      <dt>Departure Time</dt>
+                      <dd><time-format .value=${this.displayProduct.shippingDepartureTime}></time-format></dd>
+                    ` : ''}
 
-                  ${this.displayProduct.warrantyMonths !== undefined ? html`
-                    <dt>Warranty Period</dt>
-                    <dd><decimal-units .value=${this.displayProduct.warrantyMonths} unit="months"></decimal-units></dd>
-                  ` : ''}
-
-                  ${this.displayProduct.certification ? html`
-                    <dt>Certification</dt>
-                    <dd>${this.displayProduct.certification}</dd>
-                  ` : ''}
-                </dl>
-              </div>
-            ` : ''}
-
-            ${this.displayProduct.shippingDepartureTime || this.displayProduct.flightDurationHours !== undefined ? html`
-              <div class="shipping-section">
-                <h2>Shipping Information</h2>
-                <dl class="info-list">
-                  ${this.displayProduct.shippingDepartureTime ? html`
-                    <dt>Departure Time</dt>
-                    <dd><time-format .value=${this.displayProduct.shippingDepartureTime}></time-format></dd>
-                  ` : ''}
-
-                  ${this.displayProduct.flightDurationHours !== undefined ? html`
-                    <dt>Flight Duration</dt>
-                    <dd><decimal-units .value=${this.displayProduct.flightDurationHours} unit="hours"></decimal-units></dd>
-                  ` : ''}
-                </dl>
-              </div>
-            ` : ''}
+                    ${this.displayProduct.flightDurationHours !== undefined ? html`
+                      <dt>Flight Duration</dt>
+                      <dd><decimal-units .value=${this.displayProduct.flightDurationHours} unit="hours"></decimal-units></dd>
+                    ` : ''}
+                  </dl>
+                </div>
+              ` : ''}
+            </div>
           </div>
+        ` : this.loadingState === 'loading' ? html`
+          <div class="loading-state">
+            <p>Loading product...</p>
+          </div>
+        ` : this.loadingState === 'error' ? html`
+          <div class="error-state">
+            <p>Error loading product: ${this.errorMessage}</p>
+          </div>
+        ` : html`
+          <div class="not-found-state">
+            <p>Product not found.</p>
+          </div>
+        `}
         </div>
-      ` : ''}
-
-      ${this.loadingState === 'error' ? html`
-        <div class="error-state">
-          <p>Error loading product: ${this.errorMessage}</p>
-        </div>
-      ` : ''}
       </div>
     `;
   }

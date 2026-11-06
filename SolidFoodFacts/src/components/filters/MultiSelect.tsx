@@ -1,56 +1,62 @@
-import { createSignal, createEffect, createSelector, For, Show } from 'solid-js';
+import { createSignal, For, onCleanup, Show } from 'solid-js';
+import { useFilterStore } from './filterStore';
 import './MultiSelect.css';
 
 interface MultiSelectProps {
-  options?: string[];
-  resetTrigger?: number;
-  onValueChange?: (value: string[]) => void;
+  column: string;
+  options: string[];
+  placeholder?: string;
 }
 
+const NO_SELECTION: string[] = [];
+
 export default function MultiSelect(props: MultiSelectProps) {
-  const [selected, setSelected] = createSignal<Set<string>>(new Set());
+  const store = useFilterStore();
   const [isOpen, setIsOpen] = createSignal(false);
+  let container!: HTMLDivElement;
 
-  const options = () => props.options ?? [];
+  const selectedValues = () => (store.state.draft[props.column] as string[] | undefined) ?? NO_SELECTION;
 
-  // Use createSelector for optimized selected state checking
-  // Only re-renders checkboxes whose selected state actually changed
-  const isSelected = createSelector<Set<string>, string>(selected, (option, set) => set.has(option));
-
-  // Reset when trigger changes
-  createEffect(() => {
-    if (props.resetTrigger) {
-      setSelected(new Set<string>());
+  // Click outside closes the dropdown: a plain document listener for the component's lifetime
+  // (no effect needed; Solid components run once). The click that opens the dropdown is inside
+  // the container, so it never closes it.
+  const handleClickOutside = (event: MouseEvent) => {
+    if (isOpen() && !container.contains(event.target as Node)) {
+      setIsOpen(false);
     }
-  });
+  };
+  document.addEventListener('click', handleClickOutside);
+  onCleanup(() => document.removeEventListener('click', handleClickOutside));
 
+  // Every toggle updates the selection and applies it immediately.
   function toggleOption(option: string) {
-    const newSelected = new Set(selected());
-    if (newSelected.has(option)) {
-      newSelected.delete(option);
-    } else {
-      newSelected.add(option);
-    }
-    setSelected(newSelected);
-    props.onValueChange?.([...newSelected]);
+    const current = selectedValues();
+    const next = current.includes(option) ? current.filter((value) => value !== option) : [...current, option];
+    store.setDraft(props.column, next);
+    store.apply(props.column);
   }
 
-  const displayText = () => (selected().size === 0 ? 'All' : `${selected().size} selected`);
+  const displayText = () => {
+    const values = selectedValues();
+    if (values.length === 0) return props.placeholder ?? 'Select...';
+    if (values.length === 1) return values[0];
+    return `${values.length} selected`;
+  };
 
   return (
-    <div class="multi-select">
-      <button type="button" class="select-button" onClick={() => setIsOpen(!isOpen())}>
-        {displayText()}
-        <span class="arrow">{isOpen() ? '▲' : '▼'}</span>
+    <div class="multi-select" ref={container}>
+      <button class="select-toggle" onClick={() => setIsOpen(!isOpen())} type="button">
+        <span>{displayText()}</span>
+        <span class="arrow">▼</span>
       </button>
 
       <Show when={isOpen()}>
         <div class="dropdown">
-          <For each={options()}>
+          <For each={props.options}>
             {(option) => (
               <label class="option">
-                <input type="checkbox" checked={isSelected(option)} onChange={() => toggleOption(option)} />
-                {option}
+                <input type="checkbox" checked={selectedValues().includes(option)} onChange={() => toggleOption(option)} />
+                <span>{option}</span>
               </label>
             )}
           </For>

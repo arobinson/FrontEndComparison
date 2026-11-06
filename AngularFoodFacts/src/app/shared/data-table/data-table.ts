@@ -5,17 +5,14 @@ import {
   contentChild,
   TemplateRef,
   computed,
-  ChangeDetectionStrategy,
 } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { AffButton } from '../aff-button/aff-button';
 
 @Component({
   selector: 'aff-data-table',
-  imports: [NgTemplateOutlet, FormsModule, AffButton],
+  imports: [NgTemplateOutlet, AffButton],
   templateUrl: './data-table.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './data-table.css',
 })
 export class DataTable {
@@ -50,12 +47,6 @@ export class DataTable {
    * Available page size options for the dropdown
    */
   readonly pageSizes = input<number[]>([10, 25, 50]);
-
-  /**
-   * Property name to use for tracking rows (improves change detection performance)
-   * If not provided, falls back to index-based tracking
-   */
-  readonly trackBy = input<string>();
 
   // #endregion
 
@@ -115,18 +106,6 @@ export class DataTable {
     const allowedSizes = this.pageSizes();
     return allowedSizes.includes(pageSize);
   });
-
-  /**
-   * Get the track value for a row
-   * Uses the trackBy property if provided, otherwise falls back to index
-   */
-  getRowTrackValue(row: any, index: number): any {
-    const trackByProp = this.trackBy();
-    if (trackByProp && row[trackByProp] !== undefined) {
-      return row[trackByProp];
-    }
-    return index;
-  }
 
   // #endregion
 

@@ -29,10 +29,13 @@ export default function CellRenderer(props: CellRendererProps) {
   return (
     <Switch fallback={<>{props.value ?? ''}</>}>
       <Match when={props.dataType === 'product-link'}>
-        <ProductLink value={props.value} />
+        <ProductLink code={String(props.row.code)} label={String(props.value ?? props.row.code)} />
+      </Match>
+      <Match when={props.dataType === 'truncated-text'}>
+        <TruncatedText value={props.value} />
       </Match>
       <Match when={props.dataType === 'progress-bar'}>
-        <ProgressBar value={props.value} />
+        <ProgressBar value={props.value ?? 0} />
       </Match>
       <Match when={props.dataType === 'grade-badge'}>
         <GradeBadge value={props.value} />
@@ -40,20 +43,14 @@ export default function CellRenderer(props: CellRendererProps) {
       <Match when={props.dataType === 'nova-dots'}>
         <NovaDots value={props.value} />
       </Match>
-      <Match when={props.dataType === 'boolean-yesno'}>
-        <BooleanYesNo value={props.value} />
-      </Match>
       <Match when={props.dataType === 'large-counter'}>
         <LargeCounter value={props.value} />
       </Match>
-      <Match when={props.dataType === 'product-image'}>
-        <ProductImage value={props.value} />
-      </Match>
-      <Match when={props.dataType === 'decimal-units'}>
+      <Match when={props.dataType === 'decimal-units' && props.unit}>
         <DecimalUnits value={props.value} unit={props.unit} />
       </Match>
-      <Match when={props.dataType === 'color-pill'}>
-        <ColorPill value={props.value} />
+      <Match when={props.dataType === 'absolute-date'}>
+        <AbsoluteDate value={props.value} />
       </Match>
       <Match when={props.dataType === 'relative-date'}>
         <RelativeDate value={props.value} />
@@ -61,14 +58,17 @@ export default function CellRenderer(props: CellRendererProps) {
       <Match when={props.dataType === 'time-format'}>
         <TimeFormat value={props.value} />
       </Match>
-      <Match when={props.dataType === 'absolute-date'}>
-        <AbsoluteDate value={props.value} />
+      <Match when={props.dataType === 'boolean-yesno'}>
+        <BooleanYesNo value={props.value} />
       </Match>
-      <Match when={props.dataType === 'truncated-text'}>
-        <TruncatedText value={props.value} />
+      <Match when={props.dataType === 'product-image'}>
+        <ProductImage value={props.value} />
       </Match>
       <Match when={props.dataType === 'star-rating'}>
         <StarRating value={props.value} />
+      </Match>
+      <Match when={props.dataType === 'color-pill'}>
+        <ColorPill value={props.value} />
       </Match>
     </Switch>
   );

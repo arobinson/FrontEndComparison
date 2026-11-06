@@ -2,14 +2,12 @@ import {
   Component,
   input,
   computed,
-  ChangeDetectionStrategy,
 } from '@angular/core';
 
 @Component({
   selector: 'aff-star-rating',
   imports: [],
   templateUrl: './star-rating.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './star-rating.css',
 })
 export class StarRating {

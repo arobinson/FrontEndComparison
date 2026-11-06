@@ -1,64 +1,76 @@
 import { LitElement, html, css } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { customElement, property } from 'lit/decorators.js';
+import { FilterStore, FilterStoreController } from './filter-store.js';
 
 @customElement('text-search')
 export class TextSearch extends LitElement {
   static styles = css`
+    /* The app's global reset (styles.css) does not reach into shadow roots. */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     :host {
       display: block;
     }
 
-    .text-search {
+    .text-search-input {
       width: 100%;
       padding: 0.25rem 0.375rem;
+      border: 1px solid var(--color-border, #ddd);
+      border-radius: 4px;
       font-size: 0.8125rem;
       font-family: inherit;
-      border: 1px solid #ddd;
-      border-radius: 4px;
       box-sizing: border-box;
     }
 
-    .text-search:focus {
+    .text-search-input:focus {
       outline: none;
-      border-color: #0066cc;
-      box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.1);
+      border-color: var(--color-primary, #0066cc);
+      box-shadow: 0 0 0 2px var(--color-primary-light, rgba(0, 102, 204, 0.1));
     }
 
-    .text-search::placeholder {
-      color: #999;
+    .text-search-input::placeholder {
+      color: var(--color-text-secondary, #999);
     }
   `;
 
   @property({ type: String }) placeholder = 'Search';
-  @property({ type: Number }) resetTrigger = 0;
+  @property({ attribute: false }) column = '';
+  @property({ attribute: false }) store?: FilterStore;
 
-  @state() private inputValue = '';
-
-  private lastResetTrigger = 0;
-
-  updated(changedProperties: Map<string, unknown>) {
-    if (changedProperties.has('resetTrigger') && this.resetTrigger !== this.lastResetTrigger) {
-      this.lastResetTrigger = this.resetTrigger;
-      if (this.resetTrigger > 0) {
-        this.inputValue = '';
-      }
-    }
+  constructor() {
+    super();
+    new FilterStoreController(this, () => this.store);
   }
 
   private handleInput(e: Event) {
-    const value = (e.target as HTMLInputElement).value;
-    this.inputValue = value;
-    this.dispatchEvent(new CustomEvent('value-change', { detail: value }));
+    this.store?.setDraft(this.column, (e.target as HTMLInputElement).value);
+  }
+
+  // Applies on blur and on Enter.
+  private handleBlur() {
+    this.store?.apply(this.column);
+  }
+
+  private handleKeyUp(e: KeyboardEvent) {
+    if (e.key === 'Enter') {
+      this.store?.apply(this.column);
+    }
   }
 
   render() {
     return html`
       <input
         type="text"
-        class="text-search"
+        class="text-search-input"
         placeholder=${this.placeholder}
-        .value=${this.inputValue}
+        .value=${this.store?.getDraft<string>(this.column) ?? ''}
         @input=${this.handleInput}
+        @blur=${this.handleBlur}
+        @keyup=${this.handleKeyUp}
       />
     `;
   }

@@ -1,7 +1,7 @@
 <script lang="ts">
   let { value }: { value: string } = $props();
 
-  let formattedTime = $derived(() => {
+  let formattedTime = $derived.by(() => {
     if (!value) {
       return '';
     }
@@ -16,10 +16,4 @@
   });
 </script>
 
-<span class="time-format">{formattedTime()}</span>
-
-<style>
-  .time-format {
-    font-variant-numeric: tabular-nums;
-  }
-</style>
+{formattedTime}

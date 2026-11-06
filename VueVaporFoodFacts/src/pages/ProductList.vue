@@ -1,22 +1,23 @@
-<script setup vapor lang="ts">
-import { computed, ref, shallowRef } from 'vue';
+<script setup lang="ts">
+import { computed, ref } from 'vue';
 import type { MockProductViewModel } from 'shared-types';
 import { useProducts } from '../composables/useProducts';
+import { provideFilterStore } from '../composables/useFilterStore';
 import { allColumns, getColumnConfig } from '../config/columnConfig';
 import { DataTable, TextSearch, RangeSlider, MultiSelect } from '../components/shared';
 import CellRenderer from '../components/table/CellRenderer.vue';
 import './ProductList.css';
-
-type FilterValue = string | { min?: number; max?: number } | string[];
 
 const columns = allColumns.map((col) => col.key);
 const pageSizes = [10, 25, 50];
 
 const page = ref(0);
 const pageSize = ref(50);
-// Replaced (never mutated) on every update, so a shallowRef is enough
-const filters = shallowRef<Record<string, FilterValue>>({});
-const filterResetTrigger = ref(0);
+
+// Page-scoped filter store, provided to the filter components; any apply/clear returns to the first page
+const filterStore = provideFilterStore(() => {
+  page.value = 0;
+});
 
 const { products, total, loading, error } = useProducts({
   category: 'all',
@@ -27,7 +28,7 @@ const { products, total, loading, error } = useProducts({
 const filteredProducts = computed(() => {
   let result = products.value;
 
-  Object.entries(filters.value).forEach(([column, filterValue]) => {
+  Object.entries(filterStore.state.applied).forEach(([column, filterValue]) => {
     if (!filterValue) return;
 
     result = result.filter((product) => {
@@ -71,18 +72,8 @@ const filteredProducts = computed(() => {
 
 const totalPages = computed(() => Math.ceil(total.value / pageSize.value));
 
-const updateFilter = (column: string, value: FilterValue) => {
-  filters.value = {
-    ...filters.value,
-    [column]: value,
-  };
-  page.value = 0;
-};
-
 const resetFilters = () => {
-  filters.value = {};
-  page.value = 0;
-  filterResetTrigger.value++;
+  filterStore.clear();
 };
 
 const handlePageChange = (newPage: number) => {
@@ -135,38 +126,32 @@ const findColumn = (column: string) => allColumns.find((col) => col.key === colu
         <template #filter="{ column }">
           <RangeSlider
             v-if="getColumnDataType(column) === 'progress-bar'"
+            :column="column"
             :min="0"
             :max="100"
-            :reset-trigger="filterResetTrigger"
-            @value-change="updateFilter(column, $event)"
           />
           <MultiSelect
             v-else-if="getColumnDataType(column) === 'grade-badge'"
+            :column="column"
             :options="['A', 'B', 'C', 'D', 'F']"
-            :reset-trigger="filterResetTrigger"
-            @value-change="updateFilter(column, $event)"
           />
           <MultiSelect
             v-else-if="getColumnDataType(column) === 'nova-dots'"
+            :column="column"
             :options="['1', '2', '3', '4']"
-            :reset-trigger="filterResetTrigger"
-            @value-change="updateFilter(column, $event)"
           />
           <RangeSlider
             v-else-if="getColumnDataType(column) === 'large-counter'"
-            :reset-trigger="filterResetTrigger"
-            @value-change="updateFilter(column, $event)"
+            :column="column"
           />
           <MultiSelect
             v-else-if="getColumnDataType(column) === 'boolean-yesno'"
+            :column="column"
             :options="['Yes', 'No']"
-            :reset-trigger="filterResetTrigger"
-            @value-change="updateFilter(column, $event)"
           />
           <TextSearch
             v-else-if="getColumnDataType(column) !== 'product-image'"
-            :reset-trigger="filterResetTrigger"
-            @value-change="updateFilter(column, $event)"
+            :column="column"
           />
         </template>
 

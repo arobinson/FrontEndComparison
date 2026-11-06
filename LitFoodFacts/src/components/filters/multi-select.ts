@@ -1,18 +1,31 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
+import { FilterStore, FilterStoreController } from './filter-store.js';
+
+const NO_SELECTION: string[] = [];
 
 @customElement('multi-select')
 export class MultiSelect extends LitElement {
   static styles = css`
+    /* The app's global reset (styles.css) does not reach into shadow roots. */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     :host {
       display: block;
+    }
+
+    .multi-select {
       position: relative;
     }
 
-    .select-button {
+    .select-toggle {
       width: 100%;
       padding: 4px 8px;
-      border: 1px solid #ddd;
+      border: 1px solid var(--color-border, #ddd);
       border-radius: 4px;
       background: white;
       font-size: 13px;
@@ -21,16 +34,15 @@ export class MultiSelect extends LitElement {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      box-sizing: border-box;
     }
 
-    .select-button:hover {
-      border-color: #0066cc;
+    .select-toggle:hover {
+      border-color: var(--color-primary, #0066cc);
     }
 
     .arrow {
       font-size: 10px;
-      color: #999;
+      color: var(--color-text-secondary, #999);
     }
 
     .dropdown {
@@ -42,7 +54,7 @@ export class MultiSelect extends LitElement {
       max-height: 200px;
       overflow-y: auto;
       background: white;
-      border: 1px solid #ddd;
+      border: 1px solid var(--color-border, #ddd);
       border-radius: 4px;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
       z-index: 100;
@@ -58,7 +70,7 @@ export class MultiSelect extends LitElement {
     }
 
     .option:hover {
-      background-color: #f5f5f5;
+      background-color: var(--color-bg-hover, #f5f5f5);
     }
 
     .option input[type="checkbox"] {
@@ -66,63 +78,85 @@ export class MultiSelect extends LitElement {
     }
   `;
 
-  @property({ type: Array }) options: string[] = [];
-  @property({ type: Number }) resetTrigger = 0;
+  @property({ attribute: false }) options: string[] = [];
+  @property({ type: String }) placeholder = 'Select...';
+  @property({ attribute: false }) column = '';
+  @property({ attribute: false }) store?: FilterStore;
 
-  @state() private selected = new Set<string>();
   @state() private isOpen = false;
 
-  private lastResetTrigger = 0;
+  constructor() {
+    super();
+    new FilterStoreController(this, () => this.store);
+  }
 
-  updated(changedProperties: Map<string, unknown>) {
-    if (changedProperties.has('resetTrigger') && this.resetTrigger !== this.lastResetTrigger) {
-      this.lastResetTrigger = this.resetTrigger;
-      if (this.resetTrigger > 0) {
-        this.selected = new Set();
-      }
+  connectedCallback() {
+    super.connectedCallback();
+    // Side effect: document-level click listener (click outside closes the dropdown).
+    document.addEventListener('click', this.handleClickOutside);
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    document.removeEventListener('click', this.handleClickOutside);
+  }
+
+  private handleClickOutside = (e: MouseEvent) => {
+    if (this.isOpen && !e.composedPath().includes(this)) {
+      this.isOpen = false;
     }
+  };
+
+  private get selected(): string[] {
+    return this.store?.getDraft<string[]>(this.column) ?? NO_SELECTION;
   }
 
   private toggleDropdown() {
     this.isOpen = !this.isOpen;
   }
 
+  // Every toggle updates the selection and applies it immediately.
   private toggleOption(option: string) {
-    const newSelected = new Set(this.selected);
-    if (newSelected.has(option)) {
-      newSelected.delete(option);
-    } else {
-      newSelected.add(option);
-    }
-    this.selected = newSelected;
-    this.dispatchEvent(new CustomEvent('value-change', { detail: [...newSelected] }));
+    const selected = this.selected;
+    const next = selected.includes(option) ? selected.filter((v) => v !== option) : [...selected, option];
+    this.store?.setDraft(this.column, next);
+    this.store?.apply(this.column);
   }
 
-  private get displayText(): string {
-    return this.selected.size === 0 ? 'All' : `${this.selected.size} selected`;
+  private displayText(selected: string[]): string {
+    if (selected.length === 0) return this.placeholder;
+    if (selected.length === 1) return selected[0];
+    return `${selected.length} selected`;
   }
 
   render() {
+    const selected = this.selected;
     return html`
-      <button type="button" class="select-button" @click=${this.toggleDropdown}>
-        ${this.displayText}
-        <span class="arrow">${this.isOpen ? '▲' : '▼'}</span>
-      </button>
+      <div class="multi-select">
+        <button class="select-toggle" @click=${this.toggleDropdown} type="button">
+          <span>${this.displayText(selected)}</span>
+          <span class="arrow">▼</span>
+        </button>
 
-      ${this.isOpen ? html`
-        <div class="dropdown">
-          ${this.options.map(option => html`
-            <label class="option">
-              <input
-                type="checkbox"
-                .checked=${this.selected.has(option)}
-                @change=${() => this.toggleOption(option)}
-              />
-              ${option}
-            </label>
-          `)}
-        </div>
-      ` : ''}
+        ${this.isOpen
+          ? html`
+              <div class="dropdown">
+                ${this.options.map(
+                  (option) => html`
+                    <label class="option">
+                      <input
+                        type="checkbox"
+                        .checked=${selected.includes(option)}
+                        @change=${() => this.toggleOption(option)}
+                      />
+                      <span>${option}</span>
+                    </label>
+                  `
+                )}
+              </div>
+            `
+          : ''}
+      </div>
     `;
   }
 }

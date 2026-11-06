@@ -1,69 +1,51 @@
-import {
-  Component,
-  input,
-  output,
-  signal,
-  effect,
-  ChangeDetectionStrategy,
-} from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
+import { FilterStore, RangeFilterValue } from '../filter-store';
 
 @Component({
   selector: 'aff-range-slider',
   imports: [],
   templateUrl: './range-slider.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './range-slider.css',
 })
 export class RangeSlider {
+  readonly column = input.required<string>();
   readonly min = input<number>(0);
   readonly max = input<number>(100);
-  readonly resetTrigger = input<number>(0);
-  readonly valueChange = output<{ min: number; max: number }>();
 
-  readonly minValue = signal<number | undefined>(undefined);
-  readonly maxValue = signal<number | undefined>(undefined);
+  readonly #store = inject(FilterStore);
 
-  constructor() {
-    effect(() => {
-      this.resetTrigger();
-      this.clear();
-    });
-  }
-
-  clear() {
-    this.minValue.set(undefined);
-    this.maxValue.set(undefined);
-  }
+  readonly #draft = computed(
+    () => this.#store.draft(this.column()) as RangeFilterValue | undefined,
+  );
+  readonly minValue = computed(() => this.#draft()?.min);
+  readonly maxValue = computed(() => this.#draft()?.max);
 
   onMinChange(event: Event) {
-    const target = event.target as HTMLInputElement;
-    const value = target.value === '' ? undefined : Number(target.value);
-    this.minValue.set(value);
+    this.#setDraft(this.#parse(event), this.maxValue());
   }
 
   onMaxChange(event: Event) {
-    const target = event.target as HTMLInputElement;
-    const value = target.value === '' ? undefined : Number(target.value);
-    this.maxValue.set(value);
+    this.#setDraft(this.minValue(), this.#parse(event));
   }
 
   onBlur() {
-    const minVal = this.minValue();
-    const maxVal = this.maxValue();
+    this.#store.apply(this.column());
+  }
 
-    let result: { min?: number; max?: number };
-    if (minVal !== undefined || maxVal !== undefined) {
-      result = {};
-      if (minVal !== undefined) {
-        result.min = minVal;
-      }
-      if (maxVal !== undefined) {
-        result.max = maxVal;
-      }
-    } else {
-      result = {};
+  #parse(event: Event): number | undefined {
+    const target = event.target as HTMLInputElement;
+    return target.value === '' ? undefined : Number(target.value);
+  }
+
+  /** The value only contains the bounds that are set. */
+  #setDraft(min: number | undefined, max: number | undefined) {
+    const value: RangeFilterValue = {};
+    if (min !== undefined) {
+      value.min = min;
     }
-
-    this.valueChange.emit(result as { min: number; max: number });
+    if (max !== undefined) {
+      value.max = max;
+    }
+    this.#store.setDraft(this.column(), value);
   }
 }

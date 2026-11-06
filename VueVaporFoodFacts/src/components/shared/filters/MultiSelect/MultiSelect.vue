@@ -1,33 +1,24 @@
-<script setup vapor lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref, shallowRef, useTemplateRef, watch } from 'vue';
+<script setup lang="ts">
+import { computed, onBeforeUnmount, onMounted, ref, useTemplateRef } from 'vue';
+import { useFilterStore } from '../../../../composables/useFilterStore';
 import './MultiSelect.css';
 
 const {
+  column,
   options,
   placeholder = 'Select...',
-  resetTrigger = 0,
 } = defineProps<{
+  column: string;
   options: string[];
   placeholder?: string;
-  resetTrigger?: number;
 }>();
 
-const emit = defineEmits<{
-  valueChange: [values: string[]];
-}>();
+const store = useFilterStore();
 
-// Replaced (never mutated) on every toggle, so a shallowRef is enough
-const selectedValues = shallowRef<Set<string>>(new Set());
+const selectedValues = computed(() => store.getDraft<string[]>(column, []));
 const isOpen = ref(false);
 const container = useTemplateRef<HTMLDivElement>('container');
 let lastClickWhenOpened: EventTarget | null = null;
-
-watch(
-  () => resetTrigger,
-  () => {
-    selectedValues.value = new Set();
-  }
-);
 
 const handleClickOutside = (event: MouseEvent) => {
   if (!isOpen.value) return;
@@ -38,6 +29,7 @@ const handleClickOutside = (event: MouseEvent) => {
   }
 };
 
+// Real DOM side effect: a document-level click-outside listener, added on mount and removed on unmount
 onMounted(() => document.addEventListener('click', handleClickOutside));
 onBeforeUnmount(() => document.removeEventListener('click', handleClickOutside));
 
@@ -49,23 +41,20 @@ const toggleDropdown = (event: MouseEvent) => {
   isOpen.value = willBeOpen;
 };
 
+// Applies on every toggle
 const toggleOption = (option: string) => {
-  const newSet = new Set(selectedValues.value);
-  if (newSet.has(option)) {
-    newSet.delete(option);
-  } else {
-    newSet.add(option);
-  }
-  selectedValues.value = newSet;
-  emit('valueChange', Array.from(newSet));
+  const current = selectedValues.value;
+  const next = current.includes(option) ? current.filter((value) => value !== option) : [...current, option];
+  store.setDraft(column, next);
+  store.apply(column);
 };
 
 const displayText = computed(() => {
-  const count = selectedValues.value.size;
+  const count = selectedValues.value.length;
   if (count === 0) {
     return placeholder;
   } else if (count === 1) {
-    return Array.from(selectedValues.value)[0];
+    return selectedValues.value[0];
   } else {
     return `${count} selected`;
   }
@@ -81,7 +70,7 @@ const displayText = computed(() => {
 
     <div v-if="isOpen" class="dropdown">
       <label v-for="option in options" :key="option" class="option">
-        <input type="checkbox" :checked="selectedValues.has(option)" @change="toggleOption(option)" />
+        <input type="checkbox" :checked="selectedValues.includes(option)" @change="toggleOption(option)" />
         <span>{{ option }}</span>
       </label>
     </div>

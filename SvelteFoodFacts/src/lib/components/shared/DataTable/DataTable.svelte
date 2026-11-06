@@ -7,12 +7,13 @@
     columns,
     value,
     totalPages,
-    page = $bindable(0),
-    pageSize = $bindable(50),
+    page = 0,
+    pageSize = 50,
     pageSizes = [10, 25, 50],
     showFilterRow = false,
     emptyText = 'No data available',
-    trackBy,
+    onPageChange,
+    onPageSizeChange,
     header,
     filter,
     cell,
@@ -25,7 +26,8 @@
     pageSizes?: number[];
     showFilterRow?: boolean;
     emptyText?: string;
-    trackBy?: string;
+    onPageChange?: (page: number) => void;
+    onPageSizeChange?: (pageSize: number) => void;
     header?: Snippet<[column: string]>;
     filter?: Snippet<[column: string]>;
     cell?: Snippet<[value: any, column: string, row: Record<string, any>]>;
@@ -35,41 +37,32 @@
   let hasData = $derived(value && value.length > 0);
   let isValidPageSize = $derived(pageSizes.includes(pageSize));
 
-  // Get track value for a row
-  function getRowTrackValue(row: Record<string, any>, index: number): any {
-    if (trackBy && row[trackBy] !== undefined) {
-      return row[trackBy];
-    }
-    return index;
-  }
-
-  // Navigation handlers
-  function onPageChange(newPage: number) {
-    if (newPage >= 0 && newPage < totalPages) {
-      page = newPage;
+  // Navigation handlers: the parent owns page/pageSize and is told about changes.
+  function goToPage(newPage: number) {
+    if (newPage >= 0 && newPage < totalPages && newPage !== page) {
+      onPageChange?.(newPage);
     }
   }
 
   function onFirstPage() {
-    onPageChange(0);
+    goToPage(0);
   }
 
   function onPreviousPage() {
-    onPageChange(page - 1);
+    goToPage(page - 1);
   }
 
   function onNextPage() {
-    onPageChange(page + 1);
+    goToPage(page + 1);
   }
 
   function onLastPage() {
-    onPageChange(totalPages - 1);
+    goToPage(totalPages - 1);
   }
 
-  function onPageSizeChange(event: Event) {
+  function handlePageSizeChange(event: Event) {
     const target = event.target as HTMLSelectElement;
-    pageSize = Number(target.value);
-    page = 0;
+    onPageSizeChange?.(Number(target.value));
   }
 </script>
 
@@ -104,7 +97,7 @@
         </thead>
 
         <tbody class="table-body">
-          {#each value as row, index (getRowTrackValue(row, index))}
+          {#each value as row (row.code)}
             <tr class="data-row">
               {#each columns as column (column)}
                 <td class="data-cell">
@@ -128,7 +121,7 @@
           id="pageSize"
           value={pageSize}
           class:error={!isValidPageSize}
-          onchange={onPageSizeChange}
+          onchange={handlePageSizeChange}
         >
           {#each pageSizes as size (size)}
             <option value={size}>{size}</option>

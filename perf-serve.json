@@ -7,6 +7,7 @@
     { "source": "/lit/**", "destination": "/lit/index.html" },
     { "source": "/vue/**", "destination": "/vue/index.html" },
     { "source": "/preact/**", "destination": "/preact/index.html" },
-    { "source": "/vue-vapor/**", "destination": "/vue-vapor/index.html" }
+    { "source": "/vue-vapor/**", "destination": "/vue-vapor/index.html" },
+    { "source": "/solid-2/**", "destination": "/solid-2/index.html" }
   ]
 }

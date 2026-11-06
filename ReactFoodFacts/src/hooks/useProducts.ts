@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import type { MockProductViewModel } from 'shared-types';
 import { productService } from '../services/productService';
 
@@ -27,9 +27,9 @@ export const useProducts = ({
   const [error, setError] = useState<string | null>(null);
   const [refetchTrigger, setRefetchTrigger] = useState(0);
 
-  // Keep reference to previous data to preserve during loading
-  const previousDataRef = useRef<{ products: MockProductViewModel[]; total: number } | null>(null);
-
+  // Legitimate effect: synchronizes with the network (data fetching), React's documented
+  // no-framework pattern (custom hook + ignore flag). Router loaders are deliberately not
+  // used: they would hold the old route until data resolves and change the loading UI.
   useEffect(() => {
     let cancelled = false;
 
@@ -37,27 +37,23 @@ export const useProducts = ({
       setLoading(true);
       setError(null);
 
-      let result;
+      // No `finally`: React Compiler cannot compile try/finally; the line after try/catch
+      // runs on both paths, same as before.
       try {
         const data = await productService.getProductsByCategory(category, page, pageSize);
 
         if (!cancelled) {
           setProducts(data.products);
           setTotal(data.total);
-          previousDataRef.current = data;
         }
-        result = undefined;
       } catch (err) {
         if (!cancelled) {
           setError(err instanceof Error ? err.message : 'Failed to fetch products');
         }
-        result = undefined;
-      } finally {
-        if (!cancelled) {
-          setLoading(false);
-        }
       }
-      return result;
+      if (!cancelled) {
+        setLoading(false);
+      }
     };
 
     fetchData();
@@ -71,9 +67,7 @@ export const useProducts = ({
     setRefetchTrigger((prev) => prev + 1);
   };
 
-  // Return previous data during loading to keep table rendered
-  const displayProducts = products.length > 0 ? products : (previousDataRef.current?.products ?? []);
-  const displayTotal = total > 0 ? total : (previousDataRef.current?.total ?? 0);
-
-  return { products: displayProducts, total: displayTotal, loading, error, refetch };
+  // products/total are only replaced when a fetch succeeds, so the previous page's
+  // data stays rendered while the next page loads.
+  return { products, total, loading, error, refetch };
 };

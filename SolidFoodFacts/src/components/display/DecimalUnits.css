@@ -2,8 +2,8 @@
   font-variant-numeric: tabular-nums;
 }
 
-.unit {
-  margin-left: 0.25rem;
-  color: #6b7280;
-  font-size: 0.75rem;
+.decimal-units .unit {
+  margin-left: 2px;
+  color: var(--color-text-secondary, #666);
+  font-size: 0.9em;
 }

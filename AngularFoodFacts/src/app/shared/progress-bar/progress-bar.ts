@@ -2,14 +2,12 @@ import {
   Component,
   input,
   computed,
-  ChangeDetectionStrategy,
 } from '@angular/core';
 
 @Component({
   selector: 'aff-progress-bar',
   imports: [],
   templateUrl: './progress-bar.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './progress-bar.css',
 })
 export class ProgressBar {

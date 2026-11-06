@@ -20,8 +20,10 @@ export const useProduct = (code: string): UseProductResult => {
   // Keep reference to previous product to preserve during loading
   const previousProductRef = useRef<MockProductViewModel | null>(null);
 
+  // Real side effect: network fetch. No router loaders or data library here, so this
+  // is the documented fetch-in-effect pattern with an ignore flag for stale responses.
   useEffect(() => {
-    let cancelled = false;
+    let ignore = false;
 
     const fetchData = async () => {
       setLoading(true);
@@ -33,7 +35,7 @@ export const useProduct = (code: string): UseProductResult => {
           productService.getAdjacentProducts(code),
         ]);
 
-        if (!cancelled) {
+        if (!ignore) {
           if (productData) {
             setProduct(productData);
             previousProductRef.current = productData;
@@ -43,11 +45,11 @@ export const useProduct = (code: string): UseProductResult => {
           setAdjacent(adjacentData);
         }
       } catch (err) {
-        if (!cancelled) {
+        if (!ignore) {
           setError(err instanceof Error ? err.message : 'Failed to fetch product');
         }
       } finally {
-        if (!cancelled) {
+        if (!ignore) {
           setLoading(false);
         }
       }
@@ -56,7 +58,7 @@ export const useProduct = (code: string): UseProductResult => {
     fetchData();
 
     return () => {
-      cancelled = true;
+      ignore = true;
     };
   }, [code, refetchTrigger]);
 

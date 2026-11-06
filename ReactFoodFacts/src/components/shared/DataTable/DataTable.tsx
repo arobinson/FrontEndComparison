@@ -96,8 +96,8 @@ function DataTableInner<T extends Record<string, any>>({
           </thead>
 
           <tbody className="table-body">
-            {value.map((row, rowIndex) => (
-              <tr key={rowIndex} className="data-row">
+            {value.map((row) => (
+              <tr key={row.code} className="data-row">
                 {columns.map((column) => (
                   <td key={column} className="data-cell">
                     {renderCell ? renderCell(row[column], column, row) : row[column]}

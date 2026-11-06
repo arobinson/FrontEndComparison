@@ -54,6 +54,13 @@ export const allFrameworks: FrameworkConfig[] = [
     baseUrl: 'http://localhost:8888/vue-vapor',
     buildCommand: 'pnpm run build:perf',
     buildOutputDir: join(process.cwd(), '../perf-dist/vue-vapor')
+  },
+  {
+    // PREVIEW, NOT RANKED: Solid 2.0 RC (exact versions in Solid2FoodFacts/package.json)
+    name: 'Solid2',
+    baseUrl: 'http://localhost:8888/solid-2',
+    buildCommand: 'pnpm run build:perf',
+    buildOutputDir: join(process.cwd(), '../perf-dist/solid-2')
   }
 ];
 

@@ -9,6 +9,7 @@ packages:
   - 'VueFoodFacts'
   - 'PreactFoodFacts'
   - 'VueVaporFoodFacts'
+  - 'Solid2FoodFacts'
   - 'performance-tests'
 allowBuilds:
   '@parcel/watcher': true

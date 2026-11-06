@@ -20,7 +20,7 @@
     currencyCode?: string;
   } = $props();
 
-  let formattedValue = $derived(() => {
+  let formattedValue = $derived.by(() => {
     if (value === null || value === undefined || value === '') {
       return '';
     }
@@ -65,7 +65,7 @@
 </script>
 
 <span class="decimal-units">
-  {formattedValue()}
+  {formattedValue}
   {#if unit}
     <span class="unit">{unit}</span>
   {/if}

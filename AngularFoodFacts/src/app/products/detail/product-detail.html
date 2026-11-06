@@ -34,7 +34,7 @@
               <div class="main-image">
                 <aff-product-image
                   [value]="product.imageUrl"
-                  [size]="'large'"
+                  size="large"
                 />
               </div>
             </div>
@@ -95,7 +95,7 @@
               @if (product.weightKg) {
                 <dt>Weight</dt>
                 <dd>
-                  <aff-decimal-units [value]="product.weightKg" [unit]="'kg'" />
+                  <aff-decimal-units [value]="product.weightKg" unit="kg" />
                 </dd>
               }
 
@@ -224,7 +224,7 @@
                 @if (product.taxRate !== undefined) {
                   <dt>Tax Rate</dt>
                   <dd>
-                    <aff-decimal-units [value]="product.taxRate" [unit]="'%'" />
+                    <aff-decimal-units [value]="product.taxRate" unit="%" />
                   </dd>
                 }
 
@@ -233,7 +233,7 @@
                   <dd>
                     <aff-decimal-units
                       [value]="product.discountPercent"
-                      [unit]="'%'"
+                      unit="%"
                     />
                   </dd>
                 }
@@ -408,7 +408,7 @@
                   <dd>
                     <aff-decimal-units
                       [value]="product.warrantyMonths"
-                      [unit]="'months'"
+                      unit="months"
                     />
                   </dd>
                 }
@@ -441,7 +441,7 @@
                   <dd>
                     <aff-decimal-units
                       [value]="product.flightDurationHours"
-                      [unit]="'hours'"
+                      unit="hours"
                     />
                   </dd>
                 }

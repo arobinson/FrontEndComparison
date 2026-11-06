@@ -192,7 +192,7 @@ const ProductList = () => {
   }, [drafts, dispatch]);
 
   const renderCell = useCallback((value: any, column: string, row: Record<string, any>) => {
-    const columnConfig = allColumns.find((col) => col.key === column);
+    const columnConfig = getColumnConfig(column as keyof MockProductViewModel);
     if (!columnConfig) return value ?? '';
     return <CellRenderer column={columnConfig} row={row} />;
   }, []);
@@ -215,7 +215,7 @@ const ProductList = () => {
           page={page}
           pageSize={pageSize}
           pageSizes={[10, 25, 50]}
-          showFilterRow={true}
+          showFilterRow
           trackBy="code"
           onPageChange={handlePageChange}
           onPageSizeChange={handlePageSizeChange}

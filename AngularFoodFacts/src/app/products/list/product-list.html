@@ -19,37 +19,36 @@
       [totalPages]="totalPages()"
       [(page)]="currentPage"
       [(pageSize)]="pageSize"
-      [pageSizes]="[10, 25, 50]"
-      [renderFilter]="true"
+      renderFilter
       trackBy="code"
     >
       <ng-template #header let-column>
-        <strong>{{ getColumnTitle(column) }}</strong>
+        <strong>{{ columnTitles[column] }}</strong>
       </ng-template>
 
       <ng-template #filter let-column>
-        @switch (getColumnDataType(column)) {
+        @switch (columnTypes[column]) {
           @case ("progress-bar") {
             <aff-range-slider
               [value]="rangeDrafts()[column] ?? {}"
               (valueChange)="setDraft(column, $event)"
               (commit)="applyFilter(column)"
-              [min]="0"
-              [max]="100"
+              min="0"
+              max="100"
             />
           }
           @case ("grade-badge") {
             <aff-multi-select
               [value]="multiDrafts()[column] ?? []"
               (valueChange)="setAndApply(column, $event)"
-              [options]="['A', 'B', 'C', 'D', 'F']"
+              [options]="gradeOptions"
             />
           }
           @case ("nova-dots") {
             <aff-multi-select
               [value]="multiDrafts()[column] ?? []"
               (valueChange)="setAndApply(column, $event)"
-              [options]="['1', '2', '3', '4']"
+              [options]="novaOptions"
             />
           }
           @case ("large-counter") {
@@ -63,7 +62,7 @@
             <aff-multi-select
               [value]="multiDrafts()[column] ?? []"
               (valueChange)="setAndApply(column, $event)"
-              [options]="['Yes', 'No']"
+              [options]="yesNoOptions"
             />
           }
           @case ("product-image") {

@@ -193,7 +193,7 @@ export default function ProductList() {
                 page={currentPage()}
                 pageSize={pageSize()}
                 pageSizes={[10, 25, 50]}
-                showFilterRow={true}
+                showFilterRow
                 trackBy="code"
                 onPageChange={handlePageChange}
                 onPageSizeChange={handlePageSizeChange}

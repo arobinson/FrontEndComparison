@@ -85,11 +85,13 @@ export const allColumns: ColumnConfig[] = [
   { key: 'flightDurationHours', label: 'Flight Duration (hrs)', type: 'decimal-units', unit: 'hrs', filterable: true, sortable: true },
 ];
 
+const columnsByKey = new Map(allColumns.map((col) => [col.key, col]));
+
 /**
- * Helper to get column config by key
+ * Helper to get column config by key (O(1): called per table cell by every app)
  */
 export function getColumnConfig(key: keyof MockProductViewModel): ColumnConfig | undefined {
-  return allColumns.find((col) => col.key === key);
+  return columnsByKey.get(key);
 }
 
 /**

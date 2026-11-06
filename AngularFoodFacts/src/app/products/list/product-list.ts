@@ -90,20 +90,20 @@ export class ProductList {
   readonly columns = allColumns.map((col) => col.key);
 
   /**
-   * Get data type for a specific column
+   * Static per-column lookups (column config never changes), read as plain
+   * properties in the template instead of method calls on every check
    */
-  getColumnDataType(column: string): string {
-    return (
-      getColumnConfig(column as keyof ProductViewModel)?.type ?? 'simple-text'
-    );
-  }
+  readonly columnTypes: Record<string, string> = Object.fromEntries(
+    allColumns.map((col) => [col.key, getColumnConfig(col.key as keyof ProductViewModel)?.type ?? 'simple-text']),
+  );
+  readonly columnTitles: Record<string, string> = Object.fromEntries(
+    allColumns.map((col) => [col.key, getColumnConfig(col.key as keyof ProductViewModel)?.label ?? col.key]),
+  );
 
-  /**
-   * Get label for a specific column
-   */
-  getColumnTitle(column: string): string {
-    return getColumnConfig(column as keyof ProductViewModel)?.label ?? column;
-  }
+  // Filter option lists
+  readonly gradeOptions = ['A', 'B', 'C', 'D', 'F'];
+  readonly novaOptions = ['1', '2', '3', '4'];
+  readonly yesNoOptions = ['Yes', 'No'];
 
   // #endregion
 

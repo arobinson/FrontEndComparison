@@ -320,7 +320,7 @@ export class ProductList extends LitElement {
             .totalPages=${this.totalPages}
             .page=${this.currentPage}
             .pageSize=${this.pageSize}
-            .showFilterRow=${true}
+            show-filter-row
             trackBy="code"
             .renderHeader=${this.renderHeader}
             .renderFilter=${this.renderFilter}

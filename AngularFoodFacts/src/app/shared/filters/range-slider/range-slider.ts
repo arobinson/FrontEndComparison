@@ -1,4 +1,4 @@
-import { Component, computed, input, model, output } from '@angular/core';
+import { Component, computed, input, model, numberAttribute, output } from '@angular/core';
 
 /** A numeric range; a bound is absent when its input is empty. */
 export interface RangeValue {
@@ -20,8 +20,8 @@ export interface RangeValue {
 })
 export class RangeSlider {
   readonly value = model<RangeValue>({});
-  readonly min = input<number>(0);
-  readonly max = input<number>(100);
+  readonly min = input(0, { transform: numberAttribute });
+  readonly max = input(100, { transform: numberAttribute });
   readonly commit = output<void>();
 
   readonly minValue = computed(() => this.value().min);

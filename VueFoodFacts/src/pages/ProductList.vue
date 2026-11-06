@@ -101,16 +101,17 @@ const handlePageSizeChange = (newSize: number) => {
   page.value = 0;
 };
 
-const getColumnDataType = (column: string): string => {
-  return getColumnConfig(column as keyof MockProductViewModel)?.type ?? 'simple-text';
-};
+// Static per-column lookups (column config never changes): plain property reads in the template, no calls per render
+const columnTypes: Record<string, string> = Object.fromEntries(
+  allColumns.map((col) => [col.key, getColumnConfig(col.key as keyof MockProductViewModel)?.type ?? 'simple-text']),
+);
 
-const getColumnTitle = (column: string): string => {
-  return getColumnConfig(column as keyof MockProductViewModel)?.label ?? column;
-};
+const columnTitles: Record<string, string> = Object.fromEntries(
+  allColumns.map((col) => [col.key, getColumnConfig(col.key as keyof MockProductViewModel)?.label ?? col.key]),
+);
 
 // Columns are derived from allColumns, so the lookup always succeeds
-const findColumn = (column: string) => allColumns.find((col) => col.key === column)!;
+const findColumn = (column: string) => getColumnConfig(column as keyof MockProductViewModel)!;
 </script>
 
 <template>
@@ -131,18 +132,18 @@ const findColumn = (column: string) => allColumns.find((col) => col.key === colu
         :page="page"
         :page-size="pageSize"
         :page-sizes="pageSizes"
-        :show-filter-row="true"
+        show-filter-row
         track-by="code"
         @page-change="handlePageChange"
         @page-size-change="handlePageSizeChange"
       >
         <template #header="{ column }">
-          <strong>{{ getColumnTitle(column) }}</strong>
+          <strong>{{ columnTitles[column] }}</strong>
         </template>
 
         <template #filter="{ column }">
           <RangeSlider
-            v-if="getColumnDataType(column) === 'progress-bar'"
+            v-if="columnTypes[column] === 'progress-bar'"
             :model-value="filterStore.getDraft<RangeValue>(column, {})"
             :min="0"
             :max="100"
@@ -150,31 +151,31 @@ const findColumn = (column: string) => allColumns.find((col) => col.key === colu
             @commit="applyFilter(column)"
           />
           <MultiSelect
-            v-else-if="getColumnDataType(column) === 'grade-badge'"
+            v-else-if="columnTypes[column] === 'grade-badge'"
             :model-value="filterStore.getDraft<string[]>(column, [])"
             :options="['A', 'B', 'C', 'D', 'F']"
             @update:model-value="setDraftAndApply(column, $event)"
           />
           <MultiSelect
-            v-else-if="getColumnDataType(column) === 'nova-dots'"
+            v-else-if="columnTypes[column] === 'nova-dots'"
             :model-value="filterStore.getDraft<string[]>(column, [])"
             :options="['1', '2', '3', '4']"
             @update:model-value="setDraftAndApply(column, $event)"
           />
           <RangeSlider
-            v-else-if="getColumnDataType(column) === 'large-counter'"
+            v-else-if="columnTypes[column] === 'large-counter'"
             :model-value="filterStore.getDraft<RangeValue>(column, {})"
             @update:model-value="setDraft(column, $event)"
             @commit="applyFilter(column)"
           />
           <MultiSelect
-            v-else-if="getColumnDataType(column) === 'boolean-yesno'"
+            v-else-if="columnTypes[column] === 'boolean-yesno'"
             :model-value="filterStore.getDraft<string[]>(column, [])"
             :options="['Yes', 'No']"
             @update:model-value="setDraftAndApply(column, $event)"
           />
           <TextSearch
-            v-else-if="getColumnDataType(column) !== 'product-image'"
+            v-else-if="columnTypes[column] !== 'product-image'"
             :model-value="filterStore.getDraft<string>(column, '')"
             @update:model-value="setDraft(column, $event)"
             @commit="applyFilter(column)"

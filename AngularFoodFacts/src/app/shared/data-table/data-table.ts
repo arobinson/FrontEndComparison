@@ -1,4 +1,5 @@
 import {
+  booleanAttribute,
   Component,
   input,
   model,
@@ -41,7 +42,7 @@ export class DataTable {
   /**
    * Whether to render the filter row below headers
    */
-  readonly renderFilter = input<boolean>(false);
+  readonly renderFilter = input(false, { transform: booleanAttribute });
 
   /**
    * Available page size options for the dropdown

@@ -170,7 +170,7 @@ export class DataTable extends LitElement {
   @property({ type: Number }) page = 0;
   @property({ type: Number }) pageSize = 50;
   @property({ attribute: false }) pageSizes: number[] = [10, 25, 50];
-  @property({ type: Boolean }) showFilterRow = false;
+  @property({ type: Boolean, attribute: 'show-filter-row' }) showFilterRow = false;
   @property({ type: String }) emptyText = 'No data available';
   // Required: row property that uniquely identifies a row (repeat key and data-key)
   @property({ type: String }) trackBy!: string;

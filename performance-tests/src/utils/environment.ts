@@ -80,7 +80,8 @@ export function collectEnvironment(browserVersion: string, frameworks: Framework
     browser: browserVersion,
     playwright: installedVersion(process.cwd(), 'playwright') ?? 'unknown',
     gitCommit: git('rev-parse HEAD', repoRoot),
-    gitDirty: git('status --porcelain', repoRoot) !== '',
+    // Tracked changes only: untracked notes/files don't change what was built and measured
+    gitDirty: git('status --porcelain --untracked-files=no', repoRoot) !== '',
     frameworkVersions
   };
 }

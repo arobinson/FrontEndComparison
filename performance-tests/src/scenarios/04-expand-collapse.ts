@@ -2,6 +2,31 @@ import { TestScenario, TestContext, ScenarioResult, Measurement } from '../types
 import { performanceMark, performanceMeasure } from '../utils/performance-helpers.js';
 import { clickInShadow, waitForSelectorInShadow } from '../utils/shadow-dom-helpers.js';
 
+/**
+ * Resolve on the first animation frame in which a "Show less" toggle is present (expand) or
+ * absent (collapse). Shadow-DOM aware, for Lit. Ends the expand/collapse timing when the change
+ * has rendered. Collapse waits for "Show less" to disappear: other truncated rows already show
+ * "Show more", so waiting for that label would resolve immediately.
+ */
+async function waitForShowLess(page: any, present: boolean): Promise<void> {
+  await page.waitForFunction(
+    (wantPresent: boolean) => {
+      function has(root: Document | ShadowRoot): boolean {
+        for (const el of Array.from(root.querySelectorAll('button, a'))) {
+          if ((el.textContent?.trim().toLowerCase() || '').includes('show less')) return true;
+        }
+        for (const el of Array.from(root.querySelectorAll('*'))) {
+          if (el.shadowRoot && has(el.shadowRoot)) return true;
+        }
+        return false;
+      }
+      return has(document) === wantPresent;
+    },
+    present,
+    { polling: 'raf', timeout: 10_000 }
+  );
+}
+
 export const expandCollapseScenario: TestScenario = {
   name: 'expand-collapse-description',
   description: 'Click Show more/less link in truncated description field',
@@ -89,8 +114,9 @@ export const expandCollapseScenario: TestScenario = {
       }
     });
 
-    // Wait for text to expand
-    await new Promise((resolve) => setTimeout(resolve, 100));
+    // Stop the clock when the toggle has actually rendered (was a fixed 100ms sleep inside the
+    // timed window, which made every framework measure ~104ms)
+    await waitForShowLess(page, true);
 
     const expandEnd = Date.now();
     await performanceMark(page, 'expand-end');
@@ -142,7 +168,7 @@ export const expandCollapseScenario: TestScenario = {
       }
     });
 
-    await new Promise((resolve) => setTimeout(resolve, 100));
+    await waitForShowLess(page, false);
 
     const collapseEnd = Date.now();
     await performanceMark(page, 'collapse-end');

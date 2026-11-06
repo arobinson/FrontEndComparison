@@ -1,0 +1,2441 @@
+{
+  "timestamp": "2025-12-20T01:19:17.180Z",
+  "config": {
+    "repetitions": 5,
+    "viewportWidth": 1920,
+    "viewportHeight": 1080
+  },
+  "rawRuns": [
+    {
+      "runNumber": 1,
+      "framework": "Solid",
+      "scenario": "initial-page-load",
+      "timestamp": "2025-12-20T01:16:46.212Z",
+      "measurements": [
+        {
+          "name": "fcp",
+          "value": 204,
+          "unit": "ms"
+        },
+        {
+          "name": "lcp",
+          "value": 204,
+          "unit": "ms"
+        },
+        {
+          "name": "cls",
+          "value": 0,
+          "unit": "score"
+        },
+        {
+          "name": "tti",
+          "value": 52.09999999962747,
+          "unit": "ms"
+        },
+        {
+          "name": "tbt",
+          "value": 0,
+          "unit": "ms"
+        },
+        {
+          "name": "initial_heap_size",
+          "value": 81400000,
+          "unit": "bytes"
+        },
+        {
+          "name": "initial_used_heap",
+          "value": 50400000,
+          "unit": "bytes"
+        },
+        {
+          "name": "request_count",
+          "value": 54,
+          "unit": "count"
+        },
+        {
+          "name": "total_bytes",
+          "value": 257259,
+          "unit": "bytes"
+        },
+        {
+          "name": "network_duration",
+          "value": 998,
+          "unit": "ms"
+        },
+        {
+          "name": "largest_request",
+          "value": 70965,
+          "unit": "bytes"
+        },
+        {
+          "name": "avg_api_response_time",
+          "value": 66,
+          "unit": "ms"
+        },
+        {
+          "name": "total_navigation_time",
+          "value": 1514,
+          "unit": "ms"
+        }
+      ]
+    },
+    {
+      "runNumber": 2,
+      "framework": "Solid",
+      "scenario": "initial-page-load",
+      "timestamp": "2025-12-20T01:16:49.264Z",
+      "measurements": [
+        {
+          "name": "fcp",
+          "value": 132,
+          "unit": "ms"
+        },
+        {
+          "name": "lcp",
+          "value": 132,
+          "unit": "ms"
+        },
+        {
+          "name": "cls",
+          "value": 0,
+          "unit": "score"
+        },
+        {
+          "name": "tti",
+          "value": 21,
+          "unit": "ms"
+        },
+        {
+          "name": "tbt",
+          "value": 0,
+          "unit": "ms"
+        },
+        {
+          "name": "initial_heap_size",
+          "value": 81400000,
+          "unit": "bytes"
+        },
+        {
+          "name": "initial_used_heap",
+          "value": 50400000,
+          "unit": "bytes"
+        },
+        {
+          "name": "request_count",
+          "value": 54,
+          "unit": "count"
+        },
+        {
+          "name": "total_bytes",
+          "value": 257259,
+          "unit": "bytes"
+        },
+        {
+          "name": "network_duration",
+          "value": 794,
+          "unit": "ms"
+        },
+        {
+          "name": "largest_request",
+          "value": 70965,
+          "unit": "bytes"
+        },
+        {
+          "name": "avg_api_response_time",
+          "value": 47,
+          "unit": "ms"
+        },
+        {
+          "name": "total_navigation_time",
+          "value": 1299,
+          "unit": "ms"
+        }
+      ]
+    },
+    {
+      "runNumber": 3,
+      "framework": "Solid",
+      "scenario": "initial-page-load",
+      "timestamp": "2025-12-20T01:16:52.261Z",
+      "measurements": [
+        {
+          "name": "fcp",
+          "value": 124,
+          "unit": "ms"
+        },
+        {
+          "name": "lcp",
+          "value": 124,
+          "unit": "ms"
+        },
+        {
+          "name": "cls",
+          "value": 0,
+          "unit": "score"
+        },
+        {
+          "name": "tti",
+          "value": 14.300000000745058,
+          "unit": "ms"
+        },
+        {
+          "name": "tbt",
+          "value": 0,
+          "unit": "ms"
+        },
+        {
+          "name": "initial_heap_size",
+          "value": 81400000,
+          "unit": "bytes"
+        },
+        {
+          "name": "initial_used_heap",
+          "value": 50400000,
+          "unit": "bytes"
+        },
+        {
+          "name": "request_count",
+          "value": 54,
+          "unit": "count"
+        },
+        {
+          "name": "total_bytes",
+          "value": 257259,
+          "unit": "bytes"
+        },
+        {
+          "name": "network_duration",
+          "value": 748,
+          "unit": "ms"
+        },
+        {
+          "name": "largest_request",
+          "value": 70965,
+          "unit": "bytes"
+        },
+        {
+          "name": "avg_api_response_time",
+          "value": 45,
+          "unit": "ms"
+        },
+        {
+          "name": "total_navigation_time",
+          "value": 1253,
+          "unit": "ms"
+        }
+      ]
+    },
+    {
+      "runNumber": 4,
+      "framework": "Solid",
+      "scenario": "initial-page-load",
+      "timestamp": "2025-12-20T01:16:55.405Z",
+      "measurements": [
+        {
+          "name": "fcp",
+          "value": 140,
+          "unit": "ms"
+        },
+        {
+          "name": "lcp",
+          "value": 140,
+          "unit": "ms"
+        },
+        {
+          "name": "cls",
+          "value": 0,
+          "unit": "score"
+        },
+        {
+          "name": "tti",
+          "value": 16,
+          "unit": "ms"
+        },
+        {
+          "name": "tbt",
+          "value": 0,
+          "unit": "ms"
+        },
+        {
+          "name": "initial_heap_size",
+          "value": 81400000,
+          "unit": "bytes"
+        },
+        {
+          "name": "initial_used_heap",
+          "value": 50400000,
+          "unit": "bytes"
+        },
+        {
+          "name": "request_count",
+          "value": 54,
+          "unit": "count"
+        },
+        {
+          "name": "total_bytes",
+          "value": 257259,
+          "unit": "bytes"
+        },
+        {
+          "name": "network_duration",
+          "value": 798,
+          "unit": "ms"
+        },
+        {
+          "name": "largest_request",
+          "value": 70965,
+          "unit": "bytes"
+        },
+        {
+          "name": "avg_api_response_time",
+          "value": 55,
+          "unit": "ms"
+        },
+        {
+          "name": "total_navigation_time",
+          "value": 1390,
+          "unit": "ms"
+        }
+      ]
+    },
+    {
+      "runNumber": 5,
+      "framework": "Solid",
+      "scenario": "initial-page-load",
+      "timestamp": "2025-12-20T01:16:58.555Z",
+      "measurements": [
+        {
+          "name": "fcp",
+          "value": 132,
+          "unit": "ms"
+        },
+        {
+          "name": "lcp",
+          "value": 132,
+          "unit": "ms"
+        },
+        {
+          "name": "cls",
+          "value": 0,
+          "unit": "score"
+        },
+        {
+          "name": "tti",
+          "value": 17.200000001117587,
+          "unit": "ms"
+        },
+        {
+          "name": "tbt",
+          "value": 0,
+          "unit": "ms"
+        },
+        {
+          "name": "initial_heap_size",
+          "value": 81400000,
+          "unit": "bytes"
+        },
+        {
+          "name": "initial_used_heap",
+          "value": 50400000,
+          "unit": "bytes"
+        },
+        {
+          "name": "request_count",
+          "value": 54,
+          "unit": "count"
+        },
+        {
+          "name": "total_bytes",
+          "value": 257259,
+          "unit": "bytes"
+        },
+        {
+          "name": "network_duration",
+          "value": 907,
+          "unit": "ms"
+        },
+        {
+          "name": "largest_request",
+          "value": 70965,
+          "unit": "bytes"
+        },
+        {
+          "name": "avg_api_response_time",
+          "value": 50,
+          "unit": "ms"
+        },
+        {
+          "name": "total_navigation_time",
+          "value": 1410,
+          "unit": "ms"
+        }
+      ]
+    },
+    {
+      "runNumber": 1,
+      "framework": "Solid",
+      "scenario": "filter-application",
+      "timestamp": "2025-12-20T01:17:02.215Z",
+      "measurements": [
+        {
+          "name": "filter_duration",
+          "value": 174,
+          "unit": "ms"
+        },
+        {
+          "name": "total_filter_time",
+          "value": 173,
+          "unit": "ms"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        },
+        {
+          "name": "filtered_row_count",
+          "value": 11,
+          "unit": "count"
+        },
+        {
+          "name": "js_execution_time",
+          "value": 174,
+          "unit": "ms"
+        }
+      ]
+    },
+    {
+      "runNumber": 2,
+      "framework": "Solid",
+      "scenario": "filter-application",
+      "timestamp": "2025-12-20T01:17:05.443Z",
+      "measurements": [
+        {
+          "name": "filter_duration",
+          "value": 94.60000000149012,
+          "unit": "ms"
+        },
+        {
+          "name": "total_filter_time",
+          "value": 93,
+          "unit": "ms"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        },
+        {
+          "name": "filtered_row_count",
+          "value": 11,
+          "unit": "count"
+        },
+        {
+          "name": "js_execution_time",
+          "value": 94.60000000149012,
+          "unit": "ms"
+        }
+      ]
+    },
+    {
+      "runNumber": 3,
+      "framework": "Solid",
+      "scenario": "filter-application",
+      "timestamp": "2025-12-20T01:17:08.640Z",
+      "measurements": [
+        {
+          "name": "filter_duration",
+          "value": 97.5,
+          "unit": "ms"
+        },
+        {
+          "name": "total_filter_time",
+          "value": 96,
+          "unit": "ms"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        },
+        {
+          "name": "filtered_row_count",
+          "value": 11,
+          "unit": "count"
+        },
+        {
+          "name": "js_execution_time",
+          "value": 97.5,
+          "unit": "ms"
+        }
+      ]
+    },
+    {
+      "runNumber": 4,
+      "framework": "Solid",
+      "scenario": "filter-application",
+      "timestamp": "2025-12-20T01:17:12.047Z",
+      "measurements": [
+        {
+          "name": "filter_duration",
+          "value": 96.59999999962747,
+          "unit": "ms"
+        },
+        {
+          "name": "total_filter_time",
+          "value": 95,
+          "unit": "ms"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        },
+        {
+          "name": "filtered_row_count",
+          "value": 11,
+          "unit": "count"
+        },
+        {
+          "name": "js_execution_time",
+          "value": 96.59999999962747,
+          "unit": "ms"
+        }
+      ]
+    },
+    {
+      "runNumber": 5,
+      "framework": "Solid",
+      "scenario": "filter-application",
+      "timestamp": "2025-12-20T01:17:15.302Z",
+      "measurements": [
+        {
+          "name": "filter_duration",
+          "value": 101.80000000074506,
+          "unit": "ms"
+        },
+        {
+          "name": "total_filter_time",
+          "value": 100,
+          "unit": "ms"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        },
+        {
+          "name": "filtered_row_count",
+          "value": 11,
+          "unit": "count"
+        },
+        {
+          "name": "js_execution_time",
+          "value": 101.80000000074506,
+          "unit": "ms"
+        }
+      ]
+    },
+    {
+      "runNumber": 1,
+      "framework": "Solid",
+      "scenario": "clear-filters",
+      "timestamp": "2025-12-20T01:17:19.622Z",
+      "measurements": [
+        {
+          "name": "clear_duration",
+          "value": 230.69999999925494,
+          "unit": "ms"
+        },
+        {
+          "name": "total_clear_time",
+          "value": 229,
+          "unit": "ms"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        },
+        {
+          "name": "restored_row_count",
+          "value": 50,
+          "unit": "count"
+        }
+      ]
+    },
+    {
+      "runNumber": 2,
+      "framework": "Solid",
+      "scenario": "clear-filters",
+      "timestamp": "2025-12-20T01:17:23.643Z",
+      "measurements": [
+        {
+          "name": "clear_duration",
+          "value": 226,
+          "unit": "ms"
+        },
+        {
+          "name": "total_clear_time",
+          "value": 225,
+          "unit": "ms"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        },
+        {
+          "name": "restored_row_count",
+          "value": 50,
+          "unit": "count"
+        }
+      ]
+    },
+    {
+      "runNumber": 3,
+      "framework": "Solid",
+      "scenario": "clear-filters",
+      "timestamp": "2025-12-20T01:17:27.641Z",
+      "measurements": [
+        {
+          "name": "clear_duration",
+          "value": 223.90000000037253,
+          "unit": "ms"
+        },
+        {
+          "name": "total_clear_time",
+          "value": 222,
+          "unit": "ms"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        },
+        {
+          "name": "restored_row_count",
+          "value": 50,
+          "unit": "count"
+        }
+      ]
+    },
+    {
+      "runNumber": 4,
+      "framework": "Solid",
+      "scenario": "clear-filters",
+      "timestamp": "2025-12-20T01:17:31.657Z",
+      "measurements": [
+        {
+          "name": "clear_duration",
+          "value": 247.10000000149012,
+          "unit": "ms"
+        },
+        {
+          "name": "total_clear_time",
+          "value": 246,
+          "unit": "ms"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        },
+        {
+          "name": "restored_row_count",
+          "value": 50,
+          "unit": "count"
+        }
+      ]
+    },
+    {
+      "runNumber": 5,
+      "framework": "Solid",
+      "scenario": "clear-filters",
+      "timestamp": "2025-12-20T01:17:35.547Z",
+      "measurements": [
+        {
+          "name": "clear_duration",
+          "value": 158.30000000074506,
+          "unit": "ms"
+        },
+        {
+          "name": "total_clear_time",
+          "value": 158,
+          "unit": "ms"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        },
+        {
+          "name": "restored_row_count",
+          "value": 50,
+          "unit": "count"
+        }
+      ]
+    },
+    {
+      "runNumber": 1,
+      "framework": "Solid",
+      "scenario": "expand-collapse-description",
+      "timestamp": "2025-12-20T01:17:39.182Z",
+      "measurements": [
+        {
+          "name": "expand_duration",
+          "value": 107.19999999925494,
+          "unit": "ms"
+        },
+        {
+          "name": "expand_total_time",
+          "value": 106,
+          "unit": "ms"
+        },
+        {
+          "name": "expand_cls_delta",
+          "value": 0.000001980251736111111,
+          "unit": "score"
+        },
+        {
+          "name": "collapse_duration",
+          "value": 103.20000000111759,
+          "unit": "ms"
+        },
+        {
+          "name": "collapse_total_time",
+          "value": 102,
+          "unit": "ms"
+        },
+        {
+          "name": "collapse_cls_delta",
+          "value": 0.000001980251736111111,
+          "unit": "score"
+        }
+      ]
+    },
+    {
+      "runNumber": 2,
+      "framework": "Solid",
+      "scenario": "expand-collapse-description",
+      "timestamp": "2025-12-20T01:17:42.554Z",
+      "measurements": [
+        {
+          "name": "expand_duration",
+          "value": 104.90000000037253,
+          "unit": "ms"
+        },
+        {
+          "name": "expand_total_time",
+          "value": 103,
+          "unit": "ms"
+        },
+        {
+          "name": "expand_cls_delta",
+          "value": 0.000001980251736111111,
+          "unit": "score"
+        },
+        {
+          "name": "collapse_duration",
+          "value": 103.79999999888241,
+          "unit": "ms"
+        },
+        {
+          "name": "collapse_total_time",
+          "value": 103,
+          "unit": "ms"
+        },
+        {
+          "name": "collapse_cls_delta",
+          "value": 0.000001980251736111111,
+          "unit": "score"
+        }
+      ]
+    },
+    {
+      "runNumber": 3,
+      "framework": "Solid",
+      "scenario": "expand-collapse-description",
+      "timestamp": "2025-12-20T01:17:45.907Z",
+      "measurements": [
+        {
+          "name": "expand_duration",
+          "value": 104.90000000037253,
+          "unit": "ms"
+        },
+        {
+          "name": "expand_total_time",
+          "value": 104,
+          "unit": "ms"
+        },
+        {
+          "name": "expand_cls_delta",
+          "value": 0.000001980251736111111,
+          "unit": "score"
+        },
+        {
+          "name": "collapse_duration",
+          "value": 104.5,
+          "unit": "ms"
+        },
+        {
+          "name": "collapse_total_time",
+          "value": 104,
+          "unit": "ms"
+        },
+        {
+          "name": "collapse_cls_delta",
+          "value": 0.000001980251736111111,
+          "unit": "score"
+        }
+      ]
+    },
+    {
+      "runNumber": 4,
+      "framework": "Solid",
+      "scenario": "expand-collapse-description",
+      "timestamp": "2025-12-20T01:17:49.232Z",
+      "measurements": [
+        {
+          "name": "expand_duration",
+          "value": 105.69999999925494,
+          "unit": "ms"
+        },
+        {
+          "name": "expand_total_time",
+          "value": 104,
+          "unit": "ms"
+        },
+        {
+          "name": "expand_cls_delta",
+          "value": 0.000001980251736111111,
+          "unit": "score"
+        },
+        {
+          "name": "collapse_duration",
+          "value": 105.80000000074506,
+          "unit": "ms"
+        },
+        {
+          "name": "collapse_total_time",
+          "value": 104,
+          "unit": "ms"
+        },
+        {
+          "name": "collapse_cls_delta",
+          "value": 0.000001980251736111111,
+          "unit": "score"
+        }
+      ]
+    },
+    {
+      "runNumber": 5,
+      "framework": "Solid",
+      "scenario": "expand-collapse-description",
+      "timestamp": "2025-12-20T01:17:52.534Z",
+      "measurements": [
+        {
+          "name": "expand_duration",
+          "value": 105.5,
+          "unit": "ms"
+        },
+        {
+          "name": "expand_total_time",
+          "value": 104,
+          "unit": "ms"
+        },
+        {
+          "name": "expand_cls_delta",
+          "value": 0.000001980251736111111,
+          "unit": "score"
+        },
+        {
+          "name": "collapse_duration",
+          "value": 104.40000000037253,
+          "unit": "ms"
+        },
+        {
+          "name": "collapse_total_time",
+          "value": 102,
+          "unit": "ms"
+        },
+        {
+          "name": "collapse_cls_delta",
+          "value": 0.000001980251736111111,
+          "unit": "score"
+        }
+      ]
+    },
+    {
+      "runNumber": 1,
+      "framework": "Solid",
+      "scenario": "navigate-to-detail",
+      "timestamp": "2025-12-20T01:17:56.639Z",
+      "measurements": [
+        {
+          "name": "total_navigation_time",
+          "value": 174,
+          "unit": "ms"
+        },
+        {
+          "name": "detail_lcp",
+          "value": 120,
+          "unit": "ms"
+        },
+        {
+          "name": "detail_cls",
+          "value": 0,
+          "unit": "score"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        },
+        {
+          "name": "detail_request_count",
+          "value": 3,
+          "unit": "count"
+        },
+        {
+          "name": "detail_total_bytes",
+          "value": 23534,
+          "unit": "bytes"
+        }
+      ]
+    },
+    {
+      "runNumber": 2,
+      "framework": "Solid",
+      "scenario": "navigate-to-detail",
+      "timestamp": "2025-12-20T01:18:00.479Z",
+      "measurements": [
+        {
+          "name": "total_navigation_time",
+          "value": 182,
+          "unit": "ms"
+        },
+        {
+          "name": "detail_lcp",
+          "value": 124,
+          "unit": "ms"
+        },
+        {
+          "name": "detail_cls",
+          "value": 0,
+          "unit": "score"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        },
+        {
+          "name": "detail_request_count",
+          "value": 3,
+          "unit": "count"
+        },
+        {
+          "name": "detail_total_bytes",
+          "value": 23534,
+          "unit": "bytes"
+        }
+      ]
+    },
+    {
+      "runNumber": 3,
+      "framework": "Solid",
+      "scenario": "navigate-to-detail",
+      "timestamp": "2025-12-20T01:18:04.359Z",
+      "measurements": [
+        {
+          "name": "total_navigation_time",
+          "value": 200,
+          "unit": "ms"
+        },
+        {
+          "name": "detail_lcp",
+          "value": 132,
+          "unit": "ms"
+        },
+        {
+          "name": "detail_cls",
+          "value": 0,
+          "unit": "score"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        },
+        {
+          "name": "detail_request_count",
+          "value": 3,
+          "unit": "count"
+        },
+        {
+          "name": "detail_total_bytes",
+          "value": 23534,
+          "unit": "bytes"
+        }
+      ]
+    },
+    {
+      "runNumber": 4,
+      "framework": "Solid",
+      "scenario": "navigate-to-detail",
+      "timestamp": "2025-12-20T01:18:08.150Z",
+      "measurements": [
+        {
+          "name": "total_navigation_time",
+          "value": 188,
+          "unit": "ms"
+        },
+        {
+          "name": "detail_lcp",
+          "value": 124,
+          "unit": "ms"
+        },
+        {
+          "name": "detail_cls",
+          "value": 0,
+          "unit": "score"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        },
+        {
+          "name": "detail_request_count",
+          "value": 3,
+          "unit": "count"
+        },
+        {
+          "name": "detail_total_bytes",
+          "value": 23534,
+          "unit": "bytes"
+        }
+      ]
+    },
+    {
+      "runNumber": 5,
+      "framework": "Solid",
+      "scenario": "navigate-to-detail",
+      "timestamp": "2025-12-20T01:18:12.454Z",
+      "measurements": [
+        {
+          "name": "total_navigation_time",
+          "value": 149,
+          "unit": "ms"
+        },
+        {
+          "name": "detail_lcp",
+          "value": 208,
+          "unit": "ms"
+        },
+        {
+          "name": "detail_cls",
+          "value": 0,
+          "unit": "score"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        },
+        {
+          "name": "detail_request_count",
+          "value": 3,
+          "unit": "count"
+        },
+        {
+          "name": "detail_total_bytes",
+          "value": 23534,
+          "unit": "bytes"
+        }
+      ]
+    },
+    {
+      "runNumber": 1,
+      "framework": "Solid",
+      "scenario": "navigate-back-to-list",
+      "timestamp": "2025-12-20T01:18:17.316Z",
+      "measurements": [
+        {
+          "name": "total_back_navigation_time",
+          "value": 350,
+          "unit": "ms"
+        },
+        {
+          "name": "rendered_row_count",
+          "value": 50,
+          "unit": "count"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        }
+      ]
+    },
+    {
+      "runNumber": 2,
+      "framework": "Solid",
+      "scenario": "navigate-back-to-list",
+      "timestamp": "2025-12-20T01:18:21.849Z",
+      "measurements": [
+        {
+          "name": "total_back_navigation_time",
+          "value": 339,
+          "unit": "ms"
+        },
+        {
+          "name": "rendered_row_count",
+          "value": 50,
+          "unit": "count"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        }
+      ]
+    },
+    {
+      "runNumber": 3,
+      "framework": "Solid",
+      "scenario": "navigate-back-to-list",
+      "timestamp": "2025-12-20T01:18:26.546Z",
+      "measurements": [
+        {
+          "name": "total_back_navigation_time",
+          "value": 508,
+          "unit": "ms"
+        },
+        {
+          "name": "rendered_row_count",
+          "value": 50,
+          "unit": "count"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        }
+      ]
+    },
+    {
+      "runNumber": 4,
+      "framework": "Solid",
+      "scenario": "navigate-back-to-list",
+      "timestamp": "2025-12-20T01:18:31.372Z",
+      "measurements": [
+        {
+          "name": "total_back_navigation_time",
+          "value": 466,
+          "unit": "ms"
+        },
+        {
+          "name": "rendered_row_count",
+          "value": 50,
+          "unit": "count"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        }
+      ]
+    },
+    {
+      "runNumber": 5,
+      "framework": "Solid",
+      "scenario": "navigate-back-to-list",
+      "timestamp": "2025-12-20T01:18:36.025Z",
+      "measurements": [
+        {
+          "name": "total_back_navigation_time",
+          "value": 384,
+          "unit": "ms"
+        },
+        {
+          "name": "rendered_row_count",
+          "value": 50,
+          "unit": "count"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        }
+      ]
+    },
+    {
+      "runNumber": 1,
+      "framework": "Solid",
+      "scenario": "pagination-cycle",
+      "timestamp": "2025-12-20T01:18:41.657Z",
+      "measurements": [
+        {
+          "name": "page_transition_1_next",
+          "value": 544,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_1_next_js",
+          "value": 554.5,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_2_next",
+          "value": 357,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_2_next_js",
+          "value": 488.09999999962747,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_3_previous",
+          "value": 502,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_3_previous_js",
+          "value": 510.69999999925494,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_4_previous",
+          "value": 465,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_4_previous_js",
+          "value": 500.30000000074506,
+          "unit": "ms"
+        },
+        {
+          "name": "total_cycle_time",
+          "value": 2130,
+          "unit": "ms"
+        },
+        {
+          "name": "total_cycle_js_time",
+          "value": 2132.0999999996275,
+          "unit": "ms"
+        },
+        {
+          "name": "avg_page_transition",
+          "value": 467,
+          "unit": "ms"
+        },
+        {
+          "name": "min_page_transition",
+          "value": 357,
+          "unit": "ms"
+        },
+        {
+          "name": "max_page_transition",
+          "value": 544,
+          "unit": "ms"
+        },
+        {
+          "name": "avg_api_response_time",
+          "value": 16.5,
+          "unit": "ms"
+        },
+        {
+          "name": "total_api_requests",
+          "value": 4,
+          "unit": "count"
+        },
+        {
+          "name": "total_network_bytes",
+          "value": 277755,
+          "unit": "bytes"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        }
+      ]
+    },
+    {
+      "runNumber": 2,
+      "framework": "Solid",
+      "scenario": "pagination-cycle",
+      "timestamp": "2025-12-20T01:18:46.961Z",
+      "measurements": [
+        {
+          "name": "page_transition_1_next",
+          "value": 581,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_1_next_js",
+          "value": 582.5999999996275,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_2_next",
+          "value": 276,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_2_next_js",
+          "value": 389.69999999925494,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_3_previous",
+          "value": 436,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_3_previous_js",
+          "value": 447.2999999988824,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_4_previous",
+          "value": 414,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_4_previous_js",
+          "value": 414.5,
+          "unit": "ms"
+        },
+        {
+          "name": "total_cycle_time",
+          "value": 1924,
+          "unit": "ms"
+        },
+        {
+          "name": "total_cycle_js_time",
+          "value": 1928.7999999988824,
+          "unit": "ms"
+        },
+        {
+          "name": "avg_page_transition",
+          "value": 426.75,
+          "unit": "ms"
+        },
+        {
+          "name": "min_page_transition",
+          "value": 276,
+          "unit": "ms"
+        },
+        {
+          "name": "max_page_transition",
+          "value": 581,
+          "unit": "ms"
+        },
+        {
+          "name": "avg_api_response_time",
+          "value": 25,
+          "unit": "ms"
+        },
+        {
+          "name": "total_api_requests",
+          "value": 4,
+          "unit": "count"
+        },
+        {
+          "name": "total_network_bytes",
+          "value": 277755,
+          "unit": "bytes"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        }
+      ]
+    },
+    {
+      "runNumber": 3,
+      "framework": "Solid",
+      "scenario": "pagination-cycle",
+      "timestamp": "2025-12-20T01:18:52.105Z",
+      "measurements": [
+        {
+          "name": "page_transition_1_next",
+          "value": 522,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_1_next_js",
+          "value": 531.5999999996275,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_2_next",
+          "value": 330,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_2_next_js",
+          "value": 461.30000000074506,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_3_previous",
+          "value": 448,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_3_previous_js",
+          "value": 458.40000000037253,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_4_previous",
+          "value": 418,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_4_previous_js",
+          "value": 453.59999999962747,
+          "unit": "ms"
+        },
+        {
+          "name": "total_cycle_time",
+          "value": 2025,
+          "unit": "ms"
+        },
+        {
+          "name": "total_cycle_js_time",
+          "value": 2025.300000000745,
+          "unit": "ms"
+        },
+        {
+          "name": "avg_page_transition",
+          "value": 429.5,
+          "unit": "ms"
+        },
+        {
+          "name": "min_page_transition",
+          "value": 330,
+          "unit": "ms"
+        },
+        {
+          "name": "max_page_transition",
+          "value": 522,
+          "unit": "ms"
+        },
+        {
+          "name": "avg_api_response_time",
+          "value": 27.25,
+          "unit": "ms"
+        },
+        {
+          "name": "total_api_requests",
+          "value": 4,
+          "unit": "count"
+        },
+        {
+          "name": "total_network_bytes",
+          "value": 277755,
+          "unit": "bytes"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        }
+      ]
+    },
+    {
+      "runNumber": 4,
+      "framework": "Solid",
+      "scenario": "pagination-cycle",
+      "timestamp": "2025-12-20T01:18:57.280Z",
+      "measurements": [
+        {
+          "name": "page_transition_1_next",
+          "value": 508,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_1_next_js",
+          "value": 516.7999999988824,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_2_next",
+          "value": 499,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_2_next_js",
+          "value": 504,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_3_previous",
+          "value": 322,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_3_previous_js",
+          "value": 451.09999999962747,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_4_previous",
+          "value": 425,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_4_previous_js",
+          "value": 431.09999999962747,
+          "unit": "ms"
+        },
+        {
+          "name": "total_cycle_time",
+          "value": 1996,
+          "unit": "ms"
+        },
+        {
+          "name": "total_cycle_js_time",
+          "value": 2001.2000000011176,
+          "unit": "ms"
+        },
+        {
+          "name": "avg_page_transition",
+          "value": 438.5,
+          "unit": "ms"
+        },
+        {
+          "name": "min_page_transition",
+          "value": 322,
+          "unit": "ms"
+        },
+        {
+          "name": "max_page_transition",
+          "value": 508,
+          "unit": "ms"
+        },
+        {
+          "name": "avg_api_response_time",
+          "value": 22.25,
+          "unit": "ms"
+        },
+        {
+          "name": "total_api_requests",
+          "value": 4,
+          "unit": "count"
+        },
+        {
+          "name": "total_network_bytes",
+          "value": 277755,
+          "unit": "bytes"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        }
+      ]
+    },
+    {
+      "runNumber": 5,
+      "framework": "Solid",
+      "scenario": "pagination-cycle",
+      "timestamp": "2025-12-20T01:19:02.511Z",
+      "measurements": [
+        {
+          "name": "page_transition_1_next",
+          "value": 388,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_1_next_js",
+          "value": 513.1999999992549,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_2_next",
+          "value": 470,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_2_next_js",
+          "value": 480.2000000011176,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_3_previous",
+          "value": 460,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_3_previous_js",
+          "value": 465.40000000037253,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_4_previous",
+          "value": 261,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_4_previous_js",
+          "value": 375,
+          "unit": "ms"
+        },
+        {
+          "name": "total_cycle_time",
+          "value": 1992,
+          "unit": "ms"
+        },
+        {
+          "name": "total_cycle_js_time",
+          "value": 2012,
+          "unit": "ms"
+        },
+        {
+          "name": "avg_page_transition",
+          "value": 394.75,
+          "unit": "ms"
+        },
+        {
+          "name": "min_page_transition",
+          "value": 261,
+          "unit": "ms"
+        },
+        {
+          "name": "max_page_transition",
+          "value": 470,
+          "unit": "ms"
+        },
+        {
+          "name": "avg_api_response_time",
+          "value": 27,
+          "unit": "ms"
+        },
+        {
+          "name": "total_api_requests",
+          "value": 4,
+          "unit": "count"
+        },
+        {
+          "name": "total_network_bytes",
+          "value": 277755,
+          "unit": "bytes"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        }
+      ]
+    },
+    {
+      "runNumber": 1,
+      "framework": "Solid",
+      "scenario": "detail-navigation-cycle",
+      "timestamp": "2025-12-20T01:19:05.527Z",
+      "measurements": [
+        {
+          "name": "initial_detail_load",
+          "value": 681,
+          "unit": "ms"
+        },
+        {
+          "name": "next_navigation_time",
+          "value": 14,
+          "unit": "ms"
+        },
+        {
+          "name": "next_navigation_js",
+          "value": 17.09999999962747,
+          "unit": "ms"
+        },
+        {
+          "name": "prev_navigation_time",
+          "value": 12,
+          "unit": "ms"
+        },
+        {
+          "name": "prev_navigation_js",
+          "value": 13.099999999627471,
+          "unit": "ms"
+        },
+        {
+          "name": "total_cycle_time",
+          "value": 346,
+          "unit": "ms"
+        },
+        {
+          "name": "total_cycle_js_time",
+          "value": 347.8999999985099,
+          "unit": "ms"
+        },
+        {
+          "name": "avg_navigation_time",
+          "value": 13,
+          "unit": "ms"
+        },
+        {
+          "name": "avg_api_response_time",
+          "value": 4.5,
+          "unit": "ms"
+        },
+        {
+          "name": "total_api_requests",
+          "value": 5,
+          "unit": "count"
+        },
+        {
+          "name": "total_network_bytes",
+          "value": 19742,
+          "unit": "bytes"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        }
+      ]
+    },
+    {
+      "runNumber": 2,
+      "framework": "Solid",
+      "scenario": "detail-navigation-cycle",
+      "timestamp": "2025-12-20T01:19:08.191Z",
+      "measurements": [
+        {
+          "name": "initial_detail_load",
+          "value": 682,
+          "unit": "ms"
+        },
+        {
+          "name": "next_navigation_time",
+          "value": 11,
+          "unit": "ms"
+        },
+        {
+          "name": "next_navigation_js",
+          "value": 15.400000000372529,
+          "unit": "ms"
+        },
+        {
+          "name": "prev_navigation_time",
+          "value": 8,
+          "unit": "ms"
+        },
+        {
+          "name": "prev_navigation_js",
+          "value": 10.599999999627471,
+          "unit": "ms"
+        },
+        {
+          "name": "total_cycle_time",
+          "value": 334,
+          "unit": "ms"
+        },
+        {
+          "name": "total_cycle_js_time",
+          "value": 335.90000000037253,
+          "unit": "ms"
+        },
+        {
+          "name": "avg_navigation_time",
+          "value": 9.5,
+          "unit": "ms"
+        },
+        {
+          "name": "avg_api_response_time",
+          "value": 2,
+          "unit": "ms"
+        },
+        {
+          "name": "total_api_requests",
+          "value": 5,
+          "unit": "count"
+        },
+        {
+          "name": "total_network_bytes",
+          "value": 19742,
+          "unit": "bytes"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        }
+      ]
+    },
+    {
+      "runNumber": 3,
+      "framework": "Solid",
+      "scenario": "detail-navigation-cycle",
+      "timestamp": "2025-12-20T01:19:10.830Z",
+      "measurements": [
+        {
+          "name": "initial_detail_load",
+          "value": 668,
+          "unit": "ms"
+        },
+        {
+          "name": "next_navigation_time",
+          "value": 12,
+          "unit": "ms"
+        },
+        {
+          "name": "next_navigation_js",
+          "value": 13.600000001490116,
+          "unit": "ms"
+        },
+        {
+          "name": "prev_navigation_time",
+          "value": 8,
+          "unit": "ms"
+        },
+        {
+          "name": "prev_navigation_js",
+          "value": 9.799999998882413,
+          "unit": "ms"
+        },
+        {
+          "name": "total_cycle_time",
+          "value": 333,
+          "unit": "ms"
+        },
+        {
+          "name": "total_cycle_js_time",
+          "value": 333.69999999925494,
+          "unit": "ms"
+        },
+        {
+          "name": "avg_navigation_time",
+          "value": 10,
+          "unit": "ms"
+        },
+        {
+          "name": "avg_api_response_time",
+          "value": 1.75,
+          "unit": "ms"
+        },
+        {
+          "name": "total_api_requests",
+          "value": 5,
+          "unit": "count"
+        },
+        {
+          "name": "total_network_bytes",
+          "value": 19742,
+          "unit": "bytes"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        }
+      ]
+    },
+    {
+      "runNumber": 4,
+      "framework": "Solid",
+      "scenario": "detail-navigation-cycle",
+      "timestamp": "2025-12-20T01:19:13.492Z",
+      "measurements": [
+        {
+          "name": "initial_detail_load",
+          "value": 662,
+          "unit": "ms"
+        },
+        {
+          "name": "next_navigation_time",
+          "value": 26,
+          "unit": "ms"
+        },
+        {
+          "name": "next_navigation_js",
+          "value": 33.90000000037253,
+          "unit": "ms"
+        },
+        {
+          "name": "prev_navigation_time",
+          "value": 10,
+          "unit": "ms"
+        },
+        {
+          "name": "prev_navigation_js",
+          "value": 11.200000001117587,
+          "unit": "ms"
+        },
+        {
+          "name": "total_cycle_time",
+          "value": 361,
+          "unit": "ms"
+        },
+        {
+          "name": "total_cycle_js_time",
+          "value": 362.59999999962747,
+          "unit": "ms"
+        },
+        {
+          "name": "avg_navigation_time",
+          "value": 18,
+          "unit": "ms"
+        },
+        {
+          "name": "avg_api_response_time",
+          "value": 6.75,
+          "unit": "ms"
+        },
+        {
+          "name": "total_api_requests",
+          "value": 5,
+          "unit": "count"
+        },
+        {
+          "name": "total_network_bytes",
+          "value": 19742,
+          "unit": "bytes"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        }
+      ]
+    },
+    {
+      "runNumber": 5,
+      "framework": "Solid",
+      "scenario": "detail-navigation-cycle",
+      "timestamp": "2025-12-20T01:19:16.171Z",
+      "measurements": [
+        {
+          "name": "initial_detail_load",
+          "value": 671,
+          "unit": "ms"
+        },
+        {
+          "name": "next_navigation_time",
+          "value": 27,
+          "unit": "ms"
+        },
+        {
+          "name": "next_navigation_js",
+          "value": 29.09999999962747,
+          "unit": "ms"
+        },
+        {
+          "name": "prev_navigation_time",
+          "value": 11,
+          "unit": "ms"
+        },
+        {
+          "name": "prev_navigation_js",
+          "value": 12.799999998882413,
+          "unit": "ms"
+        },
+        {
+          "name": "total_cycle_time",
+          "value": 362,
+          "unit": "ms"
+        },
+        {
+          "name": "total_cycle_js_time",
+          "value": 366.1000000014901,
+          "unit": "ms"
+        },
+        {
+          "name": "avg_navigation_time",
+          "value": 19,
+          "unit": "ms"
+        },
+        {
+          "name": "avg_api_response_time",
+          "value": 6.5,
+          "unit": "ms"
+        },
+        {
+          "name": "total_api_requests",
+          "value": 5,
+          "unit": "count"
+        },
+        {
+          "name": "total_network_bytes",
+          "value": 19742,
+          "unit": "bytes"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        }
+      ]
+    }
+  ],
+  "aggregated": [
+    {
+      "framework": "Solid",
+      "scenario": "initial-page-load",
+      "totalRuns": 5,
+      "discardedRuns": [],
+      "median": {
+        "fcp": 132,
+        "lcp": 132,
+        "cls": 0,
+        "tti": 17.200000001117587,
+        "tbt": 0,
+        "initial_heap_size": 81400000,
+        "initial_used_heap": 50400000,
+        "request_count": 54,
+        "total_bytes": 257259,
+        "network_duration": 798,
+        "largest_request": 70965,
+        "avg_api_response_time": 50,
+        "total_navigation_time": 1390
+      },
+      "mean": {
+        "fcp": 146.4,
+        "lcp": 146.4,
+        "cls": 0,
+        "tti": 24.120000000298024,
+        "tbt": 0,
+        "initial_heap_size": 81400000,
+        "initial_used_heap": 50400000,
+        "request_count": 54,
+        "total_bytes": 257259,
+        "network_duration": 849,
+        "largest_request": 70965,
+        "avg_api_response_time": 52.6,
+        "total_navigation_time": 1373.2
+      },
+      "min": {
+        "fcp": 124,
+        "lcp": 124,
+        "cls": 0,
+        "tti": 14.300000000745058,
+        "tbt": 0,
+        "initial_heap_size": 81400000,
+        "initial_used_heap": 50400000,
+        "request_count": 54,
+        "total_bytes": 257259,
+        "network_duration": 748,
+        "largest_request": 70965,
+        "avg_api_response_time": 45,
+        "total_navigation_time": 1253
+      },
+      "max": {
+        "fcp": 204,
+        "lcp": 204,
+        "cls": 0,
+        "tti": 52.09999999962747,
+        "tbt": 0,
+        "initial_heap_size": 81400000,
+        "initial_used_heap": 50400000,
+        "request_count": 54,
+        "total_bytes": 257259,
+        "network_duration": 998,
+        "largest_request": 70965,
+        "avg_api_response_time": 66,
+        "total_navigation_time": 1514
+      },
+      "stdDev": {
+        "fcp": 29.241067011995305,
+        "lcp": 29.241067011995305,
+        "cls": 0,
+        "tti": 14.162400926036891,
+        "tbt": 0,
+        "initial_heap_size": 0,
+        "initial_used_heap": 0,
+        "request_count": 0,
+        "total_bytes": 0,
+        "network_duration": 90.98571316421057,
+        "largest_request": 0,
+        "avg_api_response_time": 7.49933330370107,
+        "total_navigation_time": 91.01076859361204
+      }
+    },
+    {
+      "framework": "Solid",
+      "scenario": "filter-application",
+      "totalRuns": 5,
+      "discardedRuns": [],
+      "median": {
+        "filter_duration": 97.5,
+        "total_filter_time": 96,
+        "memory_delta": 0,
+        "filtered_row_count": 11,
+        "js_execution_time": 97.5
+      },
+      "mean": {
+        "filter_duration": 112.90000000037253,
+        "total_filter_time": 111.4,
+        "memory_delta": 0,
+        "filtered_row_count": 11,
+        "js_execution_time": 112.90000000037253
+      },
+      "min": {
+        "filter_duration": 94.60000000149012,
+        "total_filter_time": 93,
+        "memory_delta": 0,
+        "filtered_row_count": 11,
+        "js_execution_time": 94.60000000149012
+      },
+      "max": {
+        "filter_duration": 174,
+        "total_filter_time": 173,
+        "memory_delta": 0,
+        "filtered_row_count": 11,
+        "js_execution_time": 174
+      },
+      "stdDev": {
+        "filter_duration": 30.640365532875308,
+        "total_filter_time": 30.88430021871954,
+        "memory_delta": 0,
+        "filtered_row_count": 0,
+        "js_execution_time": 30.640365532875308
+      }
+    },
+    {
+      "framework": "Solid",
+      "scenario": "clear-filters",
+      "totalRuns": 5,
+      "discardedRuns": [],
+      "median": {
+        "clear_duration": 226,
+        "total_clear_time": 225,
+        "memory_delta": 0,
+        "restored_row_count": 50
+      },
+      "mean": {
+        "clear_duration": 217.20000000037254,
+        "total_clear_time": 216,
+        "memory_delta": 0,
+        "restored_row_count": 50
+      },
+      "min": {
+        "clear_duration": 158.30000000074506,
+        "total_clear_time": 158,
+        "memory_delta": 0,
+        "restored_row_count": 50
+      },
+      "max": {
+        "clear_duration": 247.10000000149012,
+        "total_clear_time": 246,
+        "memory_delta": 0,
+        "restored_row_count": 50
+      },
+      "stdDev": {
+        "clear_duration": 30.554214111923145,
+        "total_clear_time": 30.166206257996713,
+        "memory_delta": 0,
+        "restored_row_count": 0
+      }
+    },
+    {
+      "framework": "Solid",
+      "scenario": "expand-collapse-description",
+      "totalRuns": 5,
+      "discardedRuns": [],
+      "median": {
+        "expand_duration": 105.5,
+        "expand_total_time": 104,
+        "expand_cls_delta": 0.000001980251736111111,
+        "collapse_duration": 104.40000000037253,
+        "collapse_total_time": 103,
+        "collapse_cls_delta": 0.000001980251736111111
+      },
+      "mean": {
+        "expand_duration": 105.63999999985099,
+        "expand_total_time": 104.2,
+        "expand_cls_delta": 0.000001980251736111111,
+        "collapse_duration": 104.34000000022351,
+        "collapse_total_time": 103,
+        "collapse_cls_delta": 0.000001980251736111111
+      },
+      "min": {
+        "expand_duration": 104.90000000037253,
+        "expand_total_time": 103,
+        "expand_cls_delta": 0.000001980251736111111,
+        "collapse_duration": 103.20000000111759,
+        "collapse_total_time": 102,
+        "collapse_cls_delta": 0.000001980251736111111
+      },
+      "max": {
+        "expand_duration": 107.19999999925494,
+        "expand_total_time": 106,
+        "expand_cls_delta": 0.000001980251736111111,
+        "collapse_duration": 105.80000000074506,
+        "collapse_total_time": 104,
+        "collapse_cls_delta": 0.000001980251736111111
+      },
+      "stdDev": {
+        "expand_duration": 0.8428522998109842,
+        "expand_total_time": 0.9797958971132711,
+        "expand_cls_delta": 0,
+        "collapse_duration": 0.8662563132097992,
+        "collapse_total_time": 0.8944271909999159,
+        "collapse_cls_delta": 0
+      }
+    },
+    {
+      "framework": "Solid",
+      "scenario": "navigate-to-detail",
+      "totalRuns": 5,
+      "discardedRuns": [],
+      "median": {
+        "total_navigation_time": 182,
+        "detail_lcp": 124,
+        "detail_cls": 0,
+        "memory_delta": 0,
+        "detail_request_count": 3,
+        "detail_total_bytes": 23534
+      },
+      "mean": {
+        "total_navigation_time": 178.6,
+        "detail_lcp": 141.6,
+        "detail_cls": 0,
+        "memory_delta": 0,
+        "detail_request_count": 3,
+        "detail_total_bytes": 23534
+      },
+      "min": {
+        "total_navigation_time": 149,
+        "detail_lcp": 120,
+        "detail_cls": 0,
+        "memory_delta": 0,
+        "detail_request_count": 3,
+        "detail_total_bytes": 23534
+      },
+      "max": {
+        "total_navigation_time": 200,
+        "detail_lcp": 208,
+        "detail_cls": 0,
+        "memory_delta": 0,
+        "detail_request_count": 3,
+        "detail_total_bytes": 23534
+      },
+      "stdDev": {
+        "total_navigation_time": 17.059894489708896,
+        "detail_lcp": 33.42813186524189,
+        "detail_cls": 0,
+        "memory_delta": 0,
+        "detail_request_count": 0,
+        "detail_total_bytes": 0
+      }
+    },
+    {
+      "framework": "Solid",
+      "scenario": "navigate-back-to-list",
+      "totalRuns": 5,
+      "discardedRuns": [],
+      "median": {
+        "total_back_navigation_time": 384,
+        "rendered_row_count": 50,
+        "memory_delta": 0
+      },
+      "mean": {
+        "total_back_navigation_time": 409.4,
+        "rendered_row_count": 50,
+        "memory_delta": 0
+      },
+      "min": {
+        "total_back_navigation_time": 339,
+        "rendered_row_count": 50,
+        "memory_delta": 0
+      },
+      "max": {
+        "total_back_navigation_time": 508,
+        "rendered_row_count": 50,
+        "memory_delta": 0
+      },
+      "stdDev": {
+        "total_back_navigation_time": 66.41566080375922,
+        "rendered_row_count": 0,
+        "memory_delta": 0
+      }
+    },
+    {
+      "framework": "Solid",
+      "scenario": "pagination-cycle",
+      "totalRuns": 5,
+      "discardedRuns": [],
+      "median": {
+        "page_transition_1_next": 522,
+        "page_transition_1_next_js": 531.5999999996275,
+        "page_transition_2_next": 357,
+        "page_transition_2_next_js": 480.2000000011176,
+        "page_transition_3_previous": 448,
+        "page_transition_3_previous_js": 458.40000000037253,
+        "page_transition_4_previous": 418,
+        "page_transition_4_previous_js": 431.09999999962747,
+        "total_cycle_time": 1996,
+        "total_cycle_js_time": 2012,
+        "avg_page_transition": 429.5,
+        "min_page_transition": 322,
+        "max_page_transition": 522,
+        "avg_api_response_time": 25,
+        "total_api_requests": 4,
+        "total_network_bytes": 277755,
+        "memory_delta": 0
+      },
+      "mean": {
+        "page_transition_1_next": 508.6,
+        "page_transition_1_next_js": 539.7399999994784,
+        "page_transition_2_next": 386.4,
+        "page_transition_2_next_js": 464.660000000149,
+        "page_transition_3_previous": 433.6,
+        "page_transition_3_previous_js": 466.57999999970195,
+        "page_transition_4_previous": 396.6,
+        "page_transition_4_previous_js": 434.9,
+        "total_cycle_time": 2013.4,
+        "total_cycle_js_time": 2019.8800000000745,
+        "avg_page_transition": 431.3,
+        "min_page_transition": 309.2,
+        "max_page_transition": 525,
+        "avg_api_response_time": 23.6,
+        "total_api_requests": 4,
+        "total_network_bytes": 277755,
+        "memory_delta": 0
+      },
+      "min": {
+        "page_transition_1_next": 388,
+        "page_transition_1_next_js": 513.1999999992549,
+        "page_transition_2_next": 276,
+        "page_transition_2_next_js": 389.69999999925494,
+        "page_transition_3_previous": 322,
+        "page_transition_3_previous_js": 447.2999999988824,
+        "page_transition_4_previous": 261,
+        "page_transition_4_previous_js": 375,
+        "total_cycle_time": 1924,
+        "total_cycle_js_time": 1928.7999999988824,
+        "avg_page_transition": 394.75,
+        "min_page_transition": 261,
+        "max_page_transition": 470,
+        "avg_api_response_time": 16.5,
+        "total_api_requests": 4,
+        "total_network_bytes": 277755,
+        "memory_delta": 0
+      },
+      "max": {
+        "page_transition_1_next": 581,
+        "page_transition_1_next_js": 582.5999999996275,
+        "page_transition_2_next": 499,
+        "page_transition_2_next_js": 504,
+        "page_transition_3_previous": 502,
+        "page_transition_3_previous_js": 510.69999999925494,
+        "page_transition_4_previous": 465,
+        "page_transition_4_previous_js": 500.30000000074506,
+        "total_cycle_time": 2130,
+        "total_cycle_js_time": 2132.0999999996275,
+        "avg_page_transition": 467,
+        "min_page_transition": 357,
+        "max_page_transition": 581,
+        "avg_api_response_time": 27.25,
+        "total_api_requests": 4,
+        "total_network_bytes": 277755,
+        "memory_delta": 0
+      },
+      "stdDev": {
+        "page_transition_1_next": 65.14476187691533,
+        "page_transition_1_next_js": 25.890971399563032,
+        "page_transition_2_next": 84.73629682727467,
+        "page_transition_2_next_js": 39.92205405568196,
+        "page_transition_3_previous": 60.07195685176237,
+        "page_transition_3_previous_js": 22.91823727943277,
+        "page_transition_4_previous": 70.1900277817298,
+        "page_transition_4_previous_js": 41.582352026037086,
+        "total_cycle_time": 67.0569906870268,
+        "total_cycle_js_time": 65.31356367568117,
+        "avg_page_transition": 23.178330397161915,
+        "min_page_transition": 35.51563036185617,
+        "max_page_transition": 36.932370625238775,
+        "avg_api_response_time": 3.9768077650296347,
+        "total_api_requests": 0,
+        "total_network_bytes": 0,
+        "memory_delta": 0
+      }
+    },
+    {
+      "framework": "Solid",
+      "scenario": "detail-navigation-cycle",
+      "totalRuns": 5,
+      "discardedRuns": [],
+      "median": {
+        "initial_detail_load": 671,
+        "next_navigation_time": 14,
+        "next_navigation_js": 17.09999999962747,
+        "prev_navigation_time": 10,
+        "prev_navigation_js": 11.200000001117587,
+        "total_cycle_time": 346,
+        "total_cycle_js_time": 347.8999999985099,
+        "avg_navigation_time": 13,
+        "avg_api_response_time": 4.5,
+        "total_api_requests": 5,
+        "total_network_bytes": 19742,
+        "memory_delta": 0
+      },
+      "mean": {
+        "initial_detail_load": 672.8,
+        "next_navigation_time": 18,
+        "next_navigation_js": 21.820000000298023,
+        "prev_navigation_time": 9.8,
+        "prev_navigation_js": 11.499999999627471,
+        "total_cycle_time": 347.2,
+        "total_cycle_js_time": 349.23999999985097,
+        "avg_navigation_time": 13.9,
+        "avg_api_response_time": 4.3,
+        "total_api_requests": 5,
+        "total_network_bytes": 19742,
+        "memory_delta": 0
+      },
+      "min": {
+        "initial_detail_load": 662,
+        "next_navigation_time": 11,
+        "next_navigation_js": 13.600000001490116,
+        "prev_navigation_time": 8,
+        "prev_navigation_js": 9.799999998882413,
+        "total_cycle_time": 333,
+        "total_cycle_js_time": 333.69999999925494,
+        "avg_navigation_time": 9.5,
+        "avg_api_response_time": 1.75,
+        "total_api_requests": 5,
+        "total_network_bytes": 19742,
+        "memory_delta": 0
+      },
+      "max": {
+        "initial_detail_load": 682,
+        "next_navigation_time": 27,
+        "next_navigation_js": 33.90000000037253,
+        "prev_navigation_time": 12,
+        "prev_navigation_js": 13.099999999627471,
+        "total_cycle_time": 362,
+        "total_cycle_js_time": 366.1000000014901,
+        "avg_navigation_time": 19,
+        "avg_api_response_time": 6.75,
+        "total_api_requests": 5,
+        "total_network_bytes": 19742,
+        "memory_delta": 0
+      },
+      "stdDev": {
+        "initial_detail_load": 7.678541528180987,
+        "next_navigation_time": 7.014271166700073,
+        "next_navigation_js": 8.123890693230825,
+        "prev_navigation_time": 1.5999999999999999,
+        "prev_navigation_js": 1.2680693987082865,
+        "total_cycle_time": 12.544321424453376,
+        "total_cycle_js_time": 13.296555945488317,
+        "avg_navigation_time": 3.9547439866570384,
+        "avg_api_response_time": 2.1295539439046856,
+        "total_api_requests": 0,
+        "total_network_bytes": 0,
+        "memory_delta": 0
+      }
+    }
+  ],
+  "buildMetrics": {}
+}

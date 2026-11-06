@@ -1,0 +1,840 @@
+{
+  "timestamp": "2026-11-06T03:10:04.950Z",
+  "config": {
+    "repetitions": 2,
+    "viewportWidth": 1920,
+    "viewportHeight": 1080,
+    "warmupRounds": 0,
+    "seed": 1711748881,
+    "cpuThresholdPct": 25,
+    "cpuMaxWaitMs": 120000,
+    "protocol": "interleaved-shuffled-rounds, fresh-context-per-run, idle-cpu-gate"
+  },
+  "environment": {
+    "node": "v24.22.2",
+    "os": "darwin 24.6.0 x64",
+    "cpuModel": "Intel(R) Core(TM) i7-8850H CPU @ 2.60GHz",
+    "cpuCores": 12,
+    "totalMemoryGB": 16,
+    "browser": "156.0.8078.4",
+    "playwright": "1.64.1",
+    "gitCommit": "57b3bd7ed5e353f9a96d240c2006663633347e7d",
+    "gitDirty": true,
+    "frameworkVersions": {
+      "Angular": {
+        "@angular/core": "22.2.4",
+        "typescript": "6.0.3"
+      },
+      "React": {
+        "react": "19.3.1",
+        "react-dom": "19.3.1",
+        "react-router": "8.5.1",
+        "vite": "8.3.5",
+        "typescript": "6.0.3"
+      },
+      "Lit": {
+        "lit": "3.3.3",
+        "@lit-labs/router": "0.1.4",
+        "vite": "8.3.5",
+        "typescript": "6.0.3"
+      }
+    }
+  },
+  "rawRuns": [
+    {
+      "runNumber": 1,
+      "framework": "Angular",
+      "scenario": "initial-page-load",
+      "timestamp": "2026-11-06T03:09:49.024Z",
+      "measurements": [
+        {
+          "name": "time_to_table",
+          "value": 160.6,
+          "unit": "ms"
+        },
+        {
+          "name": "fcp",
+          "value": 112,
+          "unit": "ms"
+        },
+        {
+          "name": "lcp",
+          "value": 1828,
+          "unit": "ms"
+        },
+        {
+          "name": "cls",
+          "value": 0,
+          "unit": "score"
+        },
+        {
+          "name": "tti",
+          "value": 15.5,
+          "unit": "ms"
+        },
+        {
+          "name": "tbt",
+          "value": 1534,
+          "unit": "ms"
+        },
+        {
+          "name": "initial_heap_size",
+          "value": 35100000,
+          "unit": "bytes"
+        },
+        {
+          "name": "initial_used_heap",
+          "value": 18200000,
+          "unit": "bytes"
+        },
+        {
+          "name": "request_count",
+          "value": 56,
+          "unit": "count"
+        },
+        {
+          "name": "total_bytes",
+          "value": 529730,
+          "unit": "bytes"
+        },
+        {
+          "name": "network_duration",
+          "value": 1922,
+          "unit": "ms"
+        },
+        {
+          "name": "largest_request",
+          "value": 274936,
+          "unit": "bytes"
+        },
+        {
+          "name": "avg_api_response_time",
+          "value": 0,
+          "unit": "ms"
+        },
+        {
+          "name": "total_navigation_time",
+          "value": 649,
+          "unit": "ms"
+        }
+      ],
+      "orderInRound": 2,
+      "cpuBusyPct": 18.8,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 2,
+      "framework": "Angular",
+      "scenario": "initial-page-load",
+      "timestamp": "2026-11-06T03:09:57.451Z",
+      "measurements": [
+        {
+          "name": "time_to_table",
+          "value": 141.8,
+          "unit": "ms"
+        },
+        {
+          "name": "fcp",
+          "value": 104,
+          "unit": "ms"
+        },
+        {
+          "name": "lcp",
+          "value": 1888,
+          "unit": "ms"
+        },
+        {
+          "name": "cls",
+          "value": 0,
+          "unit": "score"
+        },
+        {
+          "name": "tti",
+          "value": 13.200000000186265,
+          "unit": "ms"
+        },
+        {
+          "name": "tbt",
+          "value": 1595,
+          "unit": "ms"
+        },
+        {
+          "name": "initial_heap_size",
+          "value": 35100000,
+          "unit": "bytes"
+        },
+        {
+          "name": "initial_used_heap",
+          "value": 18200000,
+          "unit": "bytes"
+        },
+        {
+          "name": "request_count",
+          "value": 56,
+          "unit": "count"
+        },
+        {
+          "name": "total_bytes",
+          "value": 529730,
+          "unit": "bytes"
+        },
+        {
+          "name": "network_duration",
+          "value": 1979,
+          "unit": "ms"
+        },
+        {
+          "name": "largest_request",
+          "value": 274936,
+          "unit": "bytes"
+        },
+        {
+          "name": "avg_api_response_time",
+          "value": 0,
+          "unit": "ms"
+        },
+        {
+          "name": "total_navigation_time",
+          "value": 645,
+          "unit": "ms"
+        }
+      ],
+      "orderInRound": 1,
+      "cpuBusyPct": 4.3,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 1,
+      "framework": "React",
+      "scenario": "initial-page-load",
+      "timestamp": "2026-11-06T03:09:44.919Z",
+      "measurements": [
+        {
+          "name": "time_to_table",
+          "value": 127.8,
+          "unit": "ms"
+        },
+        {
+          "name": "fcp",
+          "value": 120,
+          "unit": "ms"
+        },
+        {
+          "name": "lcp",
+          "value": 424,
+          "unit": "ms"
+        },
+        {
+          "name": "cls",
+          "value": 0,
+          "unit": "score"
+        },
+        {
+          "name": "tti",
+          "value": 14.200000000186265,
+          "unit": "ms"
+        },
+        {
+          "name": "tbt",
+          "value": 147,
+          "unit": "ms"
+        },
+        {
+          "name": "initial_heap_size",
+          "value": 11200000,
+          "unit": "bytes"
+        },
+        {
+          "name": "initial_used_heap",
+          "value": 10000000,
+          "unit": "bytes"
+        },
+        {
+          "name": "request_count",
+          "value": 54,
+          "unit": "count"
+        },
+        {
+          "name": "total_bytes",
+          "value": 481411,
+          "unit": "bytes"
+        },
+        {
+          "name": "network_duration",
+          "value": 517,
+          "unit": "ms"
+        },
+        {
+          "name": "largest_request",
+          "value": 292449,
+          "unit": "bytes"
+        },
+        {
+          "name": "avg_api_response_time",
+          "value": 14,
+          "unit": "ms"
+        },
+        {
+          "name": "total_navigation_time",
+          "value": 1026,
+          "unit": "ms"
+        }
+      ],
+      "orderInRound": 1,
+      "cpuBusyPct": 18.8,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 2,
+      "framework": "React",
+      "scenario": "initial-page-load",
+      "timestamp": "2026-11-06T03:10:03.942Z",
+      "measurements": [
+        {
+          "name": "time_to_table",
+          "value": 109.6,
+          "unit": "ms"
+        },
+        {
+          "name": "fcp",
+          "value": 116,
+          "unit": "ms"
+        },
+        {
+          "name": "lcp",
+          "value": 392,
+          "unit": "ms"
+        },
+        {
+          "name": "cls",
+          "value": 0,
+          "unit": "score"
+        },
+        {
+          "name": "tti",
+          "value": 13.799999999813735,
+          "unit": "ms"
+        },
+        {
+          "name": "tbt",
+          "value": 138,
+          "unit": "ms"
+        },
+        {
+          "name": "initial_heap_size",
+          "value": 11200000,
+          "unit": "bytes"
+        },
+        {
+          "name": "initial_used_heap",
+          "value": 10000000,
+          "unit": "bytes"
+        },
+        {
+          "name": "request_count",
+          "value": 54,
+          "unit": "count"
+        },
+        {
+          "name": "total_bytes",
+          "value": 481411,
+          "unit": "bytes"
+        },
+        {
+          "name": "network_duration",
+          "value": 483,
+          "unit": "ms"
+        },
+        {
+          "name": "largest_request",
+          "value": 292449,
+          "unit": "bytes"
+        },
+        {
+          "name": "avg_api_response_time",
+          "value": 2,
+          "unit": "ms"
+        },
+        {
+          "name": "total_navigation_time",
+          "value": 987,
+          "unit": "ms"
+        }
+      ],
+      "orderInRound": 3,
+      "cpuBusyPct": 4.3,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 1,
+      "framework": "Lit",
+      "scenario": "initial-page-load",
+      "timestamp": "2026-11-06T03:09:52.296Z",
+      "measurements": [
+        {
+          "name": "time_to_table",
+          "value": 77.7,
+          "unit": "ms"
+        },
+        {
+          "name": "fcp",
+          "value": 104,
+          "unit": "ms"
+        },
+        {
+          "name": "lcp",
+          "value": 480,
+          "unit": "ms"
+        },
+        {
+          "name": "cls",
+          "value": 0,
+          "unit": "score"
+        },
+        {
+          "name": "tti",
+          "value": 14.100000000558794,
+          "unit": "ms"
+        },
+        {
+          "name": "tbt",
+          "value": 252,
+          "unit": "ms"
+        },
+        {
+          "name": "initial_heap_size",
+          "value": 17100000,
+          "unit": "bytes"
+        },
+        {
+          "name": "initial_used_heap",
+          "value": 10000000,
+          "unit": "bytes"
+        },
+        {
+          "name": "request_count",
+          "value": 54,
+          "unit": "count"
+        },
+        {
+          "name": "total_bytes",
+          "value": 261005,
+          "unit": "bytes"
+        },
+        {
+          "name": "network_duration",
+          "value": 527,
+          "unit": "ms"
+        },
+        {
+          "name": "largest_request",
+          "value": 86186,
+          "unit": "bytes"
+        },
+        {
+          "name": "avg_api_response_time",
+          "value": 29,
+          "unit": "ms"
+        },
+        {
+          "name": "total_navigation_time",
+          "value": 1030,
+          "unit": "ms"
+        }
+      ],
+      "orderInRound": 3,
+      "cpuBusyPct": 18.8,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 2,
+      "framework": "Lit",
+      "scenario": "initial-page-load",
+      "timestamp": "2026-11-06T03:10:00.715Z",
+      "measurements": [
+        {
+          "name": "time_to_table",
+          "value": 76.5,
+          "unit": "ms"
+        },
+        {
+          "name": "fcp",
+          "value": 100,
+          "unit": "ms"
+        },
+        {
+          "name": "lcp",
+          "value": 476,
+          "unit": "ms"
+        },
+        {
+          "name": "cls",
+          "value": 0,
+          "unit": "score"
+        },
+        {
+          "name": "tti",
+          "value": 13.5,
+          "unit": "ms"
+        },
+        {
+          "name": "tbt",
+          "value": 257,
+          "unit": "ms"
+        },
+        {
+          "name": "initial_heap_size",
+          "value": 17100000,
+          "unit": "bytes"
+        },
+        {
+          "name": "initial_used_heap",
+          "value": 10000000,
+          "unit": "bytes"
+        },
+        {
+          "name": "request_count",
+          "value": 54,
+          "unit": "count"
+        },
+        {
+          "name": "total_bytes",
+          "value": 261005,
+          "unit": "bytes"
+        },
+        {
+          "name": "network_duration",
+          "value": 517,
+          "unit": "ms"
+        },
+        {
+          "name": "largest_request",
+          "value": 86186,
+          "unit": "bytes"
+        },
+        {
+          "name": "avg_api_response_time",
+          "value": 30,
+          "unit": "ms"
+        },
+        {
+          "name": "total_navigation_time",
+          "value": 1020,
+          "unit": "ms"
+        }
+      ],
+      "orderInRound": 2,
+      "cpuBusyPct": 4.3,
+      "cpuGateTimedOut": false
+    }
+  ],
+  "aggregated": [
+    {
+      "framework": "Angular",
+      "scenario": "initial-page-load",
+      "totalRuns": 2,
+      "discardedRuns": [],
+      "median": {
+        "time_to_table": 151.2,
+        "fcp": 108,
+        "lcp": 1858,
+        "cls": 0,
+        "tti": 14.350000000093132,
+        "tbt": 1564.5,
+        "initial_heap_size": 35100000,
+        "initial_used_heap": 18200000,
+        "request_count": 56,
+        "total_bytes": 529730,
+        "network_duration": 1950.5,
+        "largest_request": 274936,
+        "avg_api_response_time": 0,
+        "total_navigation_time": 647
+      },
+      "mean": {
+        "time_to_table": 151.2,
+        "fcp": 108,
+        "lcp": 1858,
+        "cls": 0,
+        "tti": 14.350000000093132,
+        "tbt": 1564.5,
+        "initial_heap_size": 35100000,
+        "initial_used_heap": 18200000,
+        "request_count": 56,
+        "total_bytes": 529730,
+        "network_duration": 1950.5,
+        "largest_request": 274936,
+        "avg_api_response_time": 0,
+        "total_navigation_time": 647
+      },
+      "min": {
+        "time_to_table": 141.8,
+        "fcp": 104,
+        "lcp": 1828,
+        "cls": 0,
+        "tti": 13.200000000186265,
+        "tbt": 1534,
+        "initial_heap_size": 35100000,
+        "initial_used_heap": 18200000,
+        "request_count": 56,
+        "total_bytes": 529730,
+        "network_duration": 1922,
+        "largest_request": 274936,
+        "avg_api_response_time": 0,
+        "total_navigation_time": 645
+      },
+      "max": {
+        "time_to_table": 160.6,
+        "fcp": 112,
+        "lcp": 1888,
+        "cls": 0,
+        "tti": 15.5,
+        "tbt": 1595,
+        "initial_heap_size": 35100000,
+        "initial_used_heap": 18200000,
+        "request_count": 56,
+        "total_bytes": 529730,
+        "network_duration": 1979,
+        "largest_request": 274936,
+        "avg_api_response_time": 0,
+        "total_navigation_time": 649
+      },
+      "stdDev": {
+        "time_to_table": 9.399999999999991,
+        "fcp": 4,
+        "lcp": 30,
+        "cls": 0,
+        "tti": 1.1499999999068677,
+        "tbt": 30.5,
+        "initial_heap_size": 0,
+        "initial_used_heap": 0,
+        "request_count": 0,
+        "total_bytes": 0,
+        "network_duration": 28.5,
+        "largest_request": 0,
+        "avg_api_response_time": 0,
+        "total_navigation_time": 2
+      },
+      "cv": {
+        "time_to_table": 0.06216931216931212,
+        "fcp": 0.037037037037037035,
+        "lcp": 0.016146393972012917,
+        "cls": 0,
+        "tti": 0.08013937281528949,
+        "tbt": 0.019495046340683924,
+        "initial_heap_size": 0,
+        "initial_used_heap": 0,
+        "request_count": 0,
+        "total_bytes": 0,
+        "network_duration": 0.014611638041527814,
+        "largest_request": 0,
+        "avg_api_response_time": 0,
+        "total_navigation_time": 0.0030911901081916537
+      }
+    },
+    {
+      "framework": "React",
+      "scenario": "initial-page-load",
+      "totalRuns": 2,
+      "discardedRuns": [],
+      "median": {
+        "time_to_table": 118.69999999999999,
+        "fcp": 118,
+        "lcp": 408,
+        "cls": 0,
+        "tti": 14,
+        "tbt": 142.5,
+        "initial_heap_size": 11200000,
+        "initial_used_heap": 10000000,
+        "request_count": 54,
+        "total_bytes": 481411,
+        "network_duration": 500,
+        "largest_request": 292449,
+        "avg_api_response_time": 8,
+        "total_navigation_time": 1006.5
+      },
+      "mean": {
+        "time_to_table": 118.69999999999999,
+        "fcp": 118,
+        "lcp": 408,
+        "cls": 0,
+        "tti": 14,
+        "tbt": 142.5,
+        "initial_heap_size": 11200000,
+        "initial_used_heap": 10000000,
+        "request_count": 54,
+        "total_bytes": 481411,
+        "network_duration": 500,
+        "largest_request": 292449,
+        "avg_api_response_time": 8,
+        "total_navigation_time": 1006.5
+      },
+      "min": {
+        "time_to_table": 109.6,
+        "fcp": 116,
+        "lcp": 392,
+        "cls": 0,
+        "tti": 13.799999999813735,
+        "tbt": 138,
+        "initial_heap_size": 11200000,
+        "initial_used_heap": 10000000,
+        "request_count": 54,
+        "total_bytes": 481411,
+        "network_duration": 483,
+        "largest_request": 292449,
+        "avg_api_response_time": 2,
+        "total_navigation_time": 987
+      },
+      "max": {
+        "time_to_table": 127.8,
+        "fcp": 120,
+        "lcp": 424,
+        "cls": 0,
+        "tti": 14.200000000186265,
+        "tbt": 147,
+        "initial_heap_size": 11200000,
+        "initial_used_heap": 10000000,
+        "request_count": 54,
+        "total_bytes": 481411,
+        "network_duration": 517,
+        "largest_request": 292449,
+        "avg_api_response_time": 14,
+        "total_navigation_time": 1026
+      },
+      "stdDev": {
+        "time_to_table": 9.100000000000001,
+        "fcp": 2,
+        "lcp": 16,
+        "cls": 0,
+        "tti": 0.20000000018626451,
+        "tbt": 4.5,
+        "initial_heap_size": 0,
+        "initial_used_heap": 0,
+        "request_count": 0,
+        "total_bytes": 0,
+        "network_duration": 17,
+        "largest_request": 0,
+        "avg_api_response_time": 6,
+        "total_navigation_time": 19.5
+      },
+      "cv": {
+        "time_to_table": 0.07666385846672286,
+        "fcp": 0.01694915254237288,
+        "lcp": 0.0392156862745098,
+        "cls": 0,
+        "tti": 0.014285714299018894,
+        "tbt": 0.031578947368421054,
+        "initial_heap_size": 0,
+        "initial_used_heap": 0,
+        "request_count": 0,
+        "total_bytes": 0,
+        "network_duration": 0.034,
+        "largest_request": 0,
+        "avg_api_response_time": 0.75,
+        "total_navigation_time": 0.019374068554396422
+      }
+    },
+    {
+      "framework": "Lit",
+      "scenario": "initial-page-load",
+      "totalRuns": 2,
+      "discardedRuns": [],
+      "median": {
+        "time_to_table": 77.1,
+        "fcp": 102,
+        "lcp": 478,
+        "cls": 0,
+        "tti": 13.800000000279397,
+        "tbt": 254.5,
+        "initial_heap_size": 17100000,
+        "initial_used_heap": 10000000,
+        "request_count": 54,
+        "total_bytes": 261005,
+        "network_duration": 522,
+        "largest_request": 86186,
+        "avg_api_response_time": 29.5,
+        "total_navigation_time": 1025
+      },
+      "mean": {
+        "time_to_table": 77.1,
+        "fcp": 102,
+        "lcp": 478,
+        "cls": 0,
+        "tti": 13.800000000279397,
+        "tbt": 254.5,
+        "initial_heap_size": 17100000,
+        "initial_used_heap": 10000000,
+        "request_count": 54,
+        "total_bytes": 261005,
+        "network_duration": 522,
+        "largest_request": 86186,
+        "avg_api_response_time": 29.5,
+        "total_navigation_time": 1025
+      },
+      "min": {
+        "time_to_table": 76.5,
+        "fcp": 100,
+        "lcp": 476,
+        "cls": 0,
+        "tti": 13.5,
+        "tbt": 252,
+        "initial_heap_size": 17100000,
+        "initial_used_heap": 10000000,
+        "request_count": 54,
+        "total_bytes": 261005,
+        "network_duration": 517,
+        "largest_request": 86186,
+        "avg_api_response_time": 29,
+        "total_navigation_time": 1020
+      },
+      "max": {
+        "time_to_table": 77.7,
+        "fcp": 104,
+        "lcp": 480,
+        "cls": 0,
+        "tti": 14.100000000558794,
+        "tbt": 257,
+        "initial_heap_size": 17100000,
+        "initial_used_heap": 10000000,
+        "request_count": 54,
+        "total_bytes": 261005,
+        "network_duration": 527,
+        "largest_request": 86186,
+        "avg_api_response_time": 30,
+        "total_navigation_time": 1030
+      },
+      "stdDev": {
+        "time_to_table": 0.6000000000000014,
+        "fcp": 2,
+        "lcp": 2,
+        "cls": 0,
+        "tti": 0.3000000002793968,
+        "tbt": 2.5,
+        "initial_heap_size": 0,
+        "initial_used_heap": 0,
+        "request_count": 0,
+        "total_bytes": 0,
+        "network_duration": 5,
+        "largest_request": 0,
+        "avg_api_response_time": 0.5,
+        "total_navigation_time": 5
+      },
+      "cv": {
+        "time_to_table": 0.007782101167315194,
+        "fcp": 0.0196078431372549,
+        "lcp": 0.0041841004184100415,
+        "cls": 0,
+        "tti": 0.02173913045458862,
+        "tbt": 0.009823182711198428,
+        "initial_heap_size": 0,
+        "initial_used_heap": 0,
+        "request_count": 0,
+        "total_bytes": 0,
+        "network_duration": 0.009578544061302681,
+        "largest_request": 0,
+        "avg_api_response_time": 0.01694915254237288,
+        "total_navigation_time": 0.004878048780487805
+      }
+    }
+  ],
+  "buildMetrics": {}
+}

@@ -1,0 +1,159 @@
+{
+  "timestamp": "2026-11-05T05:29:23.593Z",
+  "config": {
+    "repetitions": 5,
+    "viewportWidth": 1920,
+    "viewportHeight": 1080
+  },
+  "rawRuns": [
+    {
+      "runNumber": 1,
+      "framework": "Angular",
+      "scenario": "navigate-back-to-list",
+      "timestamp": "2026-11-05T05:28:40.978Z",
+      "measurements": [
+        {
+          "name": "total_back_navigation_time",
+          "value": 3799,
+          "unit": "ms"
+        },
+        {
+          "name": "rendered_row_count",
+          "value": 50,
+          "unit": "count"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        }
+      ]
+    },
+    {
+      "runNumber": 2,
+      "framework": "Angular",
+      "scenario": "navigate-back-to-list",
+      "timestamp": "2026-11-05T05:28:51.525Z",
+      "measurements": [
+        {
+          "name": "total_back_navigation_time",
+          "value": 3746,
+          "unit": "ms"
+        },
+        {
+          "name": "rendered_row_count",
+          "value": 50,
+          "unit": "count"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        }
+      ]
+    },
+    {
+      "runNumber": 3,
+      "framework": "Angular",
+      "scenario": "navigate-back-to-list",
+      "timestamp": "2026-11-05T05:29:01.956Z",
+      "measurements": [
+        {
+          "name": "total_back_navigation_time",
+          "value": 3748,
+          "unit": "ms"
+        },
+        {
+          "name": "rendered_row_count",
+          "value": 50,
+          "unit": "count"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        }
+      ]
+    },
+    {
+      "runNumber": 4,
+      "framework": "Angular",
+      "scenario": "navigate-back-to-list",
+      "timestamp": "2026-11-05T05:29:12.536Z",
+      "measurements": [
+        {
+          "name": "total_back_navigation_time",
+          "value": 3853,
+          "unit": "ms"
+        },
+        {
+          "name": "rendered_row_count",
+          "value": 50,
+          "unit": "count"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        }
+      ]
+    },
+    {
+      "runNumber": 5,
+      "framework": "Angular",
+      "scenario": "navigate-back-to-list",
+      "timestamp": "2026-11-05T05:29:22.584Z",
+      "measurements": [
+        {
+          "name": "total_back_navigation_time",
+          "value": 3363,
+          "unit": "ms"
+        },
+        {
+          "name": "rendered_row_count",
+          "value": 50,
+          "unit": "count"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        }
+      ]
+    }
+  ],
+  "aggregated": [
+    {
+      "framework": "Angular",
+      "scenario": "navigate-back-to-list",
+      "totalRuns": 5,
+      "discardedRuns": [],
+      "median": {
+        "total_back_navigation_time": 3748,
+        "rendered_row_count": 50,
+        "memory_delta": 0
+      },
+      "mean": {
+        "total_back_navigation_time": 3701.8,
+        "rendered_row_count": 50,
+        "memory_delta": 0
+      },
+      "min": {
+        "total_back_navigation_time": 3363,
+        "rendered_row_count": 50,
+        "memory_delta": 0
+      },
+      "max": {
+        "total_back_navigation_time": 3853,
+        "rendered_row_count": 50,
+        "memory_delta": 0
+      },
+      "stdDev": {
+        "total_back_navigation_time": 173.8866297332834,
+        "rendered_row_count": 0,
+        "memory_delta": 0
+      }
+    }
+  ],
+  "buildMetrics": {}
+}

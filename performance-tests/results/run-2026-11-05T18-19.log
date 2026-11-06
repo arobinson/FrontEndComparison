@@ -1,0 +1,34 @@
+================================================================================
+Frontend Framework Performance Testing
+================================================================================
+
+Configuration:
+  Measured rounds: 5  (+1 warm-up, discarded)
+  Seed: 2113963078
+  CPU gate: <= 15% busy, max wait 120s
+  Viewport: 1920x1080
+  Frameworks: Angular, React, Svelte, Solid, Lit, Vue, Preact, VueVapor
+  Scenarios: 8
+  Output: /Users/andrew/Experience/Development/FrontEndComparison/performance-tests/results
+
+  Browser: 156.0.8078.4  Node: v24.22.2  Intel(R) Core(TM) i7-8850H CPU @ 2.60GHz x12
+  ⚠️  Working tree has uncommitted changes - results will not map cleanly to a commit
+
+============================================================
+Scenario: initial-page-load  (1 warm-up + 5 measured rounds)
+============================================================
+  ⏳ CPU 42.6% busy (threshold 15%), waiting for machine to settle...
+  ⚠️  CPU still 37.9% busy after 120s (threshold 15%) - proceeding, round flagged
+  warm-up 1/1  cpu 37.9% ⚠️  order: Solid → Angular → Svelte → VueVapor → Preact → Lit → React → Vue
+    Error: Solid initial-page-load warm-up 1/1: browserContext.newPage: Target page, context or browser has been closed
+    at TestRunner.runOnce (/Users/andrew/Experience/Development/FrontEndComparison/performance-tests/dist/test-runner.js:62:43)
+    at async TestRunner.runAllFrameworks (/Users/andrew/Experience/Development/FrontEndComparison/performance-tests/dist/test-runner.js:122:37)
+    at async main (/Users/andrew/Experience/Development/FrontEndComparison/performance-tests/dist/test.js:181:25) {
+  log: []
+}
+Fatal error: browserContext.newPage: Target page, context or browser has been closed
+    at TestRunner.runOnce (/Users/andrew/Experience/Development/FrontEndComparison/performance-tests/dist/test-runner.js:62:43)
+    at async TestRunner.runAllFrameworks (/Users/andrew/Experience/Development/FrontEndComparison/performance-tests/dist/test-runner.js:122:37)
+    at async main (/Users/andrew/Experience/Development/FrontEndComparison/performance-tests/dist/test.js:181:25) {
+  log: []
+}

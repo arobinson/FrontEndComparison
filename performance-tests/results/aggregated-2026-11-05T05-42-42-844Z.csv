@@ -1,0 +1,10 @@
+framework,scenario,metric_name,median,mean,min,max,std_dev,cv,total_runs,discarded_runs
+React,navigate-back-to-list,total_back_navigation_time,354,361,334,395,25.39028685672272,0.0703,3,
+React,navigate-back-to-list,rendered_row_count,50,50,50,50,0,0.0000,3,
+React,navigate-back-to-list,memory_delta,0,0,0,0,0,0.0000,3,
+Vue,navigate-back-to-list,total_back_navigation_time,351,380.6666666666667,345,446,46.26253583864834,0.1215,3,
+Vue,navigate-back-to-list,rendered_row_count,50,50,50,50,0,0.0000,3,
+Vue,navigate-back-to-list,memory_delta,0,0,0,0,0,0.0000,3,
+VueVapor,navigate-back-to-list,total_back_navigation_time,505,506,478,535,23.280893453645632,0.0460,3,
+VueVapor,navigate-back-to-list,rendered_row_count,50,50,50,50,0,0.0000,3,
+VueVapor,navigate-back-to-list,memory_delta,0,0,0,0,0,0.0000,3,

@@ -1,0 +1,392 @@
+{
+  "timestamp": "2026-11-05T05:42:42.844Z",
+  "config": {
+    "repetitions": 3,
+    "viewportWidth": 1920,
+    "viewportHeight": 1080,
+    "warmupRounds": 1,
+    "seed": 1431003406,
+    "cpuThresholdPct": 25,
+    "cpuMaxWaitMs": 20000,
+    "protocol": "interleaved-shuffled-rounds, fresh-context-per-run, idle-cpu-gate"
+  },
+  "environment": {
+    "node": "v24.22.2",
+    "os": "darwin 24.6.0 x64",
+    "cpuModel": "Intel(R) Core(TM) i7-8850H CPU @ 2.60GHz",
+    "cpuCores": 12,
+    "totalMemoryGB": 16,
+    "browser": "156.0.8078.4",
+    "playwright": "1.64.1",
+    "gitCommit": "164c0dfdbce074fbccd99f47b1558d82d3a39a5a",
+    "gitDirty": true,
+    "frameworkVersions": {
+      "React": {
+        "react": "19.3.1",
+        "react-dom": "19.3.1",
+        "react-router": "8.5.1",
+        "vite": "8.3.5",
+        "typescript": "6.0.3"
+      },
+      "Vue": {
+        "vue": "3.5.44",
+        "vue-router": "5.4.0",
+        "vite": "8.3.5",
+        "typescript": "6.0.3"
+      },
+      "VueVapor": {
+        "vue": "3.6.0-rc.14",
+        "vue-router": "5.4.0",
+        "vite": "8.3.5",
+        "typescript": "6.0.3"
+      }
+    }
+  },
+  "rawRuns": [
+    {
+      "runNumber": 1,
+      "framework": "React",
+      "scenario": "navigate-back-to-list",
+      "timestamp": "2026-11-05T05:41:30.908Z",
+      "measurements": [
+        {
+          "name": "total_back_navigation_time",
+          "value": 354,
+          "unit": "ms"
+        },
+        {
+          "name": "rendered_row_count",
+          "value": 50,
+          "unit": "count"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        }
+      ],
+      "orderInRound": 2,
+      "cpuBusyPct": 23.9,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 2,
+      "framework": "React",
+      "scenario": "navigate-back-to-list",
+      "timestamp": "2026-11-05T05:42:00.773Z",
+      "measurements": [
+        {
+          "name": "total_back_navigation_time",
+          "value": 395,
+          "unit": "ms"
+        },
+        {
+          "name": "rendered_row_count",
+          "value": 50,
+          "unit": "count"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        }
+      ],
+      "orderInRound": 1,
+      "cpuBusyPct": 55.9,
+      "cpuGateTimedOut": true
+    },
+    {
+      "runNumber": 3,
+      "framework": "React",
+      "scenario": "navigate-back-to-list",
+      "timestamp": "2026-11-05T05:42:31.496Z",
+      "measurements": [
+        {
+          "name": "total_back_navigation_time",
+          "value": 334,
+          "unit": "ms"
+        },
+        {
+          "name": "rendered_row_count",
+          "value": 50,
+          "unit": "count"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        }
+      ],
+      "orderInRound": 1,
+      "cpuBusyPct": 24.8,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 1,
+      "framework": "Vue",
+      "scenario": "navigate-back-to-list",
+      "timestamp": "2026-11-05T05:41:26.305Z",
+      "measurements": [
+        {
+          "name": "total_back_navigation_time",
+          "value": 446,
+          "unit": "ms"
+        },
+        {
+          "name": "rendered_row_count",
+          "value": 50,
+          "unit": "count"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        }
+      ],
+      "orderInRound": 1,
+      "cpuBusyPct": 23.9,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 2,
+      "framework": "Vue",
+      "scenario": "navigate-back-to-list",
+      "timestamp": "2026-11-05T05:42:05.703Z",
+      "measurements": [
+        {
+          "name": "total_back_navigation_time",
+          "value": 351,
+          "unit": "ms"
+        },
+        {
+          "name": "rendered_row_count",
+          "value": 50,
+          "unit": "count"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        }
+      ],
+      "orderInRound": 2,
+      "cpuBusyPct": 55.9,
+      "cpuGateTimedOut": true
+    },
+    {
+      "runNumber": 3,
+      "framework": "Vue",
+      "scenario": "navigate-back-to-list",
+      "timestamp": "2026-11-05T05:42:36.459Z",
+      "measurements": [
+        {
+          "name": "total_back_navigation_time",
+          "value": 345,
+          "unit": "ms"
+        },
+        {
+          "name": "rendered_row_count",
+          "value": 50,
+          "unit": "count"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        }
+      ],
+      "orderInRound": 2,
+      "cpuBusyPct": 24.8,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 1,
+      "framework": "VueVapor",
+      "scenario": "navigate-back-to-list",
+      "timestamp": "2026-11-05T05:41:36.017Z",
+      "measurements": [
+        {
+          "name": "total_back_navigation_time",
+          "value": 505,
+          "unit": "ms"
+        },
+        {
+          "name": "rendered_row_count",
+          "value": 50,
+          "unit": "count"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        }
+      ],
+      "orderInRound": 3,
+      "cpuBusyPct": 23.9,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 2,
+      "framework": "VueVapor",
+      "scenario": "navigate-back-to-list",
+      "timestamp": "2026-11-05T05:42:10.924Z",
+      "measurements": [
+        {
+          "name": "total_back_navigation_time",
+          "value": 478,
+          "unit": "ms"
+        },
+        {
+          "name": "rendered_row_count",
+          "value": 50,
+          "unit": "count"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        }
+      ],
+      "orderInRound": 3,
+      "cpuBusyPct": 55.9,
+      "cpuGateTimedOut": true
+    },
+    {
+      "runNumber": 3,
+      "framework": "VueVapor",
+      "scenario": "navigate-back-to-list",
+      "timestamp": "2026-11-05T05:42:41.832Z",
+      "measurements": [
+        {
+          "name": "total_back_navigation_time",
+          "value": 535,
+          "unit": "ms"
+        },
+        {
+          "name": "rendered_row_count",
+          "value": 50,
+          "unit": "count"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        }
+      ],
+      "orderInRound": 3,
+      "cpuBusyPct": 24.8,
+      "cpuGateTimedOut": false
+    }
+  ],
+  "aggregated": [
+    {
+      "framework": "React",
+      "scenario": "navigate-back-to-list",
+      "totalRuns": 3,
+      "discardedRuns": [],
+      "median": {
+        "total_back_navigation_time": 354,
+        "rendered_row_count": 50,
+        "memory_delta": 0
+      },
+      "mean": {
+        "total_back_navigation_time": 361,
+        "rendered_row_count": 50,
+        "memory_delta": 0
+      },
+      "min": {
+        "total_back_navigation_time": 334,
+        "rendered_row_count": 50,
+        "memory_delta": 0
+      },
+      "max": {
+        "total_back_navigation_time": 395,
+        "rendered_row_count": 50,
+        "memory_delta": 0
+      },
+      "stdDev": {
+        "total_back_navigation_time": 25.39028685672272,
+        "rendered_row_count": 0,
+        "memory_delta": 0
+      },
+      "cv": {
+        "total_back_navigation_time": 0.07033320458925961,
+        "rendered_row_count": 0,
+        "memory_delta": 0
+      }
+    },
+    {
+      "framework": "Vue",
+      "scenario": "navigate-back-to-list",
+      "totalRuns": 3,
+      "discardedRuns": [],
+      "median": {
+        "total_back_navigation_time": 351,
+        "rendered_row_count": 50,
+        "memory_delta": 0
+      },
+      "mean": {
+        "total_back_navigation_time": 380.6666666666667,
+        "rendered_row_count": 50,
+        "memory_delta": 0
+      },
+      "min": {
+        "total_back_navigation_time": 345,
+        "rendered_row_count": 50,
+        "memory_delta": 0
+      },
+      "max": {
+        "total_back_navigation_time": 446,
+        "rendered_row_count": 50,
+        "memory_delta": 0
+      },
+      "stdDev": {
+        "total_back_navigation_time": 46.26253583864834,
+        "rendered_row_count": 0,
+        "memory_delta": 0
+      },
+      "cv": {
+        "total_back_navigation_time": 0.1215303043046804,
+        "rendered_row_count": 0,
+        "memory_delta": 0
+      }
+    },
+    {
+      "framework": "VueVapor",
+      "scenario": "navigate-back-to-list",
+      "totalRuns": 3,
+      "discardedRuns": [],
+      "median": {
+        "total_back_navigation_time": 505,
+        "rendered_row_count": 50,
+        "memory_delta": 0
+      },
+      "mean": {
+        "total_back_navigation_time": 506,
+        "rendered_row_count": 50,
+        "memory_delta": 0
+      },
+      "min": {
+        "total_back_navigation_time": 478,
+        "rendered_row_count": 50,
+        "memory_delta": 0
+      },
+      "max": {
+        "total_back_navigation_time": 535,
+        "rendered_row_count": 50,
+        "memory_delta": 0
+      },
+      "stdDev": {
+        "total_back_navigation_time": 23.280893453645632,
+        "rendered_row_count": 0,
+        "memory_delta": 0
+      },
+      "cv": {
+        "total_back_navigation_time": 0.046009670857007176,
+        "rendered_row_count": 0,
+        "memory_delta": 0
+      }
+    }
+  ],
+  "buildMetrics": {}
+}

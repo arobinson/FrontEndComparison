@@ -1,0 +1,86 @@
+[
+  {
+    "Angular": {
+      "gzipKB": 107.6,
+      "rawKB": 365.1,
+      "files": 5
+    },
+    "React": {
+      "gzipKB": 90.5,
+      "rawKB": 300.6,
+      "files": 2
+    },
+    "Svelte": {
+      "gzipKB": 54.2,
+      "rawKB": 150.3,
+      "files": 23
+    },
+    "Solid": {
+      "gzipKB": 26.6,
+      "rawKB": 86.3,
+      "files": 2
+    },
+    "Lit": {
+      "gzipKB": 20.2,
+      "rawKB": 84,
+      "files": 2
+    },
+    "Vue": {
+      "gzipKB": 47,
+      "rawKB": 138.4,
+      "files": 2
+    },
+    "Preact": {
+      "gzipKB": 19.4,
+      "rawKB": 64.1,
+      "files": 2
+    },
+    "VueVapor": {
+      "gzipKB": 72.4,
+      "rawKB": 210,
+      "files": 2
+    }
+  },
+  {
+    "Angular": {
+      "gzipKB": 107.6,
+      "rawKB": 365.1,
+      "files": 5
+    },
+    "React": {
+      "gzipKB": 90.5,
+      "rawKB": 300.6,
+      "files": 2
+    },
+    "Svelte": {
+      "gzipKB": 54.2,
+      "rawKB": 150.3,
+      "files": 23
+    },
+    "Solid": {
+      "gzipKB": 26.6,
+      "rawKB": 86.3,
+      "files": 2
+    },
+    "Lit": {
+      "gzipKB": 20.2,
+      "rawKB": 84,
+      "files": 2
+    },
+    "Vue": {
+      "gzipKB": 47,
+      "rawKB": 138.4,
+      "files": 2
+    },
+    "Preact": {
+      "gzipKB": 19.4,
+      "rawKB": 64.1,
+      "files": 2
+    },
+    "VueVapor": {
+      "gzipKB": 72.4,
+      "rawKB": 210,
+      "files": 2
+    }
+  }
+]

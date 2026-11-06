@@ -1,0 +1,4 @@
+framework,scenario,metric_name,median,mean,min,max,std_dev,total_runs,discarded_runs
+Angular,navigate-back-to-list,total_back_navigation_time,4679,4839.8,3236,6574,1136.3230878583784,5,
+Angular,navigate-back-to-list,rendered_row_count,50,50,50,50,0,5,
+Angular,navigate-back-to-list,memory_delta,0,0,0,0,0,5,

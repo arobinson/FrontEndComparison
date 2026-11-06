@@ -1,0 +1,16 @@
+run_number,framework,scenario,timestamp,metric_name,value,unit
+1,Angular,navigate-back-to-list,2026-11-05T05:29:46.392Z,total_back_navigation_time,5507,ms
+1,Angular,navigate-back-to-list,2026-11-05T05:29:46.392Z,rendered_row_count,50,count
+1,Angular,navigate-back-to-list,2026-11-05T05:29:46.392Z,memory_delta,0,bytes
+2,Angular,navigate-back-to-list,2026-11-05T05:29:59.606Z,total_back_navigation_time,4679,ms
+2,Angular,navigate-back-to-list,2026-11-05T05:29:59.606Z,rendered_row_count,50,count
+2,Angular,navigate-back-to-list,2026-11-05T05:29:59.606Z,memory_delta,0,bytes
+3,Angular,navigate-back-to-list,2026-11-05T05:30:14.490Z,total_back_navigation_time,6574,ms
+3,Angular,navigate-back-to-list,2026-11-05T05:30:14.490Z,rendered_row_count,50,count
+3,Angular,navigate-back-to-list,2026-11-05T05:30:14.490Z,memory_delta,0,bytes
+4,Angular,navigate-back-to-list,2026-11-05T05:30:27.684Z,total_back_navigation_time,3236,ms
+4,Angular,navigate-back-to-list,2026-11-05T05:30:27.684Z,rendered_row_count,50,count
+4,Angular,navigate-back-to-list,2026-11-05T05:30:27.684Z,memory_delta,0,bytes
+5,Angular,navigate-back-to-list,2026-11-05T05:30:43.212Z,total_back_navigation_time,4203,ms
+5,Angular,navigate-back-to-list,2026-11-05T05:30:43.212Z,rendered_row_count,50,count
+5,Angular,navigate-back-to-list,2026-11-05T05:30:43.212Z,memory_delta,0,bytes

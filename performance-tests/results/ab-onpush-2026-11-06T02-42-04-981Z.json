@@ -1,0 +1,5303 @@
+{
+  "config": {
+    "frameworks": [
+      {
+        "name": "Angular-OnPush",
+        "baseUrl": "http://localhost:8888/angular",
+        "buildCommand": "",
+        "buildOutputDir": ""
+      },
+      {
+        "name": "Angular-Eager",
+        "baseUrl": "http://localhost:8888/angular-eager",
+        "buildCommand": "",
+        "buildOutputDir": ""
+      }
+    ],
+    "repetitions": 5,
+    "discardOutliers": false,
+    "outputDir": "results",
+    "viewportWidth": 1920,
+    "viewportHeight": 1080,
+    "warmupRounds": 1,
+    "seed": 388763425,
+    "cpuThresholdPct": 15,
+    "cpuMaxWaitMs": 120000
+  },
+  "environment": {
+    "node": "v24.22.2",
+    "os": "darwin 24.6.0 x64",
+    "cpuModel": "Intel(R) Core(TM) i7-8850H CPU @ 2.60GHz",
+    "cpuCores": 12,
+    "totalMemoryGB": 16,
+    "browser": "156.0.8078.4",
+    "playwright": "1.64.1",
+    "gitCommit": "c62c882e957be5f08d6278789a002cca5fc33569",
+    "gitDirty": true,
+    "frameworkVersions": {}
+  },
+  "raw": [
+    {
+      "runNumber": 1,
+      "framework": "Angular-OnPush",
+      "scenario": "initial-page-load",
+      "timestamp": "2026-11-06T02:36:07.118Z",
+      "measurements": [
+        {
+          "name": "fcp",
+          "value": 88,
+          "unit": "ms"
+        },
+        {
+          "name": "lcp",
+          "value": 984,
+          "unit": "ms"
+        },
+        {
+          "name": "cls",
+          "value": 0,
+          "unit": "score"
+        },
+        {
+          "name": "tti",
+          "value": 10.800000000745058,
+          "unit": "ms"
+        },
+        {
+          "name": "tbt",
+          "value": 0,
+          "unit": "ms"
+        },
+        {
+          "name": "initial_heap_size",
+          "value": 35100000,
+          "unit": "bytes"
+        },
+        {
+          "name": "initial_used_heap",
+          "value": 20500000,
+          "unit": "bytes"
+        },
+        {
+          "name": "request_count",
+          "value": 56,
+          "unit": "count"
+        },
+        {
+          "name": "total_bytes",
+          "value": 529730,
+          "unit": "bytes"
+        },
+        {
+          "name": "network_duration",
+          "value": 1051,
+          "unit": "ms"
+        },
+        {
+          "name": "largest_request",
+          "value": 274936,
+          "unit": "bytes"
+        },
+        {
+          "name": "avg_api_response_time",
+          "value": 1,
+          "unit": "ms"
+        },
+        {
+          "name": "total_navigation_time",
+          "value": 610,
+          "unit": "ms"
+        }
+      ],
+      "orderInRound": 2,
+      "cpuBusyPct": 0.7,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 2,
+      "framework": "Angular-OnPush",
+      "scenario": "initial-page-load",
+      "timestamp": "2026-11-06T02:36:12.732Z",
+      "measurements": [
+        {
+          "name": "fcp",
+          "value": 88,
+          "unit": "ms"
+        },
+        {
+          "name": "lcp",
+          "value": 984,
+          "unit": "ms"
+        },
+        {
+          "name": "cls",
+          "value": 0,
+          "unit": "score"
+        },
+        {
+          "name": "tti",
+          "value": 10.799999999813735,
+          "unit": "ms"
+        },
+        {
+          "name": "tbt",
+          "value": 0,
+          "unit": "ms"
+        },
+        {
+          "name": "initial_heap_size",
+          "value": 35100000,
+          "unit": "bytes"
+        },
+        {
+          "name": "initial_used_heap",
+          "value": 20500000,
+          "unit": "bytes"
+        },
+        {
+          "name": "request_count",
+          "value": 56,
+          "unit": "count"
+        },
+        {
+          "name": "total_bytes",
+          "value": 529730,
+          "unit": "bytes"
+        },
+        {
+          "name": "network_duration",
+          "value": 1047,
+          "unit": "ms"
+        },
+        {
+          "name": "largest_request",
+          "value": 274936,
+          "unit": "bytes"
+        },
+        {
+          "name": "avg_api_response_time",
+          "value": 16,
+          "unit": "ms"
+        },
+        {
+          "name": "total_navigation_time",
+          "value": 609,
+          "unit": "ms"
+        }
+      ],
+      "orderInRound": 2,
+      "cpuBusyPct": 1.7,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 3,
+      "framework": "Angular-OnPush",
+      "scenario": "initial-page-load",
+      "timestamp": "2026-11-06T02:36:18.359Z",
+      "measurements": [
+        {
+          "name": "fcp",
+          "value": 92,
+          "unit": "ms"
+        },
+        {
+          "name": "lcp",
+          "value": 976,
+          "unit": "ms"
+        },
+        {
+          "name": "cls",
+          "value": 0,
+          "unit": "score"
+        },
+        {
+          "name": "tti",
+          "value": 10.700000000186265,
+          "unit": "ms"
+        },
+        {
+          "name": "tbt",
+          "value": 0,
+          "unit": "ms"
+        },
+        {
+          "name": "initial_heap_size",
+          "value": 35100000,
+          "unit": "bytes"
+        },
+        {
+          "name": "initial_used_heap",
+          "value": 20500000,
+          "unit": "bytes"
+        },
+        {
+          "name": "request_count",
+          "value": 56,
+          "unit": "count"
+        },
+        {
+          "name": "total_bytes",
+          "value": 529730,
+          "unit": "bytes"
+        },
+        {
+          "name": "network_duration",
+          "value": 1040,
+          "unit": "ms"
+        },
+        {
+          "name": "largest_request",
+          "value": 274936,
+          "unit": "bytes"
+        },
+        {
+          "name": "avg_api_response_time",
+          "value": 15,
+          "unit": "ms"
+        },
+        {
+          "name": "total_navigation_time",
+          "value": 614,
+          "unit": "ms"
+        }
+      ],
+      "orderInRound": 2,
+      "cpuBusyPct": 1.2,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 4,
+      "framework": "Angular-OnPush",
+      "scenario": "initial-page-load",
+      "timestamp": "2026-11-06T02:36:21.664Z",
+      "measurements": [
+        {
+          "name": "fcp",
+          "value": 88,
+          "unit": "ms"
+        },
+        {
+          "name": "lcp",
+          "value": 980,
+          "unit": "ms"
+        },
+        {
+          "name": "cls",
+          "value": 0,
+          "unit": "score"
+        },
+        {
+          "name": "tti",
+          "value": 10.599999999627471,
+          "unit": "ms"
+        },
+        {
+          "name": "tbt",
+          "value": 0,
+          "unit": "ms"
+        },
+        {
+          "name": "initial_heap_size",
+          "value": 35100000,
+          "unit": "bytes"
+        },
+        {
+          "name": "initial_used_heap",
+          "value": 20500000,
+          "unit": "bytes"
+        },
+        {
+          "name": "request_count",
+          "value": 56,
+          "unit": "count"
+        },
+        {
+          "name": "total_bytes",
+          "value": 529730,
+          "unit": "bytes"
+        },
+        {
+          "name": "network_duration",
+          "value": 1046,
+          "unit": "ms"
+        },
+        {
+          "name": "largest_request",
+          "value": 274936,
+          "unit": "bytes"
+        },
+        {
+          "name": "avg_api_response_time",
+          "value": 16,
+          "unit": "ms"
+        },
+        {
+          "name": "total_navigation_time",
+          "value": 610,
+          "unit": "ms"
+        }
+      ],
+      "orderInRound": 1,
+      "cpuBusyPct": 0.9,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 5,
+      "framework": "Angular-OnPush",
+      "scenario": "initial-page-load",
+      "timestamp": "2026-11-06T02:36:29.584Z",
+      "measurements": [
+        {
+          "name": "fcp",
+          "value": 88,
+          "unit": "ms"
+        },
+        {
+          "name": "lcp",
+          "value": 972,
+          "unit": "ms"
+        },
+        {
+          "name": "cls",
+          "value": 0,
+          "unit": "score"
+        },
+        {
+          "name": "tti",
+          "value": 10.600000000558794,
+          "unit": "ms"
+        },
+        {
+          "name": "tbt",
+          "value": 0,
+          "unit": "ms"
+        },
+        {
+          "name": "initial_heap_size",
+          "value": 35100000,
+          "unit": "bytes"
+        },
+        {
+          "name": "initial_used_heap",
+          "value": 20500000,
+          "unit": "bytes"
+        },
+        {
+          "name": "request_count",
+          "value": 56,
+          "unit": "count"
+        },
+        {
+          "name": "total_bytes",
+          "value": 529730,
+          "unit": "bytes"
+        },
+        {
+          "name": "network_duration",
+          "value": 1037,
+          "unit": "ms"
+        },
+        {
+          "name": "largest_request",
+          "value": 274936,
+          "unit": "bytes"
+        },
+        {
+          "name": "avg_api_response_time",
+          "value": 2,
+          "unit": "ms"
+        },
+        {
+          "name": "total_navigation_time",
+          "value": 609,
+          "unit": "ms"
+        }
+      ],
+      "orderInRound": 2,
+      "cpuBusyPct": 0.9,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 1,
+      "framework": "Angular-OnPush",
+      "scenario": "filter-application",
+      "timestamp": "2026-11-06T02:36:42.181Z",
+      "measurements": [
+        {
+          "name": "filter_duration",
+          "value": 181.5,
+          "unit": "ms"
+        },
+        {
+          "name": "total_filter_time",
+          "value": 173,
+          "unit": "ms"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        },
+        {
+          "name": "filtered_row_count",
+          "value": 11,
+          "unit": "count"
+        },
+        {
+          "name": "js_execution_time",
+          "value": 181.5,
+          "unit": "ms"
+        }
+      ],
+      "orderInRound": 2,
+      "cpuBusyPct": 0.8,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 2,
+      "framework": "Angular-OnPush",
+      "scenario": "filter-application",
+      "timestamp": "2026-11-06T02:36:45.777Z",
+      "measurements": [
+        {
+          "name": "filter_duration",
+          "value": 140.6000000005588,
+          "unit": "ms"
+        },
+        {
+          "name": "total_filter_time",
+          "value": 133,
+          "unit": "ms"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        },
+        {
+          "name": "filtered_row_count",
+          "value": 11,
+          "unit": "count"
+        },
+        {
+          "name": "js_execution_time",
+          "value": 140.6000000005588,
+          "unit": "ms"
+        }
+      ],
+      "orderInRound": 1,
+      "cpuBusyPct": 0.8,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 3,
+      "framework": "Angular-OnPush",
+      "scenario": "filter-application",
+      "timestamp": "2026-11-06T02:36:51.964Z",
+      "measurements": [
+        {
+          "name": "filter_duration",
+          "value": 177.69999999925494,
+          "unit": "ms"
+        },
+        {
+          "name": "total_filter_time",
+          "value": 170,
+          "unit": "ms"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        },
+        {
+          "name": "filtered_row_count",
+          "value": 11,
+          "unit": "count"
+        },
+        {
+          "name": "js_execution_time",
+          "value": 177.69999999925494,
+          "unit": "ms"
+        }
+      ],
+      "orderInRound": 1,
+      "cpuBusyPct": 9.1,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 4,
+      "framework": "Angular-OnPush",
+      "scenario": "filter-application",
+      "timestamp": "2026-11-06T02:37:00.694Z",
+      "measurements": [
+        {
+          "name": "filter_duration",
+          "value": 167.20000000018626,
+          "unit": "ms"
+        },
+        {
+          "name": "total_filter_time",
+          "value": 167,
+          "unit": "ms"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        },
+        {
+          "name": "filtered_row_count",
+          "value": 11,
+          "unit": "count"
+        },
+        {
+          "name": "js_execution_time",
+          "value": 167.20000000018626,
+          "unit": "ms"
+        }
+      ],
+      "orderInRound": 2,
+      "cpuBusyPct": 0.5,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 5,
+      "framework": "Angular-OnPush",
+      "scenario": "filter-application",
+      "timestamp": "2026-11-06T02:37:04.312Z",
+      "measurements": [
+        {
+          "name": "filter_duration",
+          "value": 189.8999999994412,
+          "unit": "ms"
+        },
+        {
+          "name": "total_filter_time",
+          "value": 182,
+          "unit": "ms"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        },
+        {
+          "name": "filtered_row_count",
+          "value": 11,
+          "unit": "count"
+        },
+        {
+          "name": "js_execution_time",
+          "value": 189.8999999994412,
+          "unit": "ms"
+        }
+      ],
+      "orderInRound": 1,
+      "cpuBusyPct": 1,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 1,
+      "framework": "Angular-OnPush",
+      "scenario": "clear-filters",
+      "timestamp": "2026-11-06T02:37:19.820Z",
+      "measurements": [
+        {
+          "name": "clear_duration",
+          "value": 479.29999999981374,
+          "unit": "ms"
+        },
+        {
+          "name": "total_clear_time",
+          "value": 409,
+          "unit": "ms"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        },
+        {
+          "name": "restored_row_count",
+          "value": 50,
+          "unit": "count"
+        }
+      ],
+      "orderInRound": 1,
+      "cpuBusyPct": 0.9,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 2,
+      "framework": "Angular-OnPush",
+      "scenario": "clear-filters",
+      "timestamp": "2026-11-06T02:37:31.406Z",
+      "measurements": [
+        {
+          "name": "clear_duration",
+          "value": 506.29999999981374,
+          "unit": "ms"
+        },
+        {
+          "name": "total_clear_time",
+          "value": 484,
+          "unit": "ms"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        },
+        {
+          "name": "restored_row_count",
+          "value": 50,
+          "unit": "count"
+        }
+      ],
+      "orderInRound": 2,
+      "cpuBusyPct": 0.6,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 3,
+      "framework": "Angular-OnPush",
+      "scenario": "clear-filters",
+      "timestamp": "2026-11-06T02:37:35.966Z",
+      "measurements": [
+        {
+          "name": "clear_duration",
+          "value": 509.70000000018626,
+          "unit": "ms"
+        },
+        {
+          "name": "total_clear_time",
+          "value": 488,
+          "unit": "ms"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        },
+        {
+          "name": "restored_row_count",
+          "value": 50,
+          "unit": "count"
+        }
+      ],
+      "orderInRound": 1,
+      "cpuBusyPct": 0.4,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 4,
+      "framework": "Angular-OnPush",
+      "scenario": "clear-filters",
+      "timestamp": "2026-11-06T02:37:47.512Z",
+      "measurements": [
+        {
+          "name": "clear_duration",
+          "value": 524.2999999998137,
+          "unit": "ms"
+        },
+        {
+          "name": "total_clear_time",
+          "value": 501,
+          "unit": "ms"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        },
+        {
+          "name": "restored_row_count",
+          "value": 50,
+          "unit": "count"
+        }
+      ],
+      "orderInRound": 2,
+      "cpuBusyPct": 1,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 5,
+      "framework": "Angular-OnPush",
+      "scenario": "clear-filters",
+      "timestamp": "2026-11-06T02:37:55.600Z",
+      "measurements": [
+        {
+          "name": "clear_duration",
+          "value": 474.70000000018626,
+          "unit": "ms"
+        },
+        {
+          "name": "total_clear_time",
+          "value": 405,
+          "unit": "ms"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        },
+        {
+          "name": "restored_row_count",
+          "value": 50,
+          "unit": "count"
+        }
+      ],
+      "orderInRound": 2,
+      "cpuBusyPct": 0.9,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 1,
+      "framework": "Angular-OnPush",
+      "scenario": "expand-collapse-description",
+      "timestamp": "2026-11-06T02:38:05.742Z",
+      "measurements": [
+        {
+          "name": "expand_duration",
+          "value": 103.70000000018626,
+          "unit": "ms"
+        },
+        {
+          "name": "expand_total_time",
+          "value": 103,
+          "unit": "ms"
+        },
+        {
+          "name": "expand_cls_delta",
+          "value": 0.000001980251736111111,
+          "unit": "score"
+        },
+        {
+          "name": "collapse_duration",
+          "value": 106.8999999994412,
+          "unit": "ms"
+        },
+        {
+          "name": "collapse_total_time",
+          "value": 105,
+          "unit": "ms"
+        },
+        {
+          "name": "collapse_cls_delta",
+          "value": 0.000001980251736111111,
+          "unit": "score"
+        }
+      ],
+      "orderInRound": 1,
+      "cpuBusyPct": 0.7,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 2,
+      "framework": "Angular-OnPush",
+      "scenario": "expand-collapse-description",
+      "timestamp": "2026-11-06T02:38:14.645Z",
+      "measurements": [
+        {
+          "name": "expand_duration",
+          "value": 105.6000000005588,
+          "unit": "ms"
+        },
+        {
+          "name": "expand_total_time",
+          "value": 105,
+          "unit": "ms"
+        },
+        {
+          "name": "expand_cls_delta",
+          "value": 0.000001980251736111111,
+          "unit": "score"
+        },
+        {
+          "name": "collapse_duration",
+          "value": 107.29999999981374,
+          "unit": "ms"
+        },
+        {
+          "name": "collapse_total_time",
+          "value": 105,
+          "unit": "ms"
+        },
+        {
+          "name": "collapse_cls_delta",
+          "value": 0.000001980251736111111,
+          "unit": "score"
+        }
+      ],
+      "orderInRound": 2,
+      "cpuBusyPct": 1.1,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 3,
+      "framework": "Angular-OnPush",
+      "scenario": "expand-collapse-description",
+      "timestamp": "2026-11-06T02:38:20.918Z",
+      "measurements": [
+        {
+          "name": "expand_duration",
+          "value": 115.70000000018626,
+          "unit": "ms"
+        },
+        {
+          "name": "expand_total_time",
+          "value": 104,
+          "unit": "ms"
+        },
+        {
+          "name": "expand_cls_delta",
+          "value": 0.000001980251736111111,
+          "unit": "score"
+        },
+        {
+          "name": "collapse_duration",
+          "value": 107.5,
+          "unit": "ms"
+        },
+        {
+          "name": "collapse_total_time",
+          "value": 105,
+          "unit": "ms"
+        },
+        {
+          "name": "collapse_cls_delta",
+          "value": 0.000001980251736111111,
+          "unit": "score"
+        }
+      ],
+      "orderInRound": 2,
+      "cpuBusyPct": 0.8,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 4,
+      "framework": "Angular-OnPush",
+      "scenario": "expand-collapse-description",
+      "timestamp": "2026-11-06T02:38:27.198Z",
+      "measurements": [
+        {
+          "name": "expand_duration",
+          "value": 107.3999999994412,
+          "unit": "ms"
+        },
+        {
+          "name": "expand_total_time",
+          "value": 103,
+          "unit": "ms"
+        },
+        {
+          "name": "expand_cls_delta",
+          "value": 0.000001980251736111111,
+          "unit": "score"
+        },
+        {
+          "name": "collapse_duration",
+          "value": 107.09999999962747,
+          "unit": "ms"
+        },
+        {
+          "name": "collapse_total_time",
+          "value": 105,
+          "unit": "ms"
+        },
+        {
+          "name": "collapse_cls_delta",
+          "value": 0.000001980251736111111,
+          "unit": "score"
+        }
+      ],
+      "orderInRound": 2,
+      "cpuBusyPct": 1,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 5,
+      "framework": "Angular-OnPush",
+      "scenario": "expand-collapse-description",
+      "timestamp": "2026-11-06T02:38:30.838Z",
+      "measurements": [
+        {
+          "name": "expand_duration",
+          "value": 105.20000000018626,
+          "unit": "ms"
+        },
+        {
+          "name": "expand_total_time",
+          "value": 104,
+          "unit": "ms"
+        },
+        {
+          "name": "expand_cls_delta",
+          "value": 0.000001980251736111111,
+          "unit": "score"
+        },
+        {
+          "name": "collapse_duration",
+          "value": 106.5,
+          "unit": "ms"
+        },
+        {
+          "name": "collapse_total_time",
+          "value": 105,
+          "unit": "ms"
+        },
+        {
+          "name": "collapse_cls_delta",
+          "value": 0.000001980251736111111,
+          "unit": "score"
+        }
+      ],
+      "orderInRound": 1,
+      "cpuBusyPct": 0.8,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 1,
+      "framework": "Angular-OnPush",
+      "scenario": "navigate-to-detail",
+      "timestamp": "2026-11-06T02:38:48.484Z",
+      "measurements": [
+        {
+          "name": "total_navigation_time",
+          "value": 226,
+          "unit": "ms"
+        },
+        {
+          "name": "detail_lcp",
+          "value": 1368,
+          "unit": "ms"
+        },
+        {
+          "name": "detail_cls",
+          "value": 0,
+          "unit": "score"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        },
+        {
+          "name": "detail_request_count",
+          "value": 4,
+          "unit": "count"
+        },
+        {
+          "name": "detail_total_bytes",
+          "value": 44491,
+          "unit": "bytes"
+        }
+      ],
+      "orderInRound": 1,
+      "cpuBusyPct": 12.5,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 2,
+      "framework": "Angular-OnPush",
+      "scenario": "navigate-to-detail",
+      "timestamp": "2026-11-06T02:39:02.143Z",
+      "measurements": [
+        {
+          "name": "total_navigation_time",
+          "value": 207,
+          "unit": "ms"
+        },
+        {
+          "name": "detail_lcp",
+          "value": 1180,
+          "unit": "ms"
+        },
+        {
+          "name": "detail_cls",
+          "value": 0,
+          "unit": "score"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        },
+        {
+          "name": "detail_request_count",
+          "value": 4,
+          "unit": "count"
+        },
+        {
+          "name": "detail_total_bytes",
+          "value": 44491,
+          "unit": "bytes"
+        }
+      ],
+      "orderInRound": 2,
+      "cpuBusyPct": 12.8,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 3,
+      "framework": "Angular-OnPush",
+      "scenario": "navigate-to-detail",
+      "timestamp": "2026-11-06T02:39:10.304Z",
+      "measurements": [
+        {
+          "name": "total_navigation_time",
+          "value": 214,
+          "unit": "ms"
+        },
+        {
+          "name": "detail_lcp",
+          "value": 980,
+          "unit": "ms"
+        },
+        {
+          "name": "detail_cls",
+          "value": 0,
+          "unit": "score"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        },
+        {
+          "name": "detail_request_count",
+          "value": 4,
+          "unit": "count"
+        },
+        {
+          "name": "detail_total_bytes",
+          "value": 44491,
+          "unit": "bytes"
+        }
+      ],
+      "orderInRound": 2,
+      "cpuBusyPct": 2,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 4,
+      "framework": "Angular-OnPush",
+      "scenario": "navigate-to-detail",
+      "timestamp": "2026-11-06T02:39:14.868Z",
+      "measurements": [
+        {
+          "name": "total_navigation_time",
+          "value": 225,
+          "unit": "ms"
+        },
+        {
+          "name": "detail_lcp",
+          "value": 968,
+          "unit": "ms"
+        },
+        {
+          "name": "detail_cls",
+          "value": 0,
+          "unit": "score"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        },
+        {
+          "name": "detail_request_count",
+          "value": 4,
+          "unit": "count"
+        },
+        {
+          "name": "detail_total_bytes",
+          "value": 44491,
+          "unit": "bytes"
+        }
+      ],
+      "orderInRound": 1,
+      "cpuBusyPct": 0.9,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 5,
+      "framework": "Angular-OnPush",
+      "scenario": "navigate-to-detail",
+      "timestamp": "2026-11-06T02:39:26.493Z",
+      "measurements": [
+        {
+          "name": "total_navigation_time",
+          "value": 211,
+          "unit": "ms"
+        },
+        {
+          "name": "detail_lcp",
+          "value": 952,
+          "unit": "ms"
+        },
+        {
+          "name": "detail_cls",
+          "value": 0,
+          "unit": "score"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        },
+        {
+          "name": "detail_request_count",
+          "value": 4,
+          "unit": "count"
+        },
+        {
+          "name": "detail_total_bytes",
+          "value": 44491,
+          "unit": "bytes"
+        }
+      ],
+      "orderInRound": 2,
+      "cpuBusyPct": 1.2,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 1,
+      "framework": "Angular-OnPush",
+      "scenario": "navigate-back-to-list",
+      "timestamp": "2026-11-06T02:39:48.643Z",
+      "measurements": [
+        {
+          "name": "total_back_navigation_time",
+          "value": 930,
+          "unit": "ms"
+        },
+        {
+          "name": "rendered_row_count",
+          "value": 50,
+          "unit": "count"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        }
+      ],
+      "orderInRound": 2,
+      "cpuBusyPct": 1.2,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 2,
+      "framework": "Angular-OnPush",
+      "scenario": "navigate-back-to-list",
+      "timestamp": "2026-11-06T02:39:54.492Z",
+      "measurements": [
+        {
+          "name": "total_back_navigation_time",
+          "value": 848,
+          "unit": "ms"
+        },
+        {
+          "name": "rendered_row_count",
+          "value": 50,
+          "unit": "count"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        }
+      ],
+      "orderInRound": 1,
+      "cpuBusyPct": 2.2,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 3,
+      "framework": "Angular-OnPush",
+      "scenario": "navigate-back-to-list",
+      "timestamp": "2026-11-06T02:40:05.120Z",
+      "measurements": [
+        {
+          "name": "total_back_navigation_time",
+          "value": 876,
+          "unit": "ms"
+        },
+        {
+          "name": "rendered_row_count",
+          "value": 50,
+          "unit": "count"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        }
+      ],
+      "orderInRound": 1,
+      "cpuBusyPct": 0.7,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 4,
+      "framework": "Angular-OnPush",
+      "scenario": "navigate-back-to-list",
+      "timestamp": "2026-11-06T02:40:15.974Z",
+      "measurements": [
+        {
+          "name": "total_back_navigation_time",
+          "value": 917,
+          "unit": "ms"
+        },
+        {
+          "name": "rendered_row_count",
+          "value": 50,
+          "unit": "count"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        }
+      ],
+      "orderInRound": 1,
+      "cpuBusyPct": 1.1,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 5,
+      "framework": "Angular-OnPush",
+      "scenario": "navigate-back-to-list",
+      "timestamp": "2026-11-06T02:40:26.756Z",
+      "measurements": [
+        {
+          "name": "total_back_navigation_time",
+          "value": 891,
+          "unit": "ms"
+        },
+        {
+          "name": "rendered_row_count",
+          "value": 50,
+          "unit": "count"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        }
+      ],
+      "orderInRound": 1,
+      "cpuBusyPct": 1,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 1,
+      "framework": "Angular-OnPush",
+      "scenario": "pagination-cycle",
+      "timestamp": "2026-11-06T02:40:46.074Z",
+      "measurements": [
+        {
+          "name": "page_transition_1_next",
+          "value": 364,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_1_next_js",
+          "value": 380.6000000005588,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_2_next",
+          "value": 411,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_2_next_js",
+          "value": 411.40000000037253,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_3_previous",
+          "value": 307,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_3_previous_js",
+          "value": 309.59999999962747,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_4_previous",
+          "value": 391,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_4_previous_js",
+          "value": 401.29999999981374,
+          "unit": "ms"
+        },
+        {
+          "name": "total_cycle_time",
+          "value": 1522,
+          "unit": "ms"
+        },
+        {
+          "name": "total_cycle_js_time",
+          "value": 1526.8999999994412,
+          "unit": "ms"
+        },
+        {
+          "name": "avg_page_transition",
+          "value": 368.25,
+          "unit": "ms"
+        },
+        {
+          "name": "min_page_transition",
+          "value": 307,
+          "unit": "ms"
+        },
+        {
+          "name": "max_page_transition",
+          "value": 411,
+          "unit": "ms"
+        },
+        {
+          "name": "avg_api_response_time",
+          "value": 28.25,
+          "unit": "ms"
+        },
+        {
+          "name": "total_api_requests",
+          "value": 4,
+          "unit": "count"
+        },
+        {
+          "name": "total_network_bytes",
+          "value": 277751,
+          "unit": "bytes"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        }
+      ],
+      "orderInRound": 1,
+      "cpuBusyPct": 1,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 2,
+      "framework": "Angular-OnPush",
+      "scenario": "pagination-cycle",
+      "timestamp": "2026-11-06T02:40:59.187Z",
+      "measurements": [
+        {
+          "name": "page_transition_1_next",
+          "value": 395,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_1_next_js",
+          "value": 396.09999999962747,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_2_next",
+          "value": 413,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_2_next_js",
+          "value": 414.29999999981374,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_3_previous",
+          "value": 359,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_3_previous_js",
+          "value": 359,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_4_previous",
+          "value": 384,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_4_previous_js",
+          "value": 389.09999999962747,
+          "unit": "ms"
+        },
+        {
+          "name": "total_cycle_time",
+          "value": 1577,
+          "unit": "ms"
+        },
+        {
+          "name": "total_cycle_js_time",
+          "value": 1581.2999999998137,
+          "unit": "ms"
+        },
+        {
+          "name": "avg_page_transition",
+          "value": 387.75,
+          "unit": "ms"
+        },
+        {
+          "name": "min_page_transition",
+          "value": 359,
+          "unit": "ms"
+        },
+        {
+          "name": "max_page_transition",
+          "value": 413,
+          "unit": "ms"
+        },
+        {
+          "name": "avg_api_response_time",
+          "value": 2.25,
+          "unit": "ms"
+        },
+        {
+          "name": "total_api_requests",
+          "value": 4,
+          "unit": "count"
+        },
+        {
+          "name": "total_network_bytes",
+          "value": 277751,
+          "unit": "bytes"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        }
+      ],
+      "orderInRound": 2,
+      "cpuBusyPct": 1.1,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 3,
+      "framework": "Angular-OnPush",
+      "scenario": "pagination-cycle",
+      "timestamp": "2026-11-06T02:41:08.226Z",
+      "measurements": [
+        {
+          "name": "page_transition_1_next",
+          "value": 357,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_1_next_js",
+          "value": 374,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_2_next",
+          "value": 435,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_2_next_js",
+          "value": 435.70000000018626,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_3_previous",
+          "value": 290,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_3_previous_js",
+          "value": 290.5,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_4_previous",
+          "value": 367,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_4_previous_js",
+          "value": 371.3999999994412,
+          "unit": "ms"
+        },
+        {
+          "name": "total_cycle_time",
+          "value": 1524,
+          "unit": "ms"
+        },
+        {
+          "name": "total_cycle_js_time",
+          "value": 1529.5,
+          "unit": "ms"
+        },
+        {
+          "name": "avg_page_transition",
+          "value": 362.25,
+          "unit": "ms"
+        },
+        {
+          "name": "min_page_transition",
+          "value": 290,
+          "unit": "ms"
+        },
+        {
+          "name": "max_page_transition",
+          "value": 435,
+          "unit": "ms"
+        },
+        {
+          "name": "avg_api_response_time",
+          "value": 28.5,
+          "unit": "ms"
+        },
+        {
+          "name": "total_api_requests",
+          "value": 4,
+          "unit": "count"
+        },
+        {
+          "name": "total_network_bytes",
+          "value": 277751,
+          "unit": "bytes"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        }
+      ],
+      "orderInRound": 2,
+      "cpuBusyPct": 1.1,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 4,
+      "framework": "Angular-OnPush",
+      "scenario": "pagination-cycle",
+      "timestamp": "2026-11-06T02:41:13.183Z",
+      "measurements": [
+        {
+          "name": "page_transition_1_next",
+          "value": 364,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_1_next_js",
+          "value": 381.30000000074506,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_2_next",
+          "value": 411,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_2_next_js",
+          "value": 412.3999999994412,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_3_previous",
+          "value": 315,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_3_previous_js",
+          "value": 316,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_4_previous",
+          "value": 360,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_4_previous_js",
+          "value": 362.09999999962747,
+          "unit": "ms"
+        },
+        {
+          "name": "total_cycle_time",
+          "value": 1506,
+          "unit": "ms"
+        },
+        {
+          "name": "total_cycle_js_time",
+          "value": 1513.0999999996275,
+          "unit": "ms"
+        },
+        {
+          "name": "avg_page_transition",
+          "value": 362.5,
+          "unit": "ms"
+        },
+        {
+          "name": "min_page_transition",
+          "value": 315,
+          "unit": "ms"
+        },
+        {
+          "name": "max_page_transition",
+          "value": 411,
+          "unit": "ms"
+        },
+        {
+          "name": "avg_api_response_time",
+          "value": 5.5,
+          "unit": "ms"
+        },
+        {
+          "name": "total_api_requests",
+          "value": 4,
+          "unit": "count"
+        },
+        {
+          "name": "total_network_bytes",
+          "value": 277751,
+          "unit": "bytes"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        }
+      ],
+      "orderInRound": 1,
+      "cpuBusyPct": 0.7,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 5,
+      "framework": "Angular-OnPush",
+      "scenario": "pagination-cycle",
+      "timestamp": "2026-11-06T02:41:22.258Z",
+      "measurements": [
+        {
+          "name": "page_transition_1_next",
+          "value": 384,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_1_next_js",
+          "value": 384.79999999981374,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_2_next",
+          "value": 381,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_2_next_js",
+          "value": 381.3999999994412,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_3_previous",
+          "value": 351,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_3_previous_js",
+          "value": 352.59999999962747,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_4_previous",
+          "value": 418,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_4_previous_js",
+          "value": 429,
+          "unit": "ms"
+        },
+        {
+          "name": "total_cycle_time",
+          "value": 1569,
+          "unit": "ms"
+        },
+        {
+          "name": "total_cycle_js_time",
+          "value": 1574.1000000005588,
+          "unit": "ms"
+        },
+        {
+          "name": "avg_page_transition",
+          "value": 383.5,
+          "unit": "ms"
+        },
+        {
+          "name": "min_page_transition",
+          "value": 351,
+          "unit": "ms"
+        },
+        {
+          "name": "max_page_transition",
+          "value": 418,
+          "unit": "ms"
+        },
+        {
+          "name": "avg_api_response_time",
+          "value": 0.25,
+          "unit": "ms"
+        },
+        {
+          "name": "total_api_requests",
+          "value": 4,
+          "unit": "count"
+        },
+        {
+          "name": "total_network_bytes",
+          "value": 277751,
+          "unit": "bytes"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        }
+      ],
+      "orderInRound": 1,
+      "cpuBusyPct": 0.6,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 1,
+      "framework": "Angular-OnPush",
+      "scenario": "detail-navigation-cycle",
+      "timestamp": "2026-11-06T02:41:38.988Z",
+      "measurements": [
+        {
+          "name": "initial_detail_load",
+          "value": 668,
+          "unit": "ms"
+        },
+        {
+          "name": "next_navigation_time",
+          "value": 11,
+          "unit": "ms"
+        },
+        {
+          "name": "next_navigation_js",
+          "value": 14.900000000372529,
+          "unit": "ms"
+        },
+        {
+          "name": "prev_navigation_time",
+          "value": 10,
+          "unit": "ms"
+        },
+        {
+          "name": "prev_navigation_js",
+          "value": 12.900000000372529,
+          "unit": "ms"
+        },
+        {
+          "name": "total_cycle_time",
+          "value": 336,
+          "unit": "ms"
+        },
+        {
+          "name": "total_cycle_js_time",
+          "value": 337.5,
+          "unit": "ms"
+        },
+        {
+          "name": "avg_navigation_time",
+          "value": 10.5,
+          "unit": "ms"
+        },
+        {
+          "name": "avg_api_response_time",
+          "value": 0.5,
+          "unit": "ms"
+        },
+        {
+          "name": "total_api_requests",
+          "value": 5,
+          "unit": "count"
+        },
+        {
+          "name": "total_network_bytes",
+          "value": 19737,
+          "unit": "bytes"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        }
+      ],
+      "orderInRound": 2,
+      "cpuBusyPct": 1,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 2,
+      "framework": "Angular-OnPush",
+      "scenario": "detail-navigation-cycle",
+      "timestamp": "2026-11-06T02:41:42.614Z",
+      "measurements": [
+        {
+          "name": "initial_detail_load",
+          "value": 665,
+          "unit": "ms"
+        },
+        {
+          "name": "next_navigation_time",
+          "value": 16,
+          "unit": "ms"
+        },
+        {
+          "name": "next_navigation_js",
+          "value": 20.100000000558794,
+          "unit": "ms"
+        },
+        {
+          "name": "prev_navigation_time",
+          "value": 25,
+          "unit": "ms"
+        },
+        {
+          "name": "prev_navigation_js",
+          "value": 28.200000000186265,
+          "unit": "ms"
+        },
+        {
+          "name": "total_cycle_time",
+          "value": 357,
+          "unit": "ms"
+        },
+        {
+          "name": "total_cycle_js_time",
+          "value": 358.29999999981374,
+          "unit": "ms"
+        },
+        {
+          "name": "avg_navigation_time",
+          "value": 20.5,
+          "unit": "ms"
+        },
+        {
+          "name": "avg_api_response_time",
+          "value": 0.5,
+          "unit": "ms"
+        },
+        {
+          "name": "total_api_requests",
+          "value": 5,
+          "unit": "count"
+        },
+        {
+          "name": "total_network_bytes",
+          "value": 19737,
+          "unit": "bytes"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        }
+      ],
+      "orderInRound": 1,
+      "cpuBusyPct": 0.6,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 3,
+      "framework": "Angular-OnPush",
+      "scenario": "detail-navigation-cycle",
+      "timestamp": "2026-11-06T02:41:48.862Z",
+      "measurements": [
+        {
+          "name": "initial_detail_load",
+          "value": 668,
+          "unit": "ms"
+        },
+        {
+          "name": "next_navigation_time",
+          "value": 11,
+          "unit": "ms"
+        },
+        {
+          "name": "next_navigation_js",
+          "value": 14.599999999627471,
+          "unit": "ms"
+        },
+        {
+          "name": "prev_navigation_time",
+          "value": 26,
+          "unit": "ms"
+        },
+        {
+          "name": "prev_navigation_js",
+          "value": 29.09999999962747,
+          "unit": "ms"
+        },
+        {
+          "name": "total_cycle_time",
+          "value": 353,
+          "unit": "ms"
+        },
+        {
+          "name": "total_cycle_js_time",
+          "value": 353.90000000037253,
+          "unit": "ms"
+        },
+        {
+          "name": "avg_navigation_time",
+          "value": 18.5,
+          "unit": "ms"
+        },
+        {
+          "name": "avg_api_response_time",
+          "value": 1.25,
+          "unit": "ms"
+        },
+        {
+          "name": "total_api_requests",
+          "value": 5,
+          "unit": "count"
+        },
+        {
+          "name": "total_network_bytes",
+          "value": 19737,
+          "unit": "bytes"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        }
+      ],
+      "orderInRound": 1,
+      "cpuBusyPct": 1.2,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 4,
+      "framework": "Angular-OnPush",
+      "scenario": "detail-navigation-cycle",
+      "timestamp": "2026-11-06T02:41:57.725Z",
+      "measurements": [
+        {
+          "name": "initial_detail_load",
+          "value": 664,
+          "unit": "ms"
+        },
+        {
+          "name": "next_navigation_time",
+          "value": 17,
+          "unit": "ms"
+        },
+        {
+          "name": "next_navigation_js",
+          "value": 20,
+          "unit": "ms"
+        },
+        {
+          "name": "prev_navigation_time",
+          "value": 23,
+          "unit": "ms"
+        },
+        {
+          "name": "prev_navigation_js",
+          "value": 26.800000000745058,
+          "unit": "ms"
+        },
+        {
+          "name": "total_cycle_time",
+          "value": 356,
+          "unit": "ms"
+        },
+        {
+          "name": "total_cycle_js_time",
+          "value": 357.79999999981374,
+          "unit": "ms"
+        },
+        {
+          "name": "avg_navigation_time",
+          "value": 20,
+          "unit": "ms"
+        },
+        {
+          "name": "avg_api_response_time",
+          "value": 3,
+          "unit": "ms"
+        },
+        {
+          "name": "total_api_requests",
+          "value": 5,
+          "unit": "count"
+        },
+        {
+          "name": "total_network_bytes",
+          "value": 19737,
+          "unit": "bytes"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        }
+      ],
+      "orderInRound": 2,
+      "cpuBusyPct": 1.1,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 5,
+      "framework": "Angular-OnPush",
+      "scenario": "detail-navigation-cycle",
+      "timestamp": "2026-11-06T02:42:01.350Z",
+      "measurements": [
+        {
+          "name": "initial_detail_load",
+          "value": 665,
+          "unit": "ms"
+        },
+        {
+          "name": "next_navigation_time",
+          "value": 14,
+          "unit": "ms"
+        },
+        {
+          "name": "next_navigation_js",
+          "value": 17.200000000186265,
+          "unit": "ms"
+        },
+        {
+          "name": "prev_navigation_time",
+          "value": 24,
+          "unit": "ms"
+        },
+        {
+          "name": "prev_navigation_js",
+          "value": 27.40000000037253,
+          "unit": "ms"
+        },
+        {
+          "name": "total_cycle_time",
+          "value": 356,
+          "unit": "ms"
+        },
+        {
+          "name": "total_cycle_js_time",
+          "value": 357,
+          "unit": "ms"
+        },
+        {
+          "name": "avg_navigation_time",
+          "value": 19,
+          "unit": "ms"
+        },
+        {
+          "name": "avg_api_response_time",
+          "value": 2,
+          "unit": "ms"
+        },
+        {
+          "name": "total_api_requests",
+          "value": 5,
+          "unit": "count"
+        },
+        {
+          "name": "total_network_bytes",
+          "value": 19737,
+          "unit": "bytes"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        }
+      ],
+      "orderInRound": 1,
+      "cpuBusyPct": 0.7,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 1,
+      "framework": "Angular-Eager",
+      "scenario": "initial-page-load",
+      "timestamp": "2026-11-06T02:36:04.813Z",
+      "measurements": [
+        {
+          "name": "fcp",
+          "value": 88,
+          "unit": "ms"
+        },
+        {
+          "name": "lcp",
+          "value": 972,
+          "unit": "ms"
+        },
+        {
+          "name": "cls",
+          "value": 0,
+          "unit": "score"
+        },
+        {
+          "name": "tti",
+          "value": 11.400000000372529,
+          "unit": "ms"
+        },
+        {
+          "name": "tbt",
+          "value": 0,
+          "unit": "ms"
+        },
+        {
+          "name": "initial_heap_size",
+          "value": 35100000,
+          "unit": "bytes"
+        },
+        {
+          "name": "initial_used_heap",
+          "value": 20500000,
+          "unit": "bytes"
+        },
+        {
+          "name": "request_count",
+          "value": 56,
+          "unit": "count"
+        },
+        {
+          "name": "total_bytes",
+          "value": 530168,
+          "unit": "bytes"
+        },
+        {
+          "name": "network_duration",
+          "value": 1038,
+          "unit": "ms"
+        },
+        {
+          "name": "largest_request",
+          "value": 274984,
+          "unit": "bytes"
+        },
+        {
+          "name": "avg_api_response_time",
+          "value": 17,
+          "unit": "ms"
+        },
+        {
+          "name": "total_navigation_time",
+          "value": 615,
+          "unit": "ms"
+        }
+      ],
+      "orderInRound": 1,
+      "cpuBusyPct": 0.7,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 2,
+      "framework": "Angular-Eager",
+      "scenario": "initial-page-load",
+      "timestamp": "2026-11-06T02:36:10.427Z",
+      "measurements": [
+        {
+          "name": "fcp",
+          "value": 88,
+          "unit": "ms"
+        },
+        {
+          "name": "lcp",
+          "value": 996,
+          "unit": "ms"
+        },
+        {
+          "name": "cls",
+          "value": 0,
+          "unit": "score"
+        },
+        {
+          "name": "tti",
+          "value": 11,
+          "unit": "ms"
+        },
+        {
+          "name": "tbt",
+          "value": 0,
+          "unit": "ms"
+        },
+        {
+          "name": "initial_heap_size",
+          "value": 35100000,
+          "unit": "bytes"
+        },
+        {
+          "name": "initial_used_heap",
+          "value": 21700000,
+          "unit": "bytes"
+        },
+        {
+          "name": "request_count",
+          "value": 56,
+          "unit": "count"
+        },
+        {
+          "name": "total_bytes",
+          "value": 530168,
+          "unit": "bytes"
+        },
+        {
+          "name": "network_duration",
+          "value": 1071,
+          "unit": "ms"
+        },
+        {
+          "name": "largest_request",
+          "value": 274984,
+          "unit": "bytes"
+        },
+        {
+          "name": "avg_api_response_time",
+          "value": 16,
+          "unit": "ms"
+        },
+        {
+          "name": "total_navigation_time",
+          "value": 612,
+          "unit": "ms"
+        }
+      ],
+      "orderInRound": 1,
+      "cpuBusyPct": 1.7,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 3,
+      "framework": "Angular-Eager",
+      "scenario": "initial-page-load",
+      "timestamp": "2026-11-06T02:36:16.050Z",
+      "measurements": [
+        {
+          "name": "fcp",
+          "value": 84,
+          "unit": "ms"
+        },
+        {
+          "name": "lcp",
+          "value": 952,
+          "unit": "ms"
+        },
+        {
+          "name": "cls",
+          "value": 0,
+          "unit": "score"
+        },
+        {
+          "name": "tti",
+          "value": 10.599999999627471,
+          "unit": "ms"
+        },
+        {
+          "name": "tbt",
+          "value": 0,
+          "unit": "ms"
+        },
+        {
+          "name": "initial_heap_size",
+          "value": 35100000,
+          "unit": "bytes"
+        },
+        {
+          "name": "initial_used_heap",
+          "value": 20500000,
+          "unit": "bytes"
+        },
+        {
+          "name": "request_count",
+          "value": 56,
+          "unit": "count"
+        },
+        {
+          "name": "total_bytes",
+          "value": 530168,
+          "unit": "bytes"
+        },
+        {
+          "name": "network_duration",
+          "value": 1011,
+          "unit": "ms"
+        },
+        {
+          "name": "largest_request",
+          "value": 274984,
+          "unit": "bytes"
+        },
+        {
+          "name": "avg_api_response_time",
+          "value": 16,
+          "unit": "ms"
+        },
+        {
+          "name": "total_navigation_time",
+          "value": 610,
+          "unit": "ms"
+        }
+      ],
+      "orderInRound": 1,
+      "cpuBusyPct": 1.2,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 4,
+      "framework": "Angular-Eager",
+      "scenario": "initial-page-load",
+      "timestamp": "2026-11-06T02:36:23.971Z",
+      "measurements": [
+        {
+          "name": "fcp",
+          "value": 88,
+          "unit": "ms"
+        },
+        {
+          "name": "lcp",
+          "value": 980,
+          "unit": "ms"
+        },
+        {
+          "name": "cls",
+          "value": 0,
+          "unit": "score"
+        },
+        {
+          "name": "tti",
+          "value": 11.099999999627471,
+          "unit": "ms"
+        },
+        {
+          "name": "tbt",
+          "value": 0,
+          "unit": "ms"
+        },
+        {
+          "name": "initial_heap_size",
+          "value": 35100000,
+          "unit": "bytes"
+        },
+        {
+          "name": "initial_used_heap",
+          "value": 21700000,
+          "unit": "bytes"
+        },
+        {
+          "name": "request_count",
+          "value": 56,
+          "unit": "count"
+        },
+        {
+          "name": "total_bytes",
+          "value": 530168,
+          "unit": "bytes"
+        },
+        {
+          "name": "network_duration",
+          "value": 1064,
+          "unit": "ms"
+        },
+        {
+          "name": "largest_request",
+          "value": 274984,
+          "unit": "bytes"
+        },
+        {
+          "name": "avg_api_response_time",
+          "value": 16,
+          "unit": "ms"
+        },
+        {
+          "name": "total_navigation_time",
+          "value": 610,
+          "unit": "ms"
+        }
+      ],
+      "orderInRound": 2,
+      "cpuBusyPct": 0.9,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 5,
+      "framework": "Angular-Eager",
+      "scenario": "initial-page-load",
+      "timestamp": "2026-11-06T02:36:27.278Z",
+      "measurements": [
+        {
+          "name": "fcp",
+          "value": 88,
+          "unit": "ms"
+        },
+        {
+          "name": "lcp",
+          "value": 972,
+          "unit": "ms"
+        },
+        {
+          "name": "cls",
+          "value": 0,
+          "unit": "score"
+        },
+        {
+          "name": "tti",
+          "value": 10.799999999813735,
+          "unit": "ms"
+        },
+        {
+          "name": "tbt",
+          "value": 0,
+          "unit": "ms"
+        },
+        {
+          "name": "initial_heap_size",
+          "value": 35100000,
+          "unit": "bytes"
+        },
+        {
+          "name": "initial_used_heap",
+          "value": 20500000,
+          "unit": "bytes"
+        },
+        {
+          "name": "request_count",
+          "value": 56,
+          "unit": "count"
+        },
+        {
+          "name": "total_bytes",
+          "value": 530168,
+          "unit": "bytes"
+        },
+        {
+          "name": "network_duration",
+          "value": 1036,
+          "unit": "ms"
+        },
+        {
+          "name": "largest_request",
+          "value": 274984,
+          "unit": "bytes"
+        },
+        {
+          "name": "avg_api_response_time",
+          "value": 17,
+          "unit": "ms"
+        },
+        {
+          "name": "total_navigation_time",
+          "value": 612,
+          "unit": "ms"
+        }
+      ],
+      "orderInRound": 1,
+      "cpuBusyPct": 0.9,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 1,
+      "framework": "Angular-Eager",
+      "scenario": "filter-application",
+      "timestamp": "2026-11-06T02:36:39.581Z",
+      "measurements": [
+        {
+          "name": "filter_duration",
+          "value": 153,
+          "unit": "ms"
+        },
+        {
+          "name": "total_filter_time",
+          "value": 152,
+          "unit": "ms"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        },
+        {
+          "name": "filtered_row_count",
+          "value": 11,
+          "unit": "count"
+        },
+        {
+          "name": "js_execution_time",
+          "value": 153,
+          "unit": "ms"
+        }
+      ],
+      "orderInRound": 1,
+      "cpuBusyPct": 0.8,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 2,
+      "framework": "Angular-Eager",
+      "scenario": "filter-application",
+      "timestamp": "2026-11-06T02:36:48.365Z",
+      "measurements": [
+        {
+          "name": "filter_duration",
+          "value": 142.59999999962747,
+          "unit": "ms"
+        },
+        {
+          "name": "total_filter_time",
+          "value": 135,
+          "unit": "ms"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        },
+        {
+          "name": "filtered_row_count",
+          "value": 11,
+          "unit": "count"
+        },
+        {
+          "name": "js_execution_time",
+          "value": 142.59999999962747,
+          "unit": "ms"
+        }
+      ],
+      "orderInRound": 2,
+      "cpuBusyPct": 0.8,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 3,
+      "framework": "Angular-Eager",
+      "scenario": "filter-application",
+      "timestamp": "2026-11-06T02:36:54.558Z",
+      "measurements": [
+        {
+          "name": "filter_duration",
+          "value": 144.79999999981374,
+          "unit": "ms"
+        },
+        {
+          "name": "total_filter_time",
+          "value": 144,
+          "unit": "ms"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        },
+        {
+          "name": "filtered_row_count",
+          "value": 11,
+          "unit": "count"
+        },
+        {
+          "name": "js_execution_time",
+          "value": 144.79999999981374,
+          "unit": "ms"
+        }
+      ],
+      "orderInRound": 2,
+      "cpuBusyPct": 9.1,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 4,
+      "framework": "Angular-Eager",
+      "scenario": "filter-application",
+      "timestamp": "2026-11-06T02:36:58.108Z",
+      "measurements": [
+        {
+          "name": "filter_duration",
+          "value": 128.5,
+          "unit": "ms"
+        },
+        {
+          "name": "total_filter_time",
+          "value": 121,
+          "unit": "ms"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        },
+        {
+          "name": "filtered_row_count",
+          "value": 11,
+          "unit": "count"
+        },
+        {
+          "name": "js_execution_time",
+          "value": 128.5,
+          "unit": "ms"
+        }
+      ],
+      "orderInRound": 1,
+      "cpuBusyPct": 0.5,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 5,
+      "framework": "Angular-Eager",
+      "scenario": "filter-application",
+      "timestamp": "2026-11-06T02:37:06.928Z",
+      "measurements": [
+        {
+          "name": "filter_duration",
+          "value": 168.59999999962747,
+          "unit": "ms"
+        },
+        {
+          "name": "total_filter_time",
+          "value": 159,
+          "unit": "ms"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        },
+        {
+          "name": "filtered_row_count",
+          "value": 11,
+          "unit": "count"
+        },
+        {
+          "name": "js_execution_time",
+          "value": 168.59999999962747,
+          "unit": "ms"
+        }
+      ],
+      "orderInRound": 2,
+      "cpuBusyPct": 1,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 1,
+      "framework": "Angular-Eager",
+      "scenario": "clear-filters",
+      "timestamp": "2026-11-06T02:37:23.363Z",
+      "measurements": [
+        {
+          "name": "clear_duration",
+          "value": 484.5,
+          "unit": "ms"
+        },
+        {
+          "name": "total_clear_time",
+          "value": 413,
+          "unit": "ms"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        },
+        {
+          "name": "restored_row_count",
+          "value": 50,
+          "unit": "count"
+        }
+      ],
+      "orderInRound": 2,
+      "cpuBusyPct": 0.9,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 2,
+      "framework": "Angular-Eager",
+      "scenario": "clear-filters",
+      "timestamp": "2026-11-06T02:37:27.895Z",
+      "measurements": [
+        {
+          "name": "clear_duration",
+          "value": 490,
+          "unit": "ms"
+        },
+        {
+          "name": "total_clear_time",
+          "value": 417,
+          "unit": "ms"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        },
+        {
+          "name": "restored_row_count",
+          "value": 50,
+          "unit": "count"
+        }
+      ],
+      "orderInRound": 1,
+      "cpuBusyPct": 0.6,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 3,
+      "framework": "Angular-Eager",
+      "scenario": "clear-filters",
+      "timestamp": "2026-11-06T02:37:39.459Z",
+      "measurements": [
+        {
+          "name": "clear_duration",
+          "value": 480.40000000037253,
+          "unit": "ms"
+        },
+        {
+          "name": "total_clear_time",
+          "value": 410,
+          "unit": "ms"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        },
+        {
+          "name": "restored_row_count",
+          "value": 50,
+          "unit": "count"
+        }
+      ],
+      "orderInRound": 2,
+      "cpuBusyPct": 0.4,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 4,
+      "framework": "Angular-Eager",
+      "scenario": "clear-filters",
+      "timestamp": "2026-11-06T02:37:44.008Z",
+      "measurements": [
+        {
+          "name": "clear_duration",
+          "value": 503.29999999981374,
+          "unit": "ms"
+        },
+        {
+          "name": "total_clear_time",
+          "value": 481,
+          "unit": "ms"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        },
+        {
+          "name": "restored_row_count",
+          "value": 50,
+          "unit": "count"
+        }
+      ],
+      "orderInRound": 1,
+      "cpuBusyPct": 1,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 5,
+      "framework": "Angular-Eager",
+      "scenario": "clear-filters",
+      "timestamp": "2026-11-06T02:37:52.094Z",
+      "measurements": [
+        {
+          "name": "clear_duration",
+          "value": 549,
+          "unit": "ms"
+        },
+        {
+          "name": "total_clear_time",
+          "value": 531,
+          "unit": "ms"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        },
+        {
+          "name": "restored_row_count",
+          "value": 50,
+          "unit": "count"
+        }
+      ],
+      "orderInRound": 1,
+      "cpuBusyPct": 0.9,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 1,
+      "framework": "Angular-Eager",
+      "scenario": "expand-collapse-description",
+      "timestamp": "2026-11-06T02:38:08.386Z",
+      "measurements": [
+        {
+          "name": "expand_duration",
+          "value": 109.40000000037253,
+          "unit": "ms"
+        },
+        {
+          "name": "expand_total_time",
+          "value": 102,
+          "unit": "ms"
+        },
+        {
+          "name": "expand_cls_delta",
+          "value": 0.000001980251736111111,
+          "unit": "score"
+        },
+        {
+          "name": "collapse_duration",
+          "value": 106.19999999925494,
+          "unit": "ms"
+        },
+        {
+          "name": "collapse_total_time",
+          "value": 104,
+          "unit": "ms"
+        },
+        {
+          "name": "collapse_cls_delta",
+          "value": 0.000001980251736111111,
+          "unit": "score"
+        }
+      ],
+      "orderInRound": 2,
+      "cpuBusyPct": 0.7,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 2,
+      "framework": "Angular-Eager",
+      "scenario": "expand-collapse-description",
+      "timestamp": "2026-11-06T02:38:12.019Z",
+      "measurements": [
+        {
+          "name": "expand_duration",
+          "value": 104.20000000018626,
+          "unit": "ms"
+        },
+        {
+          "name": "expand_total_time",
+          "value": 102,
+          "unit": "ms"
+        },
+        {
+          "name": "expand_cls_delta",
+          "value": 0.000001980251736111111,
+          "unit": "score"
+        },
+        {
+          "name": "collapse_duration",
+          "value": 107.19999999925494,
+          "unit": "ms"
+        },
+        {
+          "name": "collapse_total_time",
+          "value": 106,
+          "unit": "ms"
+        },
+        {
+          "name": "collapse_cls_delta",
+          "value": 0.000001980251736111111,
+          "unit": "score"
+        }
+      ],
+      "orderInRound": 1,
+      "cpuBusyPct": 1.1,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 3,
+      "framework": "Angular-Eager",
+      "scenario": "expand-collapse-description",
+      "timestamp": "2026-11-06T02:38:18.280Z",
+      "measurements": [
+        {
+          "name": "expand_duration",
+          "value": 106.5,
+          "unit": "ms"
+        },
+        {
+          "name": "expand_total_time",
+          "value": 105,
+          "unit": "ms"
+        },
+        {
+          "name": "expand_cls_delta",
+          "value": 0.000001980251736111111,
+          "unit": "score"
+        },
+        {
+          "name": "collapse_duration",
+          "value": 107.40000000037253,
+          "unit": "ms"
+        },
+        {
+          "name": "collapse_total_time",
+          "value": 106,
+          "unit": "ms"
+        },
+        {
+          "name": "collapse_cls_delta",
+          "value": 0.000001980251736111111,
+          "unit": "score"
+        }
+      ],
+      "orderInRound": 1,
+      "cpuBusyPct": 0.8,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 4,
+      "framework": "Angular-Eager",
+      "scenario": "expand-collapse-description",
+      "timestamp": "2026-11-06T02:38:24.572Z",
+      "measurements": [
+        {
+          "name": "expand_duration",
+          "value": 114.29999999981374,
+          "unit": "ms"
+        },
+        {
+          "name": "expand_total_time",
+          "value": 105,
+          "unit": "ms"
+        },
+        {
+          "name": "expand_cls_delta",
+          "value": 0.000001980251736111111,
+          "unit": "score"
+        },
+        {
+          "name": "collapse_duration",
+          "value": 107.20000000018626,
+          "unit": "ms"
+        },
+        {
+          "name": "collapse_total_time",
+          "value": 105,
+          "unit": "ms"
+        },
+        {
+          "name": "collapse_cls_delta",
+          "value": 0.000001980251736111111,
+          "unit": "score"
+        }
+      ],
+      "orderInRound": 1,
+      "cpuBusyPct": 1,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 5,
+      "framework": "Angular-Eager",
+      "scenario": "expand-collapse-description",
+      "timestamp": "2026-11-06T02:38:33.484Z",
+      "measurements": [
+        {
+          "name": "expand_duration",
+          "value": 113.80000000074506,
+          "unit": "ms"
+        },
+        {
+          "name": "expand_total_time",
+          "value": 103,
+          "unit": "ms"
+        },
+        {
+          "name": "expand_cls_delta",
+          "value": 0.000001980251736111111,
+          "unit": "score"
+        },
+        {
+          "name": "collapse_duration",
+          "value": 105.6000000005588,
+          "unit": "ms"
+        },
+        {
+          "name": "collapse_total_time",
+          "value": 104,
+          "unit": "ms"
+        },
+        {
+          "name": "collapse_cls_delta",
+          "value": 0.000001980251736111111,
+          "unit": "score"
+        }
+      ],
+      "orderInRound": 2,
+      "cpuBusyPct": 0.8,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 1,
+      "framework": "Angular-Eager",
+      "scenario": "navigate-to-detail",
+      "timestamp": "2026-11-06T02:38:52.540Z",
+      "measurements": [
+        {
+          "name": "total_navigation_time",
+          "value": 224,
+          "unit": "ms"
+        },
+        {
+          "name": "detail_lcp",
+          "value": 1496,
+          "unit": "ms"
+        },
+        {
+          "name": "detail_cls",
+          "value": 0,
+          "unit": "score"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        },
+        {
+          "name": "detail_request_count",
+          "value": 4,
+          "unit": "count"
+        },
+        {
+          "name": "detail_total_bytes",
+          "value": 44539,
+          "unit": "bytes"
+        }
+      ],
+      "orderInRound": 2,
+      "cpuBusyPct": 12.5,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 2,
+      "framework": "Angular-Eager",
+      "scenario": "navigate-to-detail",
+      "timestamp": "2026-11-06T02:38:58.428Z",
+      "measurements": [
+        {
+          "name": "total_navigation_time",
+          "value": 230,
+          "unit": "ms"
+        },
+        {
+          "name": "detail_lcp",
+          "value": 1300,
+          "unit": "ms"
+        },
+        {
+          "name": "detail_cls",
+          "value": 0,
+          "unit": "score"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        },
+        {
+          "name": "detail_request_count",
+          "value": 4,
+          "unit": "count"
+        },
+        {
+          "name": "detail_total_bytes",
+          "value": 44539,
+          "unit": "bytes"
+        }
+      ],
+      "orderInRound": 1,
+      "cpuBusyPct": 12.8,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 3,
+      "framework": "Angular-Eager",
+      "scenario": "navigate-to-detail",
+      "timestamp": "2026-11-06T02:39:06.748Z",
+      "measurements": [
+        {
+          "name": "total_navigation_time",
+          "value": 227,
+          "unit": "ms"
+        },
+        {
+          "name": "detail_lcp",
+          "value": 1008,
+          "unit": "ms"
+        },
+        {
+          "name": "detail_cls",
+          "value": 0,
+          "unit": "score"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        },
+        {
+          "name": "detail_request_count",
+          "value": 4,
+          "unit": "count"
+        },
+        {
+          "name": "detail_total_bytes",
+          "value": 44539,
+          "unit": "bytes"
+        }
+      ],
+      "orderInRound": 1,
+      "cpuBusyPct": 2,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 4,
+      "framework": "Angular-Eager",
+      "scenario": "navigate-to-detail",
+      "timestamp": "2026-11-06T02:39:18.440Z",
+      "measurements": [
+        {
+          "name": "total_navigation_time",
+          "value": 220,
+          "unit": "ms"
+        },
+        {
+          "name": "detail_lcp",
+          "value": 980,
+          "unit": "ms"
+        },
+        {
+          "name": "detail_cls",
+          "value": 0,
+          "unit": "score"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        },
+        {
+          "name": "detail_request_count",
+          "value": 4,
+          "unit": "count"
+        },
+        {
+          "name": "detail_total_bytes",
+          "value": 44539,
+          "unit": "bytes"
+        }
+      ],
+      "orderInRound": 2,
+      "cpuBusyPct": 0.9,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 5,
+      "framework": "Angular-Eager",
+      "scenario": "navigate-to-detail",
+      "timestamp": "2026-11-06T02:39:22.970Z",
+      "measurements": [
+        {
+          "name": "total_navigation_time",
+          "value": 218,
+          "unit": "ms"
+        },
+        {
+          "name": "detail_lcp",
+          "value": 940,
+          "unit": "ms"
+        },
+        {
+          "name": "detail_cls",
+          "value": 0,
+          "unit": "score"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        },
+        {
+          "name": "detail_request_count",
+          "value": 4,
+          "unit": "count"
+        },
+        {
+          "name": "detail_total_bytes",
+          "value": 44539,
+          "unit": "bytes"
+        }
+      ],
+      "orderInRound": 1,
+      "cpuBusyPct": 1.2,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 1,
+      "framework": "Angular-Eager",
+      "scenario": "navigate-back-to-list",
+      "timestamp": "2026-11-06T02:39:43.689Z",
+      "measurements": [
+        {
+          "name": "total_back_navigation_time",
+          "value": 968,
+          "unit": "ms"
+        },
+        {
+          "name": "rendered_row_count",
+          "value": 50,
+          "unit": "count"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        }
+      ],
+      "orderInRound": 1,
+      "cpuBusyPct": 1.2,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 2,
+      "framework": "Angular-Eager",
+      "scenario": "navigate-back-to-list",
+      "timestamp": "2026-11-06T02:39:59.326Z",
+      "measurements": [
+        {
+          "name": "total_back_navigation_time",
+          "value": 931,
+          "unit": "ms"
+        },
+        {
+          "name": "rendered_row_count",
+          "value": 50,
+          "unit": "count"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        }
+      ],
+      "orderInRound": 2,
+      "cpuBusyPct": 2.2,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 3,
+      "framework": "Angular-Eager",
+      "scenario": "navigate-back-to-list",
+      "timestamp": "2026-11-06T02:40:10.148Z",
+      "measurements": [
+        {
+          "name": "total_back_navigation_time",
+          "value": 996,
+          "unit": "ms"
+        },
+        {
+          "name": "rendered_row_count",
+          "value": 50,
+          "unit": "count"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        }
+      ],
+      "orderInRound": 2,
+      "cpuBusyPct": 0.7,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 4,
+      "framework": "Angular-Eager",
+      "scenario": "navigate-back-to-list",
+      "timestamp": "2026-11-06T02:40:20.850Z",
+      "measurements": [
+        {
+          "name": "total_back_navigation_time",
+          "value": 900,
+          "unit": "ms"
+        },
+        {
+          "name": "rendered_row_count",
+          "value": 50,
+          "unit": "count"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        }
+      ],
+      "orderInRound": 2,
+      "cpuBusyPct": 1.1,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 5,
+      "framework": "Angular-Eager",
+      "scenario": "navigate-back-to-list",
+      "timestamp": "2026-11-06T02:40:31.729Z",
+      "measurements": [
+        {
+          "name": "total_back_navigation_time",
+          "value": 925,
+          "unit": "ms"
+        },
+        {
+          "name": "rendered_row_count",
+          "value": 50,
+          "unit": "count"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        }
+      ],
+      "orderInRound": 2,
+      "cpuBusyPct": 1,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 1,
+      "framework": "Angular-Eager",
+      "scenario": "pagination-cycle",
+      "timestamp": "2026-11-06T02:40:50.125Z",
+      "measurements": [
+        {
+          "name": "page_transition_1_next",
+          "value": 372,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_1_next_js",
+          "value": 389.09999999962747,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_2_next",
+          "value": 417,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_2_next_js",
+          "value": 418.3999999994412,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_3_previous",
+          "value": 340,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_3_previous_js",
+          "value": 340.59999999962747,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_4_previous",
+          "value": 365,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_4_previous_js",
+          "value": 397.3999999994412,
+          "unit": "ms"
+        },
+        {
+          "name": "total_cycle_time",
+          "value": 1578,
+          "unit": "ms"
+        },
+        {
+          "name": "total_cycle_js_time",
+          "value": 1601.2999999998137,
+          "unit": "ms"
+        },
+        {
+          "name": "avg_page_transition",
+          "value": 373.5,
+          "unit": "ms"
+        },
+        {
+          "name": "min_page_transition",
+          "value": 340,
+          "unit": "ms"
+        },
+        {
+          "name": "max_page_transition",
+          "value": 417,
+          "unit": "ms"
+        },
+        {
+          "name": "avg_api_response_time",
+          "value": 29,
+          "unit": "ms"
+        },
+        {
+          "name": "total_api_requests",
+          "value": 4,
+          "unit": "count"
+        },
+        {
+          "name": "total_network_bytes",
+          "value": 277751,
+          "unit": "bytes"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        }
+      ],
+      "orderInRound": 2,
+      "cpuBusyPct": 1,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 2,
+      "framework": "Angular-Eager",
+      "scenario": "pagination-cycle",
+      "timestamp": "2026-11-06T02:40:55.153Z",
+      "measurements": [
+        {
+          "name": "page_transition_1_next",
+          "value": 384,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_1_next_js",
+          "value": 386.3999999994412,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_2_next",
+          "value": 407,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_2_next_js",
+          "value": 408.70000000018626,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_3_previous",
+          "value": 376,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_3_previous_js",
+          "value": 377.70000000018626,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_4_previous",
+          "value": 388,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_4_previous_js",
+          "value": 396,
+          "unit": "ms"
+        },
+        {
+          "name": "total_cycle_time",
+          "value": 1607,
+          "unit": "ms"
+        },
+        {
+          "name": "total_cycle_js_time",
+          "value": 1608.0999999996275,
+          "unit": "ms"
+        },
+        {
+          "name": "avg_page_transition",
+          "value": 388.75,
+          "unit": "ms"
+        },
+        {
+          "name": "min_page_transition",
+          "value": 376,
+          "unit": "ms"
+        },
+        {
+          "name": "max_page_transition",
+          "value": 407,
+          "unit": "ms"
+        },
+        {
+          "name": "avg_api_response_time",
+          "value": 0.75,
+          "unit": "ms"
+        },
+        {
+          "name": "total_api_requests",
+          "value": 4,
+          "unit": "count"
+        },
+        {
+          "name": "total_network_bytes",
+          "value": 277751,
+          "unit": "bytes"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        }
+      ],
+      "orderInRound": 1,
+      "cpuBusyPct": 1.1,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 3,
+      "framework": "Angular-Eager",
+      "scenario": "pagination-cycle",
+      "timestamp": "2026-11-06T02:41:04.253Z",
+      "measurements": [
+        {
+          "name": "page_transition_1_next",
+          "value": 378,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_1_next_js",
+          "value": 394.40000000037253,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_2_next",
+          "value": 384,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_2_next_js",
+          "value": 385.29999999981374,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_3_previous",
+          "value": 332,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_3_previous_js",
+          "value": 332.70000000018626,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_4_previous",
+          "value": 414,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_4_previous_js",
+          "value": 419.8999999994412,
+          "unit": "ms"
+        },
+        {
+          "name": "total_cycle_time",
+          "value": 1565,
+          "unit": "ms"
+        },
+        {
+          "name": "total_cycle_js_time",
+          "value": 1570.4000000003725,
+          "unit": "ms"
+        },
+        {
+          "name": "avg_page_transition",
+          "value": 377,
+          "unit": "ms"
+        },
+        {
+          "name": "min_page_transition",
+          "value": 332,
+          "unit": "ms"
+        },
+        {
+          "name": "max_page_transition",
+          "value": 414,
+          "unit": "ms"
+        },
+        {
+          "name": "avg_api_response_time",
+          "value": 28.25,
+          "unit": "ms"
+        },
+        {
+          "name": "total_api_requests",
+          "value": 4,
+          "unit": "count"
+        },
+        {
+          "name": "total_network_bytes",
+          "value": 277751,
+          "unit": "bytes"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        }
+      ],
+      "orderInRound": 1,
+      "cpuBusyPct": 1.1,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 4,
+      "framework": "Angular-Eager",
+      "scenario": "pagination-cycle",
+      "timestamp": "2026-11-06T02:41:17.230Z",
+      "measurements": [
+        {
+          "name": "page_transition_1_next",
+          "value": 385,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_1_next_js",
+          "value": 401.8999999994412,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_2_next",
+          "value": 408,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_2_next_js",
+          "value": 409.20000000018626,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_3_previous",
+          "value": 348,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_3_previous_js",
+          "value": 348.8999999994412,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_4_previous",
+          "value": 391,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_4_previous_js",
+          "value": 396.09999999962747,
+          "unit": "ms"
+        },
+        {
+          "name": "total_cycle_time",
+          "value": 1578,
+          "unit": "ms"
+        },
+        {
+          "name": "total_cycle_js_time",
+          "value": 1580,
+          "unit": "ms"
+        },
+        {
+          "name": "avg_page_transition",
+          "value": 383,
+          "unit": "ms"
+        },
+        {
+          "name": "min_page_transition",
+          "value": 348,
+          "unit": "ms"
+        },
+        {
+          "name": "max_page_transition",
+          "value": 408,
+          "unit": "ms"
+        },
+        {
+          "name": "avg_api_response_time",
+          "value": 28.75,
+          "unit": "ms"
+        },
+        {
+          "name": "total_api_requests",
+          "value": 4,
+          "unit": "count"
+        },
+        {
+          "name": "total_network_bytes",
+          "value": 277751,
+          "unit": "bytes"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        }
+      ],
+      "orderInRound": 2,
+      "cpuBusyPct": 0.7,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 5,
+      "framework": "Angular-Eager",
+      "scenario": "pagination-cycle",
+      "timestamp": "2026-11-06T02:41:26.276Z",
+      "measurements": [
+        {
+          "name": "page_transition_1_next",
+          "value": 382,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_1_next_js",
+          "value": 399.29999999981374,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_2_next",
+          "value": 411,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_2_next_js",
+          "value": 412.40000000037253,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_3_previous",
+          "value": 334,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_3_previous_js",
+          "value": 335.3999999994412,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_4_previous",
+          "value": 359,
+          "unit": "ms"
+        },
+        {
+          "name": "page_transition_4_previous_js",
+          "value": 359.6000000005588,
+          "unit": "ms"
+        },
+        {
+          "name": "total_cycle_time",
+          "value": 1549,
+          "unit": "ms"
+        },
+        {
+          "name": "total_cycle_js_time",
+          "value": 1579.1000000005588,
+          "unit": "ms"
+        },
+        {
+          "name": "avg_page_transition",
+          "value": 371.5,
+          "unit": "ms"
+        },
+        {
+          "name": "min_page_transition",
+          "value": 334,
+          "unit": "ms"
+        },
+        {
+          "name": "max_page_transition",
+          "value": 411,
+          "unit": "ms"
+        },
+        {
+          "name": "avg_api_response_time",
+          "value": 28.25,
+          "unit": "ms"
+        },
+        {
+          "name": "total_api_requests",
+          "value": 4,
+          "unit": "count"
+        },
+        {
+          "name": "total_network_bytes",
+          "value": 277751,
+          "unit": "bytes"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        }
+      ],
+      "orderInRound": 2,
+      "cpuBusyPct": 0.6,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 1,
+      "framework": "Angular-Eager",
+      "scenario": "detail-navigation-cycle",
+      "timestamp": "2026-11-06T02:41:36.381Z",
+      "measurements": [
+        {
+          "name": "initial_detail_load",
+          "value": 666,
+          "unit": "ms"
+        },
+        {
+          "name": "next_navigation_time",
+          "value": 14,
+          "unit": "ms"
+        },
+        {
+          "name": "next_navigation_js",
+          "value": 17.300000000745058,
+          "unit": "ms"
+        },
+        {
+          "name": "prev_navigation_time",
+          "value": 21,
+          "unit": "ms"
+        },
+        {
+          "name": "prev_navigation_js",
+          "value": 24.5,
+          "unit": "ms"
+        },
+        {
+          "name": "total_cycle_time",
+          "value": 353,
+          "unit": "ms"
+        },
+        {
+          "name": "total_cycle_js_time",
+          "value": 353.79999999981374,
+          "unit": "ms"
+        },
+        {
+          "name": "avg_navigation_time",
+          "value": 17.5,
+          "unit": "ms"
+        },
+        {
+          "name": "avg_api_response_time",
+          "value": 2.25,
+          "unit": "ms"
+        },
+        {
+          "name": "total_api_requests",
+          "value": 5,
+          "unit": "count"
+        },
+        {
+          "name": "total_network_bytes",
+          "value": 19737,
+          "unit": "bytes"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        }
+      ],
+      "orderInRound": 1,
+      "cpuBusyPct": 1,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 2,
+      "framework": "Angular-Eager",
+      "scenario": "detail-navigation-cycle",
+      "timestamp": "2026-11-06T02:41:45.238Z",
+      "measurements": [
+        {
+          "name": "initial_detail_load",
+          "value": 662,
+          "unit": "ms"
+        },
+        {
+          "name": "next_navigation_time",
+          "value": 17,
+          "unit": "ms"
+        },
+        {
+          "name": "next_navigation_js",
+          "value": 20.5,
+          "unit": "ms"
+        },
+        {
+          "name": "prev_navigation_time",
+          "value": 24,
+          "unit": "ms"
+        },
+        {
+          "name": "prev_navigation_js",
+          "value": 27.40000000037253,
+          "unit": "ms"
+        },
+        {
+          "name": "total_cycle_time",
+          "value": 359,
+          "unit": "ms"
+        },
+        {
+          "name": "total_cycle_js_time",
+          "value": 360.29999999981374,
+          "unit": "ms"
+        },
+        {
+          "name": "avg_navigation_time",
+          "value": 20.5,
+          "unit": "ms"
+        },
+        {
+          "name": "avg_api_response_time",
+          "value": 3.75,
+          "unit": "ms"
+        },
+        {
+          "name": "total_api_requests",
+          "value": 5,
+          "unit": "count"
+        },
+        {
+          "name": "total_network_bytes",
+          "value": 19737,
+          "unit": "bytes"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        }
+      ],
+      "orderInRound": 2,
+      "cpuBusyPct": 0.6,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 3,
+      "framework": "Angular-Eager",
+      "scenario": "detail-navigation-cycle",
+      "timestamp": "2026-11-06T02:41:51.485Z",
+      "measurements": [
+        {
+          "name": "initial_detail_load",
+          "value": 674,
+          "unit": "ms"
+        },
+        {
+          "name": "next_navigation_time",
+          "value": 11,
+          "unit": "ms"
+        },
+        {
+          "name": "next_navigation_js",
+          "value": 14.399999999441206,
+          "unit": "ms"
+        },
+        {
+          "name": "prev_navigation_time",
+          "value": 21,
+          "unit": "ms"
+        },
+        {
+          "name": "prev_navigation_js",
+          "value": 25,
+          "unit": "ms"
+        },
+        {
+          "name": "total_cycle_time",
+          "value": 349,
+          "unit": "ms"
+        },
+        {
+          "name": "total_cycle_js_time",
+          "value": 350.40000000037253,
+          "unit": "ms"
+        },
+        {
+          "name": "avg_navigation_time",
+          "value": 16,
+          "unit": "ms"
+        },
+        {
+          "name": "avg_api_response_time",
+          "value": 2.25,
+          "unit": "ms"
+        },
+        {
+          "name": "total_api_requests",
+          "value": 5,
+          "unit": "count"
+        },
+        {
+          "name": "total_network_bytes",
+          "value": 19737,
+          "unit": "bytes"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        }
+      ],
+      "orderInRound": 2,
+      "cpuBusyPct": 1.2,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 4,
+      "framework": "Angular-Eager",
+      "scenario": "detail-navigation-cycle",
+      "timestamp": "2026-11-06T02:41:55.107Z",
+      "measurements": [
+        {
+          "name": "initial_detail_load",
+          "value": 666,
+          "unit": "ms"
+        },
+        {
+          "name": "next_navigation_time",
+          "value": 16,
+          "unit": "ms"
+        },
+        {
+          "name": "next_navigation_js",
+          "value": 19.799999999813735,
+          "unit": "ms"
+        },
+        {
+          "name": "prev_navigation_time",
+          "value": 23,
+          "unit": "ms"
+        },
+        {
+          "name": "prev_navigation_js",
+          "value": 26.699999999254942,
+          "unit": "ms"
+        },
+        {
+          "name": "total_cycle_time",
+          "value": 355,
+          "unit": "ms"
+        },
+        {
+          "name": "total_cycle_js_time",
+          "value": 356.59999999962747,
+          "unit": "ms"
+        },
+        {
+          "name": "avg_navigation_time",
+          "value": 19.5,
+          "unit": "ms"
+        },
+        {
+          "name": "avg_api_response_time",
+          "value": 2.25,
+          "unit": "ms"
+        },
+        {
+          "name": "total_api_requests",
+          "value": 5,
+          "unit": "count"
+        },
+        {
+          "name": "total_network_bytes",
+          "value": 19737,
+          "unit": "bytes"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        }
+      ],
+      "orderInRound": 1,
+      "cpuBusyPct": 1.1,
+      "cpuGateTimedOut": false
+    },
+    {
+      "runNumber": 5,
+      "framework": "Angular-Eager",
+      "scenario": "detail-navigation-cycle",
+      "timestamp": "2026-11-06T02:42:03.974Z",
+      "measurements": [
+        {
+          "name": "initial_detail_load",
+          "value": 666,
+          "unit": "ms"
+        },
+        {
+          "name": "next_navigation_time",
+          "value": 14,
+          "unit": "ms"
+        },
+        {
+          "name": "next_navigation_js",
+          "value": 16.90000000037253,
+          "unit": "ms"
+        },
+        {
+          "name": "prev_navigation_time",
+          "value": 24,
+          "unit": "ms"
+        },
+        {
+          "name": "prev_navigation_js",
+          "value": 27.5,
+          "unit": "ms"
+        },
+        {
+          "name": "total_cycle_time",
+          "value": 356,
+          "unit": "ms"
+        },
+        {
+          "name": "total_cycle_js_time",
+          "value": 356.5,
+          "unit": "ms"
+        },
+        {
+          "name": "avg_navigation_time",
+          "value": 19,
+          "unit": "ms"
+        },
+        {
+          "name": "avg_api_response_time",
+          "value": 2,
+          "unit": "ms"
+        },
+        {
+          "name": "total_api_requests",
+          "value": 5,
+          "unit": "count"
+        },
+        {
+          "name": "total_network_bytes",
+          "value": 19737,
+          "unit": "bytes"
+        },
+        {
+          "name": "memory_delta",
+          "value": 0,
+          "unit": "bytes"
+        }
+      ],
+      "orderInRound": 2,
+      "cpuBusyPct": 0.7,
+      "cpuGateTimedOut": false
+    }
+  ],
+  "aggregated": [
+    {
+      "framework": "Angular-OnPush",
+      "scenario": "initial-page-load",
+      "totalRuns": 5,
+      "discardedRuns": [],
+      "median": {
+        "fcp": 88,
+        "lcp": 980,
+        "cls": 0,
+        "tti": 10.700000000186265,
+        "tbt": 0,
+        "initial_heap_size": 35100000,
+        "initial_used_heap": 20500000,
+        "request_count": 56,
+        "total_bytes": 529730,
+        "network_duration": 1046,
+        "largest_request": 274936,
+        "avg_api_response_time": 15,
+        "total_navigation_time": 610
+      },
+      "mean": {
+        "fcp": 88.8,
+        "lcp": 979.2,
+        "cls": 0,
+        "tti": 10.700000000186265,
+        "tbt": 0,
+        "initial_heap_size": 35100000,
+        "initial_used_heap": 20500000,
+        "request_count": 56,
+        "total_bytes": 529730,
+        "network_duration": 1044.2,
+        "largest_request": 274936,
+        "avg_api_response_time": 10,
+        "total_navigation_time": 610.4
+      },
+      "min": {
+        "fcp": 88,
+        "lcp": 972,
+        "cls": 0,
+        "tti": 10.599999999627471,
+        "tbt": 0,
+        "initial_heap_size": 35100000,
+        "initial_used_heap": 20500000,
+        "request_count": 56,
+        "total_bytes": 529730,
+        "network_duration": 1037,
+        "largest_request": 274936,
+        "avg_api_response_time": 1,
+        "total_navigation_time": 609
+      },
+      "max": {
+        "fcp": 92,
+        "lcp": 984,
+        "cls": 0,
+        "tti": 10.800000000745058,
+        "tbt": 0,
+        "initial_heap_size": 35100000,
+        "initial_used_heap": 20500000,
+        "request_count": 56,
+        "total_bytes": 529730,
+        "network_duration": 1051,
+        "largest_request": 274936,
+        "avg_api_response_time": 16,
+        "total_navigation_time": 614
+      },
+      "stdDev": {
+        "fcp": 1.5999999999999999,
+        "lcp": 4.664761515876241,
+        "cls": 0,
+        "tti": 0.08944271918329161,
+        "tbt": 0,
+        "initial_heap_size": 0,
+        "initial_used_heap": 0,
+        "request_count": 0,
+        "total_bytes": 0,
+        "network_duration": 5.035871324805669,
+        "largest_request": 0,
+        "avg_api_response_time": 6.957010852370434,
+        "total_navigation_time": 1.8547236990991407
+      },
+      "cv": {
+        "fcp": 0.018018018018018018,
+        "lcp": 0.004763849587291913,
+        "cls": 0,
+        "tti": 0.008359132633806972,
+        "tbt": 0,
+        "initial_heap_size": 0,
+        "initial_used_heap": 0,
+        "request_count": 0,
+        "total_bytes": 0,
+        "network_duration": 0.004822707646816384,
+        "largest_request": 0,
+        "avg_api_response_time": 0.6957010852370434,
+        "total_navigation_time": 0.003038538170214844
+      }
+    },
+    {
+      "framework": "Angular-OnPush",
+      "scenario": "filter-application",
+      "totalRuns": 5,
+      "discardedRuns": [],
+      "median": {
+        "filter_duration": 177.69999999925494,
+        "total_filter_time": 170,
+        "memory_delta": 0,
+        "filtered_row_count": 11,
+        "js_execution_time": 177.69999999925494
+      },
+      "mean": {
+        "filter_duration": 171.37999999988824,
+        "total_filter_time": 165,
+        "memory_delta": 0,
+        "filtered_row_count": 11,
+        "js_execution_time": 171.37999999988824
+      },
+      "min": {
+        "filter_duration": 140.6000000005588,
+        "total_filter_time": 133,
+        "memory_delta": 0,
+        "filtered_row_count": 11,
+        "js_execution_time": 140.6000000005588
+      },
+      "max": {
+        "filter_duration": 189.8999999994412,
+        "total_filter_time": 182,
+        "memory_delta": 0,
+        "filtered_row_count": 11,
+        "js_execution_time": 189.8999999994412
+      },
+      "stdDev": {
+        "filter_duration": 17.030725175011945,
+        "total_filter_time": 16.769019053003667,
+        "memory_delta": 0,
+        "filtered_row_count": 0,
+        "js_execution_time": 17.030725175011945
+      },
+      "cv": {
+        "filter_duration": 0.09937405283593798,
+        "total_filter_time": 0.10163041850305253,
+        "memory_delta": 0,
+        "filtered_row_count": 0,
+        "js_execution_time": 0.09937405283593798
+      }
+    },
+    {
+      "framework": "Angular-OnPush",
+      "scenario": "clear-filters",
+      "totalRuns": 5,
+      "discardedRuns": [],
+      "median": {
+        "clear_duration": 506.29999999981374,
+        "total_clear_time": 484,
+        "memory_delta": 0,
+        "restored_row_count": 50
+      },
+      "mean": {
+        "clear_duration": 498.8599999999627,
+        "total_clear_time": 457.4,
+        "memory_delta": 0,
+        "restored_row_count": 50
+      },
+      "min": {
+        "clear_duration": 474.70000000018626,
+        "total_clear_time": 405,
+        "memory_delta": 0,
+        "restored_row_count": 50
+      },
+      "max": {
+        "clear_duration": 524.2999999998137,
+        "total_clear_time": 501,
+        "memory_delta": 0,
+        "restored_row_count": 50
+      },
+      "stdDev": {
+        "clear_duration": 18.90159781600527,
+        "total_clear_time": 41.552857904120145,
+        "memory_delta": 0,
+        "restored_row_count": 0
+      },
+      "cv": {
+        "clear_duration": 0.037889583883267214,
+        "total_clear_time": 0.09084577591630989,
+        "memory_delta": 0,
+        "restored_row_count": 0
+      }
+    },
+    {
+      "framework": "Angular-OnPush",
+      "scenario": "expand-collapse-description",
+      "totalRuns": 5,
+      "discardedRuns": [],
+      "median": {
+        "expand_duration": 105.6000000005588,
+        "expand_total_time": 104,
+        "expand_cls_delta": 0.000001980251736111111,
+        "collapse_duration": 107.09999999962747,
+        "collapse_total_time": 105,
+        "collapse_cls_delta": 0.000001980251736111111
+      },
+      "mean": {
+        "expand_duration": 107.52000000011176,
+        "expand_total_time": 103.8,
+        "expand_cls_delta": 0.000001980251736111111,
+        "collapse_duration": 107.05999999977648,
+        "collapse_total_time": 105,
+        "collapse_cls_delta": 0.000001980251736111111
+      },
+      "min": {
+        "expand_duration": 103.70000000018626,
+        "expand_total_time": 103,
+        "expand_cls_delta": 0.000001980251736111111,
+        "collapse_duration": 106.5,
+        "collapse_total_time": 105,
+        "collapse_cls_delta": 0.000001980251736111111
+      },
+      "max": {
+        "expand_duration": 115.70000000018626,
+        "expand_total_time": 105,
+        "expand_cls_delta": 0.000001980251736111111,
+        "collapse_duration": 107.5,
+        "collapse_total_time": 105,
+        "collapse_cls_delta": 0.000001980251736111111
+      },
+      "stdDev": {
+        "expand_duration": 4.256477416802498,
+        "expand_total_time": 0.7483314773547882,
+        "expand_cls_delta": 0,
+        "collapse_duration": 0.3440930106990273,
+        "collapse_total_time": 0,
+        "collapse_cls_delta": 0
+      },
+      "cv": {
+        "expand_duration": 0.03958777359373208,
+        "expand_total_time": 0.007209359126732064,
+        "expand_cls_delta": 0,
+        "collapse_duration": 0.0032140202755440474,
+        "collapse_total_time": 0,
+        "collapse_cls_delta": 0
+      }
+    },
+    {
+      "framework": "Angular-OnPush",
+      "scenario": "navigate-to-detail",
+      "totalRuns": 5,
+      "discardedRuns": [],
+      "median": {
+        "total_navigation_time": 214,
+        "detail_lcp": 980,
+        "detail_cls": 0,
+        "memory_delta": 0,
+        "detail_request_count": 4,
+        "detail_total_bytes": 44491
+      },
+      "mean": {
+        "total_navigation_time": 216.6,
+        "detail_lcp": 1089.6,
+        "detail_cls": 0,
+        "memory_delta": 0,
+        "detail_request_count": 4,
+        "detail_total_bytes": 44491
+      },
+      "min": {
+        "total_navigation_time": 207,
+        "detail_lcp": 952,
+        "detail_cls": 0,
+        "memory_delta": 0,
+        "detail_request_count": 4,
+        "detail_total_bytes": 44491
+      },
+      "max": {
+        "total_navigation_time": 226,
+        "detail_lcp": 1368,
+        "detail_cls": 0,
+        "memory_delta": 0,
+        "detail_request_count": 4,
+        "detail_total_bytes": 44491
+      },
+      "stdDev": {
+        "total_navigation_time": 7.605261336732618,
+        "detail_lcp": 162.11798172935661,
+        "detail_cls": 0,
+        "memory_delta": 0,
+        "detail_request_count": 0,
+        "detail_total_bytes": 0
+      },
+      "cv": {
+        "total_navigation_time": 0.0351120098648782,
+        "detail_lcp": 0.1487866939513185,
+        "detail_cls": 0,
+        "memory_delta": 0,
+        "detail_request_count": 0,
+        "detail_total_bytes": 0
+      }
+    },
+    {
+      "framework": "Angular-OnPush",
+      "scenario": "navigate-back-to-list",
+      "totalRuns": 5,
+      "discardedRuns": [],
+      "median": {
+        "total_back_navigation_time": 891,
+        "rendered_row_count": 50,
+        "memory_delta": 0
+      },
+      "mean": {
+        "total_back_navigation_time": 892.4,
+        "rendered_row_count": 50,
+        "memory_delta": 0
+      },
+      "min": {
+        "total_back_navigation_time": 848,
+        "rendered_row_count": 50,
+        "memory_delta": 0
+      },
+      "max": {
+        "total_back_navigation_time": 930,
+        "rendered_row_count": 50,
+        "memory_delta": 0
+      },
+      "stdDev": {
+        "total_back_navigation_time": 29.193149881436227,
+        "rendered_row_count": 0,
+        "memory_delta": 0
+      },
+      "cv": {
+        "total_back_navigation_time": 0.032713076962613434,
+        "rendered_row_count": 0,
+        "memory_delta": 0
+      }
+    },
+    {
+      "framework": "Angular-OnPush",
+      "scenario": "pagination-cycle",
+      "totalRuns": 5,
+      "discardedRuns": [],
+      "median": {
+        "page_transition_1_next": 364,
+        "page_transition_1_next_js": 381.30000000074506,
+        "page_transition_2_next": 411,
+        "page_transition_2_next_js": 412.3999999994412,
+        "page_transition_3_previous": 315,
+        "page_transition_3_previous_js": 316,
+        "page_transition_4_previous": 384,
+        "page_transition_4_previous_js": 389.09999999962747,
+        "total_cycle_time": 1524,
+        "total_cycle_js_time": 1529.5,
+        "avg_page_transition": 368.25,
+        "min_page_transition": 315,
+        "max_page_transition": 413,
+        "avg_api_response_time": 5.5,
+        "total_api_requests": 4,
+        "total_network_bytes": 277751,
+        "memory_delta": 0
+      },
+      "mean": {
+        "page_transition_1_next": 372.8,
+        "page_transition_1_next_js": 383.360000000149,
+        "page_transition_2_next": 410.2,
+        "page_transition_2_next_js": 411.039999999851,
+        "page_transition_3_previous": 324.4,
+        "page_transition_3_previous_js": 325.539999999851,
+        "page_transition_4_previous": 384,
+        "page_transition_4_previous_js": 390.57999999970195,
+        "total_cycle_time": 1539.6,
+        "total_cycle_js_time": 1544.9799999998882,
+        "avg_page_transition": 372.85,
+        "min_page_transition": 324.4,
+        "max_page_transition": 417.6,
+        "avg_api_response_time": 12.95,
+        "total_api_requests": 4,
+        "total_network_bytes": 277751,
+        "memory_delta": 0
+      },
+      "min": {
+        "page_transition_1_next": 357,
+        "page_transition_1_next_js": 374,
+        "page_transition_2_next": 381,
+        "page_transition_2_next_js": 381.3999999994412,
+        "page_transition_3_previous": 290,
+        "page_transition_3_previous_js": 290.5,
+        "page_transition_4_previous": 360,
+        "page_transition_4_previous_js": 362.09999999962747,
+        "total_cycle_time": 1506,
+        "total_cycle_js_time": 1513.0999999996275,
+        "avg_page_transition": 362.25,
+        "min_page_transition": 290,
+        "max_page_transition": 411,
+        "avg_api_response_time": 0.25,
+        "total_api_requests": 4,
+        "total_network_bytes": 277751,
+        "memory_delta": 0
+      },
+      "max": {
+        "page_transition_1_next": 395,
+        "page_transition_1_next_js": 396.09999999962747,
+        "page_transition_2_next": 435,
+        "page_transition_2_next_js": 435.70000000018626,
+        "page_transition_3_previous": 359,
+        "page_transition_3_previous_js": 359,
+        "page_transition_4_previous": 418,
+        "page_transition_4_previous_js": 429,
+        "total_cycle_time": 1577,
+        "total_cycle_js_time": 1581.2999999998137,
+        "avg_page_transition": 387.75,
+        "min_page_transition": 359,
+        "max_page_transition": 435,
+        "avg_api_response_time": 28.5,
+        "total_api_requests": 4,
+        "total_network_bytes": 277751,
+        "memory_delta": 0
+      },
+      "stdDev": {
+        "page_transition_1_next": 14.3024473430249,
+        "page_transition_1_next_js": 7.264323781107467,
+        "page_transition_2_next": 17.186040847152668,
+        "page_transition_2_next_js": 17.31618895738809,
+        "page_transition_3_previous": 26.37877935007608,
+        "page_transition_3_previous_js": 26.1714042420032,
+        "page_transition_4_previous": 20.346989949375804,
+        "page_transition_4_previous_js": 23.54649867831633,
+        "total_cycle_time": 28.089855820206694,
+        "total_cycle_js_time": 27.386011027760038,
+        "avg_page_transition": 10.73382504049698,
+        "min_page_transition": 26.37877935007608,
+        "max_page_transition": 9.068627239003707,
+        "avg_api_response_time": 12.7057073789695,
+        "total_api_requests": 0,
+        "total_network_bytes": 0,
+        "memory_delta": 0
+      },
+      "cv": {
+        "page_transition_1_next": 0.03836493386004533,
+        "page_transition_1_next_js": 0.018949091666070127,
+        "page_transition_2_next": 0.04189673536604746,
+        "page_transition_2_next_js": 0.042127746587666326,
+        "page_transition_3_previous": 0.0813155960236624,
+        "page_transition_3_previous_js": 0.0803938202433347,
+        "page_transition_4_previous": 0.05298695299316616,
+        "page_transition_4_previous_js": 0.0602859815616117,
+        "total_cycle_time": 0.01824490505339484,
+        "total_cycle_js_time": 0.017725802940984362,
+        "avg_page_transition": 0.028788588012597503,
+        "min_page_transition": 0.0813155960236624,
+        "max_page_transition": 0.021716061396081673,
+        "avg_api_response_time": 0.9811357049397298,
+        "total_api_requests": 0,
+        "total_network_bytes": 0,
+        "memory_delta": 0
+      }
+    },
+    {
+      "framework": "Angular-OnPush",
+      "scenario": "detail-navigation-cycle",
+      "totalRuns": 5,
+      "discardedRuns": [],
+      "median": {
+        "initial_detail_load": 665,
+        "next_navigation_time": 14,
+        "next_navigation_js": 17.200000000186265,
+        "prev_navigation_time": 24,
+        "prev_navigation_js": 27.40000000037253,
+        "total_cycle_time": 356,
+        "total_cycle_js_time": 357,
+        "avg_navigation_time": 19,
+        "avg_api_response_time": 1.25,
+        "total_api_requests": 5,
+        "total_network_bytes": 19737,
+        "memory_delta": 0
+      },
+      "mean": {
+        "initial_detail_load": 666,
+        "next_navigation_time": 13.8,
+        "next_navigation_js": 17.36000000014901,
+        "prev_navigation_time": 21.6,
+        "prev_navigation_js": 24.88000000026077,
+        "total_cycle_time": 351.6,
+        "total_cycle_js_time": 352.9,
+        "avg_navigation_time": 17.7,
+        "avg_api_response_time": 1.45,
+        "total_api_requests": 5,
+        "total_network_bytes": 19737,
+        "memory_delta": 0
+      },
+      "min": {
+        "initial_detail_load": 664,
+        "next_navigation_time": 11,
+        "next_navigation_js": 14.599999999627471,
+        "prev_navigation_time": 10,
+        "prev_navigation_js": 12.900000000372529,
+        "total_cycle_time": 336,
+        "total_cycle_js_time": 337.5,
+        "avg_navigation_time": 10.5,
+        "avg_api_response_time": 0.5,
+        "total_api_requests": 5,
+        "total_network_bytes": 19737,
+        "memory_delta": 0
+      },
+      "max": {
+        "initial_detail_load": 668,
+        "next_navigation_time": 17,
+        "next_navigation_js": 20.100000000558794,
+        "prev_navigation_time": 26,
+        "prev_navigation_js": 29.09999999962747,
+        "total_cycle_time": 357,
+        "total_cycle_js_time": 358.29999999981374,
+        "avg_navigation_time": 20.5,
+        "avg_api_response_time": 3,
+        "total_api_requests": 5,
+        "total_network_bytes": 19737,
+        "memory_delta": 0
+      },
+      "stdDev": {
+        "initial_detail_load": 1.6733200530681511,
+        "next_navigation_time": 2.4819347291981715,
+        "next_navigation_js": 2.373689112045893,
+        "prev_navigation_time": 5.885575587824865,
+        "prev_navigation_js": 6.039668864994263,
+        "total_cycle_time": 7.9145435749637505,
+        "total_cycle_js_time": 7.8503503106155454,
+        "avg_navigation_time": 3.6687872655688283,
+        "avg_api_response_time": 0.9539392014169458,
+        "total_api_requests": 0,
+        "total_network_bytes": 0,
+        "memory_delta": 0
+      },
+      "cv": {
+        "initial_detail_load": 0.002512492572174401,
+        "next_navigation_time": 0.17985034269551967,
+        "next_navigation_js": 0.1367332437802718,
+        "prev_navigation_time": 0.27248035128818815,
+        "prev_navigation_js": 0.24275196402455626,
+        "total_cycle_time": 0.02251007842708689,
+        "total_cycle_js_time": 0.022245254493101576,
+        "avg_navigation_time": 0.20727611669880386,
+        "avg_api_response_time": 0.6578891044254799,
+        "total_api_requests": 0,
+        "total_network_bytes": 0,
+        "memory_delta": 0
+      }
+    },
+    {
+      "framework": "Angular-Eager",
+      "scenario": "initial-page-load",
+      "totalRuns": 5,
+      "discardedRuns": [],
+      "median": {
+        "fcp": 88,
+        "lcp": 972,
+        "cls": 0,
+        "tti": 11,
+        "tbt": 0,
+        "initial_heap_size": 35100000,
+        "initial_used_heap": 20500000,
+        "request_count": 56,
+        "total_bytes": 530168,
+        "network_duration": 1038,
+        "largest_request": 274984,
+        "avg_api_response_time": 16,
+        "total_navigation_time": 612
+      },
+      "mean": {
+        "fcp": 87.2,
+        "lcp": 974.4,
+        "cls": 0,
+        "tti": 10.979999999888241,
+        "tbt": 0,
+        "initial_heap_size": 35100000,
+        "initial_used_heap": 20980000,
+        "request_count": 56,
+        "total_bytes": 530168,
+        "network_duration": 1044,
+        "largest_request": 274984,
+        "avg_api_response_time": 16.4,
+        "total_navigation_time": 611.8
+      },
+      "min": {
+        "fcp": 84,
+        "lcp": 952,
+        "cls": 0,
+        "tti": 10.599999999627471,
+        "tbt": 0,
+        "initial_heap_size": 35100000,
+        "initial_used_heap": 20500000,
+        "request_count": 56,
+        "total_bytes": 530168,
+        "network_duration": 1011,
+        "largest_request": 274984,
+        "avg_api_response_time": 16,
+        "total_navigation_time": 610
+      },
+      "max": {
+        "fcp": 88,
+        "lcp": 996,
+        "cls": 0,
+        "tti": 11.400000000372529,
+        "tbt": 0,
+        "initial_heap_size": 35100000,
+        "initial_used_heap": 21700000,
+        "request_count": 56,
+        "total_bytes": 530168,
+        "network_duration": 1071,
+        "largest_request": 274984,
+        "avg_api_response_time": 17,
+        "total_navigation_time": 615
+      },
+      "stdDev": {
+        "fcp": 1.5999999999999999,
+        "lcp": 14.22111106770494,
+        "cls": 0,
+        "tti": 0.2712931995364774,
+        "tbt": 0,
+        "initial_heap_size": 0,
+        "initial_used_heap": 587877.5382679628,
+        "request_count": 0,
+        "total_bytes": 0,
+        "network_duration": 21.531372459738837,
+        "largest_request": 0,
+        "avg_api_response_time": 0.4898979485566356,
+        "total_navigation_time": 1.8330302779823362
+      },
+      "cv": {
+        "fcp": 0.018348623853211007,
+        "lcp": 0.014594736317431179,
+        "cls": 0,
+        "tti": 0.024707941670240322,
+        "tbt": 0,
+        "initial_heap_size": 0,
+        "initial_used_heap": 0.02802085501753874,
+        "request_count": 0,
+        "total_bytes": 0,
+        "network_duration": 0.020623919980592754,
+        "largest_request": 0,
+        "avg_api_response_time": 0.029871826131502174,
+        "total_navigation_time": 0.0029961266393957768
+      }
+    },
+    {
+      "framework": "Angular-Eager",
+      "scenario": "filter-application",
+      "totalRuns": 5,
+      "discardedRuns": [],
+      "median": {
+        "filter_duration": 144.79999999981374,
+        "total_filter_time": 144,
+        "memory_delta": 0,
+        "filtered_row_count": 11,
+        "js_execution_time": 144.79999999981374
+      },
+      "mean": {
+        "filter_duration": 147.49999999981372,
+        "total_filter_time": 142.2,
+        "memory_delta": 0,
+        "filtered_row_count": 11,
+        "js_execution_time": 147.49999999981372
+      },
+      "min": {
+        "filter_duration": 128.5,
+        "total_filter_time": 121,
+        "memory_delta": 0,
+        "filtered_row_count": 11,
+        "js_execution_time": 128.5
+      },
+      "max": {
+        "filter_duration": 168.59999999962747,
+        "total_filter_time": 159,
+        "memory_delta": 0,
+        "filtered_row_count": 11,
+        "js_execution_time": 168.59999999962747
+      },
+      "stdDev": {
+        "filter_duration": 13.173913617364704,
+        "total_filter_time": 13.287588193498472,
+        "memory_delta": 0,
+        "filtered_row_count": 0,
+        "js_execution_time": 13.173913617364704
+      },
+      "cv": {
+        "filter_duration": 0.08931466859241587,
+        "total_filter_time": 0.09344295494724665,
+        "memory_delta": 0,
+        "filtered_row_count": 0,
+        "js_execution_time": 0.08931466859241587
+      }
+    },
+    {
+      "framework": "Angular-Eager",
+      "scenario": "clear-filters",
+      "totalRuns": 5,
+      "discardedRuns": [],
+      "median": {
+        "clear_duration": 490,
+        "total_clear_time": 417,
+        "memory_delta": 0,
+        "restored_row_count": 50
+      },
+      "mean": {
+        "clear_duration": 501.44000000003723,
+        "total_clear_time": 450.4,
+        "memory_delta": 0,
+        "restored_row_count": 50
+      },
+      "min": {
+        "clear_duration": 480.40000000037253,
+        "total_clear_time": 410,
+        "memory_delta": 0,
+        "restored_row_count": 50
+      },
+      "max": {
+        "clear_duration": 549,
+        "total_clear_time": 531,
+        "memory_delta": 0,
+        "restored_row_count": 50
+      },
+      "stdDev": {
+        "clear_duration": 25.003727722016297,
+        "total_clear_time": 48.12317529008243,
+        "memory_delta": 0,
+        "restored_row_count": 0
+      },
+      "cv": {
+        "clear_duration": 0.049863847563047306,
+        "total_clear_time": 0.10684541583055603,
+        "memory_delta": 0,
+        "restored_row_count": 0
+      }
+    },
+    {
+      "framework": "Angular-Eager",
+      "scenario": "expand-collapse-description",
+      "totalRuns": 5,
+      "discardedRuns": [],
+      "median": {
+        "expand_duration": 109.40000000037253,
+        "expand_total_time": 103,
+        "expand_cls_delta": 0.000001980251736111111,
+        "collapse_duration": 107.19999999925494,
+        "collapse_total_time": 105,
+        "collapse_cls_delta": 0.000001980251736111111
+      },
+      "mean": {
+        "expand_duration": 109.64000000022352,
+        "expand_total_time": 103.4,
+        "expand_cls_delta": 0.000001980251736111111,
+        "collapse_duration": 106.71999999992549,
+        "collapse_total_time": 105,
+        "collapse_cls_delta": 0.000001980251736111111
+      },
+      "min": {
+        "expand_duration": 104.20000000018626,
+        "expand_total_time": 102,
+        "expand_cls_delta": 0.000001980251736111111,
+        "collapse_duration": 105.6000000005588,
+        "collapse_total_time": 104,
+        "collapse_cls_delta": 0.000001980251736111111
+      },
+      "max": {
+        "expand_duration": 114.29999999981374,
+        "expand_total_time": 105,
+        "expand_cls_delta": 0.000001980251736111111,
+        "collapse_duration": 107.40000000037253,
+        "collapse_total_time": 106,
+        "collapse_cls_delta": 0.000001980251736111111
+      },
+      "stdDev": {
+        "expand_duration": 3.9631300761458115,
+        "expand_total_time": 1.3564659966250536,
+        "expand_cls_delta": 0,
+        "collapse_duration": 0.6997142273090294,
+        "collapse_total_time": 0.8944271909999159,
+        "collapse_cls_delta": 0
+      },
+      "cv": {
+        "expand_duration": 0.03614675370428431,
+        "expand_total_time": 0.013118626659816765,
+        "expand_cls_delta": 0,
+        "collapse_duration": 0.00655654260972187,
+        "collapse_total_time": 0.008518354199999198,
+        "collapse_cls_delta": 0
+      }
+    },
+    {
+      "framework": "Angular-Eager",
+      "scenario": "navigate-to-detail",
+      "totalRuns": 5,
+      "discardedRuns": [],
+      "median": {
+        "total_navigation_time": 224,
+        "detail_lcp": 1008,
+        "detail_cls": 0,
+        "memory_delta": 0,
+        "detail_request_count": 4,
+        "detail_total_bytes": 44539
+      },
+      "mean": {
+        "total_navigation_time": 223.8,
+        "detail_lcp": 1144.8,
+        "detail_cls": 0,
+        "memory_delta": 0,
+        "detail_request_count": 4,
+        "detail_total_bytes": 44539
+      },
+      "min": {
+        "total_navigation_time": 218,
+        "detail_lcp": 940,
+        "detail_cls": 0,
+        "memory_delta": 0,
+        "detail_request_count": 4,
+        "detail_total_bytes": 44539
+      },
+      "max": {
+        "total_navigation_time": 230,
+        "detail_lcp": 1496,
+        "detail_cls": 0,
+        "memory_delta": 0,
+        "detail_request_count": 4,
+        "detail_total_bytes": 44539
+      },
+      "stdDev": {
+        "total_navigation_time": 4.3999999999999995,
+        "detail_lcp": 216.90772231527396,
+        "detail_cls": 0,
+        "memory_delta": 0,
+        "detail_request_count": 0,
+        "detail_total_bytes": 0
+      },
+      "cv": {
+        "total_navigation_time": 0.019660411081322608,
+        "detail_lcp": 0.18947215436344686,
+        "detail_cls": 0,
+        "memory_delta": 0,
+        "detail_request_count": 0,
+        "detail_total_bytes": 0
+      }
+    },
+    {
+      "framework": "Angular-Eager",
+      "scenario": "navigate-back-to-list",
+      "totalRuns": 5,
+      "discardedRuns": [],
+      "median": {
+        "total_back_navigation_time": 931,
+        "rendered_row_count": 50,
+        "memory_delta": 0
+      },
+      "mean": {
+        "total_back_navigation_time": 944,
+        "rendered_row_count": 50,
+        "memory_delta": 0
+      },
+      "min": {
+        "total_back_navigation_time": 900,
+        "rendered_row_count": 50,
+        "memory_delta": 0
+      },
+      "max": {
+        "total_back_navigation_time": 996,
+        "rendered_row_count": 50,
+        "memory_delta": 0
+      },
+      "stdDev": {
+        "total_back_navigation_time": 33.89985250705377,
+        "rendered_row_count": 0,
+        "memory_delta": 0
+      },
+      "cv": {
+        "total_back_navigation_time": 0.03591086070662476,
+        "rendered_row_count": 0,
+        "memory_delta": 0
+      }
+    },
+    {
+      "framework": "Angular-Eager",
+      "scenario": "pagination-cycle",
+      "totalRuns": 5,
+      "discardedRuns": [],
+      "median": {
+        "page_transition_1_next": 382,
+        "page_transition_1_next_js": 394.40000000037253,
+        "page_transition_2_next": 408,
+        "page_transition_2_next_js": 409.20000000018626,
+        "page_transition_3_previous": 340,
+        "page_transition_3_previous_js": 340.59999999962747,
+        "page_transition_4_previous": 388,
+        "page_transition_4_previous_js": 396.09999999962747,
+        "total_cycle_time": 1578,
+        "total_cycle_js_time": 1580,
+        "avg_page_transition": 377,
+        "min_page_transition": 340,
+        "max_page_transition": 411,
+        "avg_api_response_time": 28.25,
+        "total_api_requests": 4,
+        "total_network_bytes": 277751,
+        "memory_delta": 0
+      },
+      "mean": {
+        "page_transition_1_next": 380.2,
+        "page_transition_1_next_js": 394.21999999973923,
+        "page_transition_2_next": 405.4,
+        "page_transition_2_next_js": 406.8,
+        "page_transition_3_previous": 346,
+        "page_transition_3_previous_js": 347.0599999997765,
+        "page_transition_4_previous": 383.4,
+        "page_transition_4_previous_js": 393.79999999981374,
+        "total_cycle_time": 1575.4,
+        "total_cycle_js_time": 1587.7800000000746,
+        "avg_page_transition": 378.75,
+        "min_page_transition": 346,
+        "max_page_transition": 411.4,
+        "avg_api_response_time": 23,
+        "total_api_requests": 4,
+        "total_network_bytes": 277751,
+        "memory_delta": 0
+      },
+      "min": {
+        "page_transition_1_next": 372,
+        "page_transition_1_next_js": 386.3999999994412,
+        "page_transition_2_next": 384,
+        "page_transition_2_next_js": 385.29999999981374,
+        "page_transition_3_previous": 332,
+        "page_transition_3_previous_js": 332.70000000018626,
+        "page_transition_4_previous": 359,
+        "page_transition_4_previous_js": 359.6000000005588,
+        "total_cycle_time": 1549,
+        "total_cycle_js_time": 1570.4000000003725,
+        "avg_page_transition": 371.5,
+        "min_page_transition": 332,
+        "max_page_transition": 407,
+        "avg_api_response_time": 0.75,
+        "total_api_requests": 4,
+        "total_network_bytes": 277751,
+        "memory_delta": 0
+      },
+      "max": {
+        "page_transition_1_next": 385,
+        "page_transition_1_next_js": 401.8999999994412,
+        "page_transition_2_next": 417,
+        "page_transition_2_next_js": 418.3999999994412,
+        "page_transition_3_previous": 376,
+        "page_transition_3_previous_js": 377.70000000018626,
+        "page_transition_4_previous": 414,
+        "page_transition_4_previous_js": 419.8999999994412,
+        "total_cycle_time": 1607,
+        "total_cycle_js_time": 1608.0999999996275,
+        "avg_page_transition": 388.75,
+        "min_page_transition": 376,
+        "max_page_transition": 417,
+        "avg_api_response_time": 29,
+        "total_api_requests": 4,
+        "total_network_bytes": 277751,
+        "memory_delta": 0
+      },
+      "stdDev": {
+        "page_transition_1_next": 4.749736834815167,
+        "page_transition_1_next_js": 5.86835581747073,
+        "page_transition_2_next": 11.253443917308159,
+        "page_transition_2_next_js": 11.291944031041064,
+        "page_transition_3_previous": 16,
+        "page_transition_3_previous_js": 16.285527317356674,
+        "page_transition_4_previous": 19.744366285095097,
+        "page_transition_4_previous_js": 19.359442140345227,
+        "total_cycle_time": 19.06410239166796,
+        "total_cycle_js_time": 14.377955348081827,
+        "avg_page_transition": 6.34428877022476,
+        "min_page_transition": 16,
+        "max_page_transition": 3.7202150475476548,
+        "avg_api_response_time": 11.128791488746655,
+        "total_api_requests": 0,
+        "total_network_bytes": 0,
+        "memory_delta": 0
+      },
+      "cv": {
+        "page_transition_1_next": 0.012492732337756883,
+        "page_transition_1_next_js": 0.014885992129964517,
+        "page_transition_2_next": 0.02775886511422832,
+        "page_transition_2_next_js": 0.02775797451091707,
+        "page_transition_3_previous": 0.046242774566473986,
+        "page_transition_3_previous_js": 0.046924241679730194,
+        "page_transition_4_previous": 0.051498086293936096,
+        "page_transition_4_previous_js": 0.04916059456666933,
+        "total_cycle_time": 0.012101118694723852,
+        "total_cycle_js_time": 0.009055382576982423,
+        "avg_page_transition": 0.01675059741313468,
+        "min_page_transition": 0.046242774566473986,
+        "max_page_transition": 0.009042817325103682,
+        "avg_api_response_time": 0.48386049951072413,
+        "total_api_requests": 0,
+        "total_network_bytes": 0,
+        "memory_delta": 0
+      }
+    },
+    {
+      "framework": "Angular-Eager",
+      "scenario": "detail-navigation-cycle",
+      "totalRuns": 5,
+      "discardedRuns": [],
+      "median": {
+        "initial_detail_load": 666,
+        "next_navigation_time": 14,
+        "next_navigation_js": 17.300000000745058,
+        "prev_navigation_time": 23,
+        "prev_navigation_js": 26.699999999254942,
+        "total_cycle_time": 355,
+        "total_cycle_js_time": 356.5,
+        "avg_navigation_time": 19,
+        "avg_api_response_time": 2.25,
+        "total_api_requests": 5,
+        "total_network_bytes": 19737,
+        "memory_delta": 0
+      },
+      "mean": {
+        "initial_detail_load": 666.8,
+        "next_navigation_time": 14.4,
+        "next_navigation_js": 17.780000000074505,
+        "prev_navigation_time": 22.6,
+        "prev_navigation_js": 26.219999999925495,
+        "total_cycle_time": 354.4,
+        "total_cycle_js_time": 355.5199999999255,
+        "avg_navigation_time": 18.5,
+        "avg_api_response_time": 2.5,
+        "total_api_requests": 5,
+        "total_network_bytes": 19737,
+        "memory_delta": 0
+      },
+      "min": {
+        "initial_detail_load": 662,
+        "next_navigation_time": 11,
+        "next_navigation_js": 14.399999999441206,
+        "prev_navigation_time": 21,
+        "prev_navigation_js": 24.5,
+        "total_cycle_time": 349,
+        "total_cycle_js_time": 350.40000000037253,
+        "avg_navigation_time": 16,
+        "avg_api_response_time": 2,
+        "total_api_requests": 5,
+        "total_network_bytes": 19737,
+        "memory_delta": 0
+      },
+      "max": {
+        "initial_detail_load": 674,
+        "next_navigation_time": 17,
+        "next_navigation_js": 20.5,
+        "prev_navigation_time": 24,
+        "prev_navigation_js": 27.5,
+        "total_cycle_time": 359,
+        "total_cycle_js_time": 360.29999999981374,
+        "avg_navigation_time": 20.5,
+        "avg_api_response_time": 3.75,
+        "total_api_requests": 5,
+        "total_network_bytes": 19737,
+        "memory_delta": 0
+      },
+      "stdDev": {
+        "initial_detail_load": 3.9191835884530852,
+        "next_navigation_time": 2.0591260281974,
+        "next_navigation_js": 2.1866869918510985,
+        "prev_navigation_time": 1.3564659966250538,
+        "prev_navigation_js": 1.2416118556267022,
+        "total_cycle_time": 3.32264954516723,
+        "total_cycle_js_time": 3.2908357599321394,
+        "avg_navigation_time": 1.5811388300841898,
+        "avg_api_response_time": 0.6324555320336759,
+        "total_api_requests": 0,
+        "total_network_bytes": 0,
+        "memory_delta": 0
+      },
+      "cv": {
+        "initial_detail_load": 0.005877599862707087,
+        "next_navigation_time": 0.14299486306926387,
+        "next_navigation_js": 0.12298577006985013,
+        "prev_navigation_time": 0.060020619319692645,
+        "prev_navigation_js": 0.04735361768231237,
+        "total_cycle_time": 0.009375421967176159,
+        "total_cycle_js_time": 0.009256401214932574,
+        "avg_navigation_time": 0.08546696378833459,
+        "avg_api_response_time": 0.25298221281347033,
+        "total_api_requests": 0,
+        "total_network_bytes": 0,
+        "memory_delta": 0
+      }
+    }
+  ]
+}

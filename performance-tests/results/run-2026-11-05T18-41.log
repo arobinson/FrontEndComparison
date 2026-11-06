@@ -1,0 +1,334 @@
+================================================================================
+Frontend Framework Performance Testing
+================================================================================
+
+Configuration:
+  Measured rounds: 5  (+1 warm-up, discarded)
+  Seed: 1658243121
+  CPU gate: <= 15% busy, max wait 120s
+  Viewport: 1920x1080
+  Frameworks: Angular, React, Svelte, Solid, Lit, Vue, Preact, VueVapor
+  Scenarios: 8
+  Output: /Users/andrew/Experience/Development/FrontEndComparison/performance-tests/results
+
+  Browser: 156.0.8078.4  Node: v24.22.2  Intel(R) Core(TM) i7-8850H CPU @ 2.60GHz x12
+  ⚠️  Working tree has uncommitted changes - results will not map cleanly to a commit
+
+============================================================
+Scenario: initial-page-load  (1 warm-up + 5 measured rounds)
+============================================================
+  ⏳ CPU 21.4% busy (threshold 15%), waiting for machine to settle...
+  warm-up 1/1  cpu 7.3%  order: Lit → Solid → Svelte → VueVapor → Vue → Angular → Preact → React
+  round 1/5  cpu 3.7%  order: React → Lit → Angular → Vue → Svelte → Preact → Solid → VueVapor
+  round 2/5  cpu 5.9%  order: Svelte → Lit → Solid → VueVapor → Preact → React → Angular → Vue
+  round 3/5  cpu 4.7%  order: VueVapor → Svelte → Vue → Lit → React → Solid → Angular → Preact
+  round 4/5  cpu 1.7%  order: VueVapor → Angular → Solid → React → Svelte → Vue → Lit → Preact
+  round 5/5  cpu 2.4%  order: Vue → VueVapor → Solid → Preact → Svelte → Angular → Lit → React
+
+============================================================
+Scenario: filter-application  (1 warm-up + 5 measured rounds)
+============================================================
+  warm-up 1/1  cpu 10.3%  order: Vue → Svelte → VueVapor → Lit → Preact → Solid → Angular → React
+  round 1/5  cpu 2.3%  order: React → Svelte → Preact → Angular → Solid → VueVapor → Vue → Lit
+  round 2/5  cpu 2.7%  order: Solid → Preact → Angular → VueVapor → Lit → React → Svelte → Vue
+  round 3/5  cpu 2.4%  order: Angular → Solid → Lit → Preact → VueVapor → Vue → React → Svelte
+  round 4/5  cpu 4.7%  order: Svelte → React → Vue → Solid → VueVapor → Preact → Angular → Lit
+  round 5/5  cpu 4.2%  order: Vue → Solid → Svelte → Angular → Lit → React → Preact → VueVapor
+
+============================================================
+Scenario: clear-filters  (1 warm-up + 5 measured rounds)
+============================================================
+  warm-up 1/1  cpu 10.6%  order: Vue → Svelte → Solid → React → VueVapor → Lit → Angular → Preact
+  round 1/5  cpu 13.6%  order: Angular → Vue → Solid → VueVapor → Svelte → Preact → React → Lit
+  round 2/5  cpu 2.7%  order: Angular → Solid → VueVapor → Preact → Svelte → Lit → Vue → React
+  ⏳ CPU 26.1% busy (threshold 15%), waiting for machine to settle...
+  round 3/5  cpu 13.3%  order: React → Angular → Lit → Preact → VueVapor → Vue → Solid → Svelte
+  round 4/5  cpu 2.4%  order: Lit → VueVapor → Svelte → Solid → Vue → React → Angular → Preact
+  round 5/5  cpu 11%  order: Solid → Svelte → VueVapor → Preact → Lit → Vue → Angular → React
+
+============================================================
+Scenario: expand-collapse-description  (1 warm-up + 5 measured rounds)
+============================================================
+  warm-up 1/1  cpu 15%  order: Lit → Angular → Svelte → Preact → React → Solid → VueVapor → Vue
+  round 1/5  cpu 2.2%  order: VueVapor → Solid → Vue → Preact → Svelte → Angular → Lit → React
+  round 2/5  cpu 2.9%  order: Preact → React → Angular → Solid → Lit → Svelte → VueVapor → Vue
+  round 3/5  cpu 1.8%  order: Angular → Lit → Solid → Preact → Vue → Svelte → VueVapor → React
+  round 4/5  cpu 1.6%  order: Angular → Preact → Solid → Vue → Lit → React → Svelte → VueVapor
+  round 5/5  cpu 2.7%  order: React → Angular → Vue → Lit → Preact → VueVapor → Solid → Svelte
+
+============================================================
+Scenario: navigate-to-detail  (1 warm-up + 5 measured rounds)
+============================================================
+  warm-up 1/1  cpu 10.4%  order: Angular → Lit → React → Svelte → Vue → Preact → Solid → VueVapor
+  round 1/5  cpu 1.7%  order: Solid → Vue → Svelte → React → Lit → Angular → Preact → VueVapor
+  round 2/5  cpu 1.9%  order: Vue → Lit → React → Solid → Angular → Svelte → Preact → VueVapor
+  round 3/5  cpu 1.7%  order: Angular → Preact → Svelte → Vue → React → VueVapor → Lit → Solid
+  round 4/5  cpu 2.2%  order: Svelte → Preact → React → Angular → VueVapor → Vue → Solid → Lit
+  round 5/5  cpu 3.7%  order: Angular → Solid → Vue → Svelte → Lit → React → Preact → VueVapor
+
+============================================================
+Scenario: navigate-back-to-list  (1 warm-up + 5 measured rounds)
+============================================================
+  warm-up 1/1  cpu 9.6%  order: Svelte → Solid → Preact → Angular → React → Vue → Lit → VueVapor
+  round 1/5  cpu 3.2%  order: Vue → Solid → React → Lit → VueVapor → Svelte → Angular → Preact
+  round 2/5  cpu 0.9%  order: Svelte → Lit → VueVapor → Solid → React → Preact → Vue → Angular
+  round 3/5  cpu 0.9%  order: Angular → Preact → Vue → Svelte → VueVapor → Lit → React → Solid
+  round 4/5  cpu 0.8%  order: VueVapor → Svelte → Preact → Lit → Solid → Angular → React → Vue
+  round 5/5  cpu 0.5%  order: Preact → VueVapor → Solid → Angular → React → Vue → Lit → Svelte
+
+============================================================
+Scenario: pagination-cycle  (1 warm-up + 5 measured rounds)
+============================================================
+  warm-up 1/1  cpu 10.3%  order: Solid → Angular → React → VueVapor → Vue → Svelte → Lit → Preact
+  round 1/5  cpu 0.6%  order: VueVapor → Vue → Lit → Svelte → Angular → React → Solid → Preact
+  round 2/5  cpu 1.1%  order: Vue → Angular → Lit → Svelte → React → VueVapor → Solid → Preact
+  round 3/5  cpu 0.8%  order: Vue → Preact → React → VueVapor → Angular → Solid → Svelte → Lit
+  round 4/5  cpu 1.9%  order: Angular → VueVapor → React → Vue → Lit → Svelte → Preact → Solid
+  round 5/5  cpu 0.6%  order: Svelte → Angular → Lit → VueVapor → Vue → Preact → React → Solid
+
+============================================================
+Scenario: detail-navigation-cycle  (1 warm-up + 5 measured rounds)
+============================================================
+  warm-up 1/1  cpu 9.7%  order: Lit → Angular → VueVapor → Solid → Vue → Svelte → Preact → React
+  round 1/5  cpu 0.4%  order: React → Preact → Vue → Angular → VueVapor → Lit → Svelte → Solid
+  round 2/5  cpu 0.8%  order: Preact → React → VueVapor → Vue → Angular → Lit → Svelte → Solid
+  round 3/5  cpu 0.7%  order: Svelte → Solid → Angular → React → Preact → Lit → Vue → VueVapor
+  round 4/5  cpu 0.9%  order: VueVapor → React → Lit → Solid → Preact → Angular → Svelte → Vue
+  round 5/5  cpu 4.3%  order: Solid → VueVapor → Angular → Svelte → Vue → React → Lit → Preact
+
+================================================================================
+Running Build Analysis
+================================================================================
+
+Analyzing build for Angular...
+Running: pnpm run build:perf
+Build completed in 6466ms
+Analyzing bundle size in /Users/andrew/Experience/Development/FrontEndComparison/perf-dist/angular...
+Total files: 10
+Total size: 730.22 KB
+Gzipped size: 215.12 KB
+Compression ratio: 29.5%
+
+Breakdown:
+  Initial: 536.60 KB (gzip: 164.96 KB)
+  Lazy: 0.00 KB (gzip: 0.00 KB)
+  Vendor: 193.62 KB (gzip: 50.16 KB)
+  JS: 729.82 KB (8 files)
+  CSS: 0.40 KB (2 files)
+
+Analyzing build for React...
+Running: pnpm run build:perf
+Build completed in 3011ms
+Analyzing bundle size in /Users/andrew/Experience/Development/FrontEndComparison/perf-dist/react...
+Total files: 2
+Total size: 300.59 KB
+Gzipped size: 90.50 KB
+Compression ratio: 30.1%
+
+Breakdown:
+  Initial: 0.00 KB (gzip: 0.00 KB)
+  Lazy: 0.00 KB (gzip: 0.00 KB)
+  Vendor: 0.00 KB (gzip: 0.00 KB)
+  JS: 285.20 KB (1 files)
+  CSS: 13.93 KB (1 files)
+
+Analyzing build for Svelte...
+Running: pnpm run build:perf
+Build completed in 4165ms
+Analyzing bundle size in /Users/andrew/Experience/Development/FrontEndComparison/perf-dist/svelte...
+Total files: 46
+Total size: 300.70 KB
+Gzipped size: 108.45 KB
+Compression ratio: 36.1%
+
+Breakdown:
+  Initial: 0.00 KB (gzip: 0.00 KB)
+  Lazy: 0.00 KB (gzip: 0.00 KB)
+  Vendor: 0.00 KB (gzip: 0.00 KB)
+  JS: 272.93 KB (38 files)
+  CSS: 27.72 KB (8 files)
+
+Analyzing build for Solid...
+Running: pnpm run build:perf
+Build completed in 1357ms
+Analyzing bundle size in /Users/andrew/Experience/Development/FrontEndComparison/perf-dist/solid...
+Total files: 2
+Total size: 86.33 KB
+Gzipped size: 26.59 KB
+Compression ratio: 30.8%
+
+Breakdown:
+  Initial: 0.00 KB (gzip: 0.00 KB)
+  Lazy: 0.00 KB (gzip: 0.00 KB)
+  Vendor: 0.00 KB (gzip: 0.00 KB)
+  JS: 75.11 KB (1 files)
+  CSS: 11.22 KB (1 files)
+
+Analyzing build for Lit...
+Running: pnpm run build:perf
+Build completed in 405ms
+Analyzing bundle size in /Users/andrew/Experience/Development/FrontEndComparison/perf-dist/lit...
+Total files: 2
+Total size: 83.97 KB
+Gzipped size: 20.18 KB
+Compression ratio: 24.0%
+
+Breakdown:
+  Initial: 0.00 KB (gzip: 0.00 KB)
+  Lazy: 0.00 KB (gzip: 0.00 KB)
+  Vendor: 0.00 KB (gzip: 0.00 KB)
+  JS: 83.77 KB (1 files)
+  CSS: 0.20 KB (1 files)
+
+Analyzing build for Vue...
+Running: pnpm run build:perf
+Build completed in 3122ms
+Analyzing bundle size in /Users/andrew/Experience/Development/FrontEndComparison/perf-dist/vue...
+Total files: 2
+Total size: 138.41 KB
+Gzipped size: 46.96 KB
+Compression ratio: 33.9%
+
+Breakdown:
+  Initial: 0.00 KB (gzip: 0.00 KB)
+  Lazy: 0.00 KB (gzip: 0.00 KB)
+  Vendor: 0.00 KB (gzip: 0.00 KB)
+  JS: 123.01 KB (1 files)
+  CSS: 13.93 KB (1 files)
+
+Analyzing build for Preact...
+Running: pnpm run build:perf
+Build completed in 2291ms
+Analyzing bundle size in /Users/andrew/Experience/Development/FrontEndComparison/perf-dist/preact...
+Total files: 2
+Total size: 64.12 KB
+Gzipped size: 19.35 KB
+Compression ratio: 30.2%
+
+Breakdown:
+  Initial: 0.00 KB (gzip: 0.00 KB)
+  Lazy: 0.00 KB (gzip: 0.00 KB)
+  Vendor: 0.00 KB (gzip: 0.00 KB)
+  JS: 48.72 KB (1 files)
+  CSS: 13.93 KB (1 files)
+
+Analyzing build for VueVapor...
+Running: pnpm run build:perf
+Build completed in 3450ms
+Analyzing bundle size in /Users/andrew/Experience/Development/FrontEndComparison/perf-dist/vue-vapor...
+Total files: 2
+Total size: 210.00 KB
+Gzipped size: 72.41 KB
+Compression ratio: 34.5%
+
+Breakdown:
+  Initial: 0.00 KB (gzip: 0.00 KB)
+  Lazy: 0.00 KB (gzip: 0.00 KB)
+  Vendor: 0.00 KB (gzip: 0.00 KB)
+  JS: 194.61 KB (1 files)
+  CSS: 13.93 KB (1 files)
+
+================================================================================
+Exporting Results
+================================================================================
+
+Full results exported to: /Users/andrew/Experience/Development/FrontEndComparison/performance-tests/results/results-2026-11-06T02-04-02-830Z.json
+
+Raw data exported to: /Users/andrew/Experience/Development/FrontEndComparison/performance-tests/results/raw-data-2026-11-06T02-04-02-830Z.csv
+Aggregated results exported to: /Users/andrew/Experience/Development/FrontEndComparison/performance-tests/results/aggregated-2026-11-06T02-04-02-830Z.csv
+
+================================================================================
+Results Summary
+================================================================================
+
+initial-page-load  [fcp]
+  framework      median      min      max      cv
+  Preact             48       48       48    0.0%
+  Lit                76       76       80    2.1%
+  Vue                80       76       84    3.2%
+  Svelte             84       80      100    7.9%
+  Angular            88       88      128   16.7%  ⚠️ noisy
+  Solid              88       84       92    3.4%
+  VueVapor           88       88       88    0.0%
+  React              92       88       92    1.8%
+
+filter-application  [filter_duration]
+  framework      median      min      max      cv
+  Solid              66       65       70    2.9%
+  Svelte             77       75       83    3.9%
+  Preact             84       77       88    4.5%
+  React              84       79       87    3.5%
+  Lit                92       86       95    3.5%
+  Vue               103       94      105    4.0%
+  VueVapor          104       96      106    3.8%
+  Angular           166      127      184   11.8%  ⚠️ noisy
+
+clear-filters  [clear_duration]
+  framework      median      min      max      cv
+  Solid             230      198      235    6.8%
+  Svelte            270      257      328    9.0%
+  Preact            288      245      326   10.6%  ⚠️ noisy
+  Lit               297      280      301    2.5%
+  VueVapor          298      269      314    4.9%
+  React             300      298      333    4.3%
+  Vue               317      303      333    3.2%
+  Angular           492      480      496    1.2%
+
+expand-collapse-description  [expand_duration]
+  framework      median      min      max      cv
+  React             104      103      105    0.6%
+  Angular           104      103      105    0.7%
+  Solid             105      104      105    0.4%
+  Preact            105      104      105    0.3%
+  VueVapor          105      104      105    0.4%
+  Vue               105      104      105    0.4%
+  Svelte            105      103      105    0.6%
+  Lit               107      106      107    0.3%
+
+navigate-to-detail  [total_navigation_time]
+  framework      median      min      max      cv
+  Lit               177      174      182    1.6%
+  Preact            186      180      193    2.4%
+  React             193      189      202    2.2%
+  Svelte            193      182      208    4.3%
+  Solid             194      173      200    5.4%
+  Vue               194      190      200    1.7%
+  VueVapor          202      190      219    4.7%
+  Angular           220      210      227    2.8%
+
+navigate-back-to-list  [total_back_navigation_time]
+  framework      median      min      max      cv
+  Preact            187      184      193    1.8%
+  React             190      182      194    2.2%
+  Vue               226      217      231    2.2%
+  Svelte            236      231      249    2.5%
+  VueVapor          249      224      257    5.2%
+  Solid             272      267      273    0.9%
+  Lit               306      296      316    2.6%
+  Angular           936      859     1053    7.5%
+
+pagination-cycle  [page_transition_1_next]
+  framework      median      min      max      cv
+  Svelte            273      268      276    1.0%
+  VueVapor          301      287      304    2.0%
+  Preact            307      276      314    4.4%
+  React             319      312      327    1.5%
+  Vue               325      318      332    1.7%
+  Solid             340      337      350    1.4%
+  Lit               350      339      356    1.6%
+  Angular           385      362      401    3.3%
+
+detail-navigation-cycle  [initial_detail_load]
+  framework      median      min      max      cv
+  Preact            627      625      681    3.4%
+  Lit               628      620      675    3.2%
+  Solid             635      633      684    3.1%
+  Vue               639      639      648    0.5%
+  VueVapor          649      647      652    0.3%
+  Svelte            658      657      662    0.3%
+  React             662      652      704    2.8%
+  Angular           667      665      688    1.4%
+
+================================================================================
+Testing Complete!
+================================================================================

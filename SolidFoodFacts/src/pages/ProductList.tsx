@@ -157,10 +157,11 @@ export default function ProductList() {
     return null;
   }
 
-  function renderCell(value: any, column: string, row: Record<string, any>) {
+  function renderCell(value: () => any, column: string, row: () => Record<string, any>) {
     const dataType = getColumnDataType(column as keyof MockProductViewModel);
     const unit = getColumnUnit(column);
-    return <CellRenderer value={value} dataType={dataType} column={column} row={row} unit={unit} />;
+    // value()/row() compile to reactive prop getters: the cell updates in place when its row changes
+    return <CellRenderer value={value()} dataType={dataType} column={column} row={row()} unit={unit} />;
   }
 
   return (

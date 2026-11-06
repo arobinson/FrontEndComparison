@@ -1,4 +1,5 @@
 import { reactive, readonly } from 'vue';
+import { filterValuesEqual } from 'shared-types';
 
 export interface RangeValue {
   min?: number;
@@ -51,6 +52,8 @@ export const createFilterStore = (onChange?: () => void): FilterStore => {
     },
     apply: (column) => {
       const draft = state.drafts[column];
+      // A commit that changes nothing (e.g. blur without an edit) is a no-op, like a native change event
+      if (filterValuesEqual(draft, state.applied[column])) return;
       if (draft !== undefined) {
         state.applied[column] = snapshot(draft);
       }

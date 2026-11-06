@@ -9,18 +9,12 @@ const CURRENT_FRAMEWORK = 'angular';
   styleUrl: './framework-header.css',
 })
 export class FrameworkHeader {
-  protected readonly frameworks = FRAMEWORKS;
   protected readonly currentFramework = CURRENT_FRAMEWORK;
-  protected readonly currentFrameworkName = FRAMEWORKS.find(
-    (f) => f.id === CURRENT_FRAMEWORK,
-  )?.name;
+  protected readonly currentFrameworkName = FRAMEWORKS.find((f) => f.id === CURRENT_FRAMEWORK)?.name;
 
-  protected getUrl(frameworkId: string): string {
-    return getFrameworkUrl(
-      CURRENT_FRAMEWORK,
-      frameworkId,
-      window.location.pathname,
-      window.location.port,
-    );
-  }
+  /** Header links, resolved once from the URL the app was opened at */
+  protected readonly links = FRAMEWORKS.map((framework) => ({
+    ...framework,
+    url: getFrameworkUrl(CURRENT_FRAMEWORK, framework.id, window.location.pathname, window.location.port),
+  }));
 }

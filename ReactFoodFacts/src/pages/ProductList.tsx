@@ -15,7 +15,7 @@ import {
 } from '../components/shared';
 import { CellRenderer } from '../components/table/CellRenderer';
 import './ProductList.css';
-import type { MockProductViewModel } from 'shared-types';
+import { filterValuesEqual, type MockProductViewModel } from 'shared-types';
 
 const GRADE_OPTIONS = ['A', 'B', 'C', 'D', 'F'];
 const NOVA_OPTIONS = ['1', '2', '3', '4'];
@@ -129,10 +129,16 @@ const ProductList = () => {
     const dataType = getColumnDataType(column);
     const draft = drafts[column];
     const setDraft = (value: FilterValue) => dispatch({ type: 'setDraft', column, value });
-    const apply = () => dispatch({ type: 'apply', column });
+    const applyIfChanged = () => {
+      // A commit that changes nothing (e.g. blur without an edit) is a no-op, like a native change event
+      if (!filterValuesEqual(draft, filters[column])) {
+        dispatch({ type: 'apply', column });
+      }
+    };
+    // A toggle always changes the selection
     const setDraftAndApply = (value: string[]) => {
       setDraft(value);
-      apply();
+      dispatch({ type: 'apply', column });
     };
 
     switch (dataType) {
@@ -143,7 +149,7 @@ const ProductList = () => {
             min={0}
             max={100}
             onValueChange={setDraft}
-            onCommit={apply}
+            onCommit={applyIfChanged}
           />
         );
       case 'grade-badge':
@@ -167,7 +173,7 @@ const ProductList = () => {
           <RangeSlider
             value={(draft as RangeValue | undefined) ?? NO_RANGE}
             onValueChange={setDraft}
-            onCommit={apply}
+            onCommit={applyIfChanged}
           />
         );
       case 'boolean-yesno':
@@ -185,11 +191,11 @@ const ProductList = () => {
           <TextSearch
             value={(draft as string | undefined) ?? ''}
             onValueChange={setDraft}
-            onCommit={apply}
+            onCommit={applyIfChanged}
           />
         );
     }
-  }, [drafts, dispatch]);
+  }, [drafts, filters, dispatch]);
 
   const renderCell = useCallback((value: any, column: string, row: Record<string, any>) => {
     const columnConfig = getColumnConfig(column as keyof MockProductViewModel);

@@ -1,4 +1,5 @@
 import { Service, signal } from '@angular/core';
+import { filterValuesEqual } from 'shared-types';
 
 export interface RangeFilterValue {
   min?: number;
@@ -25,16 +26,16 @@ export class FilterStore {
   readonly drafts = this.#drafts.asReadonly();
   readonly applied = this.#applied.asReadonly();
 
-  draft(column: string): FilterValue | undefined {
-    return this.#drafts()[column];
-  }
-
   setDraft(column: string, value: FilterValue): void {
     this.#drafts.update((drafts) => ({ ...drafts, [column]: value }));
   }
 
   apply(column: string): void {
     const value = this.#drafts()[column];
+    // A commit that changes nothing (e.g. blur without an edit) is a no-op, like a native change event
+    if (filterValuesEqual(value, this.#applied()[column])) {
+      return;
+    }
     this.#applied.update((applied) => ({ ...applied, [column]: value }));
   }
 

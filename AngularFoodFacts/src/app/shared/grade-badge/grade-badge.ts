@@ -6,7 +6,6 @@ import {
 
 @Component({
   selector: 'aff-grade-badge',
-  imports: [],
   templateUrl: './grade-badge.html',
   styleUrl: './grade-badge.css',
 })

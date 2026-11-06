@@ -6,7 +6,6 @@ import {
 
 @Component({
   selector: 'aff-progress-bar',
-  imports: [],
   templateUrl: './progress-bar.html',
   styleUrl: './progress-bar.css',
 })

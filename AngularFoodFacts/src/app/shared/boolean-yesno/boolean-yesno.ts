@@ -6,7 +6,6 @@ import {
 
 @Component({
   selector: 'aff-boolean-yesno',
-  imports: [],
   templateUrl: './boolean-yesno.html',
   styleUrl: './boolean-yesno.css',
 })

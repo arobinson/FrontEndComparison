@@ -4,7 +4,7 @@
     <aff-product-link [value]="cellValue" />
   }
   @case ("simple-text") {
-    <ng-container>{{ cellValue ?? "" }}</ng-container>
+    {{ cellValue ?? "" }}
   }
   @case ("truncated-text") {
     <aff-truncated-text [value]="cellValue" />
@@ -46,6 +46,6 @@
     <aff-color-pill [value]="cellValue" />
   }
   @default {
-    <ng-container>{{ cellValue ?? "" }}</ng-container>
+    {{ cellValue ?? "" }}
   }
 }

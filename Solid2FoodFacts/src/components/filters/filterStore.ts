@@ -1,4 +1,5 @@
 import { createStore, snapshot } from 'solid-js';
+import { filterValuesEqual } from 'shared-types';
 
 export type RangeFilter = { min?: number; max?: number };
 export type FilterValue = string | string[] | RangeFilter;
@@ -34,6 +35,8 @@ export function createFilterStore(onCommit?: () => void) {
     },
     apply(column: string) {
       const value = copy(snapshot(state.draft[column]));
+      // A commit that changes nothing (e.g. blur without an edit) is a no-op, like a native change event
+      if (filterValuesEqual(value, state.applied[column])) return;
       setState((s) => {
         s.applied[column] = value;
       });

@@ -1,9 +1,9 @@
 import { Component, input } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'aff-product-link',
-  imports: [RouterModule],
+  imports: [RouterLink],
   templateUrl: './product-link.html',
   styleUrl: './product-link.css',
 })

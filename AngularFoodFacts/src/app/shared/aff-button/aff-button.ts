@@ -2,7 +2,6 @@ import { Component, computed, input, output } from '@angular/core';
 
 @Component({
   selector: 'aff-button',
-  imports: [],
   templateUrl: './aff-button.html',
   // Styles are global (src/styles/aff-button.css): like React's Button.css, the
   // inner <button> must accept consumer classes (extraClass) styled by the consumer.
@@ -35,6 +34,11 @@ export class AffButton {
    */
   readonly extraClass = input<string>('');
 
+  /**
+   * Id of a popover this button opens and closes (the native popovertarget)
+   */
+  readonly popoverTarget = input<string>();
+
   // #endregion
 
   // #region Computed Signals
@@ -53,23 +57,9 @@ export class AffButton {
   // #region Output Signals
 
   /**
-   * Click event emitter
+   * Click event (a disabled native button never fires one)
    */
   readonly clicked = output<MouseEvent>();
-
-  // #endregion
-
-  // #region Event Handlers
-
-  /**
-   * Handle button click events
-   * @param event The mouse click event
-   */
-  onButtonClick(event: MouseEvent) {
-    if (!this.disabled()) {
-      this.clicked.emit(event);
-    }
-  }
 
   // #endregion
 }

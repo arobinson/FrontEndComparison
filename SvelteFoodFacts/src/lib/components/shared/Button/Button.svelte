@@ -9,6 +9,7 @@
     size = 'md',
     onclick,
     class: extraClass,
+    popoverTarget,
     children,
   }: {
     type?: 'button' | 'submit' | 'reset';
@@ -17,6 +18,8 @@
     size?: 'sm' | 'md' | 'lg';
     onclick?: (event: MouseEvent) => void;
     class?: string;
+    /** Id of a popover this button opens and closes (the native popovertarget) */
+    popoverTarget?: string;
     children: Snippet;
   } = $props();
 
@@ -35,6 +38,7 @@
   class={classes}
   {type}
   {disabled}
+  popovertarget={popoverTarget}
   onclick={handleClick}
 >
   {@render children()}

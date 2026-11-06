@@ -6,7 +6,6 @@ import {
 
 @Component({
   selector: 'aff-large-counter',
-  imports: [],
   templateUrl: './large-counter.html',
   styleUrl: './large-counter.css',
 })

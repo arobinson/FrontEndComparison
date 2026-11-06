@@ -8,12 +8,15 @@ const {
   variant = 'secondary',
   size = 'md',
   class: extraClass,
+  popoverTarget,
 } = defineProps<{
   type?: 'button' | 'submit' | 'reset';
   disabled?: boolean;
   variant?: 'primary' | 'secondary' | 'tertiary';
   size?: 'sm' | 'md' | 'lg';
   class?: string;
+  /** Id of a popover this button opens and closes (the native popovertarget) */
+  popoverTarget?: string;
 }>();
 
 const emit = defineEmits<{
@@ -33,7 +36,7 @@ const handleClick = (event: MouseEvent) => {
 </script>
 
 <template>
-  <button :class="classes" :type="type" :disabled="disabled" @click="handleClick">
+  <button :class="classes" :type="type" :disabled="disabled" :popovertarget="popoverTarget" @click="handleClick">
     <slot />
   </button>
 </template>

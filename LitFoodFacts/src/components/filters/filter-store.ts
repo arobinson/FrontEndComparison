@@ -1,4 +1,5 @@
 import type { ReactiveController, ReactiveControllerHost } from 'lit';
+import { filterValuesEqual } from 'shared-types';
 
 export type RangeFilterValue = { min?: number; max?: number };
 export type FilterValue = string | string[] | RangeFilterValue;
@@ -31,6 +32,8 @@ export class FilterStore {
 
   /** Copies the column's draft into the applied filters. */
   apply(column: string) {
+    // A commit that changes nothing (e.g. blur without an edit) is a no-op, like a native change event
+    if (filterValuesEqual(this.drafts[column], this.applied[column])) return;
     this.applied = { ...this.applied, [column]: this.drafts[column] };
     this.onFiltersChanged?.();
     this.notify();

@@ -15,7 +15,7 @@ import {
 } from '../components/shared/filters/filterStore';
 import { CellRenderer } from '../components/table/CellRenderer';
 import './ProductList.css';
-import type { MockProductViewModel } from 'shared-types';
+import { filterValuesEqual, type MockProductViewModel } from 'shared-types';
 
 // Static table config, hoisted so DataTable's memo is not defeated by fresh
 // arrays on every render.
@@ -133,7 +133,13 @@ const ProductList = () => {
     const draft = drafts[column];
     const { setDraft, apply } = filterActions;
     const setColumnDraft = (value: string | RangeValue) => setDraft(column, value);
-    const applyColumn = () => apply(column);
+    const applyColumn = () => {
+      // A commit that changes nothing (e.g. blur without an edit) is a no-op, like a native change event
+      if (!filterValuesEqual(draft, filters[column])) {
+        apply(column);
+      }
+    };
+    // A toggle always changes the selection
     const selectAndApply = (value: string[]) => {
       setDraft(column, value);
       apply(column);
@@ -193,7 +199,7 @@ const ProductList = () => {
           />
         );
     }
-  }, [drafts, filterActions]);
+  }, [drafts, filters, filterActions]);
 
   const renderCell = useCallback((value: any, column: string, row: Record<string, any>) => {
     const columnConfig = getColumnConfig(column as keyof MockProductViewModel);

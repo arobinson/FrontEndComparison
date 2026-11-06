@@ -16,7 +16,6 @@ const SYMBOL_TO_CURRENCY: Record<string, string> = {
 
 @Component({
   selector: 'aff-decimal-units',
-  imports: [],
   templateUrl: './decimal-units.html',
   styleUrl: './decimal-units.css',
 })

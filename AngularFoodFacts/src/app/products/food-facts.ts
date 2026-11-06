@@ -1,8 +1,7 @@
-import { Service, resource, signal, Signal } from '@angular/core';
+import { Service, resource, Signal } from '@angular/core';
 import {
   buildProductsByCategoryUrl,
   buildProductUrl,
-  buildProductsSearchUrl,
   buildProductAdjacentUrl,
   RawMockProduct,
   MockProductViewModel,
@@ -85,28 +84,6 @@ export class FoodFacts {
           result = transformMockDataToViewModel(rawProduct);
         }
         return result;
-      },
-    });
-  }
-
-  /**
-   * Create a resource for products by search query
-   */
-  createProductsSearchResource(
-    query: Signal<string>,
-    page = signal(1),
-    pageSize = signal(50),
-  ) {
-    return resource({
-      loader: async () => {
-        const url = buildProductsSearchUrl(query(), page(), pageSize());
-        const response = await fetch(url);
-        const data = (await response.json()) as {
-          products?: MockProductViewModel[];
-        };
-
-        // Local backend already returns transformed ProductViewModel objects
-        return data?.products || [];
       },
     });
   }

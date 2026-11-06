@@ -5,11 +5,11 @@ import type { MockProductViewModel } from 'shared-types';
 import { allColumns, getColumnConfig, getColumnDataType } from 'shared-types';
 import { productService, type ProductsResponse } from '../services/productService.js';
 import { FilterStore, FilterStoreController, type FilterValue } from '../components/filters/filter-store.js';
-import type { RangeValue } from '../components/filters/range-slider.js';
+import type { RangeValue } from '../components/controls/range-slider.js';
 import '../components/shared/data-table.js';
 import '../components/shared/lit-button.js';
 import '../components/table/cell-renderer.js';
-import '../components/filters/index.js';
+import '../components/controls/index.js';
 import '../components/display/index.js';
 
 const NO_RANGE: RangeValue = {};

@@ -1,0 +1,18 @@
+<div class="multi-select">
+  <aff-button size="sm" extraClass="select-toggle" [popoverTarget]="dropdownId"><span>{{ displayText() }}</span><span class="arrow">▼</span></aff-button>
+
+  <div [id]="dropdownId" class="dropdown" popover="auto" (beforetoggle)="onBeforeToggle($event)">
+    @if (isOpen()) {
+      @for (option of options(); track option) {
+        <label class="option">
+          <input
+            type="checkbox"
+            [checked]="value().includes(option)"
+            (change)="toggleOption(option)"
+          />
+          <span>{{ option }}</span>
+        </label>
+      }
+    }
+  </div>
+</div>

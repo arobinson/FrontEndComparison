@@ -1,4 +1,5 @@
 import { createStore, unwrap } from 'solid-js/store';
+import { filterValuesEqual } from 'shared-types';
 
 export type RangeFilter = { min?: number; max?: number };
 export type FilterValue = string | string[] | RangeFilter;
@@ -27,6 +28,8 @@ export function createFilterStore(onCommit?: () => void) {
     apply(column: string) {
       // Copy so applied never aliases the draft object/array
       const value = unwrap(state.draft[column]);
+      // A commit that changes nothing (e.g. blur without an edit) is a no-op, like a native change event
+      if (filterValuesEqual(value, state.applied[column])) return;
       setState('applied', {
         [column]: Array.isArray(value) ? [...value] : typeof value === 'object' ? { ...value } : value,
       });

@@ -6,9 +6,7 @@ import {
 
 @Component({
   selector: 'aff-absolute-date',
-  imports: [],
   templateUrl: './absolute-date.html',
-  styleUrl: './absolute-date.css',
 })
 export class AbsoluteDate {
   readonly value = input.required<string>();

@@ -1,4 +1,4 @@
-import type { RangeValue } from './RangeSlider';
+import type { RangeValue } from '../controls/RangeSlider';
 
 // Page-scoped filter store (useReducer). ProductList owns it and wires each
 // filter control to it through props; the controls know nothing about it.

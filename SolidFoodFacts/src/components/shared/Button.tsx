@@ -8,6 +8,8 @@ interface ButtonProps {
   size?: 'sm' | 'md' | 'lg';
   /** Extra class appended after the Button's own classes */
   class?: string;
+  /** Id of a popover this button opens and closes (the native popovertarget) */
+  popoverTarget?: string;
   onClick?: (event: MouseEvent) => void;
   children: JSX.Element;
 }
@@ -24,6 +26,7 @@ export default function Button(props: ButtonProps) {
       class={`aff-button variant-${props.variant ?? 'secondary'} size-${props.size ?? 'md'}${props.class ? ` ${props.class}` : ''}`}
       type={props.type ?? 'button'}
       disabled={props.disabled ?? false}
+      popovertarget={props.popoverTarget}
       onClick={handleClick}
     >
       {props.children}

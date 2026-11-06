@@ -2,7 +2,6 @@ import { Component, input, linkedSignal } from '@angular/core';
 
 @Component({
   selector: 'aff-product-image',
-  imports: [],
   templateUrl: './product-image.html',
   styleUrl: './product-image.css',
 })

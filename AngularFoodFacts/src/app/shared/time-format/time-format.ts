@@ -6,9 +6,7 @@ import {
 
 @Component({
   selector: 'aff-time-format',
-  imports: [],
   templateUrl: './time-format.html',
-  styleUrl: './time-format.css',
 })
 export class TimeFormat {
   readonly value = input.required<string>();

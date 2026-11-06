@@ -10,24 +10,27 @@ import {
 import { NgTemplateOutlet } from '@angular/common';
 import { AffButton } from '../aff-button/aff-button';
 
+/**
+ * Generic paginated table. `T` is the row type, inferred from `value`.
+ */
 @Component({
   selector: 'aff-data-table',
   imports: [NgTemplateOutlet, AffButton],
   templateUrl: './data-table.html',
   styleUrl: './data-table.css',
 })
-export class DataTable {
+export class DataTable<T extends object> {
   // #region Input Signals
 
   /**
-   * Array of column names to display in the table
+   * Row properties to show, one column each
    */
-  readonly columns = input.required<string[]>();
+  readonly columns = input.required<(keyof T & string)[]>();
 
   /**
    * Pre-paginated array of data objects to display
    */
-  readonly value = input.required<any[]>();
+  readonly value = input.required<T[]>();
 
   /**
    * Total number of pages available for pagination
@@ -53,7 +56,7 @@ export class DataTable {
    * Row property that uniquely identifies a row (e.g. a primary key), used to track rows.
    * Required: a reusable table demands a real identity instead of falling back to the index.
    */
-  readonly trackBy = input.required<string>();
+  readonly trackBy = input.required<keyof T & string>();
 
   // #endregion
 
@@ -122,7 +125,7 @@ export class DataTable {
    * Track value for a row: the value of its trackBy property
    * @param row The row object
    */
-  rowKey(row: any): unknown {
+  rowKey(row: T): unknown {
     return row[this.trackBy()];
   }
 

@@ -6,7 +6,6 @@ import {
 
 @Component({
   selector: 'aff-star-rating',
-  imports: [],
   templateUrl: './star-rating.html',
   styleUrl: './star-rating.css',
 })

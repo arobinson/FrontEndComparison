@@ -7,6 +7,8 @@ interface ButtonProps {
   variant?: 'primary' | 'secondary' | 'tertiary';
   size?: 'sm' | 'md' | 'lg';
   className?: string;
+  /** Id of a popover this button opens and closes (the native popovertarget) */
+  popoverTarget?: string;
   onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
   children: ReactNode;
 }
@@ -17,6 +19,7 @@ export const Button = memo(({
   variant = 'secondary',
   size = 'md',
   className,
+  popoverTarget,
   onClick,
   children,
 }: ButtonProps) => {
@@ -31,6 +34,7 @@ export const Button = memo(({
       className={`aff-button variant-${variant} size-${size}${className ? ` ${className}` : ''}`}
       type={type}
       disabled={disabled}
+      popoverTarget={popoverTarget}
       onClick={handleClick}
     >
       {children}

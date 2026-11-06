@@ -6,7 +6,6 @@ import {
 
 @Component({
   selector: 'aff-nova-dots',
-  imports: [],
   templateUrl: './nova-dots.html',
   styleUrl: './nova-dots.css',
 })

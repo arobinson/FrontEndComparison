@@ -4,8 +4,9 @@ import { allColumns, getColumnConfig, getColumnDataType } from 'shared-types';
 import { productService } from '../services/productService';
 import DataTable from '../components/shared/DataTable';
 import CellRenderer from '../components/table/CellRenderer';
-import { TextSearch, RangeSlider, MultiSelect, createFilterStore } from '../components/filters';
-import type { FilterValue, RangeFilter } from '../components/filters';
+import { TextSearch, RangeSlider, MultiSelect } from '../components/controls';
+import { createFilterStore } from '../components/filters/filterStore';
+import type { FilterValue, RangeFilter } from '../components/filters/filterStore';
 import Button from '../components/shared/Button';
 import './ProductList.css';
 

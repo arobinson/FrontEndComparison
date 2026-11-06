@@ -7,17 +7,17 @@ import {
   Signal,
 } from '@angular/core';
 
-import { allColumns, ColumnConfig, getColumnConfig } from 'shared-types';
+import { allColumns } from 'shared-types';
 import { FoodFacts, ProductViewModel } from '../food-facts';
 import { DataTable } from '../../shared/data-table/data-table';
 import { CellRenderer } from '../../shared/cell-renderer/cell-renderer';
 import { AffButton } from '../../shared/aff-button/aff-button';
-import { TextSearch } from '../../shared/filters/text-search/text-search';
+import { TextSearch } from '../../shared/controls/text-search/text-search';
 import {
   RangeSlider,
   RangeValue,
-} from '../../shared/filters/range-slider/range-slider';
-import { MultiSelect } from '../../shared/filters/multi-select/multi-select';
+} from '../../shared/controls/range-slider/range-slider';
+import { MultiSelect } from '../../shared/controls/multi-select/multi-select';
 import {
   FilterStore,
   FilterValue,
@@ -80,11 +80,6 @@ export class ProductList {
   // #region Column Configuration (from shared-types)
 
   /**
-   * Column configuration from shared-types
-   */
-  readonly columnConfig: ColumnConfig[] = allColumns;
-
-  /**
    * Column keys for the data table
    */
   readonly columns = allColumns.map((col) => col.key);
@@ -94,10 +89,10 @@ export class ProductList {
    * properties in the template instead of method calls on every check
    */
   readonly columnTypes: Record<string, string> = Object.fromEntries(
-    allColumns.map((col) => [col.key, getColumnConfig(col.key as keyof ProductViewModel)?.type ?? 'simple-text']),
+    allColumns.map((col) => [col.key, col.type]),
   );
   readonly columnTitles: Record<string, string> = Object.fromEntries(
-    allColumns.map((col) => [col.key, getColumnConfig(col.key as keyof ProductViewModel)?.label ?? col.key]),
+    allColumns.map((col) => [col.key, col.label]),
   );
 
   // Filter option lists
@@ -149,9 +144,7 @@ export class ProductList {
 
   // #region Computed Values
 
-  readonly isLoading = computed(
-    () => this.productsResource.status() === 'loading',
-  );
+  readonly isLoading = this.productsResource.isLoading;
   readonly isError = computed(() => this.productsResource.status() === 'error');
 
   /**
@@ -242,13 +235,6 @@ export class ProductList {
   });
 
   /**
-   * Current page data for the table (filtered current page)
-   */
-  readonly currentPageData = computed(() => {
-    return this.filteredData();
-  });
-
-  /**
    * Total number of pages from server
    */
   readonly totalPages = computed(() => {
@@ -256,27 +242,6 @@ export class ProductList {
     const total = response?.total || 0;
     return Math.ceil(total / this.pageSize());
   });
-
-  // #endregion
-
-  // #region Event Handlers
-
-  /**
-   * Handle page changes from the data table
-   * @param newPage New page number
-   */
-  onPageChange(newPage: number) {
-    this.currentPage.set(newPage);
-  }
-
-  /**
-   * Handle page size changes from the data table
-   * @param newPageSize New page size
-   */
-  onPageSizeChange(newPageSize: number) {
-    this.pageSize.set(newPageSize);
-    this.currentPage.set(0); // Reset to first page
-  }
 
   // #endregion
 }

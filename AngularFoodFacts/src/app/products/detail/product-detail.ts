@@ -1,13 +1,6 @@
-import {
-  Component,
-  inject,
-  computed,
-  signal,
-  linkedSignal,
-} from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Component, inject, computed, input, linkedSignal } from '@angular/core';
+import { Router } from '@angular/router';
 import { FoodFacts, ProductViewModel } from '../food-facts';
-import { MockProductViewModel } from 'shared-types';
 import { ProgressBar } from '../../shared/progress-bar/progress-bar';
 import { GradeBadge } from '../../shared/grade-badge/grade-badge';
 import { NovaDots } from '../../shared/nova-dots/nova-dots';
@@ -22,6 +15,9 @@ import { TimeFormat } from '../../shared/time-format/time-format';
 import { StarRating } from '../../shared/star-rating/star-rating';
 import { ColorPill } from '../../shared/color-pill/color-pill';
 import { AffButton } from '../../shared/aff-button/aff-button';
+
+/** ISO string for a date (empty when absent), as the date display components take strings */
+const toIso = (date: Date | undefined): string => (date ? date.toISOString() : '');
 
 @Component({
   selector: 'aff-product-detail',
@@ -46,10 +42,10 @@ import { AffButton } from '../../shared/aff-button/aff-button';
 })
 export class ProductDetail {
   readonly #router = inject(Router);
-  readonly #route = inject(ActivatedRoute);
   readonly #foodFacts = inject(FoodFacts);
 
-  readonly id = signal(this.#route.snapshot.params['id']);
+  /** The `:id` route parameter (bound by withComponentInputBinding; updates when the route is reused) */
+  readonly id = input.required<string>();
   readonly productResource = this.#foodFacts.createProductResource(this.id);
   readonly adjacentResource = this.#foodFacts.createAdjacentProductsResource(
     this.id,
@@ -69,60 +65,15 @@ export class ProductDetail {
     this.adjacentResource.hasValue() ? this.adjacentResource.value() : null,
   );
 
-  constructor() {
-    // Update id signal when route params change (component is reused)
-    this.#route.params.subscribe((params) => {
-      this.id.set(params['id']);
-    });
-  }
-
-  readonly isLoading = computed(
-    () => this.productResource.status() === 'loading',
-  );
+  readonly isLoading = this.productResource.isLoading;
   readonly isError = computed(() => this.productResource.status() === 'error');
-  readonly createdDate = computed(() => {
-    let result: string;
-    const date = this.product()?.createdDate;
-    if (date) {
-      result = date.toISOString();
-    } else {
-      result = '';
-    }
-    return result;
-  });
+  readonly createdDate = computed(() => toIso(this.product()?.createdDate));
 
-  readonly lastModifiedDate = computed(() => {
-    let result: string;
-    const date = this.product()?.lastUpdated;
-    if (date) {
-      result = date.toISOString();
-    } else {
-      result = '';
-    }
-    return result;
-  });
+  readonly lastModifiedDate = computed(() => toIso(this.product()?.lastUpdated));
 
-  readonly releaseDate = computed(() => {
-    let result: string;
-    const date = this.product()?.releaseDate;
-    if (date) {
-      result = date.toISOString();
-    } else {
-      result = '';
-    }
-    return result;
-  });
+  readonly releaseDate = computed(() => toIso(this.product()?.releaseDate));
 
-  readonly nextRestockDate = computed(() => {
-    let result: string;
-    const date = this.product()?.nextRestockDate;
-    if (date) {
-      result = date.toISOString();
-    } else {
-      result = '';
-    }
-    return result;
-  });
+  readonly nextRestockDate = computed(() => toIso(this.product()?.nextRestockDate));
 
   readonly hasPrevious = computed(() => {
     const adjacent = this.#adjacent();

@@ -137,3 +137,4 @@ export function formatProductName(name?: string): string {
   }
   return result;
 }
+export * from './filter-values.js';

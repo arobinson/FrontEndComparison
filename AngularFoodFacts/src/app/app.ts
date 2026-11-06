@@ -6,8 +6,5 @@ import { FrameworkHeader } from './shared/framework-header/framework-header';
   selector: 'aff-root',
   imports: [RouterOutlet, FrameworkHeader],
   templateUrl: './app.html',
-  styleUrl: './app.css',
 })
-export class App {
-  protected title = 'AngularFoodFacts';
-}
+export class App {}

@@ -203,6 +203,16 @@ export class LitButton extends LitElement {
   @property({ type: String }) variant: 'primary' | 'secondary' | 'tertiary' = 'secondary';
   /** Extra class appended to the inner <button>'s class list. */
   @property({ type: String, attribute: 'extra-class' }) extraClass = '';
+  /**
+   * Id of a popover this button opens and closes, like the native popovertarget. The inner <button>
+   * is in this element's shadow root, so the id is resolved where this element lives and set as
+   * the button's popoverTargetElement (an id reference cannot cross shadow roots).
+   */
+  @property({ type: String }) popovertarget?: string;
+
+  private popoverTargetElement(): Element | null {
+    return this.popovertarget ? (this.getRootNode() as Document | ShadowRoot).getElementById(this.popovertarget) : null;
+  }
 
   private handleClick() {
     if (!this.disabled) {
@@ -211,7 +221,7 @@ export class LitButton extends LitElement {
   }
 
   render() {
-    return html`<button class="aff-button variant-${this.variant} size-${this.size}${this.extraClass ? ` ${this.extraClass}` : ''}" type="button" ?disabled=${this.disabled} @click=${this.handleClick}><slot></slot></button>`;
+    return html`<button class="aff-button variant-${this.variant} size-${this.size}${this.extraClass ? ` ${this.extraClass}` : ''}" type="button" ?disabled=${this.disabled} .popoverTargetElement=${this.popoverTargetElement()} @click=${this.handleClick}><slot></slot></button>`;
   }
 }
 

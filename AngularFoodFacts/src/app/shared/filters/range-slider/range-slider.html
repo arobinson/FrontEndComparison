@@ -6,7 +6,7 @@
     [max]="max()"
     [value]="minValue()"
     (input)="onMinChange($event)"
-    (blur)="onBlur()"
+    (blur)="commit.emit()"
     placeholder="Min"
   />
   <span class="range-separator">-</span>
@@ -17,7 +17,7 @@
     [max]="max()"
     [value]="maxValue()"
     (input)="onMaxChange($event)"
-    (blur)="onBlur()"
+    (blur)="commit.emit()"
     placeholder="Max"
   />
 </div>

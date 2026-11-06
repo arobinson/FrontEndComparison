@@ -1,0 +1,51 @@
+@let cellValue = value();
+@switch (dataType()) {
+  @case ("product-link") {
+    <aff-product-link [value]="cellValue" />
+  }
+  @case ("simple-text") {
+    <ng-container>{{ cellValue ?? "" }}</ng-container>
+  }
+  @case ("truncated-text") {
+    <aff-truncated-text [value]="cellValue" />
+  }
+  @case ("progress-bar") {
+    <aff-progress-bar [value]="cellValue" />
+  }
+  @case ("grade-badge") {
+    <aff-grade-badge [value]="cellValue" />
+  }
+  @case ("nova-dots") {
+    <aff-nova-dots [value]="cellValue" />
+  }
+  @case ("large-counter") {
+    <aff-large-counter [value]="cellValue" />
+  }
+  @case ("decimal-units") {
+    <aff-decimal-units [value]="cellValue" [unit]="unit()" />
+  }
+  @case ("absolute-date") {
+    <aff-absolute-date [value]="cellValue" />
+  }
+  @case ("relative-date") {
+    <aff-relative-date [value]="cellValue" />
+  }
+  @case ("time-format") {
+    <aff-time-format [value]="cellValue" />
+  }
+  @case ("boolean-yesno") {
+    <aff-boolean-yesno [value]="cellValue" />
+  }
+  @case ("product-image") {
+    <aff-product-image [value]="cellValue" />
+  }
+  @case ("star-rating") {
+    <aff-star-rating [value]="cellValue" />
+  }
+  @case ("color-pill") {
+    <aff-color-pill [value]="cellValue" />
+  }
+  @default {
+    <ng-container>{{ cellValue ?? "" }}</ng-container>
+  }
+}

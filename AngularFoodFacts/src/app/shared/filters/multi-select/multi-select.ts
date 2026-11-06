@@ -4,13 +4,18 @@ import {
   ElementRef,
   inject,
   input,
+  model,
   signal,
 } from '@angular/core';
-import { FilterStore } from '../filter-store';
+import { AffButton } from '../../aff-button/aff-button';
 
+/**
+ * Generic controlled multi-select dropdown.
+ * - `value` changes on every toggle (new array, insertion order)
+ */
 @Component({
   selector: 'aff-multi-select',
-  imports: [],
+  imports: [AffButton],
   templateUrl: './multi-select.html',
   styleUrl: './multi-select.css',
   host: {
@@ -18,21 +23,16 @@ import { FilterStore } from '../filter-store';
   },
 })
 export class MultiSelect {
-  readonly column = input.required<string>();
   readonly options = input.required<string[]>();
+  readonly value = model<string[]>([]);
   readonly placeholder = input<string>('Select...');
 
-  readonly #store = inject(FilterStore);
   readonly #elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
 
   readonly isOpen = signal(false);
 
-  readonly selectedValues = computed(
-    () => (this.#store.draft(this.column()) as string[] | undefined) ?? [],
-  );
-
   readonly displayText = computed(() => {
-    const selected = this.selectedValues();
+    const selected = this.value();
     let result: string;
     if (selected.length === 0) {
       result = this.placeholder();
@@ -59,11 +59,11 @@ export class MultiSelect {
   }
 
   toggleOption(option: string) {
-    const current = this.selectedValues();
-    const next = current.includes(option)
-      ? current.filter((value) => value !== option)
-      : [...current, option];
-    this.#store.setDraft(this.column(), next);
-    this.#store.apply(this.column());
+    const current = this.value();
+    this.value.set(
+      current.includes(option)
+        ? current.filter((selected) => selected !== option)
+        : [...current, option],
+    );
   }
 }

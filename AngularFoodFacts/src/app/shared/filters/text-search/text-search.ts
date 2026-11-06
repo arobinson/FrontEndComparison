@@ -1,6 +1,10 @@
-import { Component, computed, inject, input } from '@angular/core';
-import { FilterStore } from '../filter-store';
+import { Component, model, input, output } from '@angular/core';
 
+/**
+ * Generic controlled text input.
+ * - `value` changes on every keystroke
+ * - `commit` fires on blur and on Enter keyup
+ */
 @Component({
   selector: 'aff-text-search',
   imports: [],
@@ -8,27 +12,17 @@ import { FilterStore } from '../filter-store';
   styleUrl: './text-search.css',
 })
 export class TextSearch {
-  readonly column = input.required<string>();
+  readonly value = model<string>('');
   readonly placeholder = input<string>('Search');
-
-  readonly #store = inject(FilterStore);
-
-  readonly searchValue = computed(
-    () => (this.#store.draft(this.column()) as string | undefined) ?? '',
-  );
+  readonly commit = output<void>();
 
   onInput(event: Event) {
-    const target = event.target as HTMLInputElement;
-    this.#store.setDraft(this.column(), target.value);
-  }
-
-  onBlur() {
-    this.#store.apply(this.column());
+    this.value.set((event.target as HTMLInputElement).value);
   }
 
   onKeyup(event: KeyboardEvent) {
     if (event.key === 'Enter') {
-      this.#store.apply(this.column());
+      this.commit.emit();
     }
   }
 }

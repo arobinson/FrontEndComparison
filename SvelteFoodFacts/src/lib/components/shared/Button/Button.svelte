@@ -8,6 +8,7 @@
     variant = 'secondary',
     size = 'md',
     onclick,
+    class: extraClass,
     children,
   }: {
     type?: 'button' | 'submit' | 'reset';
@@ -15,8 +16,13 @@
     variant?: 'primary' | 'secondary' | 'tertiary';
     size?: 'sm' | 'md' | 'lg';
     onclick?: (event: MouseEvent) => void;
+    class?: string;
     children: Snippet;
   } = $props();
+
+  const classes = $derived(
+    `aff-button variant-${variant} size-${size}` + (extraClass ? ` ${extraClass}` : '')
+  );
 
   function handleClick(event: MouseEvent) {
     if (!disabled && onclick) {
@@ -26,7 +32,7 @@
 </script>
 
 <button
-  class="aff-button variant-{variant} size-{size}"
+  class={classes}
   {type}
   {disabled}
   onclick={handleClick}

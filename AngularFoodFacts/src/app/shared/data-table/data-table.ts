@@ -48,6 +48,12 @@ export class DataTable {
    */
   readonly pageSizes = input<number[]>([10, 25, 50]);
 
+  /**
+   * Row property that uniquely identifies a row (e.g. a primary key), used to track rows.
+   * Required: a reusable table demands a real identity instead of falling back to the index.
+   */
+  readonly trackBy = input.required<string>();
+
   // #endregion
 
   // #region Two-way Bound Signals
@@ -106,6 +112,18 @@ export class DataTable {
     const allowedSizes = this.pageSizes();
     return allowedSizes.includes(pageSize);
   });
+
+  // #endregion
+
+  // #region Row Tracking
+
+  /**
+   * Track value for a row: the value of its trackBy property
+   * @param row The row object
+   */
+  rowKey(row: any): unknown {
+    return row[this.trackBy()];
+  }
 
   // #endregion
 

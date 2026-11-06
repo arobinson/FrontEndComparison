@@ -6,6 +6,8 @@ interface ButtonProps {
   disabled?: boolean;
   variant?: 'primary' | 'secondary' | 'tertiary';
   size?: 'sm' | 'md' | 'lg';
+  /** Extra class appended after the Button's own classes */
+  class?: string;
   onClick?: (event: MouseEvent) => void;
   children: JSX.Element;
 }
@@ -19,7 +21,7 @@ export default function Button(props: ButtonProps) {
 
   return (
     <button
-      class={`aff-button variant-${props.variant ?? 'secondary'} size-${props.size ?? 'md'}`}
+      class={`aff-button variant-${props.variant ?? 'secondary'} size-${props.size ?? 'md'}${props.class ? ` ${props.class}` : ''}`}
       type={props.type ?? 'button'}
       disabled={props.disabled ?? false}
       onClick={handleClick}

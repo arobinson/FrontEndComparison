@@ -5,8 +5,9 @@ import { allColumns, getColumnConfig, getColumnDataType } from 'shared-types';
 import { productService, type ProductsResponse } from '../services/productService';
 import DataTable from '../components/shared/DataTable';
 import CellRenderer from '../components/table/CellRenderer';
-import { TextSearch, RangeSlider, MultiSelect, createFilterStore, FilterStoreContext } from '../components/filters';
-import type { FilterValue } from '../components/filters';
+import { TextSearch, RangeSlider, MultiSelect, createFilterStore } from '../components/filters';
+import type { FilterValue, RangeFilter } from '../components/filters';
+import Button from '../components/shared/Button';
 import './ProductList.css';
 
 type ProductsPage = ProductsResponse & { error?: string };
@@ -56,6 +57,9 @@ function applyFilters(products: MockProductViewModel[], filters: Record<string, 
 
   return result;
 }
+
+const NO_RANGE: RangeFilter = {};
+const NO_SELECTION: string[] = [];
 
 export default function ProductList() {
   const [currentPage, setCurrentPage] = createSignal(0);
@@ -108,22 +112,62 @@ export default function ProductList() {
     return <strong>{getColumnTitle(column)}</strong>;
   }
 
+  // The filter controls are generic and controlled: the page feeds each one its column's draft
+  // and writes their changes back to the store (draft on every change, apply on commit).
+  const draftOf = <T extends FilterValue>(column: string) => filterStore.state.draft[column] as T | undefined;
+
+  function renderTextSearch(column: string) {
+    return (
+      <TextSearch
+        value={draftOf<string>(column) ?? ''}
+        onValueChange={(v) => filterStore.setDraft(column, v)}
+        onCommit={() => filterStore.apply(column)}
+      />
+    );
+  }
+
+  function renderRangeSlider(column: string, min?: number, max?: number) {
+    return (
+      <RangeSlider
+        value={draftOf<RangeFilter>(column) ?? NO_RANGE}
+        min={min}
+        max={max}
+        onValueChange={(v) => filterStore.setDraft(column, v)}
+        onCommit={() => filterStore.apply(column)}
+      />
+    );
+  }
+
+  function renderMultiSelect(column: string, options: string[]) {
+    // Every toggle updates the selection and applies it immediately
+    return (
+      <MultiSelect
+        options={options}
+        value={draftOf<string[]>(column) ?? NO_SELECTION}
+        onValueChange={(v) => {
+          filterStore.setDraft(column, v);
+          filterStore.apply(column);
+        }}
+      />
+    );
+  }
+
   function renderFilter(column: string) {
     switch (getColumnDataType(column as keyof MockProductViewModel)) {
       case 'progress-bar':
-        return <RangeSlider column={column} min={0} max={100} />;
+        return renderRangeSlider(column, 0, 100);
       case 'grade-badge':
-        return <MultiSelect column={column} options={['A', 'B', 'C', 'D', 'F']} />;
+        return renderMultiSelect(column, ['A', 'B', 'C', 'D', 'F']);
       case 'nova-dots':
-        return <MultiSelect column={column} options={['1', '2', '3', '4']} />;
+        return renderMultiSelect(column, ['1', '2', '3', '4']);
       case 'large-counter':
-        return <RangeSlider column={column} />;
+        return renderRangeSlider(column);
       case 'boolean-yesno':
-        return <MultiSelect column={column} options={['Yes', 'No']} />;
+        return renderMultiSelect(column, ['Yes', 'No']);
       case 'product-image':
         return null;
       default:
-        return <TextSearch column={column} />;
+        return renderTextSearch(column);
     }
   }
 
@@ -134,52 +178,50 @@ export default function ProductList() {
   }
 
   return (
-    <FilterStoreContext.Provider value={filterStore}>
-      <div class="product-list-container">
-        <div class="page-header-row">
-          <h1>Products</h1>
-          <button class="reset-button" onClick={resetFilters} type="button">
-            Reset Filters
-          </button>
-        </div>
-
-        {/* First load: nothing to show yet */}
-        <Suspense fallback={<div class="loading-indicator">Loading products...</div>}>
-          {/* Reading productsData() here, inside <Suspense>, is what lets the page-change transition hold */}
-          <Show when={productsData()}>
-            <Switch fallback={<p>No products found.</p>}>
-              <Match when={productsData()?.error}>
-                <p>Error loading products: {productsData()?.error}</p>
-              </Match>
-              <Match when={products().length > 0}>
-                <div class="table-area">
-                  {/* Page change in progress: the previous rows stay mounted (transition) under this overlay */}
-                  <Show when={pending()}>
-                    <div class="loading-overlay">
-                      <div class="loading-indicator">Loading...</div>
-                    </div>
-                  </Show>
-                  <DataTable
-                    columns={columnKeys}
-                    value={filteredProducts()}
-                    totalPages={totalPages()}
-                    page={currentPage()}
-                    pageSize={pageSize()}
-                    pageSizes={[10, 25, 50]}
-                    showFilterRow={true}
-                    trackBy="code"
-                    onPageChange={handlePageChange}
-                    onPageSizeChange={handlePageSizeChange}
-                    renderHeader={renderHeader}
-                    renderFilter={renderFilter}
-                    renderCell={renderCell}
-                  />
-                </div>
-              </Match>
-            </Switch>
-          </Show>
-        </Suspense>
+    <div class="product-list-container">
+      <div class="page-header-row">
+        <h1>Products</h1>
+        <Button class="reset-button" onClick={resetFilters}>
+          Reset Filters
+        </Button>
       </div>
-    </FilterStoreContext.Provider>
+
+      {/* First load: nothing to show yet */}
+      <Suspense fallback={<div class="loading-indicator">Loading products...</div>}>
+        {/* Reading productsData() here, inside <Suspense>, is what lets the page-change transition hold */}
+        <Show when={productsData()}>
+          <Switch fallback={<p>No products found.</p>}>
+            <Match when={productsData()?.error}>
+              <p>Error loading products: {productsData()?.error}</p>
+            </Match>
+            <Match when={products().length > 0}>
+              <div class="table-area">
+                {/* Page change in progress: the previous rows stay mounted (transition) under this overlay */}
+                <Show when={pending()}>
+                  <div class="loading-overlay">
+                    <div class="loading-indicator">Loading...</div>
+                  </div>
+                </Show>
+                <DataTable
+                  columns={columnKeys}
+                  value={filteredProducts()}
+                  totalPages={totalPages()}
+                  page={currentPage()}
+                  pageSize={pageSize()}
+                  pageSizes={[10, 25, 50]}
+                  showFilterRow={true}
+                  trackBy="code"
+                  onPageChange={handlePageChange}
+                  onPageSizeChange={handlePageSizeChange}
+                  renderHeader={renderHeader}
+                  renderFilter={renderFilter}
+                  renderCell={renderCell}
+                />
+              </div>
+            </Match>
+          </Switch>
+        </Show>
+      </Suspense>
+    </div>
   );
 }

@@ -33,10 +33,7 @@ export class CellRenderer extends LitElement {
       case 'product-image':
         return html`<product-image .value=${this.value}></product-image>`;
       case 'decimal-units':
-        // Like the other apps: DecimalUnits only when the column has a unit, else plain text.
-        return this.unit
-          ? html`<decimal-units .value=${this.value} .unit=${this.unit}></decimal-units>`
-          : html`${this.value ?? ''}`;
+        return html`<decimal-units .value=${this.value} .unit=${this.unit ?? ''}></decimal-units>`;
       case 'color-pill':
         return html`<color-pill .value=${this.value}></color-pill>`;
       case 'relative-date':

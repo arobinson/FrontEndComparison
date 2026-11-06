@@ -1,20 +1,28 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { FilterStore, FilterStoreController, type RangeFilterValue } from './filter-store.js';
+
+/** A numeric range; a bound that is not set is absent. */
+export type RangeValue = { min?: number; max?: number };
+
+const NO_RANGE: RangeValue = {};
 
 const parseInput = (e: Event): number | undefined => {
   const value = (e.target as HTMLInputElement).value;
   return value === '' ? undefined : Number(value);
 };
 
-// Only bounds that are set end up in the (applied) range object.
-const toRange = (min: number | undefined, max: number | undefined): RangeFilterValue => {
-  const result: RangeFilterValue = {};
+// Only bounds that are set end up in the range object.
+const toRange = (min: number | undefined, max: number | undefined): RangeValue => {
+  const result: RangeValue = {};
   if (min !== undefined) result.min = min;
   if (max !== undefined) result.max = max;
   return result;
 };
 
+/**
+ * Controlled pair of number inputs. Shows `value`; fires `value-change` (detail: the new
+ * range) on every input and `commit` on blur of either input. `min`/`max` only bound the inputs.
+ */
 @customElement('range-slider')
 export class RangeSlider extends LitElement {
   static styles = css`
@@ -54,35 +62,28 @@ export class RangeSlider extends LitElement {
     }
   `;
 
+  @property({ attribute: false }) value: RangeValue = NO_RANGE;
   @property({ type: Number }) min = 0;
   @property({ type: Number }) max = 100;
-  @property({ attribute: false }) column = '';
-  @property({ attribute: false }) store?: FilterStore;
 
-  constructor() {
-    super();
-    new FilterStoreController(this, () => this.store);
-  }
-
-  private get draft(): RangeFilterValue | undefined {
-    return this.store?.getDraft<RangeFilterValue>(this.column);
+  private emit(value: RangeValue) {
+    this.dispatchEvent(new CustomEvent<RangeValue>('value-change', { detail: value }));
   }
 
   private handleMinChange(e: Event) {
-    this.store?.setDraft(this.column, toRange(parseInput(e), this.draft?.max));
+    this.emit(toRange(parseInput(e), this.value.max));
   }
 
   private handleMaxChange(e: Event) {
-    this.store?.setDraft(this.column, toRange(this.draft?.min, parseInput(e)));
+    this.emit(toRange(this.value.min, parseInput(e)));
   }
 
-  // Applies on blur of either input.
-  private handleBlur() {
-    this.store?.apply(this.column);
+  private commit() {
+    this.dispatchEvent(new CustomEvent('commit'));
   }
 
   render() {
-    const draft = this.draft;
+    const { min, max } = this.value;
     return html`
       <div class="range-slider">
         <input
@@ -90,9 +91,9 @@ export class RangeSlider extends LitElement {
           class="range-input"
           min=${this.min}
           max=${this.max}
-          .value=${String(draft?.min ?? '')}
+          .value=${String(min ?? '')}
           @input=${this.handleMinChange}
-          @blur=${this.handleBlur}
+          @blur=${this.commit}
           placeholder="Min"
         />
         <span class="range-separator">-</span>
@@ -101,9 +102,9 @@ export class RangeSlider extends LitElement {
           class="range-input"
           min=${this.min}
           max=${this.max}
-          .value=${String(draft?.max ?? '')}
+          .value=${String(max ?? '')}
           @input=${this.handleMaxChange}
-          @blur=${this.handleBlur}
+          @blur=${this.commit}
           placeholder="Max"
         />
       </div>

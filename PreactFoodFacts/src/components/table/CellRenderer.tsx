@@ -41,7 +41,7 @@ export const CellRenderer = memo(({ column, row }: CellRendererProps) => {
     cell = <NovaDots rating={value} />;
   } else if (column.type === 'large-counter') {
     cell = <LargeCounter value={value} />;
-  } else if (column.type === 'decimal-units' && column.unit) {
+  } else if (column.type === 'decimal-units') {
     cell = <DecimalUnits value={value} unit={column.unit} />;
   } else if (column.type === 'absolute-date') {
     cell = <AbsoluteDate value={value} />;

@@ -1,27 +1,28 @@
 import type { TargetedEvent, TargetedKeyboardEvent } from 'preact';
-import { useFilterActions, useFilterDraft } from '../filterStore';
 import './TextSearch.css';
 
 interface TextSearchProps {
-  column: string;
+  value: string;
   placeholder?: string;
+  /** Every keystroke, with the new text. */
+  onValueChange: (value: string) => void;
+  /** Blur or Enter: the user is done editing. */
+  onCommit: () => void;
 }
 
-export const TextSearch = ({ column, placeholder = 'Search' }: TextSearchProps) => {
-  const searchValue = useFilterDraft<string>(column) ?? '';
-  const { setDraft, apply } = useFilterActions();
-
+export const TextSearch = ({
+  value,
+  placeholder = 'Search',
+  onValueChange,
+  onCommit,
+}: TextSearchProps) => {
   const handleInput = (event: TargetedEvent<HTMLInputElement>) => {
-    setDraft(column, event.currentTarget.value);
-  };
-
-  const handleBlur = () => {
-    apply(column);
+    onValueChange(event.currentTarget.value);
   };
 
   const handleKeyUp = (event: TargetedKeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
-      apply(column);
+      onCommit();
     }
   };
 
@@ -31,9 +32,9 @@ export const TextSearch = ({ column, placeholder = 'Search' }: TextSearchProps) 
       type="text"
       className="text-search-input"
       placeholder={placeholder}
-      value={searchValue}
+      value={value}
       onInput={handleInput}
-      onBlur={handleBlur}
+      onBlur={onCommit}
       onKeyUp={handleKeyUp}
     />
   );

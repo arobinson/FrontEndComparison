@@ -64,12 +64,7 @@
   });
 </script>
 
-<span class="decimal-units">
-  {formattedValue}
-  {#if unit}
-    <span class="unit">{unit}</span>
-  {/if}
-</span>
+<span class="decimal-units">{formattedValue}{#if unit}<span class="unit">{unit}</span>{/if}</span>
 
 <style>
   .decimal-units {

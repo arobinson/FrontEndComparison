@@ -1,7 +1,10 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { FilterStore, FilterStoreController } from './filter-store.js';
 
+/**
+ * Controlled text input. Shows `value`; fires `value-change` (detail: the new string)
+ * on every input and `commit` on blur and on Enter.
+ */
 @customElement('text-search')
 export class TextSearch extends LitElement {
   static styles = css`
@@ -37,27 +40,20 @@ export class TextSearch extends LitElement {
     }
   `;
 
+  @property({ attribute: false }) value = '';
   @property({ type: String }) placeholder = 'Search';
-  @property({ attribute: false }) column = '';
-  @property({ attribute: false }) store?: FilterStore;
-
-  constructor() {
-    super();
-    new FilterStoreController(this, () => this.store);
-  }
 
   private handleInput(e: Event) {
-    this.store?.setDraft(this.column, (e.target as HTMLInputElement).value);
+    this.dispatchEvent(new CustomEvent<string>('value-change', { detail: (e.target as HTMLInputElement).value }));
   }
 
-  // Applies on blur and on Enter.
-  private handleBlur() {
-    this.store?.apply(this.column);
+  private commit() {
+    this.dispatchEvent(new CustomEvent('commit'));
   }
 
   private handleKeyUp(e: KeyboardEvent) {
     if (e.key === 'Enter') {
-      this.store?.apply(this.column);
+      this.commit();
     }
   }
 
@@ -67,9 +63,9 @@ export class TextSearch extends LitElement {
         type="text"
         class="text-search-input"
         placeholder=${this.placeholder}
-        .value=${this.store?.getDraft<string>(this.column) ?? ''}
+        .value=${this.value}
         @input=${this.handleInput}
-        @blur=${this.handleBlur}
+        @blur=${this.commit}
         @keyup=${this.handleKeyUp}
       />
     `;

@@ -1,4 +1,4 @@
-import { Injectable, resource, signal, Signal } from '@angular/core';
+import { Service, resource, signal, Signal } from '@angular/core';
 import {
   buildProductsByCategoryUrl,
   buildProductUrl,
@@ -21,9 +21,7 @@ export interface AdjacentProducts {
  */
 export type { MockProductViewModel as ProductViewModel };
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class FoodFacts {
   /**
    * Create a resource for products by category

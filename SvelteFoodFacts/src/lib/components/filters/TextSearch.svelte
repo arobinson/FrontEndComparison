@@ -1,31 +1,24 @@
 <script lang="ts">
-  import { getFilterStore } from '#lib/stores/filterStore.svelte';
   import './TextSearch.css';
 
   let {
-    column,
+    value = $bindable(),
     placeholder = 'Search',
+    oncommit,
   }: {
-    column: string;
+    value: string;
     placeholder?: string;
+    oncommit?: () => void;
   } = $props();
 
-  const store = getFilterStore();
-
-  let searchValue = $derived((store.drafts[column] as string | undefined) ?? '');
-
   function handleInput(event: Event) {
-    store.setDraft(column, (event.target as HTMLInputElement).value);
+    value = (event.target as HTMLInputElement).value;
   }
 
-  // Applies on blur and on Enter.
-  function handleBlur() {
-    store.apply(column);
-  }
-
+  // Commits on blur and on Enter.
   function handleKeyUp(event: KeyboardEvent) {
     if (event.key === 'Enter') {
-      store.apply(column);
+      oncommit?.();
     }
   }
 </script>
@@ -34,8 +27,8 @@
   type="text"
   class="text-search-input"
   {placeholder}
-  value={searchValue}
+  {value}
   oninput={handleInput}
-  onblur={handleBlur}
+  onblur={() => oncommit?.()}
   onkeyup={handleKeyUp}
 />

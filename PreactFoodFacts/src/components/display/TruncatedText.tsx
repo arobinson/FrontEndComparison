@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'preact/hooks';
 import { memo } from '../../utils/memo';
+import { Button } from '../shared/Button';
 import './TruncatedText.css';
 
 interface TruncatedTextProps {
@@ -29,9 +30,9 @@ export const TruncatedText = memo(({ value, maxLength = 50 }: TruncatedTextProps
     <div className="truncated-text">
       <span className="text-content">{displayValue}</span>
       {shouldTruncate && (
-        <button onClick={toggleExpanded} className="toggle-button" type="button">
+        <Button variant="tertiary" size="sm" className="toggle-button" onClick={toggleExpanded}>
           {isExpanded ? 'Show less' : 'Show more'}
-        </button>
+        </Button>
       )}
     </div>
   );

@@ -1,26 +1,27 @@
-import { Component, inject, signal, computed, linkedSignal } from '@angular/core';
+import {
+  Component,
+  inject,
+  signal,
+  computed,
+  linkedSignal,
+  Signal,
+} from '@angular/core';
 
 import { allColumns, ColumnConfig, getColumnConfig } from 'shared-types';
 import { FoodFacts, ProductViewModel } from '../food-facts';
 import { DataTable } from '../../shared/data-table/data-table';
-import { ProductLink } from '../../shared/product-link/product-link';
-import { ProgressBar } from '../../shared/progress-bar/progress-bar';
-import { GradeBadge } from '../../shared/grade-badge/grade-badge';
-import { NovaDots } from '../../shared/nova-dots/nova-dots';
-import { TruncatedText } from '../../shared/truncated-text/truncated-text';
-import { LargeCounter } from '../../shared/large-counter/large-counter';
-import { BooleanYesno } from '../../shared/boolean-yesno/boolean-yesno';
-import { ProductImage } from '../../shared/product-image/product-image';
-import { DecimalUnits } from '../../shared/decimal-units/decimal-units';
-import { AbsoluteDate } from '../../shared/absolute-date/absolute-date';
-import { RelativeDate } from '../../shared/relative-date/relative-date';
-import { TimeFormat } from '../../shared/time-format/time-format';
-import { ColorPill } from '../../shared/color-pill/color-pill';
-import { StarRating } from '../../shared/star-rating/star-rating';
+import { CellRenderer } from '../../shared/cell-renderer/cell-renderer';
+import { AffButton } from '../../shared/aff-button/aff-button';
 import { TextSearch } from '../../shared/filters/text-search/text-search';
-import { RangeSlider } from '../../shared/filters/range-slider/range-slider';
+import {
+  RangeSlider,
+  RangeValue,
+} from '../../shared/filters/range-slider/range-slider';
 import { MultiSelect } from '../../shared/filters/multi-select/multi-select';
-import { FilterStore } from '../../shared/filters/filter-store';
+import {
+  FilterStore,
+  FilterValue,
+} from '../../shared/filters/filter-store';
 
 interface ProductPage {
   products: ProductViewModel[];
@@ -30,21 +31,9 @@ interface ProductPage {
 @Component({
   selector: 'aff-product-list',
   imports: [
+    AffButton,
     DataTable,
-    ProductLink,
-    ProgressBar,
-    GradeBadge,
-    NovaDots,
-    TruncatedText,
-    LargeCounter,
-    BooleanYesno,
-    ProductImage,
-    DecimalUnits,
-    AbsoluteDate,
-    RelativeDate,
-    TimeFormat,
-    ColorPill,
-    StarRating,
+    CellRenderer,
     TextSearch,
     RangeSlider,
     MultiSelect,
@@ -116,16 +105,38 @@ export class ProductList {
     return getColumnConfig(column as keyof ProductViewModel)?.label ?? column;
   }
 
-  /**
-   * Get unit for a specific column (for decimal-units type)
-   */
-  getColumnUnit(column: string): string {
-    return getColumnConfig(column as keyof ProductViewModel)?.unit ?? '';
-  }
-
   // #endregion
 
   // #region Filter State
+
+  /**
+   * Draft values bound to the filter controls. One store signal, viewed with
+   * the value type of each control (a column only ever holds one type), so the
+   * template reads a signal rather than calling a method per cell.
+   */
+  readonly textDrafts = this.#filters.drafts as Signal<
+    Record<string, string | undefined>
+  >;
+  readonly rangeDrafts = this.#filters.drafts as Signal<
+    Record<string, RangeValue | undefined>
+  >;
+  readonly multiDrafts = this.#filters.drafts as Signal<
+    Record<string, string[] | undefined>
+  >;
+
+  setDraft(column: string, value: FilterValue) {
+    this.#filters.setDraft(column, value);
+  }
+
+  applyFilter(column: string) {
+    this.#filters.apply(column);
+  }
+
+  /** MultiSelect applies on every toggle */
+  setAndApply(column: string, value: string[]) {
+    this.#filters.setDraft(column, value);
+    this.#filters.apply(column);
+  }
 
   /**
    * Reset all filters (also returns to the first page, see currentPage)

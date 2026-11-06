@@ -1,4 +1,3 @@
-import { createContext, useContext } from 'solid-js';
 import { createStore, unwrap } from 'solid-js/store';
 
 export type RangeFilter = { min?: number; max?: number };
@@ -12,7 +11,7 @@ interface FilterState {
 }
 
 /**
- * Page-scoped filter state, created by ProductList and shared with the filter components via context.
+ * Page-scoped filter state, owned by ProductList, which wires each filter control's value/events to it.
  * `onCommit` runs after every apply/clear (ProductList uses it to return to the first page).
  */
 export function createFilterStore(onCommit?: () => void) {
@@ -41,11 +40,3 @@ export function createFilterStore(onCommit?: () => void) {
 }
 
 export type FilterStore = ReturnType<typeof createFilterStore>;
-
-export const FilterStoreContext = createContext<FilterStore>();
-
-export function useFilterStore(): FilterStore {
-  const store = useContext(FilterStoreContext);
-  if (!store) throw new Error('useFilterStore must be used inside <FilterStoreContext.Provider>');
-  return store;
-}

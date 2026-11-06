@@ -4,6 +4,7 @@ import { Task, TaskStatus, initialState } from '@lit/task';
 import type { MockProductViewModel } from 'shared-types';
 import { productService, type AdjacentProducts } from '../services/productService.js';
 import '../components/display/index.js';
+import '../components/shared/lit-button.js';
 
 function toISOString(value: Date | string | number | undefined): string {
   if (!value) return '';
@@ -41,45 +42,10 @@ export class ProductDetail extends LitElement {
       gap: 1rem;
     }
 
-    .back-button {
-      background: #007bff;
-      color: white;
-      border: none;
-      padding: 0.75rem 1.5rem;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 1rem;
-      transition: background 0.2s;
-    }
-
-    .back-button:hover {
-      background: #0056b3;
-    }
-
     .product-navigation {
       display: flex;
       align-items: center;
       gap: 0.75rem;
-    }
-
-    .nav-button {
-      background: #007bff;
-      color: white;
-      border: none;
-      padding: 0.5rem 1rem;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 0.875rem;
-      transition: background 0.2s;
-    }
-
-    .nav-button:hover:not(:disabled) {
-      background: #0056b3;
-    }
-
-    .nav-button:disabled {
-      background: #cccccc;
-      cursor: not-allowed;
     }
 
     .position-info {
@@ -364,15 +330,11 @@ export class ProductDetail extends LitElement {
     return html`
       <div class="product-detail-container">
         <div class="navigation-bar">
-          <button @click=${this.navigateToList} class="back-button">← Back to List</button>
+          <lit-button extra-class="back-button" @button-click=${this.navigateToList}>← Back to List</lit-button>
           <div class="product-navigation">
-            <button @click=${this.navigateToPrevious} ?disabled=${!this.hasPrevious} class="nav-button">
-              ← Previous
-            </button>
+            <lit-button extra-class="nav-button" ?disabled=${!this.hasPrevious} @button-click=${this.navigateToPrevious}>← Previous</lit-button>
             <span class="position-info">${this.positionInfo}</span>
-            <button @click=${this.navigateToNext} ?disabled=${!this.hasNext} class="nav-button">
-              Next →
-            </button>
+            <lit-button extra-class="nav-button" ?disabled=${!this.hasNext} @button-click=${this.navigateToNext}>Next →</lit-button>
           </div>
         </div>
 

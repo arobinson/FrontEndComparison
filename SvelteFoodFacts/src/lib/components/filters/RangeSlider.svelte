@@ -1,31 +1,28 @@
 <script lang="ts">
-  import { getFilterStore, type RangeFilterValue } from '#lib/stores/filterStore.svelte';
   import './RangeSlider.css';
 
+  type Range = { min?: number; max?: number };
+
   let {
-    column,
+    value = $bindable(),
     min = 0,
     max = 100,
+    oncommit,
   }: {
-    column: string;
+    value: Range;
     min?: number;
     max?: number;
+    oncommit?: () => void;
   } = $props();
 
-  const store = getFilterStore();
-
-  let draft = $derived(store.drafts[column] as RangeFilterValue | undefined);
-  let minValue = $derived(draft?.min);
-  let maxValue = $derived(draft?.max);
-
   function parseInput(event: Event): number | undefined {
-    const value = (event.target as HTMLInputElement).value;
-    return value === '' ? undefined : Number(value);
+    const input = (event.target as HTMLInputElement).value;
+    return input === '' ? undefined : Number(input);
   }
 
-  // Only bounds that are set end up in the (applied) range object.
-  function toRange(minBound: number | undefined, maxBound: number | undefined): RangeFilterValue {
-    const result: RangeFilterValue = {};
+  // Only bounds that are set end up in the range object.
+  function toRange(minBound: number | undefined, maxBound: number | undefined): Range {
+    const result: Range = {};
     if (minBound !== undefined) {
       result.min = minBound;
     }
@@ -36,17 +33,14 @@
   }
 
   function handleMinChange(event: Event) {
-    store.setDraft(column, toRange(parseInput(event), maxValue));
+    value = toRange(parseInput(event), value.max);
   }
 
   function handleMaxChange(event: Event) {
-    store.setDraft(column, toRange(minValue, parseInput(event)));
+    value = toRange(value.min, parseInput(event));
   }
 
-  // Applies on blur of either input.
-  function handleBlur() {
-    store.apply(column);
-  }
+  // Commits on blur of either input (onblur in the markup).
 </script>
 
 <div class="range-slider">
@@ -55,9 +49,9 @@
     class="range-input"
     {min}
     {max}
-    value={minValue ?? ''}
+    value={value.min ?? ''}
     oninput={handleMinChange}
-    onblur={handleBlur}
+    onblur={() => oncommit?.()}
     placeholder="Min"
   />
   <span class="range-separator">-</span>
@@ -66,9 +60,9 @@
     class="range-input"
     {min}
     {max}
-    value={maxValue ?? ''}
+    value={value.max ?? ''}
     oninput={handleMaxChange}
-    onblur={handleBlur}
+    onblur={() => oncommit?.()}
     placeholder="Max"
   />
 </div>

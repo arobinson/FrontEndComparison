@@ -52,25 +52,6 @@
   margin: 0;
 }
 
-.reset-button {
-  padding: 8px 16px;
-  background-color: var(--color-primary, #0066cc);
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 500;
-}
-
-.reset-button:hover {
-  background-color: var(--color-primary-dark, #004499);
-}
-
-.reset-button:active {
-  transform: translateY(1px);
-}
-
 /* aff-data-table host stands in for React's .data-table-container (emulated encapsulation) */
 .table-area aff-data-table {
   flex: 1;

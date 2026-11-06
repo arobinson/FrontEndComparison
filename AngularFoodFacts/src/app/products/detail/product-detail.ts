@@ -21,10 +21,12 @@ import { DecimalUnits } from '../../shared/decimal-units/decimal-units';
 import { TimeFormat } from '../../shared/time-format/time-format';
 import { StarRating } from '../../shared/star-rating/star-rating';
 import { ColorPill } from '../../shared/color-pill/color-pill';
+import { AffButton } from '../../shared/aff-button/aff-button';
 
 @Component({
   selector: 'aff-product-detail',
   imports: [
+    AffButton,
     ProgressBar,
     GradeBadge,
     NovaDots,

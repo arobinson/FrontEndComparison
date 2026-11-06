@@ -17,6 +17,7 @@ import {
   StarRating,
   ColorPill,
 } from '../components/display';
+import { Button } from '../components/shared';
 import './ProductDetail.css';
 
 const ProductDetail = () => {
@@ -580,25 +581,25 @@ const ProductDetail = () => {
   return (
     <div className="product-detail-container">
       <div className="navigation-bar">
-        <button onClick={navigateToList} className="back-button">
+        <Button className="back-button" onClick={navigateToList}>
           ← Back to List
-        </button>
+        </Button>
         <div className="product-navigation">
-          <button
-            onClick={navigateToPrevious}
-            disabled={!hasPrevious}
+          <Button
             className="nav-button"
+            disabled={!hasPrevious}
+            onClick={navigateToPrevious}
           >
             ← Previous
-          </button>
+          </Button>
           <span className="position-info">{positionInfo}</span>
-          <button
-            onClick={navigateToNext}
-            disabled={!hasNext}
+          <Button
             className="nav-button"
+            disabled={!hasNext}
+            onClick={navigateToNext}
           >
             Next →
-          </button>
+          </Button>
         </div>
       </div>
       <div className="detail-area">

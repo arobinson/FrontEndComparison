@@ -361,6 +361,9 @@ importers:
 
   SolidFoodFacts:
     dependencies:
+      '@solid-primitives/keyed':
+        specifier: ^1.5.3
+        version: 1.5.3(solid-js@1.9.18)
       '@solidjs/router':
         specifier: ^1.0.1
         version: 1.0.1(solid-js@1.9.18)
@@ -2437,6 +2440,11 @@ packages:
 
   '@socket.io/component-emitter@3.1.2':
     resolution: {integrity: sha512-9BCxFwvbGg/RsZK9tjXd8s4UcwR0MWeFQ1XEKIQVVvAGJyINdrqKMcTRyLoK8Rse1GjzLV9cwjWV1olXRWEXVA==}
+
+  '@solid-primitives/keyed@1.5.3':
+    resolution: {integrity: sha512-zNadtyYBhJSOjXtogkGHmRxjGdz9KHc8sGGVAGlUABkE8BED2tbIZoxkwSqzOwde8OcUEH0bb5DLZUWIMvyBSA==}
+    peerDependencies:
+      solid-js: ^1.6.12
 
   '@solidjs/babel-plugin@2.0.0-rc.21':
     resolution: {integrity: sha512-LswbizBsWGJsroI8wAv70RraeXzxMru3VMAzm0hxIM9pg88lkhVAWmTHjRPZFj/y5EznqfQNaiiTxt+q84alrg==}
@@ -7532,6 +7540,10 @@ snapshots:
       - chokidar
 
   '@socket.io/component-emitter@3.1.2': {}
+
+  '@solid-primitives/keyed@1.5.3(solid-js@1.9.18)':
+    dependencies:
+      solid-js: 1.9.18
 
   '@solidjs/babel-plugin@2.0.0-rc.21(@babel/core@7.29.7(supports-color@8.1.1))':
     dependencies:

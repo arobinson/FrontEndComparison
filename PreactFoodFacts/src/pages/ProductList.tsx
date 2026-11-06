@@ -1,10 +1,15 @@
 import { useState, useMemo, useCallback } from 'preact/hooks';
 import { useProducts } from '../hooks/useProducts';
 import { allColumns, getColumnConfig } from '../config/columnConfig';
-import { DataTable, TextSearch, RangeSlider, MultiSelect } from '../components/shared';
 import {
-  FiltersContext,
-  FilterActionsContext,
+  Button,
+  DataTable,
+  TextSearch,
+  RangeSlider,
+  MultiSelect,
+  type RangeValue,
+} from '../components/shared';
+import {
   useFiltersReducer,
   type FilterActions,
 } from '../components/shared/filters/filterStore';
@@ -13,16 +18,22 @@ import './ProductList.css';
 import type { MockProductViewModel } from 'shared-types';
 
 // Static table config, hoisted so DataTable's memo is not defeated by fresh
-// arrays on every render (typing in a filter re-renders this page through the
-// filter store; the table itself should not re-render for a draft change).
+// arrays on every render.
 const columns = allColumns.map((col) => col.key);
 const pageSizes = [10, 25, 50];
+const GRADE_OPTIONS = ['A', 'B', 'C', 'D', 'F'];
+const NOVA_OPTIONS = ['1', '2', '3', '4'];
+const YES_NO_OPTIONS = ['Yes', 'No'];
+// Draft fallbacks for untouched filters (empty inputs, no selection).
+const NO_RANGE: RangeValue = {};
+const NO_SELECTION: string[] = [];
 
 const ProductList = () => {
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(50);
   const [filterState, dispatch] = useFiltersReducer();
   const filters = filterState.applied;
+  const drafts = filterState.drafts;
 
   const { products, total, loading, error } = useProducts({
     category: 'all',
@@ -78,8 +89,8 @@ const ProductList = () => {
     return result;
   }, [products, filters]);
 
-  // Store actions handed to the filter components. Committing (apply) or
-  // clearing filters also returns to the first page, as before.
+  // Store actions. Committing (apply) or clearing filters also returns to the
+  // first page.
   const filterActions = useMemo<FilterActions>(() => ({
     setDraft: (column, value) => dispatch({ type: 'setDraft', column, value }),
     apply: (column) => {
@@ -115,53 +126,74 @@ const ProductList = () => {
     return <strong>{getColumnTitle(column)}</strong>;
   }, []);
 
+  // Each control shows its column's draft; edits update the draft, and a commit
+  // (blur/Enter, or every MultiSelect toggle) applies it.
   const renderFilterCell = useCallback((column: string) => {
     const dataType = getColumnDataType(column);
+    const draft = drafts[column];
+    const { setDraft, apply } = filterActions;
+    const setColumnDraft = (value: string | RangeValue) => setDraft(column, value);
+    const applyColumn = () => apply(column);
+    const selectAndApply = (value: string[]) => {
+      setDraft(column, value);
+      apply(column);
+    };
 
     switch (dataType) {
       case 'progress-bar':
         return (
           <RangeSlider
-            column={column}
+            value={(draft as RangeValue | undefined) ?? NO_RANGE}
             min={0}
             max={100}
+            onValueChange={setColumnDraft}
+            onCommit={applyColumn}
           />
         );
       case 'grade-badge':
         return (
           <MultiSelect
-            column={column}
-            options={['A', 'B', 'C', 'D', 'F']}
+            options={GRADE_OPTIONS}
+            value={(draft as string[] | undefined) ?? NO_SELECTION}
+            onValueChange={selectAndApply}
           />
         );
       case 'nova-dots':
         return (
           <MultiSelect
-            column={column}
-            options={['1', '2', '3', '4']}
+            options={NOVA_OPTIONS}
+            value={(draft as string[] | undefined) ?? NO_SELECTION}
+            onValueChange={selectAndApply}
           />
         );
       case 'large-counter':
         return (
           <RangeSlider
-            column={column}
+            value={(draft as RangeValue | undefined) ?? NO_RANGE}
+            onValueChange={setColumnDraft}
+            onCommit={applyColumn}
           />
         );
       case 'boolean-yesno':
         return (
           <MultiSelect
-            column={column}
-            options={['Yes', 'No']}
+            options={YES_NO_OPTIONS}
+            value={(draft as string[] | undefined) ?? NO_SELECTION}
+            onValueChange={selectAndApply}
           />
         );
       case 'product-image':
         return null;
       default:
         return (
-          <TextSearch column={column} />
+          <TextSearch
+            value={(draft as string | undefined) ?? ''}
+            onValueChange={setColumnDraft}
+            onCommit={applyColumn}
+          />
         );
     }
-  }, []);
+  }, [drafts, filterActions]);
 
   const renderCell = useCallback((value: any, column: string, row: Record<string, any>) => {
     const columnConfig = allColumns.find((col) => col.key === column);
@@ -188,6 +220,7 @@ const ProductList = () => {
           pageSize={pageSize}
           pageSizes={pageSizes}
           showFilterRow={true}
+          trackBy="code"
           onPageChange={handlePageChange}
           onPageSizeChange={handlePageSizeChange}
           renderHeader={renderHeader}
@@ -203,19 +236,15 @@ const ProductList = () => {
   }
 
   return (
-    <FilterActionsContext.Provider value={filterActions}>
-      <FiltersContext.Provider value={filterState}>
-        <div className="product-list-container">
-          <div className="page-header-row">
-            <h1>Products</h1>
-            <button className="reset-button" onClick={filterActions.clear} type="button">
-              Reset Filters
-            </button>
-          </div>
-          {content}
-        </div>
-      </FiltersContext.Provider>
-    </FilterActionsContext.Provider>
+    <div className="product-list-container">
+      <div className="page-header-row">
+        <h1>Products</h1>
+        <Button className="reset-button" onClick={filterActions.clear}>
+          Reset Filters
+        </Button>
+      </div>
+      {content}
+    </div>
   );
 };
 

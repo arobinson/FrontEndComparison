@@ -1,13 +1,7 @@
-import { createContext, useContext, type Dispatch } from 'react';
+import type { RangeValue } from './RangeSlider';
 
-// Page-scoped filter store: Context + useReducer, per react.dev
-// "Scaling Up with Reducer and Context". ProductList owns the reducer and
-// provides both contexts; the filter components read their draft and dispatch.
-
-export interface RangeValue {
-  min?: number;
-  max?: number;
-}
+// Page-scoped filter store (useReducer). ProductList owns it and wires each
+// filter control to it through props; the controls know nothing about it.
 
 export type FilterValue = string | RangeValue | string[];
 
@@ -34,15 +28,4 @@ export function filterReducer(state: FilterState, action: FilterAction): FilterS
     case 'clear':
       return initialFilterState;
   }
-}
-
-export const FilterContext = createContext<FilterState>(initialFilterState);
-export const FilterDispatchContext = createContext<Dispatch<FilterAction>>(() => {});
-
-export function useFilterDraft<T extends FilterValue>(column: string): T | undefined {
-  return useContext(FilterContext).drafts[column] as T | undefined;
-}
-
-export function useFilterDispatch(): Dispatch<FilterAction> {
-  return useContext(FilterDispatchContext);
 }

@@ -13,7 +13,7 @@ async function waitForShowLess(page: any, present: boolean): Promise<void> {
     (wantPresent: boolean) => {
       function has(root: Document | ShadowRoot): boolean {
         for (const el of Array.from(root.querySelectorAll('button, a'))) {
-          if ((el.textContent?.trim().toLowerCase() || '').includes('show less')) return true;
+          if ((((el.textContent?.trim() || (el.getRootNode() as any).host?.textContent) ?? '').trim().toLowerCase()).includes('show less')) return true;
         }
         for (const el of Array.from(root.querySelectorAll('*'))) {
           if (el.shadowRoot && has(el.shadowRoot)) return true;
@@ -61,7 +61,7 @@ export const expandCollapseScenario: TestScenario = {
       }
 
       const showMore = findInShadow(document, (el) => {
-        const text = el.textContent?.trim().toLowerCase() || '';
+        const text = ((el.textContent?.trim() || (el.getRootNode() as any).host?.textContent) ?? '').trim().toLowerCase();
         return text.includes('show more') || text.includes('more');
       });
 
@@ -106,7 +106,7 @@ export const expandCollapseScenario: TestScenario = {
       }
 
       const showMore = findInShadow(document, (el) => {
-        const text = el.textContent?.trim().toLowerCase() || '';
+        const text = ((el.textContent?.trim() || (el.getRootNode() as any).host?.textContent) ?? '').trim().toLowerCase();
         return text.includes('show more') || text.includes('more');
       });
       if (showMore) {
@@ -160,7 +160,7 @@ export const expandCollapseScenario: TestScenario = {
       }
 
       const showLess = findInShadow(document, (el) => {
-        const text = el.textContent?.trim().toLowerCase() || '';
+        const text = ((el.textContent?.trim() || (el.getRootNode() as any).host?.textContent) ?? '').trim().toLowerCase();
         return text.includes('show less') || text.includes('less');
       });
       if (showLess) {

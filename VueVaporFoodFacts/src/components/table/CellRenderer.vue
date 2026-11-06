@@ -34,7 +34,7 @@ const value = computed(() => row[column.key]);
   <GradeBadge v-else-if="column.type === 'grade-badge'" :grade="value" />
   <NovaDots v-else-if="column.type === 'nova-dots'" :rating="value" />
   <LargeCounter v-else-if="column.type === 'large-counter'" :value="value" />
-  <DecimalUnits v-else-if="column.type === 'decimal-units' && column.unit" :value="value" :unit="column.unit" />
+  <DecimalUnits v-else-if="column.type === 'decimal-units'" :value="value" :unit="column.unit" />
   <AbsoluteDate v-else-if="column.type === 'absolute-date'" :value="value" />
   <RelativeDate v-else-if="column.type === 'relative-date'" :value="value" />
   <TimeFormat v-else-if="column.type === 'time-format'" :value="value" />

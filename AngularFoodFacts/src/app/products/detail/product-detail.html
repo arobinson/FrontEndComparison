@@ -1,10 +1,10 @@
 <div class="product-detail-container">
   <div class="navigation-bar">
-    <button (click)="navigateToList()" class="back-button">← Back to List</button>
+    <aff-button extraClass="back-button" (clicked)="navigateToList()">← Back to List</aff-button>
     <div class="product-navigation">
-      <button (click)="navigateToPrevious()" [disabled]="!hasPrevious()" class="nav-button">← Previous</button>
+      <aff-button extraClass="nav-button" [disabled]="!hasPrevious()" (clicked)="navigateToPrevious()">← Previous</aff-button>
       <span class="position-info">{{ positionInfo() }}</span>
-      <button (click)="navigateToNext()" [disabled]="!hasNext()" class="nav-button">Next →</button>
+      <aff-button extraClass="nav-button" [disabled]="!hasNext()" (clicked)="navigateToNext()">Next →</aff-button>
     </div>
   </div>
 

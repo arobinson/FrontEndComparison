@@ -1,9 +1,7 @@
-@let header = headerTemplate();
-@let filter = filterTemplate();
-@let data = dataTemplate();
-@let empty = emptyTemplate();
 <div class="data-table-container">
   @if (hasData()) {
+    @let header = headerTemplate();
+    @let data = dataTemplate();
     <div class="table-wrapper">
       <table class="data-table">
         <thead class="table-header">
@@ -25,6 +23,7 @@
           </tr>
 
           @if (renderFilter()) {
+            @let filter = filterTemplate();
             <tr class="filter-row">
               @for (column of columns(); track column) {
                 <th class="filter-cell" scope="col">
@@ -43,7 +42,7 @@
         </thead>
 
         <tbody class="table-body">
-          @for (row of value(); track row.code) {
+          @for (row of value(); track rowKey(row)) {
             <tr class="data-row">
               @for (column of columns(); track column) {
                 <td class="data-cell">
@@ -100,6 +99,7 @@
       </div>
     </div>
   } @else {
+    @let empty = emptyTemplate();
     <div class="empty-state">
       @if (empty) {
         <ng-container *ngTemplateOutlet="empty"></ng-container>

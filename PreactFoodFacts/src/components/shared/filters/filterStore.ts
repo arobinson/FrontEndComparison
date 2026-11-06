@@ -1,14 +1,9 @@
-import { createContext } from 'preact';
-import { useContext, useReducer } from 'preact/hooks';
+import { useReducer } from 'preact/hooks';
+import type { RangeValue } from './RangeSlider';
 
-// Page-scoped filter store: Context + useReducer ("Scaling Up with Reducer and
-// Context"), using Preact core only. ProductList owns the reducer and provides
-// it, so the store lives and dies with the list page.
-
-export interface RangeValue {
-  min?: number;
-  max?: number;
-}
+// Page-scoped filter store (useReducer, Preact core only). ProductList owns it
+// and wires each filter control to it through props; the controls know nothing
+// about it, and it lives and dies with the list page.
 
 export type FilterValue = string | RangeValue | string[];
 
@@ -62,17 +57,3 @@ export const filtersReducer = (state: FilterState, action: FilterAction): Filter
 };
 
 export const useFiltersReducer = () => useReducer(filtersReducer, initialFilterState);
-
-export const FiltersContext = createContext<FilterState>(initialFilterState);
-export const FilterActionsContext = createContext<FilterActions | null>(null);
-
-export const useFilterDraft = <T extends FilterValue>(column: string): T | undefined =>
-  useContext(FiltersContext).drafts[column] as T | undefined;
-
-export const useFilterActions = (): FilterActions => {
-  const actions = useContext(FilterActionsContext);
-  if (!actions) {
-    throw new Error('Filter components must be rendered inside the product list filter store');
-  }
-  return actions;
-};

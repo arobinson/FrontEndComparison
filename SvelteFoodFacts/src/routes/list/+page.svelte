@@ -4,9 +4,10 @@
   import { productService } from '#lib/services/productService';
   import { onMount } from 'svelte';
   import DataTable from '#lib/components/shared/DataTable/DataTable.svelte';
+  import Button from '#lib/components/shared/Button/Button.svelte';
   import CellRenderer from '#lib/components/table/CellRenderer.svelte';
   import { TextSearch, RangeSlider, MultiSelect } from '#lib/components/filters';
-  import { FilterStore, setFilterStore } from '#lib/stores/filterStore.svelte';
+  import { FilterStore, type RangeFilterValue } from '#lib/stores/filterStore.svelte';
 
   // Fetched data is only ever replaced, never mutated: no deep proxy needed.
   // The previous page stays in `products` while the next one loads (rows stay visible under the overlay).
@@ -17,9 +18,32 @@
   let totalProducts = $state<number>(0);
   let error = $state<string | null>(null);
 
-  // Page-scoped filter state, shared with the filter components via context.
+  // Page-scoped filter state. The filter controls are generic and store-agnostic: the filter
+  // snippet binds each control's value to the column's draft and applies on commit.
   // Applying or clearing a filter returns to the first page.
-  const filterStore = setFilterStore(new FilterStore(goToFirstPage));
+  const filterStore = new FilterStore(goToFirstPage);
+
+  // Shared empty values for columns without a draft (controls never mutate their value).
+  const EMPTY_RANGE: RangeFilterValue = {};
+  const EMPTY_SELECTION: string[] = [];
+
+  function textDraft(column: string): string {
+    return (filterStore.drafts[column] as string | undefined) ?? '';
+  }
+
+  function rangeDraft(column: string): RangeFilterValue {
+    return (filterStore.drafts[column] as RangeFilterValue | undefined) ?? EMPTY_RANGE;
+  }
+
+  function selectionDraft(column: string): string[] {
+    return (filterStore.drafts[column] as string[] | undefined) ?? EMPTY_SELECTION;
+  }
+
+  // Multi-select applies on every toggle.
+  function setSelection(column: string, value: string[]) {
+    filterStore.setDraft(column, value);
+    filterStore.apply(column);
+  }
 
   // Column keys for the table
   const columnKeys = allColumns.map(col => col.key);
@@ -137,9 +161,9 @@
 <div class="product-list-container">
   <div class="page-header-row">
     <h1>Products</h1>
-    <button class="reset-button" onclick={resetFilters} type="button">
+    <Button class="reset-button" onclick={resetFilters}>
       Reset Filters
-    </button>
+    </Button>
   </div>
 
   {#if productsState === 'error'}
@@ -159,6 +183,7 @@
         {pageSize}
         pageSizes={[10, 25, 50]}
         showFilterRow={true}
+        trackBy="code"
         onPageChange={handlePageChange}
         onPageSizeChange={handlePageSizeChange}
       >
@@ -169,17 +194,37 @@
         {#snippet filter(column)}
           {@const dataType = getColumnDataType(column as keyof MockProductViewModel)}
           {#if dataType === 'progress-bar'}
-            <RangeSlider {column} min={0} max={100} />
+            <RangeSlider
+              bind:value={() => rangeDraft(column), (v) => filterStore.setDraft(column, v)}
+              oncommit={() => filterStore.apply(column)}
+              min={0}
+              max={100}
+            />
           {:else if dataType === 'grade-badge'}
-            <MultiSelect {column} options={['A', 'B', 'C', 'D', 'F']} />
+            <MultiSelect
+              options={['A', 'B', 'C', 'D', 'F']}
+              bind:value={() => selectionDraft(column), (v) => setSelection(column, v)}
+            />
           {:else if dataType === 'nova-dots'}
-            <MultiSelect {column} options={['1', '2', '3', '4']} />
+            <MultiSelect
+              options={['1', '2', '3', '4']}
+              bind:value={() => selectionDraft(column), (v) => setSelection(column, v)}
+            />
           {:else if dataType === 'boolean-yesno'}
-            <MultiSelect {column} options={['Yes', 'No']} />
+            <MultiSelect
+              options={['Yes', 'No']}
+              bind:value={() => selectionDraft(column), (v) => setSelection(column, v)}
+            />
           {:else if dataType === 'large-counter'}
-            <RangeSlider {column} />
+            <RangeSlider
+              bind:value={() => rangeDraft(column), (v) => filterStore.setDraft(column, v)}
+              oncommit={() => filterStore.apply(column)}
+            />
           {:else if dataType !== 'product-image'}
-            <TextSearch {column} />
+            <TextSearch
+              bind:value={() => textDraft(column), (v) => filterStore.setDraft(column, v)}
+              oncommit={() => filterStore.apply(column)}
+            />
           {/if}
         {/snippet}
 
@@ -252,7 +297,7 @@
     margin: 0;
   }
 
-  .reset-button {
+  .page-header-row :global(.reset-button) {
     padding: 8px 16px;
     background-color: var(--color-primary, #0066cc);
     color: white;
@@ -263,11 +308,11 @@
     font-weight: 500;
   }
 
-  .reset-button:hover {
+  .page-header-row :global(.reset-button:hover) {
     background-color: var(--color-primary-dark, #004499);
   }
 
-  .reset-button:active {
+  .page-header-row :global(.reset-button:active) {
     transform: translateY(1px);
   }
 

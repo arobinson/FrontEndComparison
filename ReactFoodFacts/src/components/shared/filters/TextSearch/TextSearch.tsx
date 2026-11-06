@@ -1,41 +1,39 @@
 import { memo, useCallback, type KeyboardEvent, type ChangeEvent } from 'react';
-import { useFilterDraft, useFilterDispatch } from '../filterStore';
 import './TextSearch.css';
 
 interface TextSearchProps {
-  column: string;
+  value: string;
   placeholder?: string;
+  /** Every keystroke, with the new text. */
+  onValueChange: (value: string) => void;
+  /** Blur or Enter: the user is done editing. */
+  onCommit: () => void;
 }
 
 export const TextSearch = memo(({
-  column,
+  value,
   placeholder = 'Search',
+  onValueChange,
+  onCommit,
 }: TextSearchProps) => {
-  const searchValue = useFilterDraft<string>(column) ?? '';
-  const dispatch = useFilterDispatch();
-
   const handleInput = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-    dispatch({ type: 'setDraft', column, value: event.target.value });
-  }, [dispatch, column]);
-
-  const handleBlur = useCallback(() => {
-    dispatch({ type: 'apply', column });
-  }, [dispatch, column]);
+    onValueChange(event.target.value);
+  }, [onValueChange]);
 
   const handleKeyUp = useCallback((event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
-      dispatch({ type: 'apply', column });
+      onCommit();
     }
-  }, [dispatch, column]);
+  }, [onCommit]);
 
   return (
     <input
       type="text"
       className="text-search-input"
       placeholder={placeholder}
-      value={searchValue}
+      value={value}
       onChange={handleInput}
-      onBlur={handleBlur}
+      onBlur={onCommit}
       onKeyUp={handleKeyUp}
     />
   );

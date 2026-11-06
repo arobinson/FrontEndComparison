@@ -1,4 +1,5 @@
 import { createSignal, createMemo, Show } from 'solid-js';
+import Button from '../shared/Button';
 import './TruncatedText.css';
 
 interface TruncatedTextProps {
@@ -24,13 +25,9 @@ export default function TruncatedText(props: TruncatedTextProps) {
     <div class="truncated-text">
       <span class="text-content">{displayText()}</span>
       <Show when={shouldTruncate()}>
-        <button
-          class="toggle-button"
-          onClick={() => setIsExpanded(!isExpanded())}
-          type="button"
-        >
+        <Button variant="tertiary" size="sm" class="toggle-button" onClick={() => setIsExpanded(!isExpanded())}>
           {isExpanded() ? 'Show less' : 'Show more'}
-        </button>
+        </Button>
       </Show>
     </div>
   );

@@ -1,32 +1,46 @@
 import type { TargetedEvent } from 'preact';
-import { useFilterActions, useFilterDraft, type RangeValue } from '../filterStore';
 import './RangeSlider.css';
 
-interface RangeSliderProps {
-  column: string;
+export interface RangeValue {
   min?: number;
   max?: number;
 }
 
-export const RangeSlider = ({ column, min = 0, max = 100 }: RangeSliderProps) => {
-  const range = useFilterDraft<RangeValue>(column);
-  const { setDraft, apply } = useFilterActions();
-  const minValue = range?.min;
-  const maxValue = range?.max;
+interface RangeSliderProps {
+  value: RangeValue;
+  /** Bounds for the inputs' min/max attributes. */
+  min?: number;
+  max?: number;
+  /** Every keystroke in either input, with the new range. */
+  onValueChange: (value: RangeValue) => void;
+  /** Blur of either input: the user is done editing. */
+  onCommit: () => void;
+}
 
-  const toNumber = (raw: string): number | undefined => (raw === '' ? undefined : Number(raw));
+const toNumber = (raw: string): number | undefined => (raw === '' ? undefined : Number(raw));
+
+// Only bounds that are set end up in the range object (empty input = bound absent).
+const toRange = (minValue: number | undefined, maxValue: number | undefined): RangeValue => {
+  const result: RangeValue = {};
+  if (minValue !== undefined) {
+    result.min = minValue;
+  }
+  if (maxValue !== undefined) {
+    result.max = maxValue;
+  }
+  return result;
+};
+
+export const RangeSlider = ({ value, min = 0, max = 100, onValueChange, onCommit }: RangeSliderProps) => {
+  const minValue = value.min;
+  const maxValue = value.max;
 
   const handleMinChange = (event: TargetedEvent<HTMLInputElement>) => {
-    setDraft(column, { min: toNumber(event.currentTarget.value), max: maxValue });
+    onValueChange(toRange(toNumber(event.currentTarget.value), maxValue));
   };
 
   const handleMaxChange = (event: TargetedEvent<HTMLInputElement>) => {
-    setDraft(column, { min: minValue, max: toNumber(event.currentTarget.value) });
-  };
-
-  // The store only keeps the bounds that are set when applying.
-  const handleBlur = () => {
-    apply(column);
+    onValueChange(toRange(minValue, toNumber(event.currentTarget.value)));
   };
 
   // onInput = React's onChange for inputs (fires on every keystroke).
@@ -39,7 +53,7 @@ export const RangeSlider = ({ column, min = 0, max = 100 }: RangeSliderProps) =>
         max={max}
         value={minValue ?? ''}
         onInput={handleMinChange}
-        onBlur={handleBlur}
+        onBlur={onCommit}
         placeholder="Min"
       />
       <span className="range-separator">-</span>
@@ -50,7 +64,7 @@ export const RangeSlider = ({ column, min = 0, max = 100 }: RangeSliderProps) =>
         max={max}
         value={maxValue ?? ''}
         onInput={handleMaxChange}
-        onBlur={handleBlur}
+        onBlur={onCommit}
         placeholder="Max"
       />
     </div>

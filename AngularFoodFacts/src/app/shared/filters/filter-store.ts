@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { Service, signal } from '@angular/core';
 
 export interface RangeFilterValue {
   min?: number;
@@ -7,20 +7,22 @@ export interface RangeFilterValue {
 
 export type FilterValue = string | RangeFilterValue | string[];
 
-type FilterMap = Record<string, FilterValue | undefined>;
+export type FilterMap = Record<string, FilterValue | undefined>;
 
 /**
  * Page-scoped filter state. Provide it in the page component's `providers`
- * so it lives and dies with that page; filter components `inject()` it.
+ * so it lives and dies with that page. The page wires the (generic) filter
+ * controls to it; controls never reference it.
  *
  * - draft: what each filter control currently shows
  * - applied: what the rows are filtered by (draft is committed via `apply`)
  */
-@Injectable()
+@Service({ autoProvided: false })
 export class FilterStore {
   readonly #drafts = signal<FilterMap>({});
   readonly #applied = signal<FilterMap>({});
 
+  readonly drafts = this.#drafts.asReadonly();
   readonly applied = this.#applied.asReadonly();
 
   draft(column: string): FilterValue | undefined {

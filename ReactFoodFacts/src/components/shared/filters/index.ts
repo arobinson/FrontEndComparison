@@ -1,9 +1,7 @@
 export { TextSearch } from './TextSearch';
-export { RangeSlider } from './RangeSlider';
+export { RangeSlider, type RangeValue } from './RangeSlider';
 export { MultiSelect } from './MultiSelect';
 export {
-  FilterContext,
-  FilterDispatchContext,
   filterReducer,
   initialFilterState,
   type FilterAction,

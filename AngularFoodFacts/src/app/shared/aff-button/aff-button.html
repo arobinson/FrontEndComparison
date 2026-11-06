@@ -1,5 +1,5 @@
 <button
-  [attr.class]="'aff-button variant-' + variant() + ' size-' + size()"
+  [attr.class]="classes()"
   [type]="type()"
   [disabled]="disabled()"
   (click)="onButtonClick($event)"

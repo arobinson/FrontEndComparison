@@ -81,11 +81,6 @@ export class DecimalUnits extends LitElement {
   }
 
   render() {
-    return html`
-      <span class="decimal-units">
-        ${this.formattedValue}
-        ${this.unit ? html`<span class="unit">${this.unit}</span>` : ''}
-      </span>
-    `;
+    return html`<span class="decimal-units">${this.formattedValue}${this.unit ? html`<span class="unit">${this.unit}</span>` : ''}</span>`;
   }
 }

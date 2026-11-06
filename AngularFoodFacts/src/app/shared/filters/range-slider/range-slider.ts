@@ -1,6 +1,17 @@
-import { Component, computed, inject, input } from '@angular/core';
-import { FilterStore, RangeFilterValue } from '../filter-store';
+import { Component, computed, input, model, output } from '@angular/core';
 
+/** A numeric range; a bound is absent when its input is empty. */
+export interface RangeValue {
+  min?: number;
+  max?: number;
+}
+
+/**
+ * Generic controlled min/max number input pair.
+ * - `value` changes on every input (contains only the bounds that are set)
+ * - `commit` fires on blur of either input
+ * - `min` / `max` are the bounds for the inputs' attributes
+ */
 @Component({
   selector: 'aff-range-slider',
   imports: [],
@@ -8,28 +19,20 @@ import { FilterStore, RangeFilterValue } from '../filter-store';
   styleUrl: './range-slider.css',
 })
 export class RangeSlider {
-  readonly column = input.required<string>();
+  readonly value = model<RangeValue>({});
   readonly min = input<number>(0);
   readonly max = input<number>(100);
+  readonly commit = output<void>();
 
-  readonly #store = inject(FilterStore);
-
-  readonly #draft = computed(
-    () => this.#store.draft(this.column()) as RangeFilterValue | undefined,
-  );
-  readonly minValue = computed(() => this.#draft()?.min);
-  readonly maxValue = computed(() => this.#draft()?.max);
+  readonly minValue = computed(() => this.value().min);
+  readonly maxValue = computed(() => this.value().max);
 
   onMinChange(event: Event) {
-    this.#setDraft(this.#parse(event), this.maxValue());
+    this.#setValue(this.#parse(event), this.maxValue());
   }
 
   onMaxChange(event: Event) {
-    this.#setDraft(this.minValue(), this.#parse(event));
-  }
-
-  onBlur() {
-    this.#store.apply(this.column());
+    this.#setValue(this.minValue(), this.#parse(event));
   }
 
   #parse(event: Event): number | undefined {
@@ -38,14 +41,14 @@ export class RangeSlider {
   }
 
   /** The value only contains the bounds that are set. */
-  #setDraft(min: number | undefined, max: number | undefined) {
-    const value: RangeFilterValue = {};
+  #setValue(min: number | undefined, max: number | undefined) {
+    const value: RangeValue = {};
     if (min !== undefined) {
       value.min = min;
     }
     if (max !== undefined) {
       value.max = max;
     }
-    this.#store.setDraft(this.column(), value);
+    this.value.set(value);
   }
 }

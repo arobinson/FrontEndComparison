@@ -11,6 +11,7 @@ const {
   pageSize,
   pageSizes = [10, 25, 50],
   showFilterRow = false,
+  trackBy,
   emptyText = 'No data available',
 } = defineProps<{
   columns: string[];
@@ -20,6 +21,8 @@ const {
   pageSize: number;
   pageSizes?: number[];
   showFilterRow?: boolean;
+  /** Row property that uniquely identifies a row; used as the row key */
+  trackBy: keyof T & string;
   emptyText?: string;
 }>();
 
@@ -82,7 +85,7 @@ const selectedPageSize = computed({
 
         <tbody class="table-body">
           <!-- Keyed by the product's primary key -->
-          <tr v-for="row in value" :key="row.code" class="data-row">
+          <tr v-for="row in value" :key="row[trackBy]" class="data-row">
             <td v-for="column in columns" :key="column" class="data-cell">
               <slot name="cell" :value="row[column]" :column="column" :row="row">{{ row[column] }}</slot>
             </td>

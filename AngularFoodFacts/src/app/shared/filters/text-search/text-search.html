@@ -2,8 +2,8 @@
   type="text"
   class="text-search-input"
   [placeholder]="placeholder()"
-  [value]="searchValue()"
+  [value]="value()"
   (input)="onInput($event)"
-  (blur)="onBlur()"
+  (blur)="commit.emit()"
   (keyup)="onKeyup($event)"
 />

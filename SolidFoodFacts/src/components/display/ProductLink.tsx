@@ -1,4 +1,4 @@
-import { useHref, useResolvedPath } from '@solidjs/router';
+import { A } from '@solidjs/router';
 import './ProductLink.css';
 
 interface ProductLinkProps {
@@ -6,13 +6,12 @@ interface ProductLinkProps {
   label: string;
 }
 
-// A plain <a>: the router intercepts same-origin link clicks (preloading is off on <Router>).
-// useResolvedPath + useHref add the router base, exactly as <A> does.
+// The router's link component, like React's <Link>. Empty activeClass/inactiveClass keep the
+// rendered class to just "product-link" (Solid's classList skips empty keys).
 export default function ProductLink(props: ProductLinkProps) {
-  const href = useHref(useResolvedPath(() => `/detail/${props.code}`));
   return (
-    <a href={href()} class="product-link">
+    <A href={`/detail/${props.code}`} class="product-link" activeClass="" inactiveClass="">
       {props.label}
-    </a>
+    </A>
   );
 }

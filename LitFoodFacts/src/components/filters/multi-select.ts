@@ -1,9 +1,13 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import { FilterStore, FilterStoreController } from './filter-store.js';
+import '../shared/lit-button.js';
 
 const NO_SELECTION: string[] = [];
 
+/**
+ * Controlled checkbox dropdown. Shows `value` (the selected options); fires `value-change`
+ * (detail: the new selection, in insertion order) on every toggle.
+ */
 @customElement('multi-select')
 export class MultiSelect extends LitElement {
   static styles = css`
@@ -20,24 +24,6 @@ export class MultiSelect extends LitElement {
 
     .multi-select {
       position: relative;
-    }
-
-    .select-toggle {
-      width: 100%;
-      padding: 4px 8px;
-      border: 1px solid var(--color-border, #ddd);
-      border-radius: 4px;
-      background: white;
-      font-size: 13px;
-      text-align: left;
-      cursor: pointer;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .select-toggle:hover {
-      border-color: var(--color-primary, #0066cc);
     }
 
     .arrow {
@@ -79,16 +65,10 @@ export class MultiSelect extends LitElement {
   `;
 
   @property({ attribute: false }) options: string[] = [];
+  @property({ attribute: false }) value: string[] = NO_SELECTION;
   @property({ type: String }) placeholder = 'Select...';
-  @property({ attribute: false }) column = '';
-  @property({ attribute: false }) store?: FilterStore;
 
   @state() private isOpen = false;
-
-  constructor() {
-    super();
-    new FilterStoreController(this, () => this.store);
-  }
 
   connectedCallback() {
     super.connectedCallback();
@@ -101,26 +81,22 @@ export class MultiSelect extends LitElement {
     document.removeEventListener('click', this.handleClickOutside);
   }
 
+  // composedPath() crosses shadow roots, so a click on the lit-button toggle's inner <button>
+  // still includes this element and counts as inside.
   private handleClickOutside = (e: MouseEvent) => {
     if (this.isOpen && !e.composedPath().includes(this)) {
       this.isOpen = false;
     }
   };
 
-  private get selected(): string[] {
-    return this.store?.getDraft<string[]>(this.column) ?? NO_SELECTION;
-  }
-
   private toggleDropdown() {
     this.isOpen = !this.isOpen;
   }
 
-  // Every toggle updates the selection and applies it immediately.
   private toggleOption(option: string) {
-    const selected = this.selected;
+    const selected = this.value;
     const next = selected.includes(option) ? selected.filter((v) => v !== option) : [...selected, option];
-    this.store?.setDraft(this.column, next);
-    this.store?.apply(this.column);
+    this.dispatchEvent(new CustomEvent<string[]>('value-change', { detail: next }));
   }
 
   private displayText(selected: string[]): string {
@@ -130,13 +106,10 @@ export class MultiSelect extends LitElement {
   }
 
   render() {
-    const selected = this.selected;
+    const selected = this.value;
     return html`
       <div class="multi-select">
-        <button class="select-toggle" @click=${this.toggleDropdown} type="button">
-          <span>${this.displayText(selected)}</span>
-          <span class="arrow">▼</span>
-        </button>
+        <lit-button size="sm" extra-class="select-toggle" @button-click=${this.toggleDropdown}><span>${this.displayText(selected)}</span><span class="arrow">▼</span></lit-button>
 
         ${this.isOpen
           ? html`

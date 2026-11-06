@@ -46,7 +46,7 @@
   <LargeCounter {value} />
 {:else if dataType === 'product-image'}
   <ProductImage {value} />
-{:else if dataType === 'decimal-units' && unit}
+{:else if dataType === 'decimal-units'}
   <DecimalUnits {value} {unit} />
 {:else if dataType === 'color-pill'}
   <ColorPill {value} />

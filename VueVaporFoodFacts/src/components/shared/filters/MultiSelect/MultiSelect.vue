@@ -1,21 +1,15 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, useTemplateRef } from 'vue';
-import { useFilterStore } from '../../../../composables/useFilterStore';
+import { Button } from '../../Button';
 import './MultiSelect.css';
 
-const {
-  column,
-  options,
-  placeholder = 'Select...',
-} = defineProps<{
-  column: string;
+const { options, placeholder = 'Select...' } = defineProps<{
   options: string[];
   placeholder?: string;
 }>();
 
-const store = useFilterStore();
-
-const selectedValues = computed(() => store.getDraft<string[]>(column, []));
+// Controlled: the parent owns the selection (v-model); only the open/closed state is local
+const selectedValues = defineModel<string[]>({ required: true });
 const isOpen = ref(false);
 const container = useTemplateRef<HTMLDivElement>('container');
 let lastClickWhenOpened: EventTarget | null = null;
@@ -41,12 +35,10 @@ const toggleDropdown = (event: MouseEvent) => {
   isOpen.value = willBeOpen;
 };
 
-// Applies on every toggle
+// Reports a new array (insertion order) on every toggle
 const toggleOption = (option: string) => {
   const current = selectedValues.value;
-  const next = current.includes(option) ? current.filter((value) => value !== option) : [...current, option];
-  store.setDraft(column, next);
-  store.apply(column);
+  selectedValues.value = current.includes(option) ? current.filter((value) => value !== option) : [...current, option];
 };
 
 const displayText = computed(() => {
@@ -63,10 +55,9 @@ const displayText = computed(() => {
 
 <template>
   <div ref="container" class="multi-select">
-    <button class="select-toggle" type="button" @click="toggleDropdown">
-      <span>{{ displayText }}</span>
-      <span class="arrow">▼</span>
-    </button>
+    <Button size="sm" class="select-toggle" @click="toggleDropdown"
+      ><span>{{ displayText }}</span><span class="arrow">▼</span></Button
+    >
 
     <div v-if="isOpen" class="dropdown">
       <label v-for="option in options" :key="option" class="option">

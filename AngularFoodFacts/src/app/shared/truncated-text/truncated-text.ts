@@ -1,8 +1,9 @@
 import { Component, computed, input, signal } from '@angular/core';
+import { AffButton } from '../aff-button/aff-button';
 
 @Component({
   selector: 'aff-truncated-text',
-  imports: [],
+  imports: [AffButton],
   templateUrl: './truncated-text.html',
   styleUrl: './truncated-text.css',
 })
@@ -27,6 +28,10 @@ export class TruncatedText {
     }
     return result;
   });
+
+  readonly toggleLabel = computed(() =>
+    this.isExpanded() ? 'Show less' : 'Show more',
+  );
 
   toggleExpanded() {
     this.isExpanded.update((val) => !val);

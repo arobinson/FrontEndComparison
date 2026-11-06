@@ -1,1 +1,1 @@
-export { RangeSlider } from './RangeSlider';
+export { RangeSlider, type RangeValue } from './RangeSlider';

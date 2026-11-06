@@ -18,6 +18,8 @@ import TimeFormat from '../components/display/TimeFormat';
 import AbsoluteDate from '../components/display/AbsoluteDate';
 import RelativeDate from '../components/display/RelativeDate';
 
+import Button from '../components/shared/Button';
+
 import './ProductDetail.css';
 
 interface DetailData {
@@ -36,31 +38,6 @@ function toISOString(value: Date | string | number | undefined): string {
   } catch {
     return '';
   }
-}
-
-interface NavigationBarProps {
-  adjacent: AdjacentProducts | null;
-  onBack: () => void;
-  onPrevious: () => void;
-  onNext: () => void;
-}
-
-// Shared by the first-load fallback (no adjacent info yet) and the loaded page
-function NavigationBar(props: NavigationBarProps) {
-  return (
-    <div class="navigation-bar">
-      <button onClick={props.onBack} class="back-button">← Back to List</button>
-      <div class="product-navigation">
-        <button onClick={props.onPrevious} disabled={props.adjacent?.previousId == null} class="nav-button">
-          ← Previous
-        </button>
-        <span class="position-info">{props.adjacent ? `${props.adjacent.currentIndex} of ${props.adjacent.total}` : ''}</span>
-        <button onClick={props.onNext} disabled={props.adjacent?.nextId == null} class="nav-button">
-          Next →
-        </button>
-      </div>
-    </div>
-  );
 }
 
 export default function ProductDetail() {
@@ -125,7 +102,20 @@ export default function ProductDetail() {
       <Loading
         fallback={
           <>
-            <NavigationBar adjacent={null} onBack={navigateToList} onPrevious={navigateToPrevious} onNext={navigateToNext} />
+            <div class="navigation-bar">
+              <Button class="back-button" onClick={navigateToList}>
+                ← Back to List
+              </Button>
+              <div class="product-navigation">
+                <Button class="nav-button" disabled onClick={navigateToPrevious}>
+                  ← Previous
+                </Button>
+                <span class="position-info"></span>
+                <Button class="nav-button" disabled onClick={navigateToNext}>
+                  Next →
+                </Button>
+              </div>
+            </div>
             <div class="detail-area">
               <div class="loading-overlay">
                 <span class="loading-indicator">⏳ Loading...</span>
@@ -137,7 +127,20 @@ export default function ProductDetail() {
           </>
         }
       >
-        <NavigationBar adjacent={adjacent()} onBack={navigateToList} onPrevious={navigateToPrevious} onNext={navigateToNext} />
+        <div class="navigation-bar">
+          <Button class="back-button" onClick={navigateToList}>
+            ← Back to List
+          </Button>
+          <div class="product-navigation">
+            <Button class="nav-button" disabled={adjacent()?.previousId == null} onClick={navigateToPrevious}>
+              ← Previous
+            </Button>
+            <span class="position-info">{adjacent() ? `${adjacent()!.currentIndex} of ${adjacent()!.total}` : ''}</span>
+            <Button class="nav-button" disabled={adjacent()?.nextId == null} onClick={navigateToNext}>
+              Next →
+            </Button>
+          </div>
+        </div>
 
         <div class="detail-area">
           {/* Previous/Next in flight: the current product stays on screen under this overlay */}

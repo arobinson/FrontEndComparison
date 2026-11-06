@@ -1,5 +1,3 @@
-import { createContext } from 'svelte';
-
 export type RangeFilterValue = { min?: number; max?: number };
 export type FilterValue = string | RangeFilterValue | string[];
 
@@ -34,5 +32,3 @@ export class FilterStore {
     this.#onCommit();
   }
 }
-
-export const [getFilterStore, setFilterStore] = createContext<FilterStore>();

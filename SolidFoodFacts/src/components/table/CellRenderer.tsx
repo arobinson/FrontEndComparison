@@ -46,7 +46,7 @@ export default function CellRenderer(props: CellRendererProps) {
       <Match when={props.dataType === 'large-counter'}>
         <LargeCounter value={props.value} />
       </Match>
-      <Match when={props.dataType === 'decimal-units' && props.unit}>
+      <Match when={props.dataType === 'decimal-units'}>
         <DecimalUnits value={props.value} unit={props.unit} />
       </Match>
       <Match when={props.dataType === 'absolute-date'}>

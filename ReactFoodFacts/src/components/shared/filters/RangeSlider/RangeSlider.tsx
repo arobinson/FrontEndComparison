@@ -1,17 +1,26 @@
 import { memo, useCallback, type ChangeEvent } from 'react';
-import { useFilterDraft, useFilterDispatch, type RangeValue } from '../filterStore';
 import './RangeSlider.css';
 
-interface RangeSliderProps {
-  column: string;
+export interface RangeValue {
   min?: number;
   max?: number;
+}
+
+interface RangeSliderProps {
+  value: RangeValue;
+  /** Bounds for the inputs' min/max attributes. */
+  min?: number;
+  max?: number;
+  /** Every keystroke in either input, with the new range. */
+  onValueChange: (value: RangeValue) => void;
+  /** Blur of either input: the user is done editing. */
+  onCommit: () => void;
 }
 
 const parseInput = (event: ChangeEvent<HTMLInputElement>): number | undefined =>
   event.target.value === '' ? undefined : Number(event.target.value);
 
-// Only bounds that are set end up in the (applied) range object.
+// Only bounds that are set end up in the range object (empty input = bound absent).
 const toRange = (minValue: number | undefined, maxValue: number | undefined): RangeValue => {
   const result: RangeValue = {};
   if (minValue !== undefined) {
@@ -24,26 +33,22 @@ const toRange = (minValue: number | undefined, maxValue: number | undefined): Ra
 };
 
 export const RangeSlider = memo(({
-  column,
+  value,
   min = 0,
   max = 100,
+  onValueChange,
+  onCommit,
 }: RangeSliderProps) => {
-  const draft = useFilterDraft<RangeValue>(column);
-  const dispatch = useFilterDispatch();
-  const minValue = draft?.min;
-  const maxValue = draft?.max;
+  const minValue = value.min;
+  const maxValue = value.max;
 
   const handleMinChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-    dispatch({ type: 'setDraft', column, value: toRange(parseInput(event), maxValue) });
-  }, [dispatch, column, maxValue]);
+    onValueChange(toRange(parseInput(event), maxValue));
+  }, [onValueChange, maxValue]);
 
   const handleMaxChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-    dispatch({ type: 'setDraft', column, value: toRange(minValue, parseInput(event)) });
-  }, [dispatch, column, minValue]);
-
-  const handleBlur = useCallback(() => {
-    dispatch({ type: 'apply', column });
-  }, [dispatch, column]);
+    onValueChange(toRange(minValue, parseInput(event)));
+  }, [onValueChange, minValue]);
 
   return (
     <div className="range-slider">
@@ -54,7 +59,7 @@ export const RangeSlider = memo(({
         max={max}
         value={minValue ?? ''}
         onChange={handleMinChange}
-        onBlur={handleBlur}
+        onBlur={onCommit}
         placeholder="Min"
       />
       <span className="range-separator">-</span>
@@ -65,7 +70,7 @@ export const RangeSlider = memo(({
         max={max}
         value={maxValue ?? ''}
         onChange={handleMaxChange}
-        onBlur={handleBlur}
+        onBlur={onCommit}
         placeholder="Max"
       />
     </div>

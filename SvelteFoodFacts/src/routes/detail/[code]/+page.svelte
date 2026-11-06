@@ -5,6 +5,7 @@
   import type { MockProductViewModel } from 'shared-types';
   import { productService, type AdjacentProducts } from '#lib/services/productService';
 
+  import Button from '#lib/components/shared/Button/Button.svelte';
   import ProgressBar from '#lib/components/display/ProgressBar.svelte';
   import ProductImage from '#lib/components/display/ProductImage.svelte';
   import TruncatedText from '#lib/components/display/TruncatedText.svelte';
@@ -98,15 +99,15 @@
 
 <div class="product-detail-container">
   <div class="navigation-bar">
-    <button onclick={navigateToList} class="back-button">← Back to List</button>
+    <Button onclick={navigateToList} class="back-button">← Back to List</Button>
     <div class="product-navigation">
-      <button onclick={navigateToPrevious} disabled={!hasPrevious} class="nav-button">
+      <Button onclick={navigateToPrevious} disabled={!hasPrevious} class="nav-button">
         ← Previous
-      </button>
+      </Button>
       <span class="position-info">{positionInfo}</span>
-      <button onclick={navigateToNext} disabled={!hasNext} class="nav-button">
+      <Button onclick={navigateToNext} disabled={!hasNext} class="nav-button">
         Next →
-      </button>
+      </Button>
     </div>
   </div>
 
@@ -535,7 +536,7 @@
     gap: 1rem;
   }
 
-  .back-button {
+  .navigation-bar :global(.back-button) {
     background: #007bff;
     color: white;
     border: none;
@@ -546,7 +547,7 @@
     transition: background 0.2s;
   }
 
-  .back-button:hover {
+  .navigation-bar :global(.back-button:hover) {
     background: #0056b3;
   }
 
@@ -556,7 +557,7 @@
     gap: 0.75rem;
   }
 
-  .nav-button {
+  .navigation-bar :global(.nav-button) {
     background: #007bff;
     color: white;
     border: none;
@@ -567,11 +568,11 @@
     transition: background 0.2s;
   }
 
-  .nav-button:hover:not(:disabled) {
+  .navigation-bar :global(.nav-button:hover:not(:disabled)) {
     background: #0056b3;
   }
 
-  .nav-button:disabled {
+  .navigation-bar :global(.nav-button:disabled) {
     background: #cccccc;
     cursor: not-allowed;
   }

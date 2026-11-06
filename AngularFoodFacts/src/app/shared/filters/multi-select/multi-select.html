@@ -1,8 +1,5 @@
 <div class="multi-select">
-  <button class="select-toggle" (click)="toggleDropdown()" type="button">
-    <span>{{ displayText() }}</span>
-    <span class="arrow">▼</span>
-  </button>
+  <aff-button size="sm" extraClass="select-toggle" (clicked)="toggleDropdown()"><span>{{ displayText() }}</span><span class="arrow">▼</span></aff-button>
 
   @if (isOpen()) {
     <div class="dropdown">
@@ -10,7 +7,7 @@
         <label class="option">
           <input
             type="checkbox"
-            [checked]="selectedValues().includes(option)"
+            [checked]="value().includes(option)"
             (change)="toggleOption(option)"
           />
           <span>{{ option }}</span>

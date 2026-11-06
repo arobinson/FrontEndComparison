@@ -12,7 +12,8 @@ interface DataTableProps {
   pageSizes?: number[];
   showFilterRow?: boolean;
   emptyText?: string;
-  trackBy?: string;
+  /** Row property that uniquely identifies a row */
+  trackBy: string;
   onPageChange: (page: number) => void;
   onPageSizeChange: (pageSize: number) => void;
   renderHeader?: (column: string) => JSX.Element;
@@ -26,13 +27,6 @@ export default function DataTable(props: DataTableProps) {
 
   const hasData = createMemo(() => props.value && props.value.length > 0);
   const isValidPageSize = createMemo(() => pageSizes().includes(props.pageSize));
-
-  function getRowTrackValue(row: Record<string, any>, index: number): any {
-    if (props.trackBy && row[props.trackBy] !== undefined) {
-      return row[props.trackBy];
-    }
-    return index;
-  }
 
   function onFirstPage() {
     props.onPageChange(0);
@@ -96,16 +90,15 @@ export default function DataTable(props: DataTableProps) {
             </thead>
 
             <tbody class="table-body">
-              {/* <For> keys rows by object identity: a new page (new objects) replaces every row */}
-              <For each={props.value}>
-                {(row, index) => (
-                  <tr class="data-row" data-key={getRowTrackValue(row, index())}>
+              <For each={props.value} keyed={(row) => row[props.trackBy]}>
+                {(row) => (
+                  <tr class="data-row" data-key={row()[props.trackBy]}>
                     <For each={props.columns}>
                       {(column) => (
                         <td class="data-cell">
                           {props.renderCell
-                            ? props.renderCell(row[column], column, row)
-                            : row[column]}
+                            ? props.renderCell(row()[column], column, row())
+                            : row()[column]}
                         </td>
                       )}
                     </For>

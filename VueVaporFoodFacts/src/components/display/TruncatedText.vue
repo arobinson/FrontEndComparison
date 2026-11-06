@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
+import { Button } from '../shared/Button';
 import './TruncatedText.css';
 
 const { value, maxLength = 50 } = defineProps<{
@@ -31,6 +32,8 @@ const displayValue = computed(() => {
 <template>
   <div class="truncated-text">
     <span class="text-content">{{ displayValue }}</span>
-    <button v-if="shouldTruncate" class="toggle-button" type="button" @click="toggleExpanded">{{ isExpanded ? 'Show less' : 'Show more' }}</button>
+    <Button v-if="shouldTruncate" variant="tertiary" size="sm" class="toggle-button" @click="toggleExpanded">{{
+      isExpanded ? 'Show less' : 'Show more'
+    }}</Button>
   </div>
 </template>

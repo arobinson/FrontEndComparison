@@ -1,22 +1,21 @@
 import { memo, useState, useEffect, useCallback, useRef } from 'react';
-import { useFilterDraft, useFilterDispatch } from '../filterStore';
+import { Button } from '../../Button';
 import './MultiSelect.css';
 
 interface MultiSelectProps {
-  column: string;
   options: string[];
+  value: string[];
   placeholder?: string;
+  /** Every toggle, with the new selection (in the order options were selected). */
+  onValueChange: (value: string[]) => void;
 }
 
-const NO_SELECTION: string[] = [];
-
 export const MultiSelect = memo(({
-  column,
   options,
+  value: selectedValues,
   placeholder = 'Select...',
+  onValueChange,
 }: MultiSelectProps) => {
-  const selectedValues = useFilterDraft<string[]>(column) ?? NO_SELECTION;
-  const dispatch = useFilterDispatch();
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const lastClickWhenOpenedRef = useRef<EventTarget | null>(null);
@@ -44,14 +43,12 @@ export const MultiSelect = memo(({
     setIsOpen(willBeOpen);
   }, [isOpen]);
 
-  // Every toggle updates the selection and applies it immediately.
   const toggleOption = useCallback((option: string) => {
     const next = selectedValues.includes(option)
-      ? selectedValues.filter((value) => value !== option)
+      ? selectedValues.filter((selected) => selected !== option)
       : [...selectedValues, option];
-    dispatch({ type: 'setDraft', column, value: next });
-    dispatch({ type: 'apply', column });
-  }, [selectedValues, dispatch, column]);
+    onValueChange(next);
+  }, [selectedValues, onValueChange]);
 
   const getDisplayText = useCallback(() => {
     const count = selectedValues.length;
@@ -66,10 +63,10 @@ export const MultiSelect = memo(({
 
   return (
     <div className="multi-select" ref={containerRef}>
-      <button className="select-toggle" onClick={toggleDropdown} type="button">
+      <Button size="sm" className="select-toggle" onClick={toggleDropdown}>
         <span>{getDisplayText()}</span>
         <span className="arrow">▼</span>
-      </button>
+      </Button>
 
       {isOpen && (
         <div className="dropdown">

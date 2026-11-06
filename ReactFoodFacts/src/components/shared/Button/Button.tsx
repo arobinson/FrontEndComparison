@@ -6,6 +6,7 @@ interface ButtonProps {
   disabled?: boolean;
   variant?: 'primary' | 'secondary' | 'tertiary';
   size?: 'sm' | 'md' | 'lg';
+  className?: string;
   onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
   children: ReactNode;
 }
@@ -15,6 +16,7 @@ export const Button = memo(({
   disabled = false,
   variant = 'secondary',
   size = 'md',
+  className,
   onClick,
   children,
 }: ButtonProps) => {
@@ -26,7 +28,7 @@ export const Button = memo(({
 
   return (
     <button
-      className={`aff-button variant-${variant} size-${size}`}
+      className={`aff-button variant-${variant} size-${size}${className ? ` ${className}` : ''}`}
       type={type}
       disabled={disabled}
       onClick={handleClick}

@@ -1,4 +1,6 @@
 <script lang="ts">
+  import Button from '#lib/components/shared/Button/Button.svelte';
+
   let { value, maxLength = 50 }: { value: string; maxLength?: number } = $props();
 
   let isExpanded = $state(false);
@@ -21,9 +23,9 @@
 <div class="truncated-text">
   <span class="text-content">{displayText}</span>
   {#if shouldTruncate}
-    <button class="toggle-button" onclick={toggleExpanded} type="button">
+    <Button variant="tertiary" size="sm" class="toggle-button" onclick={toggleExpanded}>
       {isExpanded ? 'Show less' : 'Show more'}
-    </button>
+    </Button>
   {/if}
 </div>
 
@@ -39,7 +41,7 @@
     word-break: break-word;
   }
 
-  .toggle-button {
+  .truncated-text :global(.toggle-button) {
     background: none;
     border: none;
     color: #0066cc;
@@ -50,11 +52,11 @@
     white-space: nowrap;
   }
 
-  .toggle-button:hover {
+  .truncated-text :global(.toggle-button:hover) {
     color: #004499;
   }
 
-  .toggle-button:focus {
+  .truncated-text :global(.toggle-button:focus) {
     outline: 2px solid #0066cc;
     outline-offset: 2px;
   }

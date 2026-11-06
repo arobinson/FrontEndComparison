@@ -172,8 +172,8 @@ export class DataTable extends LitElement {
   @property({ attribute: false }) pageSizes: number[] = [10, 25, 50];
   @property({ type: Boolean }) showFilterRow = false;
   @property({ type: String }) emptyText = 'No data available';
-  // Primary-key field: rows are keyed by it (repeat) and it is written to data-key.
-  @property({ type: String }) trackBy = 'code';
+  // Required: row property that uniquely identifies a row (repeat key and data-key)
+  @property({ type: String }) trackBy!: string;
   @property({ attribute: false }) renderHeader?: RenderHeaderFn;
   @property({ attribute: false }) renderFilter?: RenderFilterFn;
   @property({ attribute: false }) renderCell?: RenderCellFn;
@@ -281,25 +281,17 @@ export class DataTable extends LitElement {
           </div>
 
           <div class="pagination-controls">
-            <lit-button ?disabled=${this.page === 0} @button-click=${this.onFirstPage} size="sm">
-              First
-            </lit-button>
+            <lit-button ?disabled=${this.page === 0} @button-click=${this.onFirstPage} size="sm">First</lit-button>
 
-            <lit-button ?disabled=${this.page === 0} @button-click=${this.onPreviousPage} size="sm">
-              Previous
-            </lit-button>
+            <lit-button ?disabled=${this.page === 0} @button-click=${this.onPreviousPage} size="sm">Previous</lit-button>
 
             <span class="page-info">
               Page ${this.page + 1} of ${this.totalPages}
             </span>
 
-            <lit-button ?disabled=${this.page >= this.totalPages - 1} @button-click=${this.onNextPage} size="sm">
-              Next
-            </lit-button>
+            <lit-button ?disabled=${this.page >= this.totalPages - 1} @button-click=${this.onNextPage} size="sm">Next</lit-button>
 
-            <lit-button ?disabled=${this.page >= this.totalPages - 1} @button-click=${this.onLastPage} size="sm">
-              Last
-            </lit-button>
+            <lit-button ?disabled=${this.page >= this.totalPages - 1} @button-click=${this.onLastPage} size="sm">Last</lit-button>
           </div>
         </div>
       </div>

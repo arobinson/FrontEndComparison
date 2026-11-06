@@ -4,10 +4,9 @@ export {
   TextSearch,
   RangeSlider,
   MultiSelect,
-  FilterContext,
-  FilterDispatchContext,
   filterReducer,
   initialFilterState,
   type FilterAction,
   type FilterValue,
+  type RangeValue,
 } from './filters';

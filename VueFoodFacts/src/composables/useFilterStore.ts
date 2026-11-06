@@ -1,4 +1,4 @@
-import { inject, provide, reactive, readonly, type InjectionKey } from 'vue';
+import { reactive, readonly } from 'vue';
 
 export interface RangeValue {
   min?: number;
@@ -21,8 +21,6 @@ export interface FilterStore {
   clear(): void;
 }
 
-const filterStoreKey: InjectionKey<FilterStore> = Symbol('filterStore');
-
 // Applied range objects only carry the bounds that are set
 const snapshot = (value: FilterValue): FilterValue => {
   if (Array.isArray(value)) return [...value];
@@ -36,10 +34,10 @@ const snapshot = (value: FilterValue): FilterValue => {
 };
 
 /**
- * Creates the page-scoped filter store and provides it to descendant filter components.
+ * Creates the page-scoped filter store. The owning page wires it into the filter controls.
  * `onChange` runs after every apply/clear (the list uses it to go back to the first page).
  */
-export const provideFilterStore = (onChange?: () => void): FilterStore => {
+export const createFilterStore = (onChange?: () => void): FilterStore => {
   const state = reactive({
     drafts: {} as Record<string, FilterValue>,
     applied: {} as Record<string, FilterValue>,
@@ -65,14 +63,5 @@ export const provideFilterStore = (onChange?: () => void): FilterStore => {
     },
   };
 
-  provide(filterStoreKey, store);
-  return store;
-};
-
-export const useFilterStore = (): FilterStore => {
-  const store = inject(filterStoreKey);
-  if (!store) {
-    throw new Error('useFilterStore() must be used inside a component that called provideFilterStore()');
-  }
   return store;
 };

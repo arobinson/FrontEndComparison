@@ -1,5 +1,6 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
+import '../shared/lit-button.js';
 
 @customElement('truncated-text')
 export class TruncatedText extends LitElement {
@@ -13,26 +14,6 @@ export class TruncatedText extends LitElement {
     .text-content {
       flex: 1;
       word-break: break-word;
-    }
-
-    .toggle-button {
-      background: none;
-      border: none;
-      color: #0066cc;
-      cursor: pointer;
-      font-size: 12px;
-      padding: 2px 6px;
-      text-decoration: underline;
-      white-space: nowrap;
-    }
-
-    .toggle-button:hover {
-      color: #004499;
-    }
-
-    .toggle-button:focus {
-      outline: 2px solid #0066cc;
-      outline-offset: 2px;
     }
   `;
 
@@ -67,13 +48,7 @@ export class TruncatedText extends LitElement {
         <span class="text-content">${this.displayText}</span>
         ${this.shouldTruncate
           ? html`
-              <button
-                class="toggle-button"
-                @click="${this.toggleExpanded}"
-                type="button"
-              >
-                ${this.isExpanded ? 'Show less' : 'Show more'}
-              </button>
+              <lit-button variant="tertiary" size="sm" extra-class="toggle-button" @button-click=${this.toggleExpanded}>${this.isExpanded ? 'Show less' : 'Show more'}</lit-button>
             `
           : ''}
       </div>

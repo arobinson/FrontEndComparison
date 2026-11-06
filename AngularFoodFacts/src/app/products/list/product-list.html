@@ -1,7 +1,7 @@
 <div class="product-list-container">
   <div class="page-header-row">
     <h1>Products</h1>
-    <button class="reset-button" (click)="resetFilters()" type="button">Reset Filters</button>
+    <aff-button extraClass="reset-button" (clicked)="resetFilters()">Reset Filters</aff-button>
   </div>
 
   @if (isError()) {
@@ -21,6 +21,7 @@
       [(pageSize)]="pageSize"
       [pageSizes]="[10, 25, 50]"
       [renderFilter]="true"
+      trackBy="code"
     >
       <ng-template #header let-column>
         <strong>{{ getColumnTitle(column) }}</strong>
@@ -30,29 +31,38 @@
         @switch (getColumnDataType(column)) {
           @case ("progress-bar") {
             <aff-range-slider
-              [column]="column"
+              [value]="rangeDrafts()[column] ?? {}"
+              (valueChange)="setDraft(column, $event)"
+              (commit)="applyFilter(column)"
               [min]="0"
               [max]="100"
             />
           }
           @case ("grade-badge") {
             <aff-multi-select
-              [column]="column"
+              [value]="multiDrafts()[column] ?? []"
+              (valueChange)="setAndApply(column, $event)"
               [options]="['A', 'B', 'C', 'D', 'F']"
             />
           }
           @case ("nova-dots") {
             <aff-multi-select
-              [column]="column"
+              [value]="multiDrafts()[column] ?? []"
+              (valueChange)="setAndApply(column, $event)"
               [options]="['1', '2', '3', '4']"
             />
           }
           @case ("large-counter") {
-            <aff-range-slider [column]="column" />
+            <aff-range-slider
+              [value]="rangeDrafts()[column] ?? {}"
+              (valueChange)="setDraft(column, $event)"
+              (commit)="applyFilter(column)"
+            />
           }
           @case ("boolean-yesno") {
             <aff-multi-select
-              [column]="column"
+              [value]="multiDrafts()[column] ?? []"
+              (valueChange)="setAndApply(column, $event)"
               [options]="['Yes', 'No']"
             />
           }
@@ -60,63 +70,17 @@
             <!-- No filter for images -->
           }
           @default {
-            <aff-text-search [column]="column" />
+            <aff-text-search
+              [value]="textDrafts()[column] ?? ''"
+              (valueChange)="setDraft(column, $event)"
+              (commit)="applyFilter(column)"
+            />
           }
         }
       </ng-template>
 
-      <ng-template #data let-value let-column="column" let-row="row">
-        @switch (getColumnDataType(column)) {
-          @case ("product-link") {
-            <aff-product-link [value]="value" />
-          }
-          @case ("progress-bar") {
-            <aff-progress-bar [value]="value" />
-          }
-          @case ("grade-badge") {
-            <aff-grade-badge [value]="value" />
-          }
-          @case ("nova-dots") {
-            <aff-nova-dots [value]="value" />
-          }
-          @case ("truncated-text") {
-            <aff-truncated-text [value]="value" />
-          }
-          @case ("large-counter") {
-            <aff-large-counter [value]="value" />
-          }
-          @case ("boolean-yesno") {
-            <aff-boolean-yesno [value]="value" />
-          }
-          @case ("product-image") {
-            <aff-product-image [value]="value" />
-          }
-          @case ("decimal-units") {
-            @if (getColumnUnit(column)) {
-              <aff-decimal-units [value]="value" [unit]="getColumnUnit(column)" />
-            } @else {
-              <ng-container>{{ value ?? "" }}</ng-container>
-            }
-          }
-          @case ("absolute-date") {
-            <aff-absolute-date [value]="value" />
-          }
-          @case ("relative-date") {
-            <aff-relative-date [value]="value" />
-          }
-          @case ("time-format") {
-            <aff-time-format [value]="value" />
-          }
-          @case ("star-rating") {
-            <aff-star-rating [value]="value" />
-          }
-          @case ("color-pill") {
-            <aff-color-pill [value]="value" />
-          }
-          @default {
-            <ng-container>{{ value ?? "" }}</ng-container>
-          }
-        }
+      <ng-template #data let-column="column" let-row="row">
+        <aff-cell-renderer [column]="column" [row]="row" />
       </ng-template>
       </aff-data-table>
     </div>

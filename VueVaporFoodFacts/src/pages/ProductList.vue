@@ -2,9 +2,9 @@
 import { computed, ref } from 'vue';
 import type { MockProductViewModel } from 'shared-types';
 import { useProducts } from '../composables/useProducts';
-import { provideFilterStore } from '../composables/useFilterStore';
+import { createFilterStore, type FilterValue, type RangeValue } from '../composables/useFilterStore';
 import { allColumns, getColumnConfig } from '../config/columnConfig';
-import { DataTable, TextSearch, RangeSlider, MultiSelect } from '../components/shared';
+import { Button, DataTable, TextSearch, RangeSlider, MultiSelect } from '../components/shared';
 import CellRenderer from '../components/table/CellRenderer.vue';
 import './ProductList.css';
 
@@ -14,8 +14,9 @@ const pageSizes = [10, 25, 50];
 const page = ref(0);
 const pageSize = ref(50);
 
-// Page-scoped filter store, provided to the filter components; any apply/clear returns to the first page
-const filterStore = provideFilterStore(() => {
+// Page-scoped filter store; the page wires it into the (store-agnostic) filter controls.
+// Any apply/clear returns to the first page.
+const filterStore = createFilterStore(() => {
   page.value = 0;
 });
 
@@ -70,6 +71,21 @@ const filteredProducts = computed(() => {
   return result;
 });
 
+// Filter-cell wiring: each control shows the column's draft, edits update the draft, commits apply it
+const setDraft = (column: string, value: FilterValue) => {
+  filterStore.setDraft(column, value);
+};
+
+const applyFilter = (column: string) => {
+  filterStore.apply(column);
+};
+
+// Multi-selects apply on every toggle
+const setDraftAndApply = (column: string, value: string[]) => {
+  filterStore.setDraft(column, value);
+  filterStore.apply(column);
+};
+
 const totalPages = computed(() => Math.ceil(total.value / pageSize.value));
 
 const resetFilters = () => {
@@ -101,7 +117,7 @@ const findColumn = (column: string) => allColumns.find((col) => col.key === colu
   <div class="product-list-container">
     <div class="page-header-row">
       <h1>Products</h1>
-      <button class="reset-button" type="button" @click="resetFilters">Reset Filters</button>
+      <Button class="reset-button" @click="resetFilters">Reset Filters</Button>
     </div>
     <p v-if="error">Error loading products: {{ error }}</p>
     <div v-else-if="products.length > 0" class="table-area">
@@ -116,6 +132,7 @@ const findColumn = (column: string) => allColumns.find((col) => col.key === colu
         :page-size="pageSize"
         :page-sizes="pageSizes"
         :show-filter-row="true"
+        track-by="code"
         @page-change="handlePageChange"
         @page-size-change="handlePageSizeChange"
       >
@@ -126,32 +143,41 @@ const findColumn = (column: string) => allColumns.find((col) => col.key === colu
         <template #filter="{ column }">
           <RangeSlider
             v-if="getColumnDataType(column) === 'progress-bar'"
-            :column="column"
+            :model-value="filterStore.getDraft<RangeValue>(column, {})"
             :min="0"
             :max="100"
+            @update:model-value="setDraft(column, $event)"
+            @commit="applyFilter(column)"
           />
           <MultiSelect
             v-else-if="getColumnDataType(column) === 'grade-badge'"
-            :column="column"
+            :model-value="filterStore.getDraft<string[]>(column, [])"
             :options="['A', 'B', 'C', 'D', 'F']"
+            @update:model-value="setDraftAndApply(column, $event)"
           />
           <MultiSelect
             v-else-if="getColumnDataType(column) === 'nova-dots'"
-            :column="column"
+            :model-value="filterStore.getDraft<string[]>(column, [])"
             :options="['1', '2', '3', '4']"
+            @update:model-value="setDraftAndApply(column, $event)"
           />
           <RangeSlider
             v-else-if="getColumnDataType(column) === 'large-counter'"
-            :column="column"
+            :model-value="filterStore.getDraft<RangeValue>(column, {})"
+            @update:model-value="setDraft(column, $event)"
+            @commit="applyFilter(column)"
           />
           <MultiSelect
             v-else-if="getColumnDataType(column) === 'boolean-yesno'"
-            :column="column"
+            :model-value="filterStore.getDraft<string[]>(column, [])"
             :options="['Yes', 'No']"
+            @update:model-value="setDraftAndApply(column, $event)"
           />
           <TextSearch
             v-else-if="getColumnDataType(column) !== 'product-image'"
-            :column="column"
+            :model-value="filterStore.getDraft<string>(column, '')"
+            @update:model-value="setDraft(column, $event)"
+            @commit="applyFilter(column)"
           />
         </template>
 

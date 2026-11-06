@@ -1,21 +1,22 @@
 import type { TargetedMouseEvent } from 'preact';
 import { useState, useEffect, useCallback, useRef } from 'preact/hooks';
-import { useFilterActions, useFilterDraft } from '../filterStore';
+import { Button } from '../../Button';
 import './MultiSelect.css';
 
 interface MultiSelectProps {
-  column: string;
   options: string[];
+  value: string[];
   placeholder?: string;
+  /** Every toggle, with the new selection (in the order options were selected). */
+  onValueChange: (value: string[]) => void;
 }
 
 export const MultiSelect = ({
-  column,
   options,
+  value: selectedValues,
   placeholder = 'Select...',
+  onValueChange,
 }: MultiSelectProps) => {
-  const selectedValues = useFilterDraft<string[]>(column) ?? [];
-  const { setDraft, apply } = useFilterActions();
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const lastClickWhenOpenedRef = useRef<EventTarget | null>(null);
@@ -43,13 +44,11 @@ export const MultiSelect = ({
     setIsOpen(willBeOpen);
   }, [isOpen]);
 
-  // Multi-select applies on every toggle.
   const toggleOption = (option: string) => {
     const next = selectedValues.includes(option)
-      ? selectedValues.filter((value) => value !== option)
+      ? selectedValues.filter((selected) => selected !== option)
       : [...selectedValues, option];
-    setDraft(column, next);
-    apply(column);
+    onValueChange(next);
   };
 
   const getDisplayText = () => {
@@ -65,10 +64,10 @@ export const MultiSelect = ({
 
   return (
     <div className="multi-select" ref={containerRef}>
-      <button className="select-toggle" onClick={toggleDropdown} type="button">
+      <Button size="sm" className="select-toggle" onClick={toggleDropdown}>
         <span>{getDisplayText()}</span>
         <span className="arrow">▼</span>
-      </button>
+      </Button>
 
       {isOpen && (
         <div className="dropdown">

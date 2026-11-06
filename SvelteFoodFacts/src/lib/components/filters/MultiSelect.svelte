@@ -1,29 +1,26 @@
 <script lang="ts">
-  import { getFilterStore } from '#lib/stores/filterStore.svelte';
+  import Button from '#lib/components/shared/Button/Button.svelte';
   import './MultiSelect.css';
 
   let {
-    column,
     options,
+    value = $bindable(),
     placeholder = 'Select...',
   }: {
-    column: string;
     options: string[];
+    value: string[];
     placeholder?: string;
   } = $props();
 
-  const store = getFilterStore();
-
-  let selectedValues = $derived((store.drafts[column] as string[] | undefined) ?? []);
   let isOpen = $state(false);
   let container: HTMLDivElement | undefined = $state();
 
   let displayText = $derived(
-    selectedValues.length === 0
+    value.length === 0
       ? placeholder
-      : selectedValues.length === 1
-        ? selectedValues[0]
-        : `${selectedValues.length} selected`
+      : value.length === 1
+        ? value[0]
+        : `${value.length} selected`
   );
 
   // Click outside closes the dropdown (the toggle's own click lands inside the container).
@@ -37,23 +34,21 @@
     isOpen = !isOpen;
   }
 
-  // Every toggle updates the selection and applies it immediately.
+  // Every toggle emits a new selection (insertion order).
   function toggleOption(option: string) {
-    const next = selectedValues.includes(option)
-      ? selectedValues.filter((value) => value !== option)
-      : [...selectedValues, option];
-    store.setDraft(column, next);
-    store.apply(column);
+    value = value.includes(option)
+      ? value.filter((selected) => selected !== option)
+      : [...value, option];
   }
 </script>
 
 <svelte:document onclick={handleDocumentClick} />
 
 <div class="multi-select" bind:this={container}>
-  <button class="select-toggle" onclick={toggleDropdown} type="button">
+  <Button size="sm" class="select-toggle" onclick={toggleDropdown}>
     <span>{displayText}</span>
     <span class="arrow">▼</span>
-  </button>
+  </Button>
 
   {#if isOpen}
     <div class="dropdown">
@@ -61,7 +56,7 @@
         <label class="option">
           <input
             type="checkbox"
-            checked={selectedValues.includes(option)}
+            checked={value.includes(option)}
             onchange={() => toggleOption(option)}
           />
           <span>{option}</span>

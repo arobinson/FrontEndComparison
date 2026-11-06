@@ -1,10 +1,16 @@
-import { useFilterStore, type RangeFilter } from './filterStore';
 import './RangeSlider.css';
 
+export type RangeValue = { min?: number; max?: number };
+
 interface RangeSliderProps {
-  column: string;
+  value: RangeValue;
+  /** Bounds for the inputs' min/max attributes */
   min?: number;
   max?: number;
+  /** Every keystroke: the new range (only the bounds that are set; an empty input leaves its bound out) */
+  onValueChange: (value: RangeValue) => void;
+  /** Either input loses focus: the user is done editing */
+  onCommit: () => void;
 }
 
 const parseInput = (event: Event): number | undefined => {
@@ -12,9 +18,9 @@ const parseInput = (event: Event): number | undefined => {
   return value === '' ? undefined : Number(value);
 };
 
-// Only bounds that are set end up in the (applied) range object.
-const toRange = (minValue: number | undefined, maxValue: number | undefined): RangeFilter => {
-  const result: RangeFilter = {};
+// Only bounds that are set end up in the range object.
+const toRange = (minValue: number | undefined, maxValue: number | undefined): RangeValue => {
+  const result: RangeValue = {};
   if (minValue !== undefined) {
     result.min = minValue;
   }
@@ -25,16 +31,9 @@ const toRange = (minValue: number | undefined, maxValue: number | undefined): Ra
 };
 
 export default function RangeSlider(props: RangeSliderProps) {
-  const store = useFilterStore();
-
-  const draft = () => store.state.draft[props.column] as RangeFilter | undefined;
-  const minValue = () => draft()?.min;
-  const maxValue = () => draft()?.max;
-
-  // Typing only updates the draft; the range is applied when either input loses focus.
-  const handleMinChange = (event: Event) => store.setDraft(props.column, toRange(parseInput(event), maxValue()));
-  const handleMaxChange = (event: Event) => store.setDraft(props.column, toRange(minValue(), parseInput(event)));
-  const handleBlur = () => store.apply(props.column);
+  const handleMinChange = (event: Event) => props.onValueChange(toRange(parseInput(event), props.value.max));
+  const handleMaxChange = (event: Event) => props.onValueChange(toRange(props.value.min, parseInput(event)));
+  const handleBlur = () => props.onCommit();
 
   return (
     <div class="range-slider">
@@ -43,7 +42,7 @@ export default function RangeSlider(props: RangeSliderProps) {
         class="range-input"
         min={props.min ?? 0}
         max={props.max ?? 100}
-        value={minValue() ?? ''}
+        value={props.value.min ?? ''}
         onInput={handleMinChange}
         onBlur={handleBlur}
         placeholder="Min"
@@ -54,7 +53,7 @@ export default function RangeSlider(props: RangeSliderProps) {
         class="range-input"
         min={props.min ?? 0}
         max={props.max ?? 100}
-        value={maxValue() ?? ''}
+        value={props.value.max ?? ''}
         onInput={handleMaxChange}
         onBlur={handleBlur}
         placeholder="Max"

@@ -3,9 +3,23 @@ import { customElement, property } from 'lit/decorators.js';
 
 @customElement('lit-button')
 export class LitButton extends LitElement {
+  // Button.css (verbatim from ReactFoodFacts Button.css) followed by the site-specific rules that the
+  // app applies through the extra class (verbatim from React's ProductList.css, ProductDetail.css,
+  // TruncatedText.css and MultiSelect.css). In React these are global stylesheets loaded after
+  // Button.css; here they live in the same shadow root as the inner <button>, in the same order, so
+  // selectors, specificity and source order are identical.
   static styles = css`
+    /* The app's global reset (styles.css) does not reach into shadow roots. */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* The host generates no box: the inner <button> lays out as a direct child of the parent,
+       as in the other apps (e.g. .select-toggle's width: 100%). */
     :host {
-      display: inline-block;
+      display: contents;
     }
 
     .aff-button {
@@ -86,11 +100,109 @@ export class LitButton extends LitElement {
       font-size: var(--font-size-lg, 18px);
       min-height: 44px;
     }
+
+    /* ProductList.css */
+    .reset-button {
+      padding: 8px 16px;
+      background-color: var(--color-primary, #0066cc);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .reset-button:hover {
+      background-color: var(--color-primary-dark, #004499);
+    }
+
+    .reset-button:active {
+      transform: translateY(1px);
+    }
+
+    /* ProductDetail.css */
+    .back-button {
+      background: #007bff;
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background 0.2s;
+    }
+
+    .back-button:hover {
+      background: #0056b3;
+    }
+
+    .nav-button {
+      background: #007bff;
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.875rem;
+      transition: background 0.2s;
+    }
+
+    .nav-button:hover:not(:disabled) {
+      background: #0056b3;
+    }
+
+    .nav-button:disabled {
+      background: #cccccc;
+      cursor: not-allowed;
+    }
+
+    /* TruncatedText.css */
+    .toggle-button {
+      background: none;
+      border: none;
+      color: var(--color-primary, #0066cc);
+      cursor: pointer;
+      font-size: 12px;
+      padding: 2px 6px;
+      text-decoration: underline;
+      white-space: nowrap;
+    }
+
+    .toggle-button:hover {
+      color: var(--color-primary-dark, #004499);
+    }
+
+    .toggle-button:focus {
+      outline: 2px solid var(--color-primary, #0066cc);
+      outline-offset: 2px;
+    }
+
+    /* MultiSelect.css */
+    .select-toggle {
+      width: 100%;
+      padding: 4px 8px;
+      border: 1px solid var(--color-border, #ddd);
+      border-radius: 4px;
+      background: white;
+      font-size: 13px;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .select-toggle:hover {
+      border-color: var(--color-primary, #0066cc);
+    }
   `;
 
   @property({ type: Boolean }) disabled = false;
   @property({ type: String }) size: 'sm' | 'md' | 'lg' = 'md';
   @property({ type: String }) variant: 'primary' | 'secondary' | 'tertiary' = 'secondary';
+  /** Extra class appended to the inner <button>'s class list. */
+  @property({ type: String, attribute: 'extra-class' }) extraClass = '';
 
   private handleClick() {
     if (!this.disabled) {
@@ -99,16 +211,7 @@ export class LitButton extends LitElement {
   }
 
   render() {
-    return html`
-      <button
-        type="button"
-        class="aff-button variant-${this.variant} size-${this.size}"
-        ?disabled=${this.disabled}
-        @click=${this.handleClick}
-      >
-        <slot></slot>
-      </button>
-    `;
+    return html`<button class="aff-button variant-${this.variant} size-${this.size}${this.extraClass ? ` ${this.extraClass}` : ''}" type="button" ?disabled=${this.disabled} @click=${this.handleClick}><slot></slot></button>`;
   }
 }
 

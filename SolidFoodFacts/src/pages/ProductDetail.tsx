@@ -17,6 +17,8 @@ import TimeFormat from '../components/display/TimeFormat';
 import AbsoluteDate from '../components/display/AbsoluteDate';
 import RelativeDate from '../components/display/RelativeDate';
 
+import Button from '../components/shared/Button';
+
 import './ProductDetail.css';
 
 interface DetailData {
@@ -103,15 +105,17 @@ export default function ProductDetail() {
   return (
     <div class="product-detail-container">
       <div class="navigation-bar">
-        <button onClick={navigateToList} class="back-button">← Back to List</button>
+        <Button class="back-button" onClick={navigateToList}>
+          ← Back to List
+        </Button>
         <div class="product-navigation">
-          <button onClick={navigateToPrevious} disabled={!hasPrevious()} class="nav-button">
+          <Button class="nav-button" disabled={!hasPrevious()} onClick={navigateToPrevious}>
             ← Previous
-          </button>
+          </Button>
           <span class="position-info">{positionInfo()}</span>
-          <button onClick={navigateToNext} disabled={!hasNext()} class="nav-button">
+          <Button class="nav-button" disabled={!hasNext()} onClick={navigateToNext}>
             Next →
-          </button>
+          </Button>
         </div>
       </div>
 

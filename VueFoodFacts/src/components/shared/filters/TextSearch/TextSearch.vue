@@ -1,23 +1,24 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-import { useFilterStore } from '../../../../composables/useFilterStore';
 import './TextSearch.css';
 
-const { column, placeholder = 'Search' } = defineProps<{
-  column: string;
+const { placeholder = 'Search' } = defineProps<{
   placeholder?: string;
 }>();
 
-const store = useFilterStore();
+// Controlled: the parent owns the value (v-model); the control only reports edits and commits
+const value = defineModel<string>({ required: true });
 
-const searchValue = computed(() => store.getDraft(column, ''));
+const emit = defineEmits<{
+  /** Fired on blur and on Enter */
+  commit: [];
+}>();
 
 const handleInput = (event: Event) => {
-  store.setDraft(column, (event.target as HTMLInputElement).value);
+  value.value = (event.target as HTMLInputElement).value;
 };
 
 const commit = () => {
-  store.apply(column);
+  emit('commit');
 };
 </script>
 
@@ -26,7 +27,7 @@ const commit = () => {
     type="text"
     class="text-search-input"
     :placeholder="placeholder"
-    :value="searchValue"
+    :value="value"
     @input="handleInput"
     @blur="commit"
     @keyup.enter="commit"

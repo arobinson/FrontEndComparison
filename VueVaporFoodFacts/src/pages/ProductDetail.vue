@@ -17,6 +17,7 @@ import {
   StarRating,
   ColorPill,
 } from '../components/display';
+import { Button } from '../components/shared';
 import './ProductDetail.css';
 
 // Route param passed as a prop via `props: true` on the route
@@ -71,11 +72,11 @@ const nextRestockDate = computed(() => toISOString(product.value?.nextRestockDat
 <template>
   <div class="product-detail-container">
     <div class="navigation-bar">
-      <button class="back-button" @click="navigateToList">← Back to List</button>
+      <Button class="back-button" @click="navigateToList">← Back to List</Button>
       <div class="product-navigation">
-        <button :disabled="!hasPrevious" class="nav-button" @click="navigateToPrevious">← Previous</button>
+        <Button :disabled="!hasPrevious" class="nav-button" @click="navigateToPrevious">← Previous</Button>
         <span class="position-info">{{ positionInfo }}</span>
-        <button :disabled="!hasNext" class="nav-button" @click="navigateToNext">Next →</button>
+        <Button :disabled="!hasNext" class="nav-button" @click="navigateToNext">Next →</Button>
       </div>
     </div>
     <div class="detail-area">

@@ -120,7 +120,8 @@ export const detailNavigationCycleScenario: TestScenario = {
         const buttons = root.querySelectorAll('.nav-button, .aff-button, .product-navigation button');
         for (let i = 0; i < buttons.length; i++) {
           const btn = buttons[i] as HTMLElement;
-          const text = btn.textContent || '';
+          // Slotted labels (Lit lit-button) live on the host, not inside the shadow <button>
+          const text = btn.textContent?.trim() || (btn.getRootNode() as any).host?.textContent || '';
           if (text.includes('Next') || text.includes('→')) {
             if (!btn.hasAttribute('disabled')) {
               return btn;
@@ -175,7 +176,8 @@ export const detailNavigationCycleScenario: TestScenario = {
         const buttons = root.querySelectorAll('.nav-button, .aff-button, .product-navigation button');
         for (let i = 0; i < buttons.length; i++) {
           const btn = buttons[i] as HTMLElement;
-          const text = btn.textContent || '';
+          // Slotted labels (Lit lit-button) live on the host, not inside the shadow <button>
+          const text = btn.textContent?.trim() || (btn.getRootNode() as any).host?.textContent || '';
           if (text.includes('Previous') || text.includes('←')) {
             if (!btn.hasAttribute('disabled')) {
               return btn;

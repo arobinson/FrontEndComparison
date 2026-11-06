@@ -1,17 +1,11 @@
-import {
-  Component,
-  input,
-  output,
-  contentChildren,
-  ElementRef,
-  ViewChild,
-} from '@angular/core';
+import { Component, computed, input, output } from '@angular/core';
 
 @Component({
   selector: 'aff-button',
   imports: [],
   templateUrl: './aff-button.html',
-  styleUrl: './aff-button.css',
+  // Styles are global (src/styles/aff-button.css): like React's Button.css, the
+  // inner <button> must accept consumer classes (extraClass) styled by the consumer.
 })
 export class AffButton {
   // #region Input Signals
@@ -35,6 +29,24 @@ export class AffButton {
    * Button size
    */
   readonly size = input<'sm' | 'md' | 'lg'>('md');
+
+  /**
+   * Extra class(es) appended to the inner button's class list
+   */
+  readonly extraClass = input<string>('');
+
+  // #endregion
+
+  // #region Computed Signals
+
+  /**
+   * Class list for the inner button: "aff-button variant-{v} size-{s}[ {extra}]"
+   */
+  protected readonly classes = computed(() => {
+    const extra = this.extraClass();
+    const base = `aff-button variant-${this.variant()} size-${this.size()}`;
+    return extra ? `${base} ${extra}` : base;
+  });
 
   // #endregion
 

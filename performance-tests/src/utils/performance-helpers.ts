@@ -54,7 +54,55 @@ export async function injectPerformanceObservers(page: Page): Promise<void> {
         (window as any).__webVitals.fid = (entry as any).processingStart - entry.startTime;
       }
     }).observe({ type: 'first-input', buffered: true });
+
+    // Long tasks. Chrome does NOT expose these via performance.getEntriesByType('longtask'),
+    // only via an observer - reading the timeline directly always returned [] (TBT was always 0).
+    (window as any).__longTasks = [] as Array<{ start: number; duration: number }>;
+    new PerformanceObserver((list) => {
+      for (const entry of list.getEntries()) {
+        (window as any).__longTasks.push({ start: entry.startTime, duration: entry.duration });
+      }
+    }).observe({ type: 'longtask', buffered: true });
+
+    // Time to table: first animation frame in which >= 10 table rows exist (shadow-DOM aware,
+    // for Lit). Recorded in-page relative to navigation start, so it measures when the user can
+    // actually see data - unlike waitUntil 'networkidle', which fires during a long render task
+    // because the network goes quiet while the main thread is blocked.
+    (window as any).__timeToTable = 0;
+    const MIN_ROWS = 10;
+    const countRows = (root: Document | ShadowRoot): number => {
+      let count = root.querySelectorAll('tbody tr').length;
+      if (count >= MIN_ROWS) return count;
+      for (const el of root.querySelectorAll('*')) {
+        if (el.shadowRoot) {
+          count += countRows(el.shadowRoot);
+          if (count >= MIN_ROWS) break;
+        }
+      }
+      return count;
+    };
+    const pollStart = performance.now();
+    const poll = () => {
+      if (countRows(document) >= MIN_ROWS) {
+        // Read the clock here, NOT the rAF callback's timestamp argument: that is the frame's
+        // scheduled start, which stays stale when a long task delays the callback (it reported
+        // ~150ms for a table that rendered at ~1900ms).
+        (window as any).__timeToTable = performance.now();
+        return;
+      }
+      if (performance.now() - pollStart < 30_000) requestAnimationFrame(poll);
+    };
+    requestAnimationFrame(poll);
   });
+}
+
+/**
+ * Wait until the in-page time-to-table mark has been recorded (see injectPerformanceObservers).
+ * Returns the timestamp in ms since navigation start.
+ */
+export async function waitForTimeToTable(page: Page, timeout: number = 30_000): Promise<number> {
+  await page.waitForFunction(() => (window as any).__timeToTable > 0, undefined, { timeout, polling: 50 });
+  return page.evaluate(() => (window as any).__timeToTable as number);
 }
 
 /**
@@ -80,7 +128,8 @@ export async function getWebVitals(page: Page): Promise<Partial<WebVitals>> {
 export async function getInteractivityMetrics(page: Page): Promise<{ tti: number; tbt: number }> {
   const metrics = await page.evaluate(() => {
     const navigationEntry = performance.getEntriesByType('navigation')[0] as any;
-    const longTasks = performance.getEntriesByType('longtask');
+    // Collected by the observer in injectPerformanceObservers (getEntriesByType('longtask') is always empty)
+    const longTasks: Array<{ duration: number }> = (window as any).__longTasks ?? [];
 
     let tbt = 0;
     for (const task of longTasks) {

@@ -1,5 +1,5 @@
 import { TestScenario, TestContext, ScenarioResult, Measurement } from '../types.js';
-import { getWebVitals, getInteractivityMetrics, getMemoryMetrics, waitForNetworkIdle } from '../utils/performance-helpers.js';
+import { getWebVitals, getInteractivityMetrics, getMemoryMetrics, waitForTimeToTable } from '../utils/performance-helpers.js';
 import { NetworkTracker } from '../utils/network-tracker.js';
 
 export const initialLoadScenario: TestScenario = {
@@ -18,10 +18,16 @@ export const initialLoadScenario: TestScenario = {
     // Navigate to the application
     const navigationStart = Date.now();
     await page.goto(baseUrl, { waitUntil: 'networkidle' });
+    // Legacy metric (kept for comparison with 2025-12): 'networkidle' can fire while a long
+    // render task is still blocking the main thread, so it under-reports slow renders.
     const navigationEnd = Date.now();
 
-    // Wait a bit more to ensure all metrics are collected
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    // Primary metric: when the data table is actually on screen
+    const timeToTable = await waitForTimeToTable(page);
+    measurements.push({ name: 'time_to_table', value: timeToTable, unit: 'ms' });
+
+    // Let paints/observers settle after the table renders before reading LCP/TBT
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
     // Collect Web Vitals
     const webVitals = await getWebVitals(page);

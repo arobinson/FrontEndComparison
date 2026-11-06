@@ -1,8 +1,10 @@
 import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import babel from '@rolldown/plugin-babel'
+import react, { reactCompilerPreset } from '@vitejs/plugin-react'
 
 export default defineConfig({
-  plugins: [react()],
+  // React Compiler 1.0 (stable, via Babel): automatic memoization, the recommended React setup
+  plugins: [react(), babel({ presets: [reactCompilerPreset()] })],
   server: {
     port: 3002,
   },

@@ -5,6 +5,7 @@ export default defineConfig({
   plugins: [solid()],
   base: '/solid/',
   build: {
-    outDir: '../perf-dist/solid'
+    outDir: '../perf-dist/solid',
+    emptyOutDir: true
   }
 });

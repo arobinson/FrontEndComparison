@@ -4,5 +4,6 @@ export default defineConfig({
   base: '/lit/',
   build: {
     outDir: '../perf-dist/lit',
+    emptyOutDir: true,
   },
 });

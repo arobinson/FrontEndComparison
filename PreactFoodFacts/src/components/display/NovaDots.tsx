@@ -6,7 +6,7 @@ interface NovaDotsProps {
   rating: number | null | undefined;
 }
 
-export const NovaDots = memo(({ rating }: NovaDotsProps) => {
+export const NovaDots = memo(function NovaDots({ rating }: NovaDotsProps) {
   const dots = useMemo(() => {
     let filledCount: number;
     if (!rating || rating < 1) {
@@ -28,5 +28,3 @@ export const NovaDots = memo(({ rating }: NovaDotsProps) => {
 
   return <div className="nova-dots">{dots}</div>;
 });
-
-NovaDots.displayName = 'NovaDots';

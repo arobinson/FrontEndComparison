@@ -9,7 +9,7 @@ export class AbsoluteDate extends LitElement {
     }
   `;
 
-  @property({ type: String })
+  @property()
   value = '';
 
   private get formattedDate(): string {
@@ -26,5 +26,11 @@ export class AbsoluteDate extends LitElement {
 
   render() {
     return html`<span class="absolute-date">${this.formattedDate}</span>`;
+  }
+}
+
+declare global {
+  interface HTMLElementTagNameMap {
+    'absolute-date': AbsoluteDate;
   }
 }

@@ -1,4 +1,3 @@
-import { useMemo, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { useProduct } from '../hooks/useProduct';
 import {
@@ -16,7 +15,7 @@ import {
   StarRating,
   ColorPill,
 } from '../components/display';
-import { Button } from '../components/shared';
+import { Button } from '../components/controls';
 import './ProductDetail.css';
 
 const ProductDetail = () => {
@@ -24,21 +23,21 @@ const ProductDetail = () => {
   const navigate = useNavigate();
   const { product, loading, error, adjacent } = useProduct(code ?? '');
 
-  const navigateToList = useCallback(() => {
+  const navigateToList = () => {
     navigate('/list');
-  }, [navigate]);
+  };
 
-  const navigateToPrevious = useCallback(() => {
+  const navigateToPrevious = () => {
     if (adjacent?.previousId) {
       navigate(`/detail/${adjacent.previousId}`);
     }
-  }, [navigate, adjacent]);
+  };
 
-  const navigateToNext = useCallback(() => {
+  const navigateToNext = () => {
     if (adjacent?.nextId) {
       navigate(`/detail/${adjacent.nextId}`);
     }
-  }, [navigate, adjacent]);
+  };
 
   const hasPrevious = adjacent?.previousId != null;
   const hasNext = adjacent?.nextId != null;
@@ -59,25 +58,13 @@ const ProductDetail = () => {
     return result;
   };
 
-  const createdDate = useMemo(
-    () => toISOString(product?.createdDate),
-    [product?.createdDate]
-  );
+  const createdDate = toISOString(product?.createdDate);
 
-  const lastModifiedDate = useMemo(
-    () => toISOString(product?.lastUpdated),
-    [product?.lastUpdated]
-  );
+  const lastModifiedDate = toISOString(product?.lastUpdated);
 
-  const releaseDate = useMemo(
-    () => toISOString(product?.releaseDate),
-    [product?.releaseDate]
-  );
+  const releaseDate = toISOString(product?.releaseDate);
 
-  const nextRestockDate = useMemo(
-    () => toISOString(product?.nextRestockDate),
-    [product?.nextRestockDate]
-  );
+  const nextRestockDate = toISOString(product?.nextRestockDate);
 
   let content;
   if (product) {
@@ -604,7 +591,7 @@ const ProductDetail = () => {
       <div className="detail-area">
         {loading && (
           <div className="loading-overlay">
-            <span className="loading-indicator">⏳ Loading...</span>
+            <div className="loading-indicator">Loading...</div>
           </div>
         )}
         {content}

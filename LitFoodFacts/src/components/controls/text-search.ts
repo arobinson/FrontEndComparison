@@ -41,7 +41,7 @@ export class TextSearch extends LitElement {
   `;
 
   @property({ attribute: false }) value = '';
-  @property({ type: String }) placeholder = 'Search';
+  @property() placeholder = 'Search';
 
   private handleInput(e: Event) {
     this.dispatchEvent(new CustomEvent<string>('value-change', { detail: (e.target as HTMLInputElement).value }));

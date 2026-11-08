@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import FrameworkHeader from './components/shared/FrameworkHeader.vue';
+import FrameworkHeader from './components/layout/FrameworkHeader.vue';
 </script>
 
 <template>

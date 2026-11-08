@@ -6,7 +6,7 @@ interface GradeBadgeProps {
   grade: string | null | undefined;
 }
 
-export const GradeBadge = memo(({ grade }: GradeBadgeProps) => {
+export const GradeBadge = memo(function GradeBadge({ grade }: GradeBadgeProps) {
   const gradeClass = useMemo(() => {
     const gradeUpper = grade?.toUpperCase();
     let result: string;
@@ -32,5 +32,3 @@ export const GradeBadge = memo(({ grade }: GradeBadgeProps) => {
     </span>
   );
 });
-
-GradeBadge.displayName = 'GradeBadge';

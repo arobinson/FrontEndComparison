@@ -41,7 +41,7 @@ export class GradeBadge extends LitElement {
     }
   `;
 
-  @property({ type: String })
+  @property()
   value: string | null | undefined = '';
 
   private get gradeClass(): string {
@@ -63,5 +63,11 @@ export class GradeBadge extends LitElement {
 
   render() {
     return html`<span class="grade-badge ${this.gradeClass}">${this.value}</span>`;
+  }
+}
+
+declare global {
+  interface HTMLElementTagNameMap {
+    'grade-badge': GradeBadge;
   }
 }

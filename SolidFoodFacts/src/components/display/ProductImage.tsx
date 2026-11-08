@@ -7,8 +7,11 @@ interface ProductImageProps {
 }
 
 export default function ProductImage(props: ProductImageProps) {
-  const [imageLoaded, setImageLoaded] = createSignal(false);
-  const [imageError, setImageError] = createSignal(false);
+  // Load/error state belongs to the URL it happened for, so a new URL starts out not loaded
+  const [loadedSrc, setLoadedSrc] = createSignal<string | null>(null);
+  const [failedSrc, setFailedSrc] = createSignal<string | null>(null);
+  const imageLoaded = () => loadedSrc() === props.value;
+  const imageError = () => failedSrc() === props.value;
 
   const size = () => props.size || 'small';
 
@@ -22,8 +25,8 @@ export default function ProductImage(props: ProductImageProps) {
           src={props.value}
           alt="Product image"
           class={imageLoaded() ? 'loaded' : ''}
-          onLoad={() => setImageLoaded(true)}
-          onError={() => setImageError(true)}
+          onLoad={() => setLoadedSrc(props.value)}
+          onError={() => setFailedSrc(props.value)}
         />
       </Show>
     </div>

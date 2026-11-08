@@ -5,7 +5,7 @@ interface TimeFormatProps {
   value: string | null | undefined;
 }
 
-export const TimeFormat = memo(({ value }: TimeFormatProps) => {
+export const TimeFormat = memo(function TimeFormat({ value }: TimeFormatProps) {
   const formatted = useMemo(() => {
     let result: string;
     if (!value) {
@@ -25,5 +25,3 @@ export const TimeFormat = memo(({ value }: TimeFormatProps) => {
 
   return <>{formatted}</>;
 });
-
-TimeFormat.displayName = 'TimeFormat';

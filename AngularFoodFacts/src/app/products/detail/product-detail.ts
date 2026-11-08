@@ -1,20 +1,20 @@
 import { Component, inject, computed, input, linkedSignal } from '@angular/core';
 import { Router } from '@angular/router';
 import { FoodFacts, ProductViewModel } from '../food-facts';
-import { ProgressBar } from '../../shared/progress-bar/progress-bar';
-import { GradeBadge } from '../../shared/grade-badge/grade-badge';
-import { NovaDots } from '../../shared/nova-dots/nova-dots';
-import { ProductImage } from '../../shared/product-image/product-image';
-import { TruncatedText } from '../../shared/truncated-text/truncated-text';
-import { LargeCounter } from '../../shared/large-counter/large-counter';
-import { AbsoluteDate } from '../../shared/absolute-date/absolute-date';
-import { RelativeDate } from '../../shared/relative-date/relative-date';
-import { BooleanYesno } from '../../shared/boolean-yesno/boolean-yesno';
-import { DecimalUnits } from '../../shared/decimal-units/decimal-units';
-import { TimeFormat } from '../../shared/time-format/time-format';
-import { StarRating } from '../../shared/star-rating/star-rating';
-import { ColorPill } from '../../shared/color-pill/color-pill';
-import { AffButton } from '../../shared/aff-button/aff-button';
+import { ProgressBar } from '../../display/progress-bar/progress-bar';
+import { GradeBadge } from '../../display/grade-badge/grade-badge';
+import { NovaDots } from '../../display/nova-dots/nova-dots';
+import { ProductImage } from '../../display/product-image/product-image';
+import { TruncatedText } from '../../display/truncated-text/truncated-text';
+import { LargeCounter } from '../../display/large-counter/large-counter';
+import { AbsoluteDate } from '../../display/absolute-date/absolute-date';
+import { RelativeDate } from '../../display/relative-date/relative-date';
+import { BooleanYesno } from '../../display/boolean-yesno/boolean-yesno';
+import { DecimalUnits } from '../../display/decimal-units/decimal-units';
+import { TimeFormat } from '../../display/time-format/time-format';
+import { StarRating } from '../../display/star-rating/star-rating';
+import { ColorPill } from '../../display/color-pill/color-pill';
+import { AffButton } from '../../controls/aff-button/aff-button';
 
 /** ISO string for a date (empty when absent), as the date display components take strings */
 const toIso = (date: Date | undefined): string => (date ? date.toISOString() : '');

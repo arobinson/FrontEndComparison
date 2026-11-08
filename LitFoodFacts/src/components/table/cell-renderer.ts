@@ -5,11 +5,9 @@ import '../display/index.js';
 
 @customElement('cell-renderer')
 export class CellRenderer extends LitElement {
-  @property({ type: Object }) value: unknown = null;
-  @property({ type: String }) dataType: ColumnDataType = 'simple-text';
-  @property({ type: String }) column = '';
-  @property({ type: Object }) row: Record<string, unknown> = {};
-  @property({ type: String }) unit?: string;
+  @property({ attribute: false }) value: unknown = null;
+  @property() dataType: ColumnDataType = 'simple-text';
+  @property() unit?: string;
 
   // Disable shadow DOM to allow parent styles to cascade
   createRenderRoot() {

@@ -1,6 +1,6 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import '../shared/lit-button.js';
+import './lit-button.js';
 
 const NO_SELECTION: string[] = [];
 let nextId = 0;
@@ -68,7 +68,7 @@ export class MultiSelect extends LitElement {
 
   @property({ attribute: false }) options: string[] = [];
   @property({ attribute: false }) value: string[] = NO_SELECTION;
-  @property({ type: String }) placeholder = 'Select...';
+  @property() placeholder = 'Select...';
 
   @state() private isOpen = false;
   private readonly dropdownId = `multi-select-${nextId++}`;

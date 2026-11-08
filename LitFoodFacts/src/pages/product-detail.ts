@@ -4,7 +4,7 @@ import { Task, TaskStatus, initialState } from '@lit/task';
 import type { MockProductViewModel } from 'shared-types';
 import { productService, type AdjacentProducts } from '../services/productService.js';
 import '../components/display/index.js';
-import '../components/shared/lit-button.js';
+import '../components/controls/index.js';
 
 function toISOString(value: Date | string | number | undefined): string {
   if (!value) return '';
@@ -229,7 +229,7 @@ export class ProductDetail extends LitElement {
     }
   `;
 
-  @property({ type: String }) code = '';
+  @property() code = '';
 
   // One product + one adjacent request per code (initial load and each Previous/Next).
   // The signal is deliberately not passed to fetch (same network trace as before).
@@ -311,19 +311,19 @@ export class ProductDetail extends LitElement {
   }
 
   private get createdDateStr(): string {
-    return this.displayProduct?.createdDate ? toISOString(this.displayProduct.createdDate) : '';
+    return toISOString(this.displayProduct?.createdDate);
   }
 
   private get lastUpdatedStr(): string {
-    return this.displayProduct?.lastUpdated ? toISOString(this.displayProduct.lastUpdated) : '';
+    return toISOString(this.displayProduct?.lastUpdated);
   }
 
   private get releaseDateStr(): string {
-    return this.displayProduct?.releaseDate ? toISOString(this.displayProduct.releaseDate) : '';
+    return toISOString(this.displayProduct?.releaseDate);
   }
 
   private get nextRestockDateStr(): string {
-    return this.displayProduct?.nextRestockDate ? toISOString(this.displayProduct.nextRestockDate) : '';
+    return toISOString(this.displayProduct?.nextRestockDate);
   }
 
   render() {
@@ -341,7 +341,7 @@ export class ProductDetail extends LitElement {
         <div class="detail-area">
           ${this.loadingState === 'loading' ? html`
             <div class="loading-overlay">
-              <span class="loading-indicator">⏳ Loading...</span>
+              <div class="loading-indicator">Loading...</div>
             </div>
           ` : ''}
 

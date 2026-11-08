@@ -79,3 +79,9 @@ export class StarRating extends LitElement {
     `;
   }
 }
+
+declare global {
+  interface HTMLElementTagNameMap {
+    'star-rating': StarRating;
+  }
+}

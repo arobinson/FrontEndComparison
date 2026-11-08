@@ -17,7 +17,7 @@ import {
   StarRating,
   ColorPill,
 } from '../components/display';
-import { Button } from '../components/shared';
+import { Button } from '../components/controls';
 import './ProductDetail.css';
 
 const ProductDetail = () => {
@@ -605,7 +605,7 @@ const ProductDetail = () => {
       <div className="detail-area">
         {loading && (
           <div className="loading-overlay">
-            <span className="loading-indicator">⏳ Loading...</span>
+            <div className="loading-indicator">Loading...</div>
           </div>
         )}
         {content}

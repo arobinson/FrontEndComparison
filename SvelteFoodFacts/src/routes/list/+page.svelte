@@ -3,10 +3,8 @@
   import { allColumns, getColumnConfig, getColumnDataType } from 'shared-types';
   import { productService } from '#lib/services/productService';
   import { onMount } from 'svelte';
-  import DataTable from '#lib/components/shared/DataTable/DataTable.svelte';
-  import Button from '#lib/components/shared/Button/Button.svelte';
   import CellRenderer from '#lib/components/table/CellRenderer.svelte';
-  import { TextSearch, RangeSlider, MultiSelect } from '#lib/components/controls';
+  import { Button, DataTable, TextSearch, RangeSlider, MultiSelect } from '#lib/components/controls';
   import { FilterStore, type RangeFilterValue } from '#lib/stores/filterStore.svelte';
 
   // Fetched data is only ever replaced, never mutated: no deep proxy needed.

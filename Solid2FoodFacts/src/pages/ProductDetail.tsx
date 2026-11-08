@@ -18,7 +18,7 @@ import TimeFormat from '../components/display/TimeFormat';
 import AbsoluteDate from '../components/display/AbsoluteDate';
 import RelativeDate from '../components/display/RelativeDate';
 
-import Button from '../components/shared/Button';
+import { Button } from '../components/controls';
 
 import './ProductDetail.css';
 
@@ -118,7 +118,7 @@ export default function ProductDetail() {
             </div>
             <div class="detail-area">
               <div class="loading-overlay">
-                <span class="loading-indicator">⏳ Loading...</span>
+                <div class="loading-indicator">Loading...</div>
               </div>
               <div class="loading-state">
                 <p>Loading product...</p>
@@ -146,7 +146,7 @@ export default function ProductDetail() {
           {/* Previous/Next in flight: the current product stays on screen under this overlay */}
           <Show when={isPending(data)}>
             <div class="loading-overlay">
-              <span class="loading-indicator">⏳ Loading...</span>
+              <div class="loading-indicator">Loading...</div>
             </div>
           </Show>
 

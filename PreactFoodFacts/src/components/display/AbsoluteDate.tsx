@@ -5,7 +5,7 @@ interface AbsoluteDateProps {
   value: string | null | undefined;
 }
 
-export const AbsoluteDate = memo(({ value }: AbsoluteDateProps) => {
+export const AbsoluteDate = memo(function AbsoluteDate({ value }: AbsoluteDateProps) {
   const formattedDate = useMemo(() => {
     let result: string;
     if (!value) {
@@ -23,5 +23,3 @@ export const AbsoluteDate = memo(({ value }: AbsoluteDateProps) => {
 
   return <span className="absolute-date">{formattedDate}</span>;
 });
-
-AbsoluteDate.displayName = 'AbsoluteDate';

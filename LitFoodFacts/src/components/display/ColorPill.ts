@@ -14,7 +14,7 @@ export class ColorPill extends LitElement {
     }
   `;
 
-  @property({ type: String })
+  @property()
   value = '';
 
   render() {
@@ -25,5 +25,11 @@ export class ColorPill extends LitElement {
         title="${this.value}"
       ></span>
     `;
+  }
+}
+
+declare global {
+  interface HTMLElementTagNameMap {
+    'color-pill': ColorPill;
   }
 }

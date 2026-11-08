@@ -4,7 +4,7 @@ import type { MockProductViewModel } from 'shared-types';
 import { useProducts } from '../composables/useProducts';
 import { createFilterStore, type FilterValue, type RangeValue } from '../composables/useFilterStore';
 import { allColumns, getColumnConfig } from '../config/columnConfig';
-import { Button, DataTable, TextSearch, RangeSlider, MultiSelect } from '../components/shared';
+import { Button, DataTable, TextSearch, RangeSlider, MultiSelect } from '../components/controls';
 import CellRenderer from '../components/table/CellRenderer.vue';
 import './ProductList.css';
 

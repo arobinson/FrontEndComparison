@@ -2,12 +2,10 @@ import { createSignal, createMemo, isPending, Errored, Loading, Show } from 'sol
 import type { MockProductViewModel } from 'shared-types';
 import { allColumns, getColumnConfig, getColumnDataType } from 'shared-types';
 import { productService } from '../services/productService';
-import DataTable from '../components/shared/DataTable';
 import CellRenderer from '../components/table/CellRenderer';
-import { TextSearch, RangeSlider, MultiSelect } from '../components/controls';
+import { Button, DataTable, TextSearch, RangeSlider, MultiSelect } from '../components/controls';
 import { createFilterStore } from '../components/filters/filterStore';
 import type { FilterValue, RangeFilter } from '../components/filters/filterStore';
-import Button from '../components/shared/Button';
 import './ProductList.css';
 
 // Client-side filtering of the current page by the applied filters

@@ -1,5 +1,5 @@
 import { Link } from 'react-router';
-import { memo } from 'react';
+
 import './ProductLink.css';
 
 interface ProductLinkProps {
@@ -7,12 +7,10 @@ interface ProductLinkProps {
   label: string;
 }
 
-export const ProductLink = memo(({ code, label }: ProductLinkProps) => {
+export function ProductLink({ code, label }: ProductLinkProps) {
   return (
     <Link to={`/detail/${code}`} className="product-link">
       {label}
     </Link>
   );
-});
-
-ProductLink.displayName = 'ProductLink';
+}

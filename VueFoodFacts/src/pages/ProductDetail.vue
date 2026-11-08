@@ -17,7 +17,7 @@ import {
   StarRating,
   ColorPill,
 } from '../components/display';
-import { Button } from '../components/shared';
+import { Button } from '../components/controls';
 import './ProductDetail.css';
 
 // Route param passed as a prop via `props: true` on the route
@@ -81,7 +81,7 @@ const nextRestockDate = computed(() => toISOString(product.value?.nextRestockDat
     </div>
     <div class="detail-area">
       <div v-if="loading" class="loading-overlay">
-        <span class="loading-indicator">⏳ Loading...</span>
+        <div class="loading-indicator">Loading...</div>
       </div>
 
       <div v-if="product" class="product-detail">

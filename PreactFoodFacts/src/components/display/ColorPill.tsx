@@ -5,7 +5,7 @@ interface ColorPillProps {
   value: string;
 }
 
-export const ColorPill = memo(({ value }: ColorPillProps) => {
+export const ColorPill = memo(function ColorPill({ value }: ColorPillProps) {
   return (
     <span
       className="color-pill"
@@ -14,5 +14,3 @@ export const ColorPill = memo(({ value }: ColorPillProps) => {
     />
   );
 });
-
-ColorPill.displayName = 'ColorPill';

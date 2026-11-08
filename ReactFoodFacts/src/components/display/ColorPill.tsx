@@ -1,11 +1,10 @@
-import { memo } from 'react';
 import './ColorPill.css';
 
 interface ColorPillProps {
   value: string;
 }
 
-export const ColorPill = memo(({ value }: ColorPillProps) => {
+export function ColorPill({ value }: ColorPillProps) {
   return (
     <span
       className="color-pill"
@@ -13,6 +12,4 @@ export const ColorPill = memo(({ value }: ColorPillProps) => {
       title={value}
     />
   );
-});
-
-ColorPill.displayName = 'ColorPill';
+}

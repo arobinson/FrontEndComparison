@@ -1,4 +1,3 @@
-import { memo } from 'react';
 import type { ColumnConfig } from '../../config/columnConfig';
 import {
   TruncatedText,
@@ -22,7 +21,7 @@ interface CellRendererProps {
   row: Record<string, any>;
 }
 
-export const CellRenderer = memo(({ column, row }: CellRendererProps) => {
+export function CellRenderer({ column, row }: CellRendererProps) {
   const value = row[column.key];
 
   let cell;
@@ -61,6 +60,4 @@ export const CellRenderer = memo(({ column, row }: CellRendererProps) => {
   }
 
   return cell;
-});
-
-CellRenderer.displayName = 'CellRenderer';
+}

@@ -1,15 +1,18 @@
 <script lang="ts">
   let { value, size = 'small' }: { value: string; size?: 'small' | 'large' } = $props();
 
-  let imageLoaded = $state(false);
-  let imageError = $state(false);
+  // Load/error state belongs to the URL it happened for, so a new URL starts out not loaded
+  let loadedSrc = $state<string | null>(null);
+  let failedSrc = $state<string | null>(null);
+  const imageLoaded = $derived(loadedSrc === value);
+  const imageError = $derived(failedSrc === value);
 
   function onImageLoad() {
-    imageLoaded = true;
+    loadedSrc = value;
   }
 
   function onImageError() {
-    imageError = true;
+    failedSrc = value;
   }
 </script>
 

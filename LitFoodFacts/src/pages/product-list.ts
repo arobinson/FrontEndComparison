@@ -6,11 +6,8 @@ import { allColumns, getColumnConfig, getColumnDataType } from 'shared-types';
 import { productService, type ProductsResponse } from '../services/productService.js';
 import { FilterStore, FilterStoreController, type FilterValue } from '../components/filters/filter-store.js';
 import type { RangeValue } from '../components/controls/range-slider.js';
-import '../components/shared/data-table.js';
-import '../components/shared/lit-button.js';
 import '../components/table/cell-renderer.js';
 import '../components/controls/index.js';
-import '../components/display/index.js';
 
 const NO_RANGE: RangeValue = {};
 const NO_SELECTION: string[] = [];
@@ -288,10 +285,10 @@ export class ProductList extends LitElement {
     return null;
   }
 
-  private renderCell = (value: unknown, column: string, row: Record<string, unknown>): TemplateResult => {
+  private renderCell = (value: unknown, column: string): TemplateResult => {
     const dataType = getColumnDataType(column as keyof MockProductViewModel);
     const unit = this.getColumnUnit(column);
-    return html`<cell-renderer .value=${value} .dataType=${dataType} .column=${column} .row=${row} .unit=${unit}></cell-renderer>`;
+    return html`<cell-renderer .value=${value} .dataType=${dataType} .unit=${unit}></cell-renderer>`;
   };
 
   // Same branches as the other apps: error, else the table once a page has loaded (kept,
@@ -321,7 +318,7 @@ export class ProductList extends LitElement {
             .page=${this.currentPage}
             .pageSize=${this.pageSize}
             show-filter-row
-            trackBy="code"
+            track-by="code"
             .renderHeader=${this.renderHeader}
             .renderFilter=${this.renderFilter}
             .renderCell=${this.renderCell}

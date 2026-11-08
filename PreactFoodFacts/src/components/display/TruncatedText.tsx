@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'preact/hooks';
 import { memo } from '../../utils/memo';
-import { Button } from '../shared/Button';
+import { Button } from '../controls/Button';
 import './TruncatedText.css';
 
 interface TruncatedTextProps {
@@ -8,7 +8,7 @@ interface TruncatedTextProps {
   maxLength?: number;
 }
 
-export const TruncatedText = memo(({ value, maxLength = 50 }: TruncatedTextProps) => {
+export const TruncatedText = memo(function TruncatedText({ value, maxLength = 50 }: TruncatedTextProps) {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const toggleExpanded = useCallback(() => {
@@ -37,5 +37,3 @@ export const TruncatedText = memo(({ value, maxLength = 50 }: TruncatedTextProps
     </div>
   );
 });
-
-TruncatedText.displayName = 'TruncatedText';

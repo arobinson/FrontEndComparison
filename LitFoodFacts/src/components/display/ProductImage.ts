@@ -53,41 +53,45 @@ export class ProductImage extends LitElement {
     }
   `;
 
-  @property({ type: String })
+  @property()
   value = '';
 
-  @property({ type: String })
+  @property()
   size: 'small' | 'large' = 'small';
 
-  @state()
-  private imageLoaded = false;
-
-  @state()
-  private imageError = false;
+  // Load/error state belongs to the URL it happened for, so a new URL starts out not loaded
+  @state() private loadedSrc: string | null = null;
+  @state() private failedSrc: string | null = null;
 
   private handleLoad() {
-    this.imageLoaded = true;
+    this.loadedSrc = this.value;
   }
 
   private handleError() {
-    this.imageError = true;
+    this.failedSrc = this.value;
   }
 
   render() {
     return html`
       <div class="product-image ${this.size}">
-        ${this.imageError
+        ${this.failedSrc === this.value
           ? html`<div class="image-placeholder">No image</div>`
           : html`
               <img
                 src="${this.value}"
                 alt="Product image"
-                class="${this.imageLoaded ? 'loaded' : ''}"
+                class="${this.loadedSrc === this.value ? 'loaded' : ''}"
                 @load="${this.handleLoad}"
                 @error="${this.handleError}"
               />
             `}
       </div>
     `;
+  }
+}
+
+declare global {
+  interface HTMLElementTagNameMap {
+    'product-image': ProductImage;
   }
 }

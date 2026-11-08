@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Button from '#lib/components/shared/Button/Button.svelte';
+  import Button from '#lib/components/controls/Button.svelte';
 
   let { value, maxLength = 50 }: { value: string; maxLength?: number } = $props();
 

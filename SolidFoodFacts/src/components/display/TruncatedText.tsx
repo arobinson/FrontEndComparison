@@ -1,5 +1,5 @@
 import { createSignal, createMemo, Show } from 'solid-js';
-import Button from '../shared/Button';
+import Button from '../controls/Button';
 import './TruncatedText.css';
 
 interface TruncatedTextProps {

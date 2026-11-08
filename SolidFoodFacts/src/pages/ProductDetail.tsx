@@ -17,7 +17,7 @@ import TimeFormat from '../components/display/TimeFormat';
 import AbsoluteDate from '../components/display/AbsoluteDate';
 import RelativeDate from '../components/display/RelativeDate';
 
-import Button from '../components/shared/Button';
+import { Button } from '../components/controls';
 
 import './ProductDetail.css';
 
@@ -123,7 +123,7 @@ export default function ProductDetail() {
         {/* Previous/Next in progress: the current product stays mounted (transition) under this overlay */}
         <Show when={isRouting()}>
           <div class="loading-overlay">
-            <span class="loading-indicator">⏳ Loading...</span>
+            <div class="loading-indicator">Loading...</div>
           </div>
         </Show>
 
@@ -132,7 +132,7 @@ export default function ProductDetail() {
           fallback={
             <>
               <div class="loading-overlay">
-                <span class="loading-indicator">⏳ Loading...</span>
+                <div class="loading-indicator">Loading...</div>
               </div>
               <div class="loading-state">
                 <p>Loading product...</p>

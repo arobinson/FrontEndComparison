@@ -30,3 +30,9 @@ export class BooleanYesNo extends LitElement {
       : html`<span class="boolean-yesno no">No</span>`;
   }
 }
+
+declare global {
+  interface HTMLElementTagNameMap {
+    'boolean-yesno': BooleanYesNo;
+  }
+}

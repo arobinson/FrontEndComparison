@@ -6,7 +6,7 @@ interface ProgressBarProps {
   value: number;
 }
 
-export const ProgressBar = memo(({ value }: ProgressBarProps) => {
+export const ProgressBar = memo(function ProgressBar({ value }: ProgressBarProps) {
   const percentage = useMemo(() => {
     let result: number;
     if (value < 0) {
@@ -40,5 +40,3 @@ export const ProgressBar = memo(({ value }: ProgressBarProps) => {
     </div>
   );
 });
-
-ProgressBar.displayName = 'ProgressBar';

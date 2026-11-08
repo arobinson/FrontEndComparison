@@ -56,3 +56,9 @@ export class NovaDots extends LitElement {
     `;
   }
 }
+
+declare global {
+  interface HTMLElementTagNameMap {
+    'nova-dots': NovaDots;
+  }
+}

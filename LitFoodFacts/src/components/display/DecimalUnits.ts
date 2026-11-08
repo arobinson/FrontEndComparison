@@ -24,16 +24,16 @@ export class DecimalUnits extends LitElement {
     }
   `;
 
-  @property({ type: String })
+  @property()
   value: string | number | null | undefined = '';
 
-  @property({ type: String })
+  @property()
   unit = '';
 
   @property({ type: Number })
   decimals = 2;
 
-  @property({ type: String })
+  @property()
   currencyCode = '';
 
   private get formattedValue(): string {
@@ -82,5 +82,11 @@ export class DecimalUnits extends LitElement {
 
   render() {
     return html`<span class="decimal-units">${this.formattedValue}${this.unit ? html`<span class="unit">${this.unit}</span>` : ''}</span>`;
+  }
+}
+
+declare global {
+  interface HTMLElementTagNameMap {
+    'decimal-units': DecimalUnits;
   }
 }

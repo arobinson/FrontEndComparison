@@ -8,11 +8,11 @@ import {
   RangeSlider,
   MultiSelect,
   type RangeValue,
-} from '../components/shared';
+} from '../components/controls';
 import {
   useFiltersReducer,
   type FilterActions,
-} from '../components/shared/filters/filterStore';
+} from '../components/filters/filterStore';
 import { CellRenderer } from '../components/table/CellRenderer';
 import './ProductList.css';
 import { filterValuesEqual, type MockProductViewModel } from 'shared-types';

@@ -73,3 +73,9 @@ export class ProgressBar extends LitElement {
     `;
   }
 }
+
+declare global {
+  interface HTMLElementTagNameMap {
+    'progress-bar': ProgressBar;
+  }
+}

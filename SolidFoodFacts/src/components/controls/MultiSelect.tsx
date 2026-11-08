@@ -1,5 +1,5 @@
 import { createSignal, createUniqueId, For, Show } from 'solid-js';
-import Button from '../shared/Button';
+import Button from './Button';
 import './MultiSelect.css';
 
 interface MultiSelectProps {

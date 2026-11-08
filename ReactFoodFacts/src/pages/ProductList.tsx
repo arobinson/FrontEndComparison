@@ -1,18 +1,13 @@
-import { useState, useMemo, useCallback, useReducer } from 'react';
+import { useState, useReducer } from 'react';
 import { useProducts } from '../hooks/useProducts';
 import { allColumns, getColumnConfig } from '../config/columnConfig';
+import { Button, DataTable, TextSearch, RangeSlider, MultiSelect, type RangeValue } from '../components/controls';
 import {
-  Button,
-  DataTable,
-  TextSearch,
-  RangeSlider,
-  MultiSelect,
   filterReducer,
   initialFilterState,
   type FilterAction,
   type FilterValue,
-  type RangeValue,
-} from '../components/shared';
+} from '../components/filters/filterStore';
 import { CellRenderer } from '../components/table/CellRenderer';
 import './ProductList.css';
 import { filterValuesEqual, type MockProductViewModel } from 'shared-types';
@@ -23,6 +18,54 @@ const YES_NO_OPTIONS = ['Yes', 'No'];
 // Draft fallbacks for untouched filters (empty inputs, no selection).
 const NO_RANGE: RangeValue = {};
 const NO_SELECTION: string[] = [];
+
+function filterProducts(products: MockProductViewModel[], filters: Record<string, FilterValue>) {
+  let result = products;
+
+  Object.entries(filters).forEach(([column, filterValue]) => {
+    if (!filterValue) return;
+
+    result = result.filter((product) => {
+      const productValue = (product as Record<string, any>)[column];
+
+      // Text search
+      if (typeof filterValue === 'string') {
+        return productValue
+          ?.toString()
+          .toLowerCase()
+          .includes(filterValue.toLowerCase());
+      }
+      // Range filter
+      if (typeof filterValue === 'object' && !Array.isArray(filterValue)) {
+        const numValue = Number(productValue);
+        if (filterValue.min !== undefined && numValue < filterValue.min) {
+          return false;
+        }
+        if (filterValue.max !== undefined && numValue > filterValue.max) {
+          return false;
+        }
+        return true;
+      }
+      // Multi-select
+      if (Array.isArray(filterValue)) {
+        if (filterValue.length === 0) return true;
+        // Handle boolean yes/no filters
+        if (typeof productValue === 'boolean') {
+          const boolStrings = filterValue.map((v) => {
+            if (v === 'Yes') return true;
+            if (v === 'No') return false;
+            return v;
+          });
+          return boolStrings.includes(productValue);
+        }
+        return filterValue.includes(productValue);
+      }
+      return true;
+    });
+  });
+
+  return result;
+}
 
 const ProductList = () => {
   const [page, setPage] = useState(0);
@@ -39,74 +82,28 @@ const ProductList = () => {
     pageSize
   });
 
-  const filteredProducts = useMemo(() => {
-    let result = products;
-
-    Object.entries(filters).forEach(([column, filterValue]) => {
-      if (!filterValue) return;
-
-      result = result.filter((product) => {
-        const productValue = (product as Record<string, any>)[column];
-
-        // Text search
-        if (typeof filterValue === 'string') {
-          return productValue
-            ?.toString()
-            .toLowerCase()
-            .includes(filterValue.toLowerCase());
-        }
-        // Range filter
-        if (typeof filterValue === 'object' && !Array.isArray(filterValue)) {
-          const numValue = Number(productValue);
-          if (filterValue.min !== undefined && numValue < filterValue.min) {
-            return false;
-          }
-          if (filterValue.max !== undefined && numValue > filterValue.max) {
-            return false;
-          }
-          return true;
-        }
-        // Multi-select
-        if (Array.isArray(filterValue)) {
-          if (filterValue.length === 0) return true;
-          // Handle boolean yes/no filters
-          if (typeof productValue === 'boolean') {
-            const boolStrings = filterValue.map((v) => {
-              if (v === 'Yes') return true;
-              if (v === 'No') return false;
-              return v;
-            });
-            return boolStrings.includes(productValue);
-          }
-          return filterValue.includes(productValue);
-        }
-        return true;
-      });
-    });
-
-    return result;
-  }, [products, filters]);
+  const filteredProducts = filterProducts(products, filters);
 
   // Applying (or clearing) a filter also returns to the first page, in the same event.
-  const dispatch = useCallback((action: FilterAction) => {
+  const dispatch = (action: FilterAction) => {
     dispatchFilter(action);
     if (action.type !== 'setDraft') {
       setPage(0);
     }
-  }, []);
+  };
 
-  const resetFilters = useCallback(() => {
+  const resetFilters = () => {
     dispatch({ type: 'clear' });
-  }, [dispatch]);
+  };
 
-  const handlePageChange = useCallback((newPage: number) => {
+  const handlePageChange = (newPage: number) => {
     setPage(newPage);
-  }, []);
+  };
 
-  const handlePageSizeChange = useCallback((newSize: number) => {
+  const handlePageSizeChange = (newSize: number) => {
     setPageSize(newSize);
     setPage(0);
-  }, []);
+  };
 
   const totalPages = Math.ceil(total / pageSize);
   const columns = allColumns.map((col) => col.key);
@@ -119,13 +116,13 @@ const ProductList = () => {
     return getColumnConfig(column as keyof MockProductViewModel)?.label ?? column;
   };
 
-  const renderHeader = useCallback((column: string) => {
+  const renderHeader = (column: string) => {
     return <strong>{getColumnTitle(column)}</strong>;
-  }, []);
+  };
 
   // Each control shows its column's draft; edits update the draft, and a commit
   // (blur/Enter, or every MultiSelect toggle) applies it.
-  const renderFilterCell = useCallback((column: string) => {
+  const renderFilterCell = (column: string) => {
     const dataType = getColumnDataType(column);
     const draft = drafts[column];
     const setDraft = (value: FilterValue) => dispatch({ type: 'setDraft', column, value });
@@ -195,13 +192,13 @@ const ProductList = () => {
           />
         );
     }
-  }, [drafts, filters, dispatch]);
+  };
 
-  const renderCell = useCallback((value: any, column: string, row: Record<string, any>) => {
+  const renderCell = (value: any, column: string, row: Record<string, any>) => {
     const columnConfig = getColumnConfig(column as keyof MockProductViewModel);
     if (!columnConfig) return value ?? '';
     return <CellRenderer column={columnConfig} row={row} />;
-  }, []);
+  };
 
   let content;
   if (error) {

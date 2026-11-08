@@ -9,19 +9,19 @@ import {
 
 import { allColumns } from 'shared-types';
 import { FoodFacts, ProductViewModel } from '../food-facts';
-import { DataTable } from '../../shared/data-table/data-table';
-import { CellRenderer } from '../../shared/cell-renderer/cell-renderer';
-import { AffButton } from '../../shared/aff-button/aff-button';
-import { TextSearch } from '../../shared/controls/text-search/text-search';
+import { DataTable } from '../../controls/data-table/data-table';
+import { CellRenderer } from '../../table/cell-renderer/cell-renderer';
+import { AffButton } from '../../controls/aff-button/aff-button';
+import { TextSearch } from '../../controls/text-search/text-search';
 import {
   RangeSlider,
   RangeValue,
-} from '../../shared/controls/range-slider/range-slider';
-import { MultiSelect } from '../../shared/controls/multi-select/multi-select';
+} from '../../controls/range-slider/range-slider';
+import { MultiSelect } from '../../controls/multi-select/multi-select';
 import {
   FilterStore,
   FilterValue,
-} from '../../shared/filters/filter-store';
+} from '../../filters/filter-store';
 
 interface ProductPage {
   products: ProductViewModel[];

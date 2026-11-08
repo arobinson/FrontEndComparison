@@ -23,7 +23,7 @@ interface CellRendererProps {
   row: Record<string, any>;
 }
 
-export const CellRenderer = memo(({ column, row }: CellRendererProps) => {
+export const CellRenderer = memo(function CellRenderer({ column, row }: CellRendererProps) {
   const value = row[column.key];
 
   let cell: ComponentChildren;
@@ -63,5 +63,3 @@ export const CellRenderer = memo(({ column, row }: CellRendererProps) => {
 
   return cell;
 });
-
-CellRenderer.displayName = 'CellRenderer';

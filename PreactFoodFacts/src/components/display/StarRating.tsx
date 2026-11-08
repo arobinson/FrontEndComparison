@@ -7,7 +7,7 @@ interface StarRatingProps {
   maxStars?: number;
 }
 
-export const StarRating = memo(({ value, maxStars = 5 }: StarRatingProps) => {
+export const StarRating = memo(function StarRating({ value, maxStars = 5 }: StarRatingProps) {
   const stars = useMemo(() => {
     const rating = value ?? 0;
     const fullStars = Math.floor(rating);
@@ -36,5 +36,3 @@ export const StarRating = memo(({ value, maxStars = 5 }: StarRatingProps) => {
     </div>
   );
 });
-
-StarRating.displayName = 'StarRating';

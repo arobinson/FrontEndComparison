@@ -21,10 +21,13 @@ export class ProductLink extends LitElement {
     }
   `;
 
-  @property({ type: String })
+  @property()
   value: string | number = '';
 
-  private handleClick(e: Event) {
+  // Client-side navigation for a plain click; a modified click (new tab/window) keeps the
+  // browser's default, as a router link does.
+  private handleClick(e: MouseEvent) {
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
     e.preventDefault();
     this.dispatchEvent(new CustomEvent('navigate-to-detail', {
       detail: this.value,
@@ -35,5 +38,11 @@ export class ProductLink extends LitElement {
 
   render() {
     return html`<a class="product-link" href="${BASE_URL}/detail/${this.value}" @click="${this.handleClick}">${this.value}</a>`;
+  }
+}
+
+declare global {
+  interface HTMLElementTagNameMap {
+    'product-link': ProductLink;
   }
 }

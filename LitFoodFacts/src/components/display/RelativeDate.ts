@@ -9,7 +9,7 @@ export class RelativeDate extends LitElement {
     }
   `;
 
-  @property({ type: String })
+  @property()
   value = '';
 
   private get relativeTime(): string {
@@ -37,5 +37,11 @@ export class RelativeDate extends LitElement {
 
   render() {
     return html`<span class="relative-date">${this.relativeTime}</span>`;
+  }
+}
+
+declare global {
+  interface HTMLElementTagNameMap {
+    'relative-date': RelativeDate;
   }
 }

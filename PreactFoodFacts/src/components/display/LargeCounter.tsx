@@ -6,7 +6,7 @@ interface LargeCounterProps {
   value: number | null | undefined;
 }
 
-export const LargeCounter = memo(({ value }: LargeCounterProps) => {
+export const LargeCounter = memo(function LargeCounter({ value }: LargeCounterProps) {
   const formattedValue = useMemo(() => {
     let result: string;
     if (value === null || value === undefined) {
@@ -23,5 +23,3 @@ export const LargeCounter = memo(({ value }: LargeCounterProps) => {
 
   return <span className="large-counter">{formattedValue}</span>;
 });
-
-LargeCounter.displayName = 'LargeCounter';

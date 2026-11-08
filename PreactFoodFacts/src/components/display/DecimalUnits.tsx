@@ -20,7 +20,7 @@ interface DecimalUnitsProps {
 }
 
 export const DecimalUnits = memo(
-  ({ value, unit = '', decimals = 2, currencyCode }: DecimalUnitsProps) => {
+  function DecimalUnits({ value, unit = '', decimals = 2, currencyCode }: DecimalUnitsProps) {
     const formattedValue = useMemo(() => {
       if (value === null || value === undefined || value === '') {
         return '';
@@ -72,5 +72,3 @@ export const DecimalUnits = memo(
     );
   }
 );
-
-DecimalUnits.displayName = 'DecimalUnits';

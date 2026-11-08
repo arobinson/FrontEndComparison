@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Button from '#lib/components/shared/Button/Button.svelte';
+  import Button from '#lib/components/controls/Button.svelte';
   import './MultiSelect.css';
 
   let {

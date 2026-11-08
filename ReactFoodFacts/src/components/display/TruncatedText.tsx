@@ -1,5 +1,5 @@
-import { memo, useState, useCallback } from 'react';
-import { Button } from '../shared/Button';
+import { useState } from 'react';
+import { Button } from '../controls/Button';
 import './TruncatedText.css';
 
 interface TruncatedTextProps {
@@ -7,12 +7,12 @@ interface TruncatedTextProps {
   maxLength?: number;
 }
 
-export const TruncatedText = memo(({ value, maxLength = 50 }: TruncatedTextProps) => {
+export function TruncatedText({ value, maxLength = 50 }: TruncatedTextProps) {
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const toggleExpanded = useCallback(() => {
+  const toggleExpanded = () => {
     setIsExpanded((prev) => !prev);
-  }, []);
+  };
 
   const shouldTruncate = value ? value.length > maxLength : false;
 
@@ -35,6 +35,4 @@ export const TruncatedText = memo(({ value, maxLength = 50 }: TruncatedTextProps
       )}
     </div>
   );
-});
-
-TruncatedText.displayName = 'TruncatedText';
+}

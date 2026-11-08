@@ -1,4 +1,4 @@
-import { memo, useState, useCallback } from 'react';
+import { useState } from 'react';
 import './ProductImage.css';
 
 interface ProductImageProps {
@@ -6,17 +6,20 @@ interface ProductImageProps {
   size?: 'small' | 'large';
 }
 
-export const ProductImage = memo(({ value, size = 'small' }: ProductImageProps) => {
-  const [imageLoaded, setImageLoaded] = useState(false);
-  const [imageError, setImageError] = useState(false);
+export function ProductImage({ value, size = 'small' }: ProductImageProps) {
+  // Load/error state belongs to the URL it happened for, so a new URL starts out not loaded
+  const [loadedSrc, setLoadedSrc] = useState<string | null>(null);
+  const [failedSrc, setFailedSrc] = useState<string | null>(null);
+  const imageLoaded = loadedSrc === value;
+  const imageError = failedSrc === value;
 
-  const onImageLoad = useCallback(() => {
-    setImageLoaded(true);
-  }, []);
+  const onImageLoad = () => {
+    setLoadedSrc(value);
+  };
 
-  const onImageError = useCallback(() => {
-    setImageError(true);
-  }, []);
+  const onImageError = () => {
+    setFailedSrc(value);
+  };
 
   return (
     <div className={`product-image ${size}`}>
@@ -33,6 +36,4 @@ export const ProductImage = memo(({ value, size = 'small' }: ProductImageProps) 
       )}
     </div>
   );
-});
-
-ProductImage.displayName = 'ProductImage';
+}

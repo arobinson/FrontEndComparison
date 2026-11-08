@@ -3,7 +3,7 @@ import { Loading } from 'solid-js';
 import { render } from '@solidjs/web';
 import './index.css';
 import { Router } from './router';
-import FrameworkHeader from './components/shared/FrameworkHeader';
+import FrameworkHeader from './components/layout/FrameworkHeader';
 
 const root = document.getElementById('root');
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import './ProductImage.css';
 
 const { value, size = 'small' } = defineProps<{
@@ -7,15 +7,18 @@ const { value, size = 'small' } = defineProps<{
   size?: 'small' | 'large';
 }>();
 
-const imageLoaded = ref(false);
-const imageError = ref(false);
+// Load/error state belongs to the URL it happened for, so a new URL starts out not loaded
+const loadedSrc = ref<string | null>(null);
+const failedSrc = ref<string | null>(null);
+const imageLoaded = computed(() => loadedSrc.value === value);
+const imageError = computed(() => failedSrc.value === value);
 
 const onImageLoad = () => {
-  imageLoaded.value = true;
+  loadedSrc.value = value ?? null;
 };
 
 const onImageError = () => {
-  imageError.value = true;
+  failedSrc.value = value ?? null;
 };
 </script>
 

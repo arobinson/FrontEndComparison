@@ -5,7 +5,7 @@
   import type { MockProductViewModel } from 'shared-types';
   import { productService, type AdjacentProducts } from '#lib/services/productService';
 
-  import Button from '#lib/components/shared/Button/Button.svelte';
+  import { Button } from '#lib/components/controls';
   import ProgressBar from '#lib/components/display/ProgressBar.svelte';
   import ProductImage from '#lib/components/display/ProductImage.svelte';
   import TruncatedText from '#lib/components/display/TruncatedText.svelte';
@@ -114,7 +114,7 @@
   <div class="detail-area">
     {#if loadingState === 'loading'}
       <div class="loading-overlay">
-        <span class="loading-indicator">⏳ Loading...</span>
+        <div class="loading-indicator">Loading...</div>
       </div>
     {/if}
 

@@ -5,7 +5,7 @@ interface RelativeDateProps {
   value: string | null | undefined;
 }
 
-export const RelativeDate = memo(({ value }: RelativeDateProps) => {
+export const RelativeDate = memo(function RelativeDate({ value }: RelativeDateProps) {
   const relativeTime = useMemo(() => {
     let result: string;
     if (!value) {
@@ -33,5 +33,3 @@ export const RelativeDate = memo(({ value }: RelativeDateProps) => {
 
   return <span className="relative-date">{relativeTime}</span>;
 });
-
-RelativeDate.displayName = 'RelativeDate';

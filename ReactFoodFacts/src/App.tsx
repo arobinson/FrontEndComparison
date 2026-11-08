@@ -1,6 +1,6 @@
 import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router';
-import FrameworkHeader from './components/shared/FrameworkHeader';
+import FrameworkHeader from './components/layout/FrameworkHeader';
 
 // Route-level code splitting (react.dev: split by route). Loaded on navigation, never prefetched.
 const ProductList = lazy(() => import('./pages/ProductList'));

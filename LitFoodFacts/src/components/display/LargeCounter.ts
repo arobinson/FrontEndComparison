@@ -32,3 +32,9 @@ export class LargeCounter extends LitElement {
     return html`<span class="large-counter">${this.formattedValue}</span>`;
   }
 }
+
+declare global {
+  interface HTMLElementTagNameMap {
+    'large-counter': LargeCounter;
+  }
+}

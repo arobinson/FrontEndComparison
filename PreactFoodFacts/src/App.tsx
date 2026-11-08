@@ -1,6 +1,6 @@
 import { useEffect } from 'preact/hooks';
 import { LocationProvider, Router, Route, lazy, useLocation } from 'preact-iso';
-import FrameworkHeader from './components/shared/FrameworkHeader';
+import FrameworkHeader from './components/layout/FrameworkHeader';
 import { BASE, toPath } from './config/routes';
 
 // Route-level code splitting with preact-iso's lazy(); chunks load on first

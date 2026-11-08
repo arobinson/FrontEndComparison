@@ -1,6 +1,6 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import '../shared/lit-button.js';
+import '../controls/lit-button.js';
 
 @customElement('truncated-text')
 export class TruncatedText extends LitElement {
@@ -17,7 +17,7 @@ export class TruncatedText extends LitElement {
     }
   `;
 
-  @property({ type: String })
+  @property()
   value = '';
 
   @property({ type: Number })
@@ -53,5 +53,11 @@ export class TruncatedText extends LitElement {
           : ''}
       </div>
     `;
+  }
+}
+
+declare global {
+  interface HTMLElementTagNameMap {
+    'truncated-text': TruncatedText;
   }
 }

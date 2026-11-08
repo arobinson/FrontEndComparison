@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { FrameworkHeader } from './shared/framework-header/framework-header';
+import { FrameworkHeader } from './layout/framework-header/framework-header';
 
 @Component({
   selector: 'aff-root',

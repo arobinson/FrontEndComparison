@@ -3,7 +3,7 @@ import { customElement, property } from 'lit/decorators.js';
 
 @customElement('time-format')
 export class TimeFormat extends LitElement {
-  @property({ type: String })
+  @property()
   value = '';
 
   private get formattedTime(): string {
@@ -23,5 +23,11 @@ export class TimeFormat extends LitElement {
   render() {
     // Bare text, like the other apps.
     return html`${this.formattedTime}`;
+  }
+}
+
+declare global {
+  interface HTMLElementTagNameMap {
+    'time-format': TimeFormat;
   }
 }

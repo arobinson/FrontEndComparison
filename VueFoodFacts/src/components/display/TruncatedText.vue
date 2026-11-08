@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import { Button } from '../shared/Button';
+import { Button } from '../controls/Button';
 import './TruncatedText.css';
 
 const { value, maxLength = 50 } = defineProps<{

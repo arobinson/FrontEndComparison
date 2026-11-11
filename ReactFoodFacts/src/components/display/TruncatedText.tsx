@@ -1,17 +1,17 @@
-import { useState } from 'react';
 import { Button } from '../controls/Button';
 import './TruncatedText.css';
 
 interface TruncatedTextProps {
   value: string | null | undefined;
   maxLength?: number;
+  /** Controlled: the parent owns the expanded state */
+  expanded: boolean;
+  onExpandedChange: (expanded: boolean) => void;
 }
 
-export function TruncatedText({ value, maxLength = 50 }: TruncatedTextProps) {
-  const [isExpanded, setIsExpanded] = useState(false);
-
+export function TruncatedText({ value, maxLength = 50, expanded, onExpandedChange }: TruncatedTextProps) {
   const toggleExpanded = () => {
-    setIsExpanded((prev) => !prev);
+    onExpandedChange(!expanded);
   };
 
   const shouldTruncate = value ? value.length > maxLength : false;
@@ -19,7 +19,7 @@ export function TruncatedText({ value, maxLength = 50 }: TruncatedTextProps) {
   let displayValue: string;
   if (!value) {
     displayValue = '';
-  } else if (shouldTruncate && !isExpanded) {
+  } else if (shouldTruncate && !expanded) {
     displayValue = value.substring(0, maxLength - 3) + '...';
   } else {
     displayValue = value;
@@ -30,7 +30,7 @@ export function TruncatedText({ value, maxLength = 50 }: TruncatedTextProps) {
       <span className="text-content">{displayValue}</span>
       {shouldTruncate && (
         <Button variant="tertiary" size="sm" className="toggle-button" onClick={toggleExpanded}>
-          {isExpanded ? 'Show less' : 'Show more'}
+          {expanded ? 'Show less' : 'Show more'}
         </Button>
       )}
     </div>

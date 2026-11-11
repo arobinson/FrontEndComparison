@@ -17,10 +17,11 @@
       [columns]="columns"
       [value]="filteredData()"
       [totalPages]="totalPages()"
-      [(page)]="currentPage"
-      [(pageSize)]="pageSize"
+      [page]="currentPage()"
+      (pageChange)="goToPage($event)"
+      [pageSize]="pageSize()"
+      (pageSizeChange)="setPageSize($event)"
       renderFilter
-      trackBy="code"
     >
       <ng-template #header let-column>
         <strong>{{ columnTitles[column] }}</strong>
@@ -79,7 +80,12 @@
       </ng-template>
 
       <ng-template #data let-column="column" let-row="row">
-        <aff-cell-renderer [column]="column" [row]="row" />
+        <aff-cell-renderer
+          [column]="column"
+          [row]="row"
+          [expanded]="expandedCodes().includes(row.code)"
+          (expandedChange)="setExpanded(row.code, $event)"
+        />
       </ng-template>
       </aff-data-table>
     </div>

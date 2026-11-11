@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { traverseBackToList } from 'shared-types';
 import { useProduct } from '../composables/useProduct';
 import {
   ProgressBar,
@@ -26,8 +27,20 @@ const { code } = defineProps<{ code: string }>();
 const router = useRouter();
 const { product, loading, error, adjacent } = useProduct(() => code ?? '');
 
+// Each product's description opens collapsed, including after Previous/Next
+const expandedCode = ref<string | null>(null);
+const descriptionExpanded = computed({
+  get: () => expandedCode.value === code,
+  set: (expanded: boolean) => {
+    expandedCode.value = expanded ? code : null;
+  },
+});
+
+// Back to the list as it was left (page and filters are in its URL); a fresh list if it is not in history
 const navigateToList = () => {
-  router.push('/list');
+  if (!traverseBackToList()) {
+    router.push('/list');
+  }
 };
 
 const navigateToPrevious = () => {
@@ -120,7 +133,7 @@ const nextRestockDate = computed(() => toISOString(product.value?.nextRestockDat
               <template v-if="product.description">
                 <dt>Description</dt>
                 <dd>
-                  <TruncatedText :value="product.description" />
+                  <TruncatedText v-model:expanded="descriptionExpanded" :value="product.description" />
                 </dd>
               </template>
 

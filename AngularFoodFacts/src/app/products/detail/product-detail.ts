@@ -1,5 +1,6 @@
 import { Component, inject, computed, input, linkedSignal } from '@angular/core';
 import { Router } from '@angular/router';
+import { traverseBackToList } from 'shared-types';
 import { FoodFacts, ProductViewModel } from '../food-facts';
 import { ProgressBar } from '../../display/progress-bar/progress-bar';
 import { GradeBadge } from '../../display/grade-badge/grade-badge';
@@ -65,6 +66,9 @@ export class ProductDetail {
     this.adjacentResource.hasValue() ? this.adjacentResource.value() : null,
   );
 
+  /** Each product's description opens collapsed, including after Previous/Next */
+  readonly descriptionExpanded = linkedSignal({ source: this.id, computation: () => false });
+
   readonly isLoading = this.productResource.isLoading;
   readonly isError = computed(() => this.productResource.status() === 'error');
   readonly createdDate = computed(() => toIso(this.product()?.createdDate));
@@ -93,8 +97,11 @@ export class ProductDetail {
     return '';
   });
 
+  /** Back to the list as it was left (page and filters are in its URL); a fresh list if it is not in history */
   navigateToList(): void {
-    this.#router.navigate(['/list']);
+    if (!traverseBackToList()) {
+      this.#router.navigate(['/list']);
+    }
   }
 
   navigateToPrevious(): void {

@@ -52,11 +52,6 @@ export class DataTable<T extends object> {
    */
   readonly pageSizes = input<number[]>([10, 25, 50]);
 
-  /**
-   * Row property that uniquely identifies a row (e.g. a primary key), used to track rows.
-   * Required: a reusable table demands a real identity instead of falling back to the index.
-   */
-  readonly trackBy = input.required<keyof T & string>();
 
   // #endregion
 
@@ -119,18 +114,6 @@ export class DataTable<T extends object> {
 
   // #endregion
 
-  // #region Row Tracking
-
-  /**
-   * Track value for a row: the value of its trackBy property
-   * @param row The row object
-   */
-  rowKey(row: T): unknown {
-    return row[this.trackBy()];
-  }
-
-  // #endregion
-
   // #region Event Handlers
 
   /**
@@ -172,12 +155,11 @@ export class DataTable<T extends object> {
   }
 
   /**
-   * Change page size and reset to first page
+   * Change page size. The owner decides which page to show at the new size.
    * @param newPageSize The new number of items per page
    */
   onPageSizeChange(newPageSize: number) {
     this.pageSize.set(newPageSize);
-    this.page.set(0);
   }
 
   // #endregion

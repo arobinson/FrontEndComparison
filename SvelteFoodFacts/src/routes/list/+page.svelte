@@ -1,8 +1,20 @@
 <script lang="ts">
-  import type { MockProductViewModel } from 'shared-types';
-  import { allColumns, getColumnConfig, getColumnDataType } from 'shared-types';
+  import { page } from '$app/state';
+  import { goto } from '$app/navigation';
+  import { resolve } from '$app/paths';
+  import type { ListQuery, MockProductViewModel } from 'shared-types';
+  import {
+    allColumns,
+    filterValuesEqual,
+    getColumnConfig,
+    getColumnDataType,
+    listQuerySearch,
+    parseListQuery,
+    rememberedExpanded,
+    rememberExpanded,
+  } from 'shared-types';
+  import { untrack } from 'svelte';
   import { productService } from '#lib/services/productService';
-  import { onMount } from 'svelte';
   import CellRenderer from '#lib/components/table/CellRenderer.svelte';
   import { Button, DataTable, TextSearch, RangeSlider, MultiSelect } from '#lib/components/controls';
   import { FilterStore, type RangeFilterValue } from '#lib/stores/filterStore.svelte';
@@ -11,36 +23,75 @@
   // The previous page stays in `products` while the next one loads (rows stay visible under the overlay).
   let products = $state.raw<Array<MockProductViewModel> | undefined>(undefined);
   let productsState = $state<'loading' | 'error' | 'loaded'>('loading');
-  let currentPage = $state(0);
-  let pageSize = $state(50);
   let totalProducts = $state<number>(0);
   let error = $state<string | null>(null);
 
-  // Page-scoped filter state. The filter controls are generic and store-agnostic: the filter
-  // snippet binds each control's value to the column's draft and applies on commit.
-  // Applying or clearing a filter returns to the first page.
-  const filterStore = new FilterStore(goToFirstPage);
+  // Page, page size and applied filters live in the URL, so a reload, Back from a
+  // product, or a shared link shows the same list.
+  let query = $derived(parseListQuery(page.url.searchParams));
+  let search = $derived(listQuerySearch(query));
+  let currentPage = $derived(query.page);
+  let pageSize = $derived(query.pageSize);
+  let applied = $derived(query.filters);
+
+  // Page-scoped filter drafts. The filter controls are generic and store-agnostic: the filter
+  // snippet binds each control's value to what it shows and applies on commit.
+  const filterStore = new FilterStore();
+
+  // What each control shows: its draft while being edited, otherwise the applied value
+  let shown = $derived({ ...applied, ...filterStore.drafts });
+
+  // Products whose description is expanded on this list view. Still open after a
+  // visit to a product; a new page or filter starts with none (see showList).
+  // Only the first render reads it: after that, the handlers below keep it current.
+  let expandedCodes = $state.raw<readonly string[]>(untrack(() => rememberedExpanded(search)));
 
   // Shared empty values for columns without a draft (controls never mutate their value).
   const EMPTY_RANGE: RangeFilterValue = {};
   const EMPTY_SELECTION: string[] = [];
 
   function textDraft(column: string): string {
-    return (filterStore.drafts[column] as string | undefined) ?? '';
+    return (shown[column] as string | undefined) ?? '';
   }
 
   function rangeDraft(column: string): RangeFilterValue {
-    return (filterStore.drafts[column] as RangeFilterValue | undefined) ?? EMPTY_RANGE;
+    return (shown[column] as RangeFilterValue | undefined) ?? EMPTY_RANGE;
   }
 
   function selectionDraft(column: string): string[] {
-    return (filterStore.drafts[column] as string[] | undefined) ?? EMPTY_SELECTION;
+    return (shown[column] as string[] | undefined) ?? EMPTY_SELECTION;
+  }
+
+  // Shows another list view. Replaces the history entry, so paging and filtering
+  // don't stack up Back steps, and Back from a product returns here.
+  function showList(next: ListQuery) {
+    const nextSearch = listQuerySearch(next);
+    if (nextSearch === search) return;
+    // A list view starts with nothing expanded
+    expandedCodes = [];
+    rememberExpanded(nextSearch, []);
+    goto(`${resolve('/list')}${nextSearch}`, { replaceState: true, noScroll: true, keepFocus: true });
+  }
+
+  // Applying a filter returns to the first page
+  function applyFilter(column: string) {
+    const value = shown[column];
+    // A commit that changes nothing (e.g. blur without an edit) is a no-op, like a native change event
+    if (filterValuesEqual(value, applied[column])) return;
+    showList({ ...query, page: 0, filters: { ...applied, [column]: $state.snapshot(value) } });
   }
 
   // Multi-select applies on every toggle.
   function setSelection(column: string, value: string[]) {
     filterStore.setDraft(column, value);
-    filterStore.apply(column);
+    applyFilter(column);
+  }
+
+  function setExpanded(code: string, expanded: boolean) {
+    const others = expandedCodes.filter((c) => c !== code);
+    const codes = expanded ? [...others, code] : others;
+    expandedCodes = codes;
+    rememberExpanded(search, codes);
   }
 
   // Column keys for the table
@@ -63,7 +114,7 @@
     const prods = products;
     if (!prods) return [];
 
-    const activeFilters = filterStore.applied;
+    const activeFilters = applied;
     if (Object.keys(activeFilters).length === 0) {
       return prods;
     }
@@ -117,10 +168,10 @@
   });
 
   // Data fetching
-  async function loadProducts() {
+  async function loadProducts(pageIndex: number, size: number) {
     try {
       productsState = 'loading';
-      const result = await productService.getProductsByCategory('all', currentPage + 1, pageSize);
+      const result = await productService.getProductsByCategory('all', pageIndex + 1, size);
       products = result.products;
       totalProducts = result.total;
       productsState = 'loaded';
@@ -130,29 +181,24 @@
     }
   }
 
-  onMount(() => {
-    loadProducts();
+  // Side effect: fetch whenever the URL's page or page size changes (including the first
+  // render). It only starts the request.
+  $effect(() => {
+    loadProducts(currentPage, pageSize);
   });
 
-  function handlePageChange(page: number) {
-    currentPage = page;
-    loadProducts();
+  function handlePageChange(pageIndex: number) {
+    showList({ ...query, page: pageIndex });
   }
 
+  // A new page size starts again from the first page
   function handlePageSizeChange(size: number) {
-    pageSize = size;
-    currentPage = 0;
-    loadProducts();
-  }
-
-  function goToFirstPage() {
-    if (currentPage !== 0) {
-      handlePageChange(0);
-    }
+    showList({ ...query, page: 0, pageSize: size });
   }
 
   function resetFilters() {
     filterStore.clear();
+    showList({ ...query, page: 0, filters: {} });
   }
 </script>
 
@@ -181,7 +227,6 @@
         {pageSize}
         pageSizes={[10, 25, 50]}
         showFilterRow={true}
-        trackBy="code"
         onPageChange={handlePageChange}
         onPageSizeChange={handlePageSizeChange}
       >
@@ -194,7 +239,7 @@
           {#if dataType === 'progress-bar'}
             <RangeSlider
               bind:value={() => rangeDraft(column), (v) => filterStore.setDraft(column, v)}
-              oncommit={() => filterStore.apply(column)}
+              oncommit={() => applyFilter(column)}
               min={0}
               max={100}
             />
@@ -216,12 +261,12 @@
           {:else if dataType === 'large-counter'}
             <RangeSlider
               bind:value={() => rangeDraft(column), (v) => filterStore.setDraft(column, v)}
-              oncommit={() => filterStore.apply(column)}
+              oncommit={() => applyFilter(column)}
             />
           {:else if dataType !== 'product-image'}
             <TextSearch
               bind:value={() => textDraft(column), (v) => filterStore.setDraft(column, v)}
-              oncommit={() => filterStore.apply(column)}
+              oncommit={() => applyFilter(column)}
             />
           {/if}
         {/snippet}
@@ -229,7 +274,14 @@
         {#snippet cell(value, column, row)}
           {@const dataType = getColumnDataType(column as keyof MockProductViewModel)}
           {@const unit = getColumnUnit(column)}
-          <CellRenderer {value} {dataType} {column} {row} {unit} />
+          <CellRenderer
+            {value}
+            {dataType}
+            {column}
+            {row}
+            {unit}
+            bind:expanded={() => expandedCodes.includes(row.code), (v) => setExpanded(row.code, v)}
+          />
         {/snippet}
       </DataTable>
     </div>

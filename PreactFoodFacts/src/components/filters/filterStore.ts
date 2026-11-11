@@ -1,59 +1,31 @@
 import { useReducer } from 'preact/hooks';
 import type { RangeValue } from '../controls/RangeSlider';
 
-// Page-scoped filter store (useReducer, Preact core only). ProductList owns it
-// and wires each filter control to it through props; the controls know nothing
-// about it, and it lives and dies with the list page.
+// Page-scoped filter drafts (useReducer, Preact core only). ProductList owns
+// them and wires each filter control to them through props; the controls know
+// nothing about them, and they live and die with the list page.
+// A draft is what a control shows while it is being edited; the applied
+// filters live in the page URL.
 
 export type FilterValue = string | RangeValue | string[];
 
-export interface FilterState {
-  // What each control currently shows (typed text, typed min/max, selection).
-  drafts: Record<string, FilterValue | undefined>;
-  // What the table is filtered by (committed on blur/Enter/toggle).
-  applied: Record<string, FilterValue | undefined>;
-}
+export type FilterDrafts = Record<string, FilterValue | undefined>;
 
-export type FilterAction =
-  | { type: 'setDraft'; column: string; value: FilterValue }
-  | { type: 'apply'; column: string }
-  | { type: 'clear' };
+export type DraftAction = { type: 'setDraft'; column: string; value: FilterValue } | { type: 'clear' };
 
 export interface FilterActions {
   setDraft: (column: string, value: FilterValue) => void;
-  apply: (column: string) => void;
+  apply: (column: string, value: FilterValue | undefined) => void;
   clear: () => void;
 }
 
-const initialFilterState: FilterState = { drafts: {}, applied: {} };
-
-// A range filter only carries the bounds that are set.
-const toApplied = (draft: FilterValue | undefined): FilterValue | undefined => {
-  if (draft === undefined || typeof draft === 'string' || Array.isArray(draft)) {
-    return draft;
-  }
-  const result: RangeValue = {};
-  if (draft.min !== undefined) {
-    result.min = draft.min;
-  }
-  if (draft.max !== undefined) {
-    result.max = draft.max;
-  }
-  return result;
-};
-
-export const filtersReducer = (state: FilterState, action: FilterAction): FilterState => {
+export const draftsReducer = (drafts: FilterDrafts, action: DraftAction): FilterDrafts => {
   switch (action.type) {
     case 'setDraft':
-      return { ...state, drafts: { ...state.drafts, [action.column]: action.value } };
-    case 'apply':
-      return {
-        ...state,
-        applied: { ...state.applied, [action.column]: toApplied(state.drafts[action.column]) },
-      };
+      return { ...drafts, [action.column]: action.value };
     case 'clear':
-      return { drafts: {}, applied: {} };
+      return {};
   }
 };
 
-export const useFiltersReducer = () => useReducer(filtersReducer, initialFilterState);
+export const useDraftsReducer = () => useReducer(draftsReducer, {});

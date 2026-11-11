@@ -23,13 +23,16 @@ const { column, row } = defineProps<{
   row: Record<string, any>;
 }>();
 
+// Whether a truncated-text cell shows its full text (owned by the page)
+const expanded = defineModel<boolean>('expanded', { default: false });
+
 const value = computed(() => row[column.key]);
 </script>
 
 <template>
   <ProductLink v-if="column.type === 'product-link'" :code="String(row.code)" :label="String(value ?? row.code)" />
   <template v-else-if="column.type === 'simple-text'">{{ value ?? '' }}</template>
-  <TruncatedText v-else-if="column.type === 'truncated-text'" :value="value" />
+  <TruncatedText v-else-if="column.type === 'truncated-text'" v-model:expanded="expanded" :value="value" />
   <ProgressBar v-else-if="column.type === 'progress-bar'" :value="value ?? 0" />
   <GradeBadge v-else-if="column.type === 'grade-badge'" :grade="value" />
   <NovaDots v-else-if="column.type === 'nova-dots'" :rating="value" />

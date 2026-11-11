@@ -42,7 +42,8 @@
         </thead>
 
         <tbody class="table-body">
-          @for (row of value(); track rowKey(row)) {
+          <!-- Rows are reused by position, not keyed: a page change replaces every record, so updating the existing rows is cheaper than unmounting and remounting all of them. -->
+          @for (row of value(); track $index) {
             <tr class="data-row">
               @for (column of columns(); track column) {
                 <td class="data-cell">

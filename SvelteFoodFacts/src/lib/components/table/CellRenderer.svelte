@@ -23,12 +23,15 @@
     column,
     row,
     unit,
+    expanded = $bindable(false),
   }: {
     value: any;
     dataType: ColumnDataType;
     column: string;
     row: Record<string, any>;
     unit?: string;
+    /** Whether a truncated-text cell shows its full text (owned by the page) */
+    expanded?: boolean;
   } = $props();
 </script>
 
@@ -57,7 +60,7 @@
 {:else if dataType === 'absolute-date'}
   <AbsoluteDate {value} />
 {:else if dataType === 'truncated-text'}
-  <TruncatedText {value} />
+  <TruncatedText {value} bind:expanded />
 {:else if dataType === 'star-rating'}
   <StarRating {value} />
 {:else}

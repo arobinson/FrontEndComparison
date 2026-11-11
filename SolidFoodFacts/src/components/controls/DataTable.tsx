@@ -1,6 +1,5 @@
-import { createMemo, For, Show } from 'solid-js';
+import { createMemo, For, Index, Show } from 'solid-js';
 import type { JSX } from 'solid-js';
-import { Key } from '@solid-primitives/keyed';
 import Button from './Button';
 import './DataTable.css';
 
@@ -13,8 +12,6 @@ interface DataTableProps {
   pageSizes?: number[];
   showFilterRow?: boolean;
   emptyText?: string;
-  /** Row property that uniquely identifies a row */
-  trackBy: string;
   onPageChange: (page: number) => void;
   onPageSizeChange: (pageSize: number) => void;
   renderHeader?: (column: string) => JSX.Element;
@@ -91,10 +88,10 @@ export default function DataTable(props: DataTableProps) {
             </thead>
 
             <tbody class="table-body">
-              {/* Solid 1.x <For> can only key by object identity; <Key> keys rows by the trackBy property */}
-              <Key each={props.value} by={props.trackBy}>
+              {/* Rows are reused by position, not keyed: a page change replaces every record, so updating the existing rows is cheaper than unmounting and remounting all of them. */}
+              <Index each={props.value}>
                 {(row) => (
-                  <tr class="data-row" data-key={row()[props.trackBy]}>
+                  <tr class="data-row">
                     <For each={props.columns}>
                       {(column) => (
                         <td class="data-cell">
@@ -106,7 +103,7 @@ export default function DataTable(props: DataTableProps) {
                     </For>
                   </tr>
                 )}
-              </Key>
+              </Index>
             </tbody>
           </table>
         </div>

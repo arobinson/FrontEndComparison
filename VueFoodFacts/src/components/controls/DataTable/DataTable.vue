@@ -11,7 +11,6 @@ const {
   pageSize,
   pageSizes = [10, 25, 50],
   showFilterRow = false,
-  trackBy,
   emptyText = 'No data available',
 } = defineProps<{
   columns: string[];
@@ -21,8 +20,6 @@ const {
   pageSize: number;
   pageSizes?: number[];
   showFilterRow?: boolean;
-  /** Row property that uniquely identifies a row; used as the row key */
-  trackBy: keyof T & string;
   emptyText?: string;
 }>();
 
@@ -84,8 +81,8 @@ const selectedPageSize = computed({
         </thead>
 
         <tbody class="table-body">
-          <!-- Keyed by the product's primary key -->
-          <tr v-for="row in value" :key="row[trackBy]" class="data-row">
+          <!-- Rows are reused by position, not keyed: a page change replaces every record, so updating the existing rows is cheaper than unmounting and remounting all of them. -->
+          <tr v-for="(row, index) in value" :key="index" class="data-row">
             <td v-for="column in columns" :key="column" class="data-cell">
               <slot name="cell" :value="row[column]" :column="column" :row="row">{{ row[column] }}</slot>
             </td>

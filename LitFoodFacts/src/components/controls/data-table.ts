@@ -1,6 +1,5 @@
 import { LitElement, html, css, TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { repeat } from 'lit/directives/repeat.js';
 import './lit-button.js';
 
 export type RenderHeaderFn = (column: string) => TemplateResult;
@@ -172,8 +171,6 @@ export class DataTable extends LitElement {
   @property({ attribute: false }) pageSizes: number[] = [10, 25, 50];
   @property({ type: Boolean, attribute: 'show-filter-row' }) showFilterRow = false;
   @property() emptyText = 'No data available';
-  // Required: row property that uniquely identifies a row (repeat key and data-key)
-  @property({ attribute: 'track-by' }) trackBy!: string;
   @property({ attribute: false }) renderHeader?: RenderHeaderFn;
   @property({ attribute: false }) renderFilter?: RenderFilterFn;
   @property({ attribute: false }) renderCell?: RenderCellFn;
@@ -247,8 +244,9 @@ export class DataTable extends LitElement {
             </thead>
 
             <tbody class="table-body">
-              ${repeat(this.value, (row) => row[this.trackBy], (row) => html`
-                <tr class="data-row" data-key=${row[this.trackBy]}>
+              <!-- Rows are reused by position, not keyed: a page change replaces every record, so updating the existing rows is cheaper than unmounting and remounting all of them. -->
+              ${this.value.map((row) => html`
+                <tr class="data-row">
                   ${this.columns.map(column => html`
                     <td class="data-cell">
                       ${this.renderCell

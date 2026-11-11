@@ -2,7 +2,7 @@
   import { page } from '$app/state';
   import { goto } from '$app/navigation';
   import { resolve } from '$app/paths';
-  import type { MockProductViewModel } from 'shared-types';
+  import { traverseBackToList, type MockProductViewModel } from 'shared-types';
   import { productService, type AdjacentProducts } from '#lib/services/productService';
 
   import { Button } from '#lib/components/controls';
@@ -48,8 +48,14 @@
     }
   }
 
+  // Each product's description opens collapsed, including after Previous/Next
+  let expandedCode = $state<string | null>(null);
+
+  // Back to the list as it was left (page and filters are in its URL); a fresh list if it is not in history
   function navigateToList() {
-    goto(resolve('/list'));
+    if (!traverseBackToList()) {
+      goto(resolve('/list'));
+    }
   }
 
   function navigateToPrevious() {
@@ -157,7 +163,10 @@
             {#if product.description}
               <dt>Description</dt>
               <dd>
-                <TruncatedText value={product.description} />
+                <TruncatedText
+                  value={product.description}
+                  bind:expanded={() => expandedCode === page.params.code, (v) => (expandedCode = v ? page.params.code! : null)}
+                />
               </dd>
             {/if}
 

@@ -6,8 +6,18 @@ import {
   linkedSignal,
   Signal,
 } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { ActivatedRoute, Router } from '@angular/router';
 
-import { allColumns } from 'shared-types';
+import {
+  allColumns,
+  filterValuesEqual,
+  listQuerySearch,
+  parseListQuery,
+  rememberedExpanded,
+  rememberExpanded,
+  type ListQuery,
+} from 'shared-types';
 import { FoodFacts, ProductViewModel } from '../food-facts';
 import { DataTable } from '../../controls/data-table/data-table';
 import { CellRenderer } from '../../table/cell-renderer/cell-renderer';
@@ -19,6 +29,7 @@ import {
 } from '../../controls/range-slider/range-slider';
 import { MultiSelect } from '../../controls/multi-select/multi-select';
 import {
+  FilterMap,
   FilterStore,
   FilterValue,
 } from '../../filters/filter-store';
@@ -45,24 +56,31 @@ interface ProductPage {
 export class ProductList {
   readonly #foodFacts = inject(FoodFacts);
   readonly #filters = inject(FilterStore);
+  readonly #router = inject(Router);
 
   readonly category = signal('all');
 
-  // #region Pagination State
+  // #region URL State
 
   /**
-   * Current page for pagination (0-based for UI, 1-based for API).
-   * Resets to the first page whenever a filter is applied or cleared.
+   * Page, page size and applied filters live in the URL, so a reload, Back from
+   * a product, or a shared link shows the same list.
    */
-  readonly currentPage = linkedSignal({
-    source: this.#filters.applied,
-    computation: () => 0,
+  readonly #queryParams = toSignal(inject(ActivatedRoute).queryParams, {
+    requireSync: true,
   });
 
-  /**
-   * Items per page
-   */
-  readonly pageSize = signal(50);
+  readonly query = computed(() =>
+    parseListQuery(new URLSearchParams(this.#queryParams())),
+  );
+
+  /** The URL query string of the list view being shown */
+  readonly #search = computed(() => listQuerySearch(this.query()));
+
+  /** Current page (0-based for UI, 1-based for API and URL) */
+  readonly currentPage = computed(() => this.query().page);
+  readonly pageSize = computed(() => this.query().pageSize);
+  readonly applied = computed(() => this.query().filters);
 
   /**
    * API page (1-based) computed from currentPage (0-based)
@@ -74,6 +92,30 @@ export class ProductList {
     this.apiPage,
     this.pageSize,
   );
+
+  /**
+   * Shows another list view. Replaces the history entry, so paging and filtering
+   * don't stack up Back steps, and Back from a product returns here.
+   */
+  #showList(query: ListQuery): void {
+    const search = listQuerySearch(query);
+    if (search === this.#search()) {
+      return;
+    }
+    // A list view starts with nothing expanded
+    this.expandedCodes.set([]);
+    rememberExpanded(search, []);
+    this.#router.navigateByUrl(`/list${search}`, { replaceUrl: true });
+  }
+
+  goToPage(page: number) {
+    this.#showList({ ...this.query(), page });
+  }
+
+  /** A new page size starts again from the first page */
+  setPageSize(pageSize: number) {
+    this.#showList({ ...this.query(), page: 0, pageSize });
+  }
 
   // #endregion
 
@@ -105,17 +147,23 @@ export class ProductList {
   // #region Filter State
 
   /**
-   * Draft values bound to the filter controls. One store signal, viewed with
-   * the value type of each control (a column only ever holds one type), so the
-   * template reads a signal rather than calling a method per cell.
+   * What each filter control shows: its draft while being edited, otherwise the
+   * applied value from the URL. One signal, viewed with the value type of each
+   * control (a column only ever holds one type), so the template reads a signal
+   * rather than calling a method per cell.
    */
-  readonly textDrafts = this.#filters.drafts as Signal<
+  readonly #shown = computed<FilterMap>(() => ({
+    ...this.applied(),
+    ...this.#filters.drafts(),
+  }));
+
+  readonly textDrafts = this.#shown as Signal<
     Record<string, string | undefined>
   >;
-  readonly rangeDrafts = this.#filters.drafts as Signal<
+  readonly rangeDrafts = this.#shown as Signal<
     Record<string, RangeValue | undefined>
   >;
-  readonly multiDrafts = this.#filters.drafts as Signal<
+  readonly multiDrafts = this.#shown as Signal<
     Record<string, string[] | undefined>
   >;
 
@@ -123,21 +171,51 @@ export class ProductList {
     this.#filters.setDraft(column, value);
   }
 
+  /** Applies a control's value; applying a filter returns to the first page */
   applyFilter(column: string) {
-    this.#filters.apply(column);
+    const value = this.#shown()[column];
+    // A commit that changes nothing (e.g. blur without an edit) is a no-op, like a native change event
+    if (filterValuesEqual(value, this.applied()[column])) {
+      return;
+    }
+    this.#showList({
+      ...this.query(),
+      page: 0,
+      filters: { ...this.applied(), [column]: value },
+    });
   }
 
   /** MultiSelect applies on every toggle */
   setAndApply(column: string, value: string[]) {
     this.#filters.setDraft(column, value);
-    this.#filters.apply(column);
+    this.applyFilter(column);
   }
 
   /**
-   * Reset all filters (also returns to the first page, see currentPage)
+   * Reset all filters and return to the first page
    */
   resetFilters() {
     this.#filters.clear();
+    this.#showList({ ...this.query(), page: 0, filters: {} });
+  }
+
+  // #endregion
+
+  // #region Expanded Products
+
+  /**
+   * Products whose description is expanded on this list view. Still open after
+   * a visit to a product; a new page or filter starts with none (see #navigate).
+   */
+  readonly expandedCodes = signal<readonly string[]>(
+    rememberedExpanded(this.#search()),
+  );
+
+  setExpanded(code: string, expanded: boolean) {
+    const others = this.expandedCodes().filter((c) => c !== code);
+    const codes = expanded ? [...others, code] : others;
+    this.expandedCodes.set(codes);
+    rememberExpanded(this.#search(), codes);
   }
 
   // #endregion
@@ -172,7 +250,7 @@ export class ProductList {
   readonly filteredData = computed(() => {
     const response = this.displayData();
     const allData = response?.products || [];
-    const activeFilters: Record<string, any> = this.#filters.applied();
+    const activeFilters: Record<string, any> = this.applied();
 
     let result = allData;
     if (Object.keys(activeFilters).length > 0) {

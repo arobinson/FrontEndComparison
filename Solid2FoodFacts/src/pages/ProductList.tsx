@@ -1,7 +1,18 @@
 import { createSignal, createMemo, isPending, Errored, Loading, Show } from 'solid-js';
-import type { MockProductViewModel } from 'shared-types';
-import { allColumns, getColumnConfig, getColumnDataType } from 'shared-types';
+import { useLocation, useNavigate } from '@solidjs/router';
+import type { ListQuery, MockProductViewModel } from 'shared-types';
+import {
+  allColumns,
+  filterValuesEqual,
+  getColumnConfig,
+  getColumnDataType,
+  listQuerySearch,
+  parseListQuery,
+  rememberedExpanded,
+  rememberExpanded,
+} from 'shared-types';
 import { productService } from '../services/productService';
+import { paths } from '../router';
 import CellRenderer from '../components/table/CellRenderer';
 import { Button, DataTable, TextSearch, RangeSlider, MultiSelect } from '../components/controls';
 import { createFilterStore } from '../components/filters/filterStore';
@@ -58,14 +69,53 @@ const NO_RANGE: RangeFilter = {};
 const NO_SELECTION: string[] = [];
 
 export default function ProductList() {
-  const [currentPage, setCurrentPage] = createSignal(0);
-  const [pageSize, setPageSize] = createSignal(50);
+  const location = useLocation();
+  const navigate = useNavigate();
 
-  // Applying or clearing a filter also returns to the first page
-  const filterStore = createFilterStore(() => setCurrentPage(0));
+  // Page, page size and applied filters live in the URL, so a reload, Back from a
+  // product, or a shared link shows the same list.
+  const query = createMemo(() => parseListQuery(location.search));
+  const search = createMemo(() => listQuerySearch(query()));
+  // Memos, so a filter change (same page and size) does not refetch the page
+  const currentPage = createMemo(() => query().page);
+  const pageSize = createMemo(() => query().pageSize);
+  const applied = () => query().filters;
+
+  // Page-scoped filter drafts; the filter controls are wired to them below
+  const filterStore = createFilterStore();
+
+  // Products whose description is expanded on this list view. Still open after a
+  // visit to a product; a new page or filter starts with none (see showList).
+  const [expandedCodes, setExpandedCodes] = createSignal<readonly string[]>(rememberedExpanded(search()));
+
+  // Shows another list view. Replaces the history entry, so paging and filtering
+  // don't stack up Back steps, and Back from a product returns here.
+  function showList(next: ListQuery) {
+    const nextSearch = listQuerySearch(next);
+    if (nextSearch === search()) return;
+    // A list view starts with nothing expanded
+    setExpandedCodes([]);
+    rememberExpanded(nextSearch, []);
+    // paths.list already carries the router base, so the string is used as is
+    navigate(`${paths.list}${nextSearch}`, { replace: true, scroll: false, resolve: false });
+  }
+
+  // Applying a filter returns to the first page
+  function applyFilter(column: string, value: FilterValue | undefined) {
+    // A commit that changes nothing (e.g. blur without an edit) is a no-op, like a native change event
+    if (filterValuesEqual(value, applied()[column])) return;
+    showList({ ...query(), page: 0, filters: { ...applied(), [column]: value } });
+  }
+
+  function setExpanded(code: string, expanded: boolean) {
+    const others = expandedCodes().filter((c) => c !== code);
+    const codes = expanded ? [...others, code] : others;
+    setExpandedCodes(codes);
+    rememberExpanded(search(), codes);
+  }
 
   // Async memo (Solid 2 replaces createResource/createAsync with async computations):
-  // re-runs whenever the page or page size changes, so every page change is exactly one
+  // re-runs whenever the URL's page or page size changes, so every page change is exactly one
   // products request. There are no explicit transitions in 2.0: once <Loading> below has shown
   // content, a page change keeps the current rows (and pager) on screen until the new page lands,
   // and isPending() drives the overlay meanwhile. A failed request rejects to <Errored>.
@@ -73,7 +123,7 @@ export default function ProductList() {
 
   const products = () => productsData().products;
   const totalPages = createMemo(() => Math.ceil(productsData().total / pageSize()));
-  const filteredProducts = createMemo(() => applyFilters(products(), filterStore.state.applied));
+  const filteredProducts = createMemo(() => applyFilters(products(), applied()));
 
   const columnKeys = allColumns.map((col) => col.key);
 
@@ -87,15 +137,16 @@ export default function ProductList() {
 
   function resetFilters() {
     filterStore.clear();
+    showList({ ...query(), page: 0, filters: {} });
   }
 
   function handlePageChange(newPage: number) {
-    setCurrentPage(newPage);
+    showList({ ...query(), page: newPage });
   }
 
+  // A new page size starts again from the first page
   function handlePageSizeChange(newSize: number) {
-    setPageSize(newSize);
-    setCurrentPage(0);
+    showList({ ...query(), page: 0, pageSize: newSize });
   }
 
   function renderHeader(column: string) {
@@ -103,15 +154,16 @@ export default function ProductList() {
   }
 
   // The filter controls are generic and controlled: the page feeds each one its column's draft
-  // and writes their changes back to the store (draft on every change, apply on commit).
-  const draftOf = <T extends FilterValue>(column: string) => filterStore.state.draft[column] as T | undefined;
+  // (or applied value) and writes their changes back (draft on every change, apply on commit).
+  const draftOf = <T extends FilterValue>(column: string) =>
+    (filterStore.state.draft[column] ?? applied()[column]) as T | undefined;
 
   function renderTextSearch(column: string) {
     return (
       <TextSearch
         value={draftOf<string>(column) ?? ''}
         onValueChange={(v) => filterStore.setDraft(column, v)}
-        onCommit={() => filterStore.apply(column)}
+        onCommit={() => applyFilter(column, draftOf(column))}
       />
     );
   }
@@ -123,19 +175,22 @@ export default function ProductList() {
         min={min}
         max={max}
         onValueChange={(v) => filterStore.setDraft(column, v)}
-        onCommit={() => filterStore.apply(column)}
+        onCommit={() => applyFilter(column, draftOf(column))}
       />
     );
   }
 
   function renderMultiSelect(column: string, options: string[]) {
-    // Every toggle updates the selection and applies it immediately (one store write for both:
-    // Solid 2 store writes are readable only after the flush, so setDraft + apply would apply the old draft)
+    // Every toggle updates the selection and applies it immediately (applied from the new value:
+    // Solid 2 store writes are readable only after the flush)
     return (
       <MultiSelect
         options={options}
         value={draftOf<string[]>(column) ?? NO_SELECTION}
-        onValueChange={(v) => filterStore.commit(column, v)}
+        onValueChange={(v) => {
+          filterStore.setDraft(column, v);
+          applyFilter(column, v);
+        }}
       />
     );
   }
@@ -162,7 +217,17 @@ export default function ProductList() {
   function renderCell(value: any, column: string, row: Record<string, any>) {
     const dataType = getColumnDataType(column as keyof MockProductViewModel);
     const unit = getColumnUnit(column);
-    return <CellRenderer value={value} dataType={dataType} column={column} row={row} unit={unit} />;
+    return (
+      <CellRenderer
+        value={value}
+        dataType={dataType}
+        column={column}
+        row={row}
+        unit={unit}
+        expanded={expandedCodes().includes(row.code)}
+        onExpandedChange={(expanded) => setExpanded(row.code, expanded)}
+      />
+    );
   }
 
   return (
@@ -193,7 +258,6 @@ export default function ProductList() {
                 pageSize={pageSize()}
                 pageSizes={[10, 25, 50]}
                 showFilterRow
-                trackBy="code"
                 onPageChange={handlePageChange}
                 onPageSizeChange={handlePageSizeChange}
                 renderHeader={renderHeader}

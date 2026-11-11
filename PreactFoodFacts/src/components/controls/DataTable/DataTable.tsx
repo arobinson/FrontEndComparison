@@ -12,8 +12,6 @@ interface DataTableProps<T extends Record<string, any>> {
   pageSize: number;
   pageSizes?: number[];
   showFilterRow?: boolean;
-  /** Row property that uniquely identifies a row; used as the row key */
-  trackBy: keyof T & string;
   emptyText?: string;
   onPageChange: (page: number) => void;
   onPageSizeChange: (pageSize: number) => void;
@@ -30,7 +28,6 @@ function DataTableInner<T extends Record<string, any>>({
   pageSize,
   pageSizes = [10, 25, 50],
   showFilterRow = false,
-  trackBy,
   emptyText = 'No data available',
   onPageChange,
   onPageSizeChange,
@@ -101,8 +98,9 @@ function DataTableInner<T extends Record<string, any>>({
           </thead>
 
           <tbody className="table-body">
-            {value.map((row) => (
-              <tr key={row[trackBy]} className="data-row">
+            {/* Rows are reused by position, not keyed: a page change replaces every record, so updating the existing rows is cheaper than unmounting and remounting all of them. */}
+            {value.map((row, index) => (
+              <tr key={index} className="data-row">
                 {columns.map((column) => (
                   <td key={column} className="data-cell">
                     {renderCell ? renderCell(row[column], column, row) : row[column]}

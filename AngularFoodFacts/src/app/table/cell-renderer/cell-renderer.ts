@@ -1,4 +1,4 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, input, model } from '@angular/core';
 import { getColumnConfig } from 'shared-types';
 import { ProductViewModel } from '../../products/food-facts';
 import { ProductLink } from '../../display/product-link/product-link';
@@ -51,6 +51,11 @@ export class CellRenderer {
    * The row object the cell belongs to
    */
   readonly row = input.required<Record<string, any>>();
+
+  /**
+   * Whether a truncated-text cell shows its full text (owned by the page)
+   */
+  readonly expanded = model(false);
 
   // #endregion
 

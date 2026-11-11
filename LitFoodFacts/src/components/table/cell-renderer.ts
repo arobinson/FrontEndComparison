@@ -8,6 +8,8 @@ export class CellRenderer extends LitElement {
   @property({ attribute: false }) value: unknown = null;
   @property() dataType: ColumnDataType = 'simple-text';
   @property() unit?: string;
+  /** Whether a truncated-text cell shows its full text (owned by the page; changes bubble up as `expanded-change`) */
+  @property({ type: Boolean }) expanded = false;
 
   // Disable shadow DOM to allow parent styles to cascade
   createRenderRoot() {
@@ -41,7 +43,7 @@ export class CellRenderer extends LitElement {
       case 'absolute-date':
         return html`<absolute-date .value=${this.value}></absolute-date>`;
       case 'truncated-text':
-        return html`<truncated-text .value=${this.value}></truncated-text>`;
+        return html`<truncated-text .value=${this.value} .expanded=${this.expanded}></truncated-text>`;
       case 'star-rating':
         return html`<star-rating .value=${this.value}></star-rating>`;
       default:

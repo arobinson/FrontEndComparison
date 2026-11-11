@@ -17,7 +17,7 @@ export class LitApp extends LitElement {
   `;
 
   @state()
-  private route: { page: 'list' } | { page: 'detail'; code: string } = { page: 'list' };
+  private route: { page: 'list'; search: string } | { page: 'detail'; code: string } = { page: 'list', search: '' };
 
   private readonly onPopState = () => this.handleRoute();
 
@@ -43,11 +43,15 @@ export class LitApp extends LitElement {
     // Anything that is not a detail URL shows the list
     this.route = relativePath.startsWith('/detail/')
       ? { page: 'detail', code: relativePath.replace('/detail/', '') }
-      : { page: 'list' };
+      : { page: 'list', search: window.location.search };
   }
 
-  navigate(path: string) {
-    window.history.pushState({}, '', BASE + path);
+  navigate(path: string, { replace = false } = {}) {
+    if (replace) {
+      window.history.replaceState({}, '', BASE + path);
+    } else {
+      window.history.pushState({}, '', BASE + path);
+    }
     this.handleRoute();
   }
 
@@ -55,7 +59,11 @@ export class LitApp extends LitElement {
     return html`
       <framework-header></framework-header>
       ${this.route.page === 'list'
-        ? html`<product-list></product-list>`
+        ? // The list's own navigations (page, page size, filters) replace its history entry
+          html`<product-list
+            .search=${this.route.search}
+            @navigate=${(e: CustomEvent<string>) => this.navigate(e.detail, { replace: true })}
+          ></product-list>`
         : html`<product-detail
             .code=${this.route.code}
             @navigate=${(e: CustomEvent<string>) => this.navigate(e.detail)}

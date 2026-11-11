@@ -56,7 +56,7 @@
               @if (product.description) {
                 <dt>Description</dt>
                 <dd>
-                  <aff-truncated-text [value]="product.description" />
+                  <aff-truncated-text [value]="product.description" [(expanded)]="descriptionExpanded" />
                 </dd>
               }
 

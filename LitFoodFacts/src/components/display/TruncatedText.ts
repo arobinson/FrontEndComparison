@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { customElement, property } from 'lit/decorators.js';
 import '../controls/lit-button.js';
 
 @customElement('truncated-text')
@@ -23,8 +23,9 @@ export class TruncatedText extends LitElement {
   @property({ type: Number })
   maxLength = 50;
 
-  @state()
-  private isExpanded = false;
+  /** Controlled: the parent owns the expanded state and listens for `expanded-change` */
+  @property({ type: Boolean })
+  expanded = false;
 
   private get shouldTruncate(): boolean {
     return (this.value?.length ?? 0) > this.maxLength;
@@ -32,14 +33,14 @@ export class TruncatedText extends LitElement {
 
   private get displayText(): string {
     const text = this.value || '';
-    if (this.shouldTruncate && !this.isExpanded) {
+    if (this.shouldTruncate && !this.expanded) {
       return text.substring(0, this.maxLength - 3) + '...';
     }
     return text;
   }
 
   private toggleExpanded() {
-    this.isExpanded = !this.isExpanded;
+    this.dispatchEvent(new CustomEvent('expanded-change', { detail: !this.expanded, bubbles: true }));
   }
 
   render() {
@@ -48,7 +49,7 @@ export class TruncatedText extends LitElement {
         <span class="text-content">${this.displayText}</span>
         ${this.shouldTruncate
           ? html`
-              <lit-button variant="tertiary" size="sm" extra-class="toggle-button" @button-click=${this.toggleExpanded}>${this.isExpanded ? 'Show less' : 'Show more'}</lit-button>
+              <lit-button variant="tertiary" size="sm" extra-class="toggle-button" @button-click=${this.toggleExpanded}>${this.expanded ? 'Show less' : 'Show more'}</lit-button>
             `
           : ''}
       </div>

@@ -1,6 +1,15 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import type { MockProductViewModel } from 'shared-types';
+import { useRoute, useRouter } from 'vue-router';
+import {
+  filterValuesEqual,
+  listQuerySearch,
+  parseListQuery,
+  rememberedExpanded,
+  rememberExpanded,
+  type ListQuery,
+  type MockProductViewModel,
+} from 'shared-types';
 import { useProducts } from '../composables/useProducts';
 import { createFilterStore, type FilterValue, type RangeValue } from '../composables/useFilterStore';
 import { allColumns, getColumnConfig } from '../config/columnConfig';
@@ -11,14 +20,41 @@ import './ProductList.css';
 const columns = allColumns.map((col) => col.key);
 const pageSizes = [10, 25, 50];
 
-const page = ref(0);
-const pageSize = ref(50);
+const route = useRoute();
+const router = useRouter();
 
-// Page-scoped filter store; the page wires it into the (store-agnostic) filter controls.
-// Any apply/clear returns to the first page.
-const filterStore = createFilterStore(() => {
-  page.value = 0;
-});
+// Page, page size and applied filters live in the URL, so a reload, Back from a
+// product, or a shared link shows the same list.
+const query = computed(() => parseListQuery(new URLSearchParams(route.query as Record<string, string>)));
+const search = computed(() => listQuerySearch(query.value));
+const page = computed(() => query.value.page);
+const pageSize = computed(() => query.value.pageSize);
+const applied = computed(() => query.value.filters);
+
+// Page-scoped filter drafts; the page wires them into the (store-agnostic) filter controls.
+const filterStore = createFilterStore();
+
+// What each control shows: its draft while being edited, otherwise the applied value
+const shown = computed(() => ({ ...applied.value, ...filterStore.state.drafts }));
+const shownValue = <T extends FilterValue>(column: string, fallback: T): T =>
+  (shown.value[column] as T | undefined) ?? fallback;
+
+// Products whose description is expanded on this list view. Still open after a
+// visit to a product; a new page or filter starts with none (see showList).
+const expandedCodes = ref<readonly string[]>(rememberedExpanded(search.value));
+
+// Shows another list view. Replaces the history entry, so paging and filtering
+// don't stack up Back steps, and Back from a product returns here.
+const showList = (next: ListQuery) => {
+  const nextSearch = listQuerySearch(next);
+  if (nextSearch === search.value) {
+    return;
+  }
+  // A list view starts with nothing expanded
+  expandedCodes.value = [];
+  rememberExpanded(nextSearch, []);
+  router.replace(`/list${nextSearch}`);
+};
 
 const { products, total, loading, error } = useProducts({
   category: 'all',
@@ -29,7 +65,7 @@ const { products, total, loading, error } = useProducts({
 const filteredProducts = computed(() => {
   let result = products.value;
 
-  Object.entries(filterStore.state.applied).forEach(([column, filterValue]) => {
+  Object.entries(applied.value).forEach(([column, filterValue]) => {
     if (!filterValue) return;
 
     result = result.filter((product) => {
@@ -71,34 +107,46 @@ const filteredProducts = computed(() => {
   return result;
 });
 
-// Filter-cell wiring: each control shows the column's draft, edits update the draft, commits apply it
+// Filter-cell wiring: each control shows the column's draft (or applied value), edits update the draft, commits apply it
 const setDraft = (column: string, value: FilterValue) => {
   filterStore.setDraft(column, value);
 };
 
+// Applying a filter returns to the first page
 const applyFilter = (column: string) => {
-  filterStore.apply(column);
+  const value = shown.value[column];
+  // A commit that changes nothing (e.g. blur without an edit) is a no-op, like a native change event
+  if (filterValuesEqual(value, applied.value[column])) return;
+  showList({ ...query.value, page: 0, filters: { ...applied.value, [column]: value } });
 };
 
 // Multi-selects apply on every toggle
 const setDraftAndApply = (column: string, value: string[]) => {
   filterStore.setDraft(column, value);
-  filterStore.apply(column);
+  applyFilter(column);
 };
 
 const totalPages = computed(() => Math.ceil(total.value / pageSize.value));
 
 const resetFilters = () => {
   filterStore.clear();
+  showList({ ...query.value, page: 0, filters: {} });
 };
 
 const handlePageChange = (newPage: number) => {
-  page.value = newPage;
+  showList({ ...query.value, page: newPage });
 };
 
+// A new page size starts again from the first page
 const handlePageSizeChange = (newSize: number) => {
-  pageSize.value = newSize;
-  page.value = 0;
+  showList({ ...query.value, page: 0, pageSize: newSize });
+};
+
+const setExpanded = (code: string, expanded: boolean) => {
+  const others = expandedCodes.value.filter((c) => c !== code);
+  const codes = expanded ? [...others, code] : others;
+  expandedCodes.value = codes;
+  rememberExpanded(search.value, codes);
 };
 
 // Static per-column lookups (column config never changes): plain property reads in the template, no calls per render
@@ -133,7 +181,6 @@ const findColumn = (column: string) => getColumnConfig(column as keyof MockProdu
         :page-size="pageSize"
         :page-sizes="pageSizes"
         show-filter-row
-        track-by="code"
         @page-change="handlePageChange"
         @page-size-change="handlePageSizeChange"
       >
@@ -144,7 +191,7 @@ const findColumn = (column: string) => getColumnConfig(column as keyof MockProdu
         <template #filter="{ column }">
           <RangeSlider
             v-if="columnTypes[column] === 'progress-bar'"
-            :model-value="filterStore.getDraft<RangeValue>(column, {})"
+            :model-value="shownValue<RangeValue>(column, {})"
             :min="0"
             :max="100"
             @update:model-value="setDraft(column, $event)"
@@ -152,38 +199,43 @@ const findColumn = (column: string) => getColumnConfig(column as keyof MockProdu
           />
           <MultiSelect
             v-else-if="columnTypes[column] === 'grade-badge'"
-            :model-value="filterStore.getDraft<string[]>(column, [])"
+            :model-value="shownValue<string[]>(column, [])"
             :options="['A', 'B', 'C', 'D', 'F']"
             @update:model-value="setDraftAndApply(column, $event)"
           />
           <MultiSelect
             v-else-if="columnTypes[column] === 'nova-dots'"
-            :model-value="filterStore.getDraft<string[]>(column, [])"
+            :model-value="shownValue<string[]>(column, [])"
             :options="['1', '2', '3', '4']"
             @update:model-value="setDraftAndApply(column, $event)"
           />
           <RangeSlider
             v-else-if="columnTypes[column] === 'large-counter'"
-            :model-value="filterStore.getDraft<RangeValue>(column, {})"
+            :model-value="shownValue<RangeValue>(column, {})"
             @update:model-value="setDraft(column, $event)"
             @commit="applyFilter(column)"
           />
           <MultiSelect
             v-else-if="columnTypes[column] === 'boolean-yesno'"
-            :model-value="filterStore.getDraft<string[]>(column, [])"
+            :model-value="shownValue<string[]>(column, [])"
             :options="['Yes', 'No']"
             @update:model-value="setDraftAndApply(column, $event)"
           />
           <TextSearch
             v-else-if="columnTypes[column] !== 'product-image'"
-            :model-value="filterStore.getDraft<string>(column, '')"
+            :model-value="shownValue<string>(column, '')"
             @update:model-value="setDraft(column, $event)"
             @commit="applyFilter(column)"
           />
         </template>
 
         <template #cell="{ column, row }">
-          <CellRenderer :column="findColumn(column)" :row="row" />
+          <CellRenderer
+            :column="findColumn(column)"
+            :row="row"
+            :expanded="expandedCodes.includes(row.code)"
+            @update:expanded="setExpanded(row.code, $event)"
+          />
         </template>
       </DataTable>
     </div>

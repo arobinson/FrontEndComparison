@@ -1,7 +1,16 @@
-import { createSignal, createMemo, useTransition, Match, Show, Suspense, Switch } from 'solid-js';
-import { createAsync } from '@solidjs/router';
-import type { MockProductViewModel } from 'shared-types';
-import { allColumns, getColumnConfig, getColumnDataType } from 'shared-types';
+import { createSignal, createMemo, Match, Show, Suspense, Switch } from 'solid-js';
+import { createAsync, useIsRouting, useLocation, useNavigate } from '@solidjs/router';
+import type { ListQuery, MockProductViewModel } from 'shared-types';
+import {
+  allColumns,
+  filterValuesEqual,
+  getColumnConfig,
+  getColumnDataType,
+  listQuerySearch,
+  parseListQuery,
+  rememberedExpanded,
+  rememberExpanded,
+} from 'shared-types';
 import { productService, type ProductsResponse } from '../services/productService';
 import CellRenderer from '../components/table/CellRenderer';
 import { Button, DataTable, TextSearch, RangeSlider, MultiSelect } from '../components/controls';
@@ -61,16 +70,55 @@ const NO_RANGE: RangeFilter = {};
 const NO_SELECTION: string[] = [];
 
 export default function ProductList() {
-  const [currentPage, setCurrentPage] = createSignal(0);
-  const [pageSize, setPageSize] = createSignal(50);
-  const [pending, startTransition] = useTransition();
+  const location = useLocation();
+  const navigate = useNavigate();
+  // Paging and filtering are router navigations, which run in a transition (see productsData)
+  const isRouting = useIsRouting();
 
-  // Applying or clearing a filter also returns to the first page
-  const filterStore = createFilterStore(() => startTransition(() => setCurrentPage(0)));
+  // Page, page size and applied filters live in the URL, so a reload, Back from a
+  // product, or a shared link shows the same list.
+  const query = createMemo(() => parseListQuery(location.search));
+  const search = createMemo(() => listQuerySearch(query()));
+  // Memos, so a filter change (same page and size) does not refetch the page
+  const currentPage = createMemo(() => query().page);
+  const pageSize = createMemo(() => query().pageSize);
+  const applied = () => query().filters;
 
-  // Refetches whenever the page or page size changes. No query()/preload: every page change
-  // is exactly one products request. Page changes run in a transition, so the <Suspense> below
-  // keeps the current rows on screen while `pending()` shows the overlay.
+  // Page-scoped filter drafts; the filter controls are wired to them below
+  const filterStore = createFilterStore();
+
+  // Products whose description is expanded on this list view. Still open after a
+  // visit to a product; a new page or filter starts with none (see showList).
+  const [expandedCodes, setExpandedCodes] = createSignal<readonly string[]>(rememberedExpanded(search()));
+
+  // Shows another list view. Replaces the history entry, so paging and filtering
+  // don't stack up Back steps, and Back from a product returns here.
+  function showList(next: ListQuery) {
+    const nextSearch = listQuerySearch(next);
+    if (nextSearch === search()) return;
+    // A list view starts with nothing expanded
+    setExpandedCodes([]);
+    rememberExpanded(nextSearch, []);
+    navigate(`/list${nextSearch}`, { replace: true, scroll: false });
+  }
+
+  // Applying a filter returns to the first page
+  function applyFilter(column: string, value: FilterValue | undefined) {
+    // A commit that changes nothing (e.g. blur without an edit) is a no-op, like a native change event
+    if (filterValuesEqual(value, applied()[column])) return;
+    showList({ ...query(), page: 0, filters: { ...applied(), [column]: value } });
+  }
+
+  function setExpanded(code: string, expanded: boolean) {
+    const others = expandedCodes().filter((c) => c !== code);
+    const codes = expanded ? [...others, code] : others;
+    setExpandedCodes(codes);
+    rememberExpanded(search(), codes);
+  }
+
+  // Refetches whenever the URL's page or page size changes. No query()/preload: every page change
+  // is exactly one products request. Page changes are router navigations, which run in a
+  // transition, so the <Suspense> below keeps the current rows on screen while `isRouting()` shows the overlay.
   // A failed request is returned as a value, so the memos below never throw.
   const productsData = createAsync((): Promise<ProductsPage> =>
     productService
@@ -80,7 +128,7 @@ export default function ProductList() {
 
   const products = () => productsData()?.products ?? [];
   const totalPages = createMemo(() => Math.ceil((productsData()?.total ?? 0) / pageSize()));
-  const filteredProducts = createMemo(() => applyFilters(products(), filterStore.state.applied));
+  const filteredProducts = createMemo(() => applyFilters(products(), applied()));
 
   const columnKeys = allColumns.map((col) => col.key);
 
@@ -94,17 +142,16 @@ export default function ProductList() {
 
   function resetFilters() {
     filterStore.clear();
+    showList({ ...query(), page: 0, filters: {} });
   }
 
   function handlePageChange(newPage: number) {
-    startTransition(() => setCurrentPage(newPage));
+    showList({ ...query(), page: newPage });
   }
 
+  // A new page size starts again from the first page
   function handlePageSizeChange(newSize: number) {
-    startTransition(() => {
-      setPageSize(newSize);
-      setCurrentPage(0);
-    });
+    showList({ ...query(), page: 0, pageSize: newSize });
   }
 
   function renderHeader(column: string) {
@@ -112,15 +159,16 @@ export default function ProductList() {
   }
 
   // The filter controls are generic and controlled: the page feeds each one its column's draft
-  // and writes their changes back to the store (draft on every change, apply on commit).
-  const draftOf = <T extends FilterValue>(column: string) => filterStore.state.draft[column] as T | undefined;
+  // (or applied value) and writes their changes back (draft on every change, apply on commit).
+  const draftOf = <T extends FilterValue>(column: string) =>
+    (filterStore.state.draft[column] ?? applied()[column]) as T | undefined;
 
   function renderTextSearch(column: string) {
     return (
       <TextSearch
         value={draftOf<string>(column) ?? ''}
         onValueChange={(v) => filterStore.setDraft(column, v)}
-        onCommit={() => filterStore.apply(column)}
+        onCommit={() => applyFilter(column, draftOf(column))}
       />
     );
   }
@@ -132,7 +180,7 @@ export default function ProductList() {
         min={min}
         max={max}
         onValueChange={(v) => filterStore.setDraft(column, v)}
-        onCommit={() => filterStore.apply(column)}
+        onCommit={() => applyFilter(column, draftOf(column))}
       />
     );
   }
@@ -145,7 +193,7 @@ export default function ProductList() {
         value={draftOf<string[]>(column) ?? NO_SELECTION}
         onValueChange={(v) => {
           filterStore.setDraft(column, v);
-          filterStore.apply(column);
+          applyFilter(column, v);
         }}
       />
     );
@@ -173,7 +221,17 @@ export default function ProductList() {
   function renderCell(value: any, column: string, row: Record<string, any>) {
     const dataType = getColumnDataType(column as keyof MockProductViewModel);
     const unit = getColumnUnit(column);
-    return <CellRenderer value={value} dataType={dataType} column={column} row={row} unit={unit} />;
+    return (
+      <CellRenderer
+        value={value}
+        dataType={dataType}
+        column={column}
+        row={row}
+        unit={unit}
+        expanded={expandedCodes().includes(row.code)}
+        onExpandedChange={(expanded) => setExpanded(row.code, expanded)}
+      />
+    );
   }
 
   return (
@@ -196,7 +254,7 @@ export default function ProductList() {
             <Match when={products().length > 0}>
               <div class="table-area">
                 {/* Page change in progress: the previous rows stay mounted (transition) under this overlay */}
-                <Show when={pending()}>
+                <Show when={isRouting()}>
                   <div class="loading-overlay">
                     <div class="loading-indicator">Loading...</div>
                   </div>
@@ -209,7 +267,6 @@ export default function ProductList() {
                   pageSize={pageSize()}
                   pageSizes={[10, 25, 50]}
                   showFilterRow
-                  trackBy="code"
                   onPageChange={handlePageChange}
                   onPageSizeChange={handlePageSizeChange}
                   renderHeader={renderHeader}

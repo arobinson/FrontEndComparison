@@ -1,4 +1,6 @@
 import { useState, useMemo, useCallback } from 'preact/hooks';
+import { useLocation, useRoute } from 'preact-iso';
+import { toPath } from '../config/routes';
 import { useProducts } from '../hooks/useProducts';
 import { allColumns, getColumnConfig } from '../config/columnConfig';
 import {
@@ -10,12 +12,20 @@ import {
   type RangeValue,
 } from '../components/controls';
 import {
-  useFiltersReducer,
+  useDraftsReducer,
   type FilterActions,
 } from '../components/filters/filterStore';
 import { CellRenderer } from '../components/table/CellRenderer';
 import './ProductList.css';
-import { filterValuesEqual, type MockProductViewModel } from 'shared-types';
+import {
+  filterValuesEqual,
+  listQuerySearch,
+  parseListQuery,
+  rememberedExpanded,
+  rememberExpanded,
+  type ListQuery,
+  type MockProductViewModel,
+} from 'shared-types';
 
 // Static table config, hoisted so DataTable's memo is not defeated by fresh
 // arrays on every render.
@@ -29,11 +39,21 @@ const NO_RANGE: RangeValue = {};
 const NO_SELECTION: string[] = [];
 
 const ProductList = () => {
-  const [page, setPage] = useState(0);
-  const [pageSize, setPageSize] = useState(50);
-  const [filterState, dispatch] = useFiltersReducer();
-  const filters = filterState.applied;
-  const drafts = filterState.drafts;
+  const { route } = useLocation();
+  // The list route's own query: while the next page's code loads, preact-iso keeps rendering
+  // this route, and useLocation() already reports the new URL
+  const { query: params } = useRoute();
+  // Page, page size and applied filters live in the URL, so a reload, Back from a
+  // product, or a shared link shows the same list.
+  const query = useMemo(() => parseListQuery(new URLSearchParams(params)), [params]);
+  const search = listQuerySearch(query);
+  const { page, pageSize, filters } = query;
+  const [drafts, dispatchDraft] = useDraftsReducer();
+  // What each control shows: its draft while being edited, otherwise the applied value
+  const shown = useMemo(() => ({ ...filters, ...drafts }), [filters, drafts]);
+  // Products whose description is expanded on this list view. Still open after a
+  // visit to a product; a new page or filter starts with none (see showList).
+  const [expandedCodes, setExpandedCodes] = useState(() => rememberedExpanded(search));
 
   const { products, total, loading, error } = useProducts({
     category: 'all',
@@ -89,28 +109,46 @@ const ProductList = () => {
     return result;
   }, [products, filters]);
 
-  // Store actions. Committing (apply) or clearing filters also returns to the
-  // first page.
+  // Shows another list view. Replaces the history entry, so paging and filtering
+  // don't stack up Back steps, and Back from a product returns here.
+  const showList = useCallback((next: ListQuery) => {
+    const nextSearch = listQuerySearch(next);
+    if (nextSearch === search) {
+      return;
+    }
+    // A list view starts with nothing expanded
+    setExpandedCodes([]);
+    rememberExpanded(nextSearch, []);
+    route(toPath(`/list${nextSearch}`), true);
+  }, [search, route]);
+
+  // Store actions. Applying a filter returns to the first page; Reset also clears the drafts.
   const filterActions = useMemo<FilterActions>(() => ({
-    setDraft: (column, value) => dispatch({ type: 'setDraft', column, value }),
-    apply: (column) => {
-      dispatch({ type: 'apply', column });
-      setPage(0);
+    setDraft: (column, value) => dispatchDraft({ type: 'setDraft', column, value }),
+    apply: (column, value) => {
+      showList({ ...query, page: 0, filters: { ...filters, [column]: value } });
     },
     clear: () => {
-      dispatch({ type: 'clear' });
-      setPage(0);
+      dispatchDraft({ type: 'clear' });
+      showList({ ...query, page: 0, filters: {} });
     },
-  }), [dispatch]);
+  }), [dispatchDraft, showList, query, filters]);
 
   const handlePageChange = useCallback((newPage: number) => {
-    setPage(newPage);
-  }, []);
+    showList({ ...query, page: newPage });
+  }, [showList, query]);
 
+  // A new page size starts again from the first page
   const handlePageSizeChange = useCallback((newSize: number) => {
-    setPageSize(newSize);
-    setPage(0);
-  }, []);
+    showList({ ...query, page: 0, pageSize: newSize });
+  }, [showList, query]);
+
+  const setExpanded = useCallback((code: string, expanded: boolean) => {
+    const others = expandedCodes.filter((c) => c !== code);
+    const codes = expanded ? [...others, code] : others;
+    setExpandedCodes(codes);
+    rememberExpanded(search, codes);
+  }, [expandedCodes, search]);
 
   const totalPages = Math.ceil(total / pageSize);
 
@@ -126,23 +164,23 @@ const ProductList = () => {
     return <strong>{getColumnTitle(column)}</strong>;
   }, []);
 
-  // Each control shows its column's draft; edits update the draft, and a commit
-  // (blur/Enter, or every MultiSelect toggle) applies it.
+  // Each control shows its column's draft (or applied value); edits update the
+  // draft, and a commit (blur/Enter, or every MultiSelect toggle) applies it.
   const renderFilterCell = useCallback((column: string) => {
     const dataType = getColumnDataType(column);
-    const draft = drafts[column];
+    const draft = shown[column];
     const { setDraft, apply } = filterActions;
     const setColumnDraft = (value: string | RangeValue) => setDraft(column, value);
     const applyColumn = () => {
       // A commit that changes nothing (e.g. blur without an edit) is a no-op, like a native change event
       if (!filterValuesEqual(draft, filters[column])) {
-        apply(column);
+        apply(column, draft);
       }
     };
     // A toggle always changes the selection
     const selectAndApply = (value: string[]) => {
       setDraft(column, value);
-      apply(column);
+      apply(column, value);
     };
 
     switch (dataType) {
@@ -199,13 +237,20 @@ const ProductList = () => {
           />
         );
     }
-  }, [drafts, filters, filterActions]);
+  }, [shown, filters, filterActions]);
 
   const renderCell = useCallback((value: any, column: string, row: Record<string, any>) => {
     const columnConfig = getColumnConfig(column as keyof MockProductViewModel);
     if (!columnConfig) return value ?? '';
-    return <CellRenderer column={columnConfig} row={row} />;
-  }, []);
+    return (
+      <CellRenderer
+        column={columnConfig}
+        row={row}
+        expanded={expandedCodes.includes(row.code)}
+        onExpandedChange={(expanded) => setExpanded(row.code, expanded)}
+      />
+    );
+  }, [expandedCodes, setExpanded]);
 
   let content;
   if (error) {
@@ -226,7 +271,6 @@ const ProductList = () => {
           pageSize={pageSize}
           pageSizes={pageSizes}
           showFilterRow
-          trackBy="code"
           onPageChange={handlePageChange}
           onPageSizeChange={handlePageSizeChange}
           renderHeader={renderHeader}

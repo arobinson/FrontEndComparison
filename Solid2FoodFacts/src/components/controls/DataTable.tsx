@@ -12,8 +12,6 @@ interface DataTableProps {
   pageSizes?: number[];
   showFilterRow?: boolean;
   emptyText?: string;
-  /** Row property that uniquely identifies a row */
-  trackBy: string;
   onPageChange: (page: number) => void;
   onPageSizeChange: (pageSize: number) => void;
   renderHeader?: (column: string) => JSX.Element;
@@ -90,9 +88,10 @@ export default function DataTable(props: DataTableProps) {
             </thead>
 
             <tbody class="table-body">
-              <For each={props.value} keyed={(row) => row[props.trackBy]}>
+              {/* Rows are reused by position, not keyed: a page change replaces every record, so updating the existing rows is cheaper than unmounting and remounting all of them. */}
+              <For each={props.value} keyed={false}>
                 {(row) => (
-                  <tr class="data-row" data-key={row()[props.trackBy]}>
+                  <tr class="data-row">
                     <For each={props.columns}>
                       {(column) => (
                         <td class="data-cell">

@@ -19,9 +19,12 @@ import {
 interface CellRendererProps {
   column: ColumnConfig;
   row: Record<string, any>;
+  /** Whether a truncated-text cell shows its full text (owned by the page) */
+  expanded: boolean;
+  onExpandedChange: (expanded: boolean) => void;
 }
 
-export function CellRenderer({ column, row }: CellRendererProps) {
+export function CellRenderer({ column, row, expanded, onExpandedChange }: CellRendererProps) {
   const value = row[column.key];
 
   let cell;
@@ -30,7 +33,7 @@ export function CellRenderer({ column, row }: CellRendererProps) {
   } else if (column.type === 'simple-text') {
     cell = value ?? '';
   } else if (column.type === 'truncated-text') {
-    cell = <TruncatedText value={value} />;
+    cell = <TruncatedText value={value} expanded={expanded} onExpandedChange={onExpandedChange} />;
   } else if (column.type === 'progress-bar') {
     cell = <ProgressBar value={value ?? 0} />;
   } else if (column.type === 'grade-badge') {

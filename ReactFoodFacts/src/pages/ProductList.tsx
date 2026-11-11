@@ -1,16 +1,20 @@
 import { useState, useReducer } from 'react';
+import { useNavigate, useSearchParams } from 'react-router';
 import { useProducts } from '../hooks/useProducts';
 import { allColumns, getColumnConfig } from '../config/columnConfig';
 import { Button, DataTable, TextSearch, RangeSlider, MultiSelect, type RangeValue } from '../components/controls';
-import {
-  filterReducer,
-  initialFilterState,
-  type FilterAction,
-  type FilterValue,
-} from '../components/filters/filterStore';
+import { draftsReducer, type FilterValue } from '../components/filters/filterStore';
 import { CellRenderer } from '../components/table/CellRenderer';
 import './ProductList.css';
-import { filterValuesEqual, type MockProductViewModel } from 'shared-types';
+import {
+  filterValuesEqual,
+  listQuerySearch,
+  parseListQuery,
+  rememberedExpanded,
+  rememberExpanded,
+  type ListQuery,
+  type MockProductViewModel,
+} from 'shared-types';
 
 const GRADE_OPTIONS = ['A', 'B', 'C', 'D', 'F'];
 const NOVA_OPTIONS = ['1', '2', '3', '4'];
@@ -19,7 +23,7 @@ const YES_NO_OPTIONS = ['Yes', 'No'];
 const NO_RANGE: RangeValue = {};
 const NO_SELECTION: string[] = [];
 
-function filterProducts(products: MockProductViewModel[], filters: Record<string, FilterValue>) {
+function filterProducts(products: MockProductViewModel[], filters: Record<string, FilterValue | undefined>) {
   let result = products;
 
   Object.entries(filters).forEach(([column, filterValue]) => {
@@ -68,13 +72,21 @@ function filterProducts(products: MockProductViewModel[], filters: Record<string
 }
 
 const ProductList = () => {
-  const [page, setPage] = useState(0);
-  const [pageSize, setPageSize] = useState(50);
-  // Page-scoped filter store (lives and dies with this page); the filter
-  // controls are wired to it in renderFilterCell.
-  const [filterState, dispatchFilter] = useReducer(filterReducer, initialFilterState);
-  const filters = filterState.applied;
-  const drafts = filterState.drafts;
+  const navigate = useNavigate();
+  // Page, page size and applied filters live in the URL, so a reload, Back from a
+  // product, or a shared link shows the same list.
+  const [searchParams] = useSearchParams();
+  const query = parseListQuery(searchParams);
+  const search = listQuerySearch(query);
+  const { page, pageSize, filters } = query;
+  // Page-scoped filter drafts (live and die with this page); the filter controls
+  // are wired to them in renderFilterCell.
+  const [drafts, dispatchDraft] = useReducer(draftsReducer, {});
+  // What each control shows: its draft while being edited, otherwise the applied value
+  const shown = { ...filters, ...drafts };
+  // Products whose description is expanded on this list view. Still open after a
+  // visit to a product; a new page or filter starts with none (see showList).
+  const [expandedCodes, setExpandedCodes] = useState(() => rememberedExpanded(search));
 
   const { products, total, loading, error } = useProducts({
     category: 'all',
@@ -84,25 +96,43 @@ const ProductList = () => {
 
   const filteredProducts = filterProducts(products, filters);
 
-  // Applying (or clearing) a filter also returns to the first page, in the same event.
-  const dispatch = (action: FilterAction) => {
-    dispatchFilter(action);
-    if (action.type !== 'setDraft') {
-      setPage(0);
+  // Shows another list view. Replaces the history entry, so paging and filtering
+  // don't stack up Back steps, and Back from a product returns here.
+  const showList = (next: ListQuery) => {
+    const nextSearch = listQuerySearch(next);
+    if (nextSearch === search) {
+      return;
     }
+    // A list view starts with nothing expanded
+    setExpandedCodes([]);
+    rememberExpanded(nextSearch, []);
+    navigate(`/list${nextSearch}`, { replace: true });
+  };
+
+  // Applying a filter returns to the first page
+  const applyFilter = (column: string, value: FilterValue | undefined) => {
+    showList({ ...query, page: 0, filters: { ...filters, [column]: value } });
   };
 
   const resetFilters = () => {
-    dispatch({ type: 'clear' });
+    dispatchDraft({ type: 'clear' });
+    showList({ ...query, page: 0, filters: {} });
   };
 
   const handlePageChange = (newPage: number) => {
-    setPage(newPage);
+    showList({ ...query, page: newPage });
   };
 
+  // A new page size starts again from the first page
   const handlePageSizeChange = (newSize: number) => {
-    setPageSize(newSize);
-    setPage(0);
+    showList({ ...query, page: 0, pageSize: newSize });
+  };
+
+  const setExpanded = (code: string, expanded: boolean) => {
+    const others = expandedCodes.filter((c) => c !== code);
+    const codes = expanded ? [...others, code] : others;
+    setExpandedCodes(codes);
+    rememberExpanded(search, codes);
   };
 
   const totalPages = Math.ceil(total / pageSize);
@@ -120,22 +150,22 @@ const ProductList = () => {
     return <strong>{getColumnTitle(column)}</strong>;
   };
 
-  // Each control shows its column's draft; edits update the draft, and a commit
-  // (blur/Enter, or every MultiSelect toggle) applies it.
+  // Each control shows its column's draft (or applied value); edits update the
+  // draft, and a commit (blur/Enter, or every MultiSelect toggle) applies it.
   const renderFilterCell = (column: string) => {
     const dataType = getColumnDataType(column);
-    const draft = drafts[column];
-    const setDraft = (value: FilterValue) => dispatch({ type: 'setDraft', column, value });
+    const draft = shown[column];
+    const setDraft = (value: FilterValue) => dispatchDraft({ type: 'setDraft', column, value });
     const applyIfChanged = () => {
       // A commit that changes nothing (e.g. blur without an edit) is a no-op, like a native change event
       if (!filterValuesEqual(draft, filters[column])) {
-        dispatch({ type: 'apply', column });
+        applyFilter(column, draft);
       }
     };
     // A toggle always changes the selection
     const setDraftAndApply = (value: string[]) => {
       setDraft(value);
-      dispatch({ type: 'apply', column });
+      applyFilter(column, value);
     };
 
     switch (dataType) {
@@ -197,7 +227,14 @@ const ProductList = () => {
   const renderCell = (value: any, column: string, row: Record<string, any>) => {
     const columnConfig = getColumnConfig(column as keyof MockProductViewModel);
     if (!columnConfig) return value ?? '';
-    return <CellRenderer column={columnConfig} row={row} />;
+    return (
+      <CellRenderer
+        column={columnConfig}
+        row={row}
+        expanded={expandedCodes.includes(row.code)}
+        onExpandedChange={(expanded) => setExpanded(row.code, expanded)}
+      />
+    );
   };
 
   let content;
@@ -219,7 +256,6 @@ const ProductList = () => {
           pageSize={pageSize}
           pageSizes={[10, 25, 50]}
           showFilterRow
-          trackBy="code"
           onPageChange={handlePageChange}
           onPageSizeChange={handlePageSizeChange}
           renderHeader={renderHeader}

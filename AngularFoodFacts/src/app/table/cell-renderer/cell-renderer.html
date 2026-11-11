@@ -7,7 +7,7 @@
     {{ cellValue ?? "" }}
   }
   @case ("truncated-text") {
-    <aff-truncated-text [value]="cellValue" />
+    <aff-truncated-text [value]="cellValue" [(expanded)]="expanded" />
   }
   @case ("progress-bar") {
     <aff-progress-bar [value]="cellValue" />

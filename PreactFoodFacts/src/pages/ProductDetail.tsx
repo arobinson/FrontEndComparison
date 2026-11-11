@@ -1,5 +1,6 @@
-import { useMemo, useCallback } from 'preact/hooks';
+import { useMemo, useCallback, useState } from 'preact/hooks';
 import { useLocation, useRoute } from 'preact-iso';
+import { traverseBackToList } from 'shared-types';
 import { toPath } from '../config/routes';
 import { useProduct } from '../hooks/useProduct';
 import {
@@ -25,8 +26,18 @@ const ProductDetail = () => {
   const { route: navigate } = useLocation();
   const { product, loading, error, adjacent } = useProduct(code ?? '');
 
+  // Each product's description opens collapsed, including after Previous/Next
+  const [expandedCode, setExpandedCode] = useState<string | null>(null);
+  const descriptionExpanded = expandedCode === code;
+  const setDescriptionExpanded = useCallback((expanded: boolean) => {
+    setExpandedCode(expanded ? (code ?? null) : null);
+  }, [code]);
+
+  // Back to the list as it was left (page and filters are in its URL); a fresh list if it is not in history
   const navigateToList = useCallback(() => {
-    navigate(toPath('/list'));
+    if (!traverseBackToList()) {
+      navigate(toPath('/list'));
+    }
   }, [navigate]);
 
   const navigateToPrevious = useCallback(() => {
@@ -120,7 +131,11 @@ const ProductDetail = () => {
                 <>
                   <dt>Description</dt>
                   <dd>
-                    <TruncatedText value={product.description} />
+                    <TruncatedText
+                      value={product.description}
+                      expanded={descriptionExpanded}
+                      onExpandedChange={setDescriptionExpanded}
+                    />
                   </dd>
                 </>
               )}

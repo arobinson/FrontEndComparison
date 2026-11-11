@@ -1,7 +1,7 @@
 import { LitElement, html, css } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { customElement, property, state } from 'lit/decorators.js';
 import { Task, TaskStatus, initialState } from '@lit/task';
-import type { MockProductViewModel } from 'shared-types';
+import { traverseBackToList, type MockProductViewModel } from 'shared-types';
 import { productService, type AdjacentProducts } from '../services/productService.js';
 import '../components/display/index.js';
 import '../components/controls/index.js';
@@ -294,8 +294,14 @@ export class ProductDetail extends LitElement {
     return this.adjacent ? `${this.adjacent.currentIndex} of ${this.adjacent.total}` : '';
   }
 
+  // Each product's description opens collapsed, including after Previous/Next
+  @state() private expandedCode: string | null = null;
+
+  // Back to the list as it was left (page and filters are in its URL); a fresh list if it is not in history
   private navigateToList() {
-    this.dispatchEvent(new CustomEvent('navigate', { detail: '/list' }));
+    if (!traverseBackToList()) {
+      this.dispatchEvent(new CustomEvent('navigate', { detail: '/list' }));
+    }
   }
 
   private navigateToPrevious() {
@@ -381,7 +387,11 @@ export class ProductDetail extends LitElement {
 
                   ${this.displayProduct.description ? html`
                     <dt>Description</dt>
-                    <dd><truncated-text .value=${this.displayProduct.description}></truncated-text></dd>
+                    <dd><truncated-text
+                      .value=${this.displayProduct.description}
+                      .expanded=${this.expandedCode === this.code}
+                      @expanded-change=${(e: CustomEvent<boolean>) => (this.expandedCode = e.detail ? this.code : null)}
+                    ></truncated-text></dd>
                   ` : ''}
 
                   ${this.displayProduct.sku ? html`

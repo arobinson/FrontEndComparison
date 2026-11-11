@@ -1,8 +1,17 @@
 import { LitElement, html, css, TemplateResult } from 'lit';
-import { customElement, state } from 'lit/decorators.js';
+import { customElement, property, state } from 'lit/decorators.js';
 import { Task, TaskStatus } from '@lit/task';
-import type { MockProductViewModel } from 'shared-types';
-import { allColumns, getColumnConfig, getColumnDataType } from 'shared-types';
+import type { ListQuery, MockProductViewModel } from 'shared-types';
+import {
+  allColumns,
+  filterValuesEqual,
+  getColumnConfig,
+  getColumnDataType,
+  listQuerySearch,
+  parseListQuery,
+  rememberedExpanded,
+  rememberExpanded,
+} from 'shared-types';
 import { productService, type ProductsResponse } from '../services/productService.js';
 import { FilterStore, FilterStoreController, type FilterValue } from '../components/filters/filter-store.js';
 import type { RangeValue } from '../components/controls/range-slider.js';
@@ -82,14 +91,34 @@ export class ProductList extends LitElement {
     }
   `;
 
-  @state() private currentPage = 0;
-  @state() private pageSize = 50;
+  /**
+   * The URL query string. Page, page size and applied filters live in the URL, so a
+   * reload, Back from a product, or a shared link shows the same list.
+   */
+  @property({ attribute: false }) search = '';
 
-  // Page-scoped filter store: owned by this page, which wires it to the (store-agnostic)
-  // filter controls in renderFilterCell. Any apply/clear returns to the first page (in the same event), as in the other apps.
-  private filters = new FilterStore(() => {
-    this.currentPage = 0;
-  });
+  // Derived from `search` in willUpdate
+  private query: ListQuery = parseListQuery('');
+
+  private get currentPage(): number {
+    return this.query.page;
+  }
+
+  private get pageSize(): number {
+    return this.query.pageSize;
+  }
+
+  private get applied() {
+    return this.query.filters;
+  }
+
+  // Page-scoped filter drafts: owned by this page, which wires them to the (store-agnostic)
+  // filter controls in renderFilterCell.
+  private filters = new FilterStore();
+
+  // Products whose description is expanded on this list view. Still open after a
+  // visit to a product; a new page or filter starts with none (see showList).
+  @state() private expandedCodes: readonly string[] = [];
 
   // One products request per page / page-size change. The signal is deliberately not
   // passed to fetch, so a superseded request still completes (same network trace as before).
@@ -110,11 +139,15 @@ export class ProductList extends LitElement {
   private displayBase?: MockProductViewModel[];
   private displayFilters?: Readonly<Record<string, FilterValue | undefined>>;
 
-  // <data-table> renders the filter row only when one of its properties changes, so the
-  // filter renderer gets a new identity whenever the drafts change (memoized in willUpdate);
-  // that is how a draft reaches its control's `value`.
+  // <data-table> renders the filter row and the cells only when one of its properties changes,
+  // so the filter renderer gets a new identity whenever what the controls show changes, and the
+  // cell renderer whenever the expanded products change (memoized in willUpdate).
   private renderFilter = (column: string) => this.renderFilterCell(column);
   private renderFilterDrafts?: Readonly<Record<string, FilterValue | undefined>>;
+  private renderFilterQuery?: ListQuery;
+  private renderCell = (value: unknown, column: string, row: Record<string, unknown>) =>
+    this.renderCellFor(value, column, row);
+  private renderCellExpanded?: readonly string[];
 
   private columnKeys = allColumns.map((col) => col.key);
 
@@ -139,18 +172,30 @@ export class ProductList extends LitElement {
     return getColumnConfig(key as keyof MockProductViewModel)?.unit;
   }
 
-  willUpdate() {
+  willUpdate(changed: Map<PropertyKey, unknown>) {
+    if (changed.has('search')) {
+      this.query = parseListQuery(this.search);
+      if (!this.hasUpdated) {
+        // First render only: after that, the handlers below keep it current
+        this.expandedCodes = rememberedExpanded(this.search);
+      }
+    }
     const base = this.loaded?.products ?? [];
-    const applied = this.filters.applied;
+    const applied = this.applied;
     if (base !== this.displayBase || applied !== this.displayFilters) {
       this.displayBase = base;
       this.displayFilters = applied;
       this.displayProducts = this.applyFilters(base);
     }
     const drafts = this.filters.drafts;
-    if (drafts !== this.renderFilterDrafts) {
+    if (drafts !== this.renderFilterDrafts || this.query !== this.renderFilterQuery) {
       this.renderFilterDrafts = drafts;
+      this.renderFilterQuery = this.query;
       this.renderFilter = (column: string) => this.renderFilterCell(column);
+    }
+    if (this.expandedCodes !== this.renderCellExpanded) {
+      this.renderCellExpanded = this.expandedCodes;
+      this.renderCell = (value, column, row) => this.renderCellFor(value, column, row);
     }
   }
 
@@ -158,7 +203,7 @@ export class ProductList extends LitElement {
    * Apply client-side filters to the products
    */
   private applyFilters(products: MockProductViewModel[]): MockProductViewModel[] {
-    const activeFilters: Record<string, unknown> = this.filters.applied;
+    const activeFilters: Record<string, unknown> = this.applied;
     if (Object.keys(activeFilters).length === 0) {
       return products;
     }
@@ -211,33 +256,65 @@ export class ProductList extends LitElement {
     });
   }
 
+  // Shows another list view. The app replaces the history entry for the list's own
+  // navigations, so paging and filtering don't stack up Back steps, and Back from a
+  // product returns here.
+  private showList(next: ListQuery) {
+    const nextSearch = listQuerySearch(next);
+    if (nextSearch === listQuerySearch(this.query)) return;
+    // A list view starts with nothing expanded
+    this.expandedCodes = [];
+    rememberExpanded(nextSearch, []);
+    this.dispatchEvent(new CustomEvent('navigate', { detail: `/list${nextSearch}` }));
+  }
+
+  // Applying a filter returns to the first page
+  private applyFilter(column: string, value: FilterValue | undefined) {
+    // A commit that changes nothing (e.g. blur without an edit) is a no-op, like a native change event
+    if (filterValuesEqual(value, this.applied[column])) return;
+    this.showList({ ...this.query, page: 0, filters: { ...this.applied, [column]: value } });
+  }
+
   private resetFilters() {
     this.filters.clear();
+    this.showList({ ...this.query, page: 0, filters: {} });
   }
 
   private handlePageChange(e: CustomEvent<number>) {
-    this.currentPage = e.detail;
+    this.showList({ ...this.query, page: e.detail });
   }
 
+  // A new page size starts again from the first page
   private handlePageSizeChange(e: CustomEvent<number>) {
-    this.pageSize = e.detail;
-    this.currentPage = 0;
+    this.showList({ ...this.query, page: 0, pageSize: e.detail });
+  }
+
+  private setExpanded(code: string, expanded: boolean) {
+    const others = this.expandedCodes.filter((c) => c !== code);
+    const codes = expanded ? [...others, code] : others;
+    this.expandedCodes = codes;
+    rememberExpanded(listQuerySearch(this.query), codes);
+  }
+
+  // What a control shows: its draft while being edited, otherwise the applied value
+  private shown<T extends FilterValue>(column: string): T | undefined {
+    return (this.filters.drafts[column] ?? this.applied[column]) as T | undefined;
   }
 
   private renderHeader = (column: string): TemplateResult => {
     return html`<strong>${this.getColumnTitle(column)}</strong>`;
   };
 
-  // Wires each generic control to the store: value <- draft; value-change -> setDraft;
-  // commit -> apply. A multi-select applies on every toggle.
+  // Wires each generic control to the page: value <- draft (or applied value);
+  // value-change -> setDraft; commit -> apply. A multi-select applies on every toggle.
   private renderFilterCell(column: string): TemplateResult | null {
     const dataType = getColumnDataType(column as keyof MockProductViewModel);
     const filters = this.filters;
 
     if (dataType === 'progress-bar' || dataType === 'large-counter') {
-      const value = filters.getDraft<RangeValue>(column) ?? NO_RANGE;
+      const value = this.shown<RangeValue>(column) ?? NO_RANGE;
       const onValueChange = (e: CustomEvent<RangeValue>) => filters.setDraft(column, e.detail);
-      const onCommit = () => filters.apply(column);
+      const onCommit = () => this.applyFilter(column, this.shown(column));
       return dataType === 'progress-bar'
         ? html`
             <range-slider
@@ -265,10 +342,10 @@ export class ProductList extends LitElement {
       return html`
         <multi-select
           .options=${options}
-          .value=${filters.getDraft<string[]>(column) ?? NO_SELECTION}
+          .value=${this.shown<string[]>(column) ?? NO_SELECTION}
           @value-change=${(e: CustomEvent<string[]>) => {
             filters.setDraft(column, e.detail);
-            filters.apply(column);
+            this.applyFilter(column, e.detail);
           }}
         ></multi-select>
       `;
@@ -276,20 +353,27 @@ export class ProductList extends LitElement {
     if (dataType !== 'product-image') {
       return html`
         <text-search
-          .value=${filters.getDraft<string>(column) ?? ''}
+          .value=${this.shown<string>(column) ?? ''}
           @value-change=${(e: CustomEvent<string>) => filters.setDraft(column, e.detail)}
-          @commit=${() => filters.apply(column)}
+          @commit=${() => this.applyFilter(column, this.shown(column))}
         ></text-search>
       `;
     }
     return null;
   }
 
-  private renderCell = (value: unknown, column: string): TemplateResult => {
+  private renderCellFor(value: unknown, column: string, row: Record<string, unknown>): TemplateResult {
     const dataType = getColumnDataType(column as keyof MockProductViewModel);
     const unit = this.getColumnUnit(column);
-    return html`<cell-renderer .value=${value} .dataType=${dataType} .unit=${unit}></cell-renderer>`;
-  };
+    const code = String(row.code);
+    return html`<cell-renderer
+      .value=${value}
+      .dataType=${dataType}
+      .unit=${unit}
+      .expanded=${this.expandedCodes.includes(code)}
+      @expanded-change=${(e: CustomEvent<boolean>) => this.setExpanded(code, e.detail)}
+    ></cell-renderer>`;
+  }
 
   // Same branches as the other apps: error, else the table once a page has loaded (kept,
   // with an overlay, while the next page loads; filtered to zero rows it shows its empty
@@ -318,7 +402,6 @@ export class ProductList extends LitElement {
             .page=${this.currentPage}
             .pageSize=${this.pageSize}
             show-filter-row
-            track-by="code"
             .renderHeader=${this.renderHeader}
             .renderFilter=${this.renderFilter}
             .renderCell=${this.renderCell}

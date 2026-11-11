@@ -23,6 +23,9 @@ interface CellRendererProps {
   column: string;
   row: Record<string, any>;
   unit?: string;
+  /** Whether a truncated-text cell shows its full text (owned by the page) */
+  expanded: boolean;
+  onExpandedChange: (expanded: boolean) => void;
 }
 
 export default function CellRenderer(props: CellRendererProps) {
@@ -32,7 +35,7 @@ export default function CellRenderer(props: CellRendererProps) {
         <ProductLink code={String(props.row.code)} label={String(props.value ?? props.row.code)} />
       </Match>
       <Match when={props.dataType === 'truncated-text'}>
-        <TruncatedText value={props.value} />
+        <TruncatedText value={props.value} expanded={props.expanded} onExpandedChange={props.onExpandedChange} />
       </Match>
       <Match when={props.dataType === 'progress-bar'}>
         <ProgressBar value={props.value ?? 0} />

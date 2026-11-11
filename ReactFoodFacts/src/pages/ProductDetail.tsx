@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router';
+import { traverseBackToList } from 'shared-types';
 import { useProduct } from '../hooks/useProduct';
 import {
   ProgressBar,
@@ -23,8 +25,15 @@ const ProductDetail = () => {
   const navigate = useNavigate();
   const { product, loading, error, adjacent } = useProduct(code ?? '');
 
+  // Each product's description opens collapsed, including after Previous/Next
+  const [expandedCode, setExpandedCode] = useState<string | null>(null);
+  const descriptionExpanded = expandedCode === code;
+
+  // Back to the list as it was left (page and filters are in its URL); a fresh list if it is not in history
   const navigateToList = () => {
-    navigate('/list');
+    if (!traverseBackToList()) {
+      navigate('/list');
+    }
   };
 
   const navigateToPrevious = () => {
@@ -106,7 +115,11 @@ const ProductDetail = () => {
                 <>
                   <dt>Description</dt>
                   <dd>
-                    <TruncatedText value={product.description} />
+                    <TruncatedText
+                      value={product.description}
+                      expanded={descriptionExpanded}
+                      onExpandedChange={(expanded) => setExpandedCode(expanded ? (code ?? null) : null)}
+                    />
                   </dd>
                 </>
               )}

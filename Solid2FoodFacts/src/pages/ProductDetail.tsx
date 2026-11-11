@@ -1,6 +1,6 @@
-import { createMemo, isPending, Loading, Show } from 'solid-js';
+import { createMemo, createSignal, isPending, Loading, Show } from 'solid-js';
 import { useParams, useNavigate } from '@solidjs/router';
-import type { MockProductViewModel } from 'shared-types';
+import { traverseBackToList, type MockProductViewModel } from 'shared-types';
 import { productService, type AdjacentProducts } from '../services/productService';
 import { paths } from '../router';
 
@@ -78,8 +78,14 @@ export default function ProductDetail() {
   const releaseDateStr = createMemo(() => product()?.releaseDate ? toISOString(product()!.releaseDate) : '');
   const nextRestockDateStr = createMemo(() => product()?.nextRestockDate ? toISOString(product()!.nextRestockDate) : '');
 
+  // Each product's description opens collapsed, including after Previous/Next
+  const [expandedCode, setExpandedCode] = createSignal<string | null>(null);
+
+  // Back to the list as it was left (page and filters are in its URL); a fresh list if it is not in history
   function navigateToList() {
-    navigate(paths.list);
+    if (!traverseBackToList()) {
+      navigate(paths.list);
+    }
   }
 
   function navigateToPrevious() {
@@ -205,7 +211,11 @@ export default function ProductDetail() {
                   <Show when={product()!.description}>
                     <dt>Description</dt>
                     <dd>
-                      <TruncatedText value={product()!.description!} />
+                      <TruncatedText
+                      value={product()!.description!}
+                      expanded={expandedCode() === params.code}
+                      onExpandedChange={(expanded) => setExpandedCode(expanded ? params.code! : null)}
+                    />
                     </dd>
                   </Show>
 

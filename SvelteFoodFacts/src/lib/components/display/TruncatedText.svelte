@@ -1,22 +1,25 @@
 <script lang="ts">
   import Button from '#lib/components/controls/Button.svelte';
 
-  let { value, maxLength = 50 }: { value: string; maxLength?: number } = $props();
-
-  let isExpanded = $state(false);
+  // Controlled: the parent owns the expanded state and binds it with bind:expanded
+  let {
+    value,
+    maxLength = 50,
+    expanded = $bindable(false),
+  }: { value: string; maxLength?: number; expanded?: boolean } = $props();
 
   let shouldTruncate = $derived((value?.length ?? 0) > maxLength);
 
   let displayText = $derived.by(() => {
     const text = value || '';
-    if (shouldTruncate && !isExpanded) {
+    if (shouldTruncate && !expanded) {
       return text.substring(0, maxLength - 3) + '...';
     }
     return text;
   });
 
   function toggleExpanded() {
-    isExpanded = !isExpanded;
+    expanded = !expanded;
   }
 </script>
 
@@ -24,7 +27,7 @@
   <span class="text-content">{displayText}</span>
   {#if shouldTruncate}
     <Button variant="tertiary" size="sm" class="toggle-button" onclick={toggleExpanded}>
-      {isExpanded ? 'Show less' : 'Show more'}
+      {expanded ? 'Show less' : 'Show more'}
     </Button>
   {/if}
 </div>

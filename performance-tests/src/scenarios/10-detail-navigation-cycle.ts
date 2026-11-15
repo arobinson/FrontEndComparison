@@ -122,7 +122,8 @@ export const detailNavigationCycleScenario: TestScenario = {
           const btn = buttons[i] as HTMLElement;
           // Slotted labels (Lit lit-button) live on the host, not inside the shadow <button>
           const text = btn.textContent?.trim() || (btn.getRootNode() as any).host?.textContent || '';
-          if (text.includes('Next') || text.includes('→')) {
+          // Match the word only (an arrow alone could match another button, as "←" did Back to List)
+          if (text.includes('Next')) {
             if (!btn.hasAttribute('disabled')) {
               return btn;
             }
@@ -178,7 +179,8 @@ export const detailNavigationCycleScenario: TestScenario = {
           const btn = buttons[i] as HTMLElement;
           // Slotted labels (Lit lit-button) live on the host, not inside the shadow <button>
           const text = btn.textContent?.trim() || (btn.getRootNode() as any).host?.textContent || '';
-          if (text.includes('Previous') || text.includes('←')) {
+          // Match the word only: "← Back to List" also contains "←" and comes first in the page
+          if (text.includes('Previous')) {
             if (!btn.hasAttribute('disabled')) {
               return btn;
             }

@@ -1,0 +1,56 @@
+{
+  "Angular": {
+    "listPageGzKB": 90.6,
+    "listPageFiles": 4,
+    "wholeAppGzKB": 95.4,
+    "wholeAppFiles": 5
+  },
+  "React": {
+    "listPageGzKB": 95.6,
+    "listPageFiles": 7,
+    "wholeAppGzKB": 101.5,
+    "wholeAppFiles": 9
+  },
+  "Svelte": {
+    "listPageGzKB": 50.3,
+    "listPageFiles": 19,
+    "wholeAppGzKB": 56.3,
+    "wholeAppFiles": 23
+  },
+  "Solid": {
+    "listPageGzKB": 31,
+    "listPageFiles": 7,
+    "wholeAppGzKB": 35.2,
+    "wholeAppFiles": 9
+  },
+  "Lit": {
+    "listPageGzKB": 22.9,
+    "listPageFiles": 2,
+    "wholeAppGzKB": 22.9,
+    "wholeAppFiles": 2
+  },
+  "Vue": {
+    "listPageGzKB": 46.6,
+    "listPageFiles": 6,
+    "wholeAppGzKB": 50.8,
+    "wholeAppFiles": 8
+  },
+  "Preact": {
+    "listPageGzKB": 20.5,
+    "listPageFiles": 6,
+    "wholeAppGzKB": 24,
+    "wholeAppFiles": 8
+  },
+  "VueVapor": {
+    "listPageGzKB": 70.9,
+    "listPageFiles": 6,
+    "wholeAppGzKB": 75.3,
+    "wholeAppFiles": 8
+  },
+  "Solid2": {
+    "listPageGzKB": 53.8,
+    "listPageFiles": 6,
+    "wholeAppGzKB": 58.2,
+    "wholeAppFiles": 8
+  }
+}

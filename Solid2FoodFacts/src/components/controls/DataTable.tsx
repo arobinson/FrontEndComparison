@@ -1,4 +1,4 @@
-import { createMemo, For, Show } from 'solid-js';
+import { createMemo, For, Show, untrack } from 'solid-js';
 import type { JSX } from '@solidjs/web';
 import Button from './Button';
 import './DataTable.css';
@@ -16,7 +16,8 @@ interface DataTableProps {
   onPageSizeChange: (pageSize: number) => void;
   renderHeader?: (column: string) => JSX.Element;
   renderFilter?: (column: string) => JSX.Element;
-  renderCell?: (value: any, column: string, row: Record<string, any>) => JSX.Element;
+  /** Called once per cell; value/row are accessors, so the cell's subtree must read them reactively and is never rebuilt when the reused row's record changes. */
+  renderCell?: (value: () => any, column: string, row: () => Record<string, any>) => JSX.Element;
 }
 
 export default function DataTable(props: DataTableProps) {
@@ -96,7 +97,7 @@ export default function DataTable(props: DataTableProps) {
                       {(column) => (
                         <td class="data-cell">
                           {props.renderCell
-                            ? props.renderCell(row()[column], column, row())
+                            ? untrack(() => props.renderCell!(() => row()[column], column, row))
                             : row()[column]}
                         </td>
                       )}

@@ -214,18 +214,20 @@ export default function ProductList() {
     }
   }
 
-  function renderCell(value: any, column: string, row: Record<string, any>) {
+  // value/row are accessors: the DataTable calls this once per cell, and the JSX props
+  // below compile to getters, so new records flow into this CellRenderer instance.
+  function renderCell(value: () => any, column: string, row: () => Record<string, any>) {
     const dataType = getColumnDataType(column as keyof MockProductViewModel);
     const unit = getColumnUnit(column);
     return (
       <CellRenderer
-        value={value}
+        value={value()}
         dataType={dataType}
         column={column}
-        row={row}
+        row={row()}
         unit={unit}
-        expanded={expandedCodes().includes(row.code)}
-        onExpandedChange={(expanded) => setExpanded(row.code, expanded)}
+        expanded={expandedCodes().includes(row().code)}
+        onExpandedChange={(expanded) => setExpanded(row().code, expanded)}
       />
     );
   }

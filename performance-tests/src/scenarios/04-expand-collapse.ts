@@ -1,12 +1,22 @@
 import { TestScenario, TestContext, ScenarioResult, Measurement } from '../types.js';
 import { performanceMark, performanceMeasure } from '../utils/performance-helpers.js';
-import { clickInShadow, waitForSelectorInShadow } from '../utils/shadow-dom-helpers.js';
+import { waitForSelectorInShadow } from '../utils/shadow-dom-helpers.js';
+
+/**
+ * A single toggle takes ~5-30 ms and lands on frame boundaries, so its median is
+ * two-valued and flips bins between runs (A31). The scenario therefore measures
+ * TOGGLE_CYCLES expand/collapse cycles across that many DIFFERENT rows (not the
+ * same row repeatedly, which would measure a warm path) and reports the total,
+ * which is large and unimodal. Each action still waits for its own paint
+ * (rAF-polled), so every toggle remains a real settled interaction.
+ */
+const TOGGLE_CYCLES = 20;
 
 /**
  * Resolve on the first animation frame in which a "Show less" toggle is present (expand) or
  * absent (collapse). Shadow-DOM aware, for Lit. Ends the expand/collapse timing when the change
- * has rendered. Collapse waits for "Show less" to disappear: other truncated rows already show
- * "Show more", so waiting for that label would resolve immediately.
+ * has rendered. Rows are toggled one at a time, so a global presence check is row-accurate:
+ * at most one row shows "Show less" at any point in the cycle.
  */
 async function waitForShowLess(page: any, present: boolean): Promise<void> {
   await page.waitForFunction(
@@ -27,9 +37,61 @@ async function waitForShowLess(page: any, present: boolean): Promise<void> {
   );
 }
 
+/**
+ * Find the toggle ("Show more"/"Show less") of the ordinal-th row that has one and stash it on
+ * window, so the costlier shadow-aware DOM walk (Lit) stays OUTSIDE the timed window. Rows keep
+ * their toggle in both states, so the ordinal is stable across a cycle. Returns the number of
+ * toggle rows found (the stash stays empty when ordinal or label has no match).
+ */
+async function prepareToggle(page: any, ordinal: number, label: 'show more' | 'show less'): Promise<number> {
+  return page.evaluate(
+    (args: { ordinal: number; label: string }) => {
+      function* walk(root: Document | ShadowRoot | Element): Generator<Element> {
+        for (const el of Array.from(root.querySelectorAll('*'))) {
+          yield el;
+          if (el.shadowRoot) yield* walk(el.shadowRoot);
+        }
+      }
+      const toggleText = (el: Element) =>
+        (((el.textContent?.trim() || (el.getRootNode() as any).host?.textContent) ?? '').trim().toLowerCase());
+      function toggleIn(row: Element, wanted?: string): HTMLElement | null {
+        for (const el of walk(row)) {
+          if (!el.matches('button, a')) continue;
+          const text = toggleText(el);
+          if (text.includes('show more') || text.includes('show less')) {
+            if (!wanted || text.includes(wanted)) return el as HTMLElement;
+          }
+        }
+        return null;
+      }
+      const toggleRows: Element[] = [];
+      for (const el of walk(document)) {
+        if (el.matches('tbody tr') && toggleIn(el)) toggleRows.push(el);
+      }
+      (window as any).__preparedToggle =
+        (toggleRows[args.ordinal] && toggleIn(toggleRows[args.ordinal], args.label)) || null;
+      return toggleRows.length;
+    },
+    { ordinal, label }
+  );
+}
+
+/** Click the stashed toggle; the timed window contains only this click and the paint wait. */
+async function clickPreparedToggle(page: any): Promise<void> {
+  const clicked = await page.evaluate(() => {
+    const el = (window as any).__preparedToggle as HTMLElement | null;
+    (window as any).__preparedToggle = null;
+    if (el) el.click();
+    return !!el;
+  });
+  if (!clicked) {
+    throw new Error('No prepared toggle to click (ordinal or label did not match)');
+  }
+}
+
 export const expandCollapseScenario: TestScenario = {
   name: 'expand-collapse-description',
-  description: 'Click Show more/less link in truncated description field',
+  description: `${TOGGLE_CYCLES} expand/collapse cycles across ${TOGGLE_CYCLES} different truncated rows; total duration`,
 
   run: async (context: TestContext): Promise<ScenarioResult> => {
     let result: ScenarioResult;
@@ -43,40 +105,10 @@ export const expandCollapseScenario: TestScenario = {
     // Wait for table (shadow-aware)
     await waitForSelectorInShadow(page, 'table', { timeout: 30000 });
 
-    // Find the first "Show more" link in description column (shadow-aware)
-    const showMoreLink = await page.evaluate(() => {
-      function findInShadow(root: Document | ShadowRoot | Element, predicate: (el: Element) => boolean): Element | null {
-        const elements = Array.from(root.querySelectorAll('button, a'));
-        for (const el of elements) {
-          if (predicate(el)) return el;
-        }
-        const allElements = Array.from(root.querySelectorAll('*'));
-        for (const el of allElements) {
-          if (el.shadowRoot) {
-            const found = findInShadow(el.shadowRoot, predicate);
-            if (found) return found;
-          }
-        }
-        return null;
-      }
-
-      const showMore = findInShadow(document, (el) => {
-        const text = ((el.textContent?.trim() || (el.getRootNode() as any).host?.textContent) ?? '').trim().toLowerCase();
-        return text.includes('show more') || text.includes('more');
-      });
-
-      if (!showMore) {
-        return null;
-      }
-
-      return {
-        tag: showMore.tagName,
-        text: showMore.textContent?.trim()
-      };
-    });
-
-    if (!showMoreLink) {
-      throw new Error('Could not find "Show more" link in description');
+    // The mock data must provide enough truncated rows (27 of the default 50 qualify)
+    const toggleRowCount = await prepareToggle(page, -1, 'show more');
+    if (toggleRowCount < TOGGLE_CYCLES) {
+      throw new Error(`Only ${toggleRowCount} rows have a Show more toggle; need ${TOGGLE_CYCLES}`);
     }
 
     // Get initial CLS
@@ -84,109 +116,55 @@ export const expandCollapseScenario: TestScenario = {
       return (window as any).__webVitals?.cls || 0;
     });
 
-    // Test expand operation
-    await performanceMark(page, 'expand-start');
-    const expandStart = Date.now();
+    const cycleDurations: number[] = [];
+    let totalWallTime = 0;
 
-    // Click show more (shadow-aware)
-    await page.evaluate(() => {
-      function findInShadow(root: Document | ShadowRoot | Element, predicate: (el: Element) => boolean): Element | null {
-        const elements = Array.from(root.querySelectorAll('button, a'));
-        for (const el of elements) {
-          if (predicate(el)) return el;
-        }
-        const allElements = Array.from(root.querySelectorAll('*'));
-        for (const el of allElements) {
-          if (el.shadowRoot) {
-            const found = findInShadow(el.shadowRoot, predicate);
-            if (found) return found;
-          }
-        }
-        return null;
-      }
+    const cycleStart = Date.now();
+    for (let k = 0; k < TOGGLE_CYCLES; k++) {
+      // Expand the k-th truncated row; the clock stops on the frame the toggle has rendered
+      await prepareToggle(page, k, 'show more');
+      await performanceMark(page, `toggle-${k}-expand-start`);
+      const expandWallStart = Date.now();
+      await clickPreparedToggle(page);
+      await waitForShowLess(page, true);
+      await performanceMark(page, `toggle-${k}-expand-end`);
+      const expandDuration = await performanceMeasure(page, `toggle-${k}-expand`, `toggle-${k}-expand-start`, `toggle-${k}-expand-end`);
+      totalWallTime += Date.now() - expandWallStart;
 
-      const showMore = findInShadow(document, (el) => {
-        const text = ((el.textContent?.trim() || (el.getRootNode() as any).host?.textContent) ?? '').trim().toLowerCase();
-        return text.includes('show more') || text.includes('more');
-      });
-      if (showMore) {
-        (showMore as HTMLElement).click();
-      }
-    });
+      // Collapse the same row again before moving on, so one row is open at a time
+      await prepareToggle(page, k, 'show less');
+      await performanceMark(page, `toggle-${k}-collapse-start`);
+      const collapseWallStart = Date.now();
+      await clickPreparedToggle(page);
+      await waitForShowLess(page, false);
+      await performanceMark(page, `toggle-${k}-collapse-end`);
+      const collapseDuration = await performanceMeasure(page, `toggle-${k}-collapse`, `toggle-${k}-collapse-start`, `toggle-${k}-collapse-end`);
+      totalWallTime += Date.now() - collapseWallStart;
 
-    // Stop the clock when the toggle has actually rendered (was a fixed 100ms sleep inside the
-    // timed window, which made every framework measure ~104ms)
-    await waitForShowLess(page, true);
+      cycleDurations.push(expandDuration + collapseDuration);
+    }
+    const totalElapsed = Date.now() - cycleStart;
 
-    const expandEnd = Date.now();
-    await performanceMark(page, 'expand-end');
-
-    const expandDuration = await performanceMeasure(page, 'expand-operation', 'expand-start', 'expand-end');
-    const expandTotalTime = expandEnd - expandStart;
+    const totalDuration = cycleDurations.reduce((sum, d) => sum + d, 0);
 
     measurements.push(
-      { name: 'expand_duration', value: expandDuration, unit: 'ms' },
-      { name: 'expand_total_time', value: expandTotalTime, unit: 'ms' }
+      { name: 'total_toggle_duration', value: totalDuration, unit: 'ms' },
+      { name: 'total_toggle_wall_time', value: totalWallTime, unit: 'ms' },
+      { name: 'total_elapsed_time', value: totalElapsed, unit: 'ms' },
+      { name: 'avg_cycle_duration', value: totalDuration / TOGGLE_CYCLES, unit: 'ms' },
+      { name: 'max_cycle_duration', value: Math.max(...cycleDurations), unit: 'ms' }
     );
 
-    // Get CLS after expand
-    const clsAfterExpand = await page.evaluate(() => {
+    // Per-cycle sub-timings for the raw data
+    cycleDurations.forEach((duration, k) => {
+      measurements.push({ name: `cycle_${k + 1}_duration`, value: duration, unit: 'ms' });
+    });
+
+    // CLS across all cycles (every expand is undone, so the net shift should stay ~0)
+    const clsAfter = await page.evaluate(() => {
       return (window as any).__webVitals?.cls || 0;
     });
-    const clsDeltaExpand = clsAfterExpand - clsBefore;
-    measurements.push({ name: 'expand_cls_delta', value: clsDeltaExpand, unit: 'score' });
-
-    // Now test collapse operation
-    await new Promise((resolve) => setTimeout(resolve, 200));
-
-    await performanceMark(page, 'collapse-start');
-    const collapseStart = Date.now();
-
-    // Click show less (shadow-aware)
-    await page.evaluate(() => {
-      function findInShadow(root: Document | ShadowRoot | Element, predicate: (el: Element) => boolean): Element | null {
-        const elements = Array.from(root.querySelectorAll('button, a'));
-        for (const el of elements) {
-          if (predicate(el)) return el;
-        }
-        const allElements = Array.from(root.querySelectorAll('*'));
-        for (const el of allElements) {
-          if (el.shadowRoot) {
-            const found = findInShadow(el.shadowRoot, predicate);
-            if (found) return found;
-          }
-        }
-        return null;
-      }
-
-      const showLess = findInShadow(document, (el) => {
-        const text = ((el.textContent?.trim() || (el.getRootNode() as any).host?.textContent) ?? '').trim().toLowerCase();
-        return text.includes('show less') || text.includes('less');
-      });
-      if (showLess) {
-        (showLess as HTMLElement).click();
-      }
-    });
-
-    await waitForShowLess(page, false);
-
-    const collapseEnd = Date.now();
-    await performanceMark(page, 'collapse-end');
-
-    const collapseDuration = await performanceMeasure(page, 'collapse-operation', 'collapse-start', 'collapse-end');
-    const collapseTotalTime = collapseEnd - collapseStart;
-
-    measurements.push(
-      { name: 'collapse_duration', value: collapseDuration, unit: 'ms' },
-      { name: 'collapse_total_time', value: collapseTotalTime, unit: 'ms' }
-    );
-
-    // Get CLS after collapse
-    const clsAfterCollapse = await page.evaluate(() => {
-      return (window as any).__webVitals?.cls || 0;
-    });
-    const clsDeltaCollapse = clsAfterCollapse - clsAfterExpand;
-    measurements.push({ name: 'collapse_cls_delta', value: clsDeltaCollapse, unit: 'score' });
+    measurements.push({ name: 'cls_delta', value: clsAfter - clsBefore, unit: 'score' });
 
     result = {
       scenarioName: 'expand-collapse-description',
